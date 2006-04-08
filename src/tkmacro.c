@@ -6,6 +6,7 @@
  *    avoids having to translate the macro.
  */
 
+#define __CYGWIN__
 #include "tk.h"
 
 char * Tk_CallPathName (tkwin)
