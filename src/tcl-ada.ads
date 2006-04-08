@@ -3,7 +3,7 @@
 --
 -- tcl-ada.ads -- This package provides the "thick" binding to Tcl.
 --
--- Copyright (c) 1995-1999 Terry J. Westley
+-- Copyright (c) 1995-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -440,7 +440,7 @@ package Tcl.Ada is
       function Tcl_GetOpenFile (
          interp          : in Tcl_Interp;
          str             : in C.Strings.Chars_Ptr;
-         write           : in C.Int;
+         forWriting      : in C.Int;
          checkUsage      : in C.Int;
          fileptr         : in ClientData
       ) return C.Int;
@@ -449,7 +449,7 @@ package Tcl.Ada is
       function Tcl_GetOpenFile (
          interp          : in Tcl_Interp;
          str             : in String;
-         write           : in C.Int;
+         forWriting      : in C.Int;
          checkUsage      : in C.Int;
          fileptr         : in ClientData
       ) return C.Int;
@@ -457,7 +457,7 @@ package Tcl.Ada is
       procedure Tcl_GetOpenFile (
          interp          : in Tcl_Interp;
          str             : in String;
-         write           : in C.Int;
+         forWriting      : in C.Int;
          checkUsage      : in C.Int;
          fileptr         : in ClientData
       );
@@ -1334,14 +1334,14 @@ package Tcl.Ada is
    function Tcl_GetVar (
       interp          : in Tcl_Interp;
       varName         : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String;
 
    function Tcl_GetVar2 (
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String;
 
    function Tcl_GlobalEval (
@@ -1481,16 +1481,31 @@ package Tcl.Ada is
       interp          : in Tcl_Interp;
       varName         : in String;
       newValue        : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String;
+
+   procedure Tcl_SetVar (
+      interp          : in Tcl_Interp;
+      varName         : in String;
+      newValue        : in String;
+      flags           : in C.Int := TCL_GLOBAL_ONLY
+   );
 
    function Tcl_SetVar2 (
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
       newValue        : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String;
+
+   procedure Tcl_SetVar2 (
+      interp          : in Tcl_Interp;
+      part1           : in String;
+      part2           : in String;
+      newValue        : in String;
+      flags           : in C.Int := TCL_GLOBAL_ONLY
+   );
 
    function Tcl_SignalId (
       sig             : in C.Int
@@ -1547,27 +1562,27 @@ package Tcl.Ada is
    function Tcl_UnsetVar (
       interp          : in Tcl_Interp;
       varName         : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return C.Int;
 
    procedure Tcl_UnsetVar (
       interp          : in Tcl_Interp;
       varName         : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    );
 
    function Tcl_UnsetVar2 (
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return C.Int;
 
    procedure Tcl_UnsetVar2 (
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    );
 
    procedure Tcl_UpdateLinkedVar (
@@ -1739,7 +1754,7 @@ package Tcl.Ada is
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return Tcl_Obj;
 
    function Tcl_NumUtfChars (
@@ -1762,7 +1777,7 @@ package Tcl.Ada is
       part1           : in String;
       part2           : in String;
       newValuePtr     : in Tcl_Obj;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return Tcl_Obj;
 
    function Tcl_UniCharAtIndex (

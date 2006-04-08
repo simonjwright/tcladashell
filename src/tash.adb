@@ -7,7 +7,7 @@
 -- Purpose:      This package is the root of a family of packages
 --               which implement a binding to Tcl.
 --
--- Copyright (c) 1999 Terry J. Westley
+-- Copyright (c) 1999-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -45,11 +45,6 @@ package body Tash is
 
    use type Interfaces.C.Int;
 
-   procedure Tcl_PrintObj (
-      ObjPtr : in Tcl.Tcl_Obj
-   );
-   pragma Import (C, Tcl_PrintObj, "Tcl_PrintObj");
-
    function Is_Null (
       TObject : in Tash_Object) return Boolean is
    begin -- Is_Null
@@ -58,16 +53,22 @@ package body Tash is
    pragma Inline (Is_Null);
 
    procedure Finalize (
-      TObject : in out Tash_Object) is
+      Obj : in out Tcl.Tcl_Obj) is
    begin -- Finalize
-      if not Tcl.Is_Null (TObject.Obj) then
-         if Tcl.Tcl_GetRefCount (TObject.Obj) > 0 then
-            Tcl.Tcl_DecrRefCount (TObject.Obj);
+      if not Tcl.Is_Null (Obj) then
+         if Tcl.Tcl_GetRefCount (Obj) > 0 then
+            Tcl.Tcl_DecrRefCount (Obj);
+            if Tash.Verbose then
+               Ada.Text_IO.Put_Line ("Finalize: " & Internal_Rep (Obj));
+            end if;
          end if;
       end if;
---      if Verbose then
---         Ada.Text_IO.Put_Line ("Finalize: " & Internal_Rep (TObject));
---      end if;
+   end Finalize;
+
+   procedure Finalize (
+      TObject : in out Tash_Object) is
+   begin -- Finalize
+      Finalize (TObject.Obj);
    end Finalize;
 
    procedure Adjust (
@@ -75,22 +76,24 @@ package body Tash is
    begin -- Adjust
       if not Tcl.Is_Null (TObject.Obj) then
          Tcl.Tcl_IncrRefCount (TObject.Obj);
+         if Tash.Verbose then
+            Ada.Text_IO.Put_Line ("Adjust: " & Internal_Rep (TObject));
+         end if;
       end if;
---      if Verbose then
---         Ada.Text_IO.Put_Line ("Adjust: " & Internal_Rep (TObject));
---      end if;
    end Adjust;
 
    protected body Tash_Interp is
 
       entry Get (Interp : out Tcl.Tcl_Interp) when not Seized is
       begin -- Get
+         --Ada.Text_IO.Put_Line ("T.TI.Get");
          Seized := True;
          Interp := Tcl_Interp;
       end Get;
 
       procedure Release (Interp : in Tcl.Tcl_Interp) is
       begin -- Release
+         --Ada.Text_IO.Put_Line ("T.TI.Release");
          Seized     := False;
          Tcl_Interp := Interp;
       end Release;
@@ -150,7 +153,7 @@ package body Tash is
    procedure PrintObj (
       TObject : in Tash_Object'Class) is
    begin -- PrintObj
-      Tcl_PrintObj (TObject.Obj);
+      Tcl.Tcl_PrintObj (TObject.Obj);
    end PrintObj;
 
    function Image (
@@ -192,11 +195,10 @@ package body Tash is
       TObject : in Tash_Object) return String is
    begin -- Internal_Rep
       return
-         "(id="  & Image (Tcl.Tcl_GetObjId (TObject.Obj)) &
-         " s=""" & Image (TObject.Obj) &
-         """ t=" & Type_Of (TObject) &
-         " tag=" & Ada.Tags.External_Tag (Tash_Object'Tag) &
-         " c="   & Image (Ref_Count (TObject)) &
+        "(s="""  & Image (TObject.Obj) &
+         """ t="    & Type_Of (TObject) &
+         " tag="    & Ada.Tags.External_Tag (Tash_Object'Tag) &
+         " c="      & Image (Ref_Count (TObject)) &
          ")";
    end Internal_Rep;
 
@@ -204,10 +206,9 @@ package body Tash is
       TObj : in Tcl.Tcl_Obj) return String is
    begin -- Internal_Rep
       return
-         "(id="  & Image (Tcl.Tcl_GetObjId (TObj)) &
-         " s=""" & Image (TObj) &
-         """ t=" & CHelper.Value (Tcl.Tcl_GetObjTypeName (TObj)) &
-         " c="   & Image (Tcl.Tcl_GetRefCount (TObj)) &
+         "(s="""  & Image (TObj) &
+         """ t="    & CHelper.Value (Tcl.Tcl_GetObjTypeName (TObj)) &
+         " c="      & Image (Tcl.Tcl_GetRefCount (TObj)) &
          ")";
    end Internal_Rep;
 
@@ -220,6 +221,13 @@ package body Tash is
          Interfaces.C.Int (Str'Length));
       Tcl.Tcl_IncrRefCount (New_Obj);
       return New_Obj;
+   end To_Tcl_Obj;
+
+   function To_Tcl_Obj (Num : in Integer) return Tcl.Tcl_Obj is
+   begin -- To_Tcl_Obj
+      return To_Tcl_Obj (Ada.Strings.Fixed.Trim (
+         Source => Integer'Image (Num),
+         Side   => Ada.Strings.Left));
    end To_Tcl_Obj;
 
 begin -- Tash

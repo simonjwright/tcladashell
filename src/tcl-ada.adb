@@ -3,7 +3,7 @@
 --
 -- tcl-ada.adb --
 --
--- Copyright (c) 1995-1999 Terry J. Westley
+-- Copyright (c) 1995-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -155,7 +155,7 @@ package body Tcl.Ada is
       function Tcl_GetOpenFile (
          interp          : in Tcl_Interp;
          str             : in String;
-         write           : in C.Int;
+         forWriting      : in C.Int;
          checkUsage      : in C.Int;
          fileptr         : in ClientData
       ) return C.Int is
@@ -164,7 +164,7 @@ package body Tcl.Ada is
          return Tcl_GetOpenFile (
             interp,
             C.Strings.To_Chars_Ptr (C_str'unchecked_access),
-            write,
+            forWriting,
             checkUsage,
             fileptr);
       end Tcl_GetOpenFile;
@@ -172,7 +172,7 @@ package body Tcl.Ada is
       procedure Tcl_GetOpenFile (
          interp          : in Tcl_Interp;
          str             : in String;
-         write           : in C.Int;
+         forWriting      : in C.Int;
          checkUsage      : in C.Int;
          fileptr         : in ClientData
       ) is
@@ -181,7 +181,7 @@ package body Tcl.Ada is
          Assert (interp, Tcl_GetOpenFile (
             interp,
             C.Strings.To_Chars_Ptr (C_str'unchecked_access),
-            write,
+            forWriting,
             checkUsage,
             fileptr));
       end Tcl_GetOpenFile;
@@ -1459,7 +1459,7 @@ package body Tcl.Ada is
    function Tcl_GetVar (
       interp          : in Tcl_Interp;
       varName         : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String is
       C_varName : aliased C.Char_Array := C.To_C (varName);
    begin -- Tcl_GetVar
@@ -1473,7 +1473,7 @@ package body Tcl.Ada is
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String is
       C_part1 : aliased C.Char_Array := C.To_C (part1);
       C_part2 : aliased C.Char_Array := C.To_C (part2);
@@ -1805,7 +1805,7 @@ package body Tcl.Ada is
       interp          : in Tcl_Interp;
       varName         : in String;
       newValue        : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String is
       C_varName : aliased C.Char_Array := C.To_C (varName);
       C_newValue : aliased C.Char_Array := C.To_C (newValue);
@@ -1817,12 +1817,29 @@ package body Tcl.Ada is
          flags));
    end Tcl_SetVar;
 
+   procedure Tcl_SetVar (
+      interp          : in Tcl_Interp;
+      varName         : in String;
+      newValue        : in String;
+      flags           : in C.Int := TCL_GLOBAL_ONLY
+   ) is
+      Result     : C.Strings.Chars_Ptr;
+      C_varName  : aliased C.Char_Array := C.To_C (varName);
+      C_newValue : aliased C.Char_Array := C.To_C (newValue);
+   begin -- Tcl_SetVar
+      Result := Tcl.Tcl_SetVar (
+         interp,
+         C.Strings.To_Chars_Ptr (C_varName'unchecked_access),
+         C.Strings.To_Chars_Ptr (C_newValue'unchecked_access),
+         flags);
+   end Tcl_SetVar;
+
    function Tcl_SetVar2 (
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
       newValue        : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return String is
       C_part1 : aliased C.Char_Array := C.To_C (part1);
       C_part2 : aliased C.Char_Array := C.To_C (part2);
@@ -1834,6 +1851,26 @@ package body Tcl.Ada is
          C.Strings.To_Chars_Ptr (C_part2'unchecked_access),
          C.Strings.To_Chars_Ptr (C_newValue'unchecked_access),
          flags));
+   end Tcl_SetVar2;
+
+   procedure Tcl_SetVar2 (
+      interp          : in Tcl_Interp;
+      part1           : in String;
+      part2           : in String;
+      newValue        : in String;
+      flags           : in C.Int := TCL_GLOBAL_ONLY
+   ) is
+      Result     : C.Strings.Chars_Ptr;
+      C_part1    : aliased C.Char_Array := C.To_C (part1);
+      C_part2    : aliased C.Char_Array := C.To_C (part2);
+      C_newValue : aliased C.Char_Array := C.To_C (newValue);
+   begin -- Tcl_SetVar2
+      Result := Tcl.Tcl_SetVar2 (
+         interp,
+         C.Strings.To_Chars_Ptr (C_part1'unchecked_access),
+         C.Strings.To_Chars_Ptr (C_part2'unchecked_access),
+         C.Strings.To_Chars_Ptr (C_newValue'unchecked_access),
+         flags);
    end Tcl_SetVar2;
 
    function Tcl_SignalId (
@@ -1951,7 +1988,7 @@ package body Tcl.Ada is
    function Tcl_UnsetVar (
       interp          : in Tcl_Interp;
       varName         : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return C.Int is
       C_varName : aliased C.Char_Array := C.To_C (varName);
    begin -- Tcl_UnsetVar
@@ -1964,7 +2001,7 @@ package body Tcl.Ada is
    procedure Tcl_UnsetVar (
       interp          : in Tcl_Interp;
       varName         : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) is
       C_varName : aliased C.Char_Array := C.To_C (varName);
    begin -- Tcl_UnsetVar
@@ -1978,7 +2015,7 @@ package body Tcl.Ada is
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return C.Int is
       C_part1 : aliased C.Char_Array := C.To_C (part1);
       C_part2 : aliased C.Char_Array := C.To_C (part2);
@@ -1994,7 +2031,7 @@ package body Tcl.Ada is
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) is
       C_part1 : aliased C.Char_Array := C.To_C (part1);
       C_part2 : aliased C.Char_Array := C.To_C (part2);
@@ -2404,7 +2441,7 @@ package body Tcl.Ada is
       interp          : in Tcl_Interp;
       part1           : in String;
       part2           : in String;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return Tcl_Obj is
       C_part1 : aliased C.Char_Array := C.To_C (part1);
       C_part2 : aliased C.Char_Array := C.To_C (part2);
@@ -2454,7 +2491,7 @@ package body Tcl.Ada is
       part1           : in String;
       part2           : in String;
       newValuePtr     : in Tcl_Obj;
-      flags           : in C.Int
+      flags           : in C.Int := TCL_GLOBAL_ONLY
    ) return Tcl_Obj is
       C_part1 : aliased C.Char_Array := C.To_C (part1);
       C_part2 : aliased C.Char_Array := C.To_C (part2);

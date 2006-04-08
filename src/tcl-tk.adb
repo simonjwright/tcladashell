@@ -3,7 +3,7 @@
 --
 -- tcl-tk.adb --
 --
--- Copyright (c) 1995-1999 Terry J. Westley
+-- Copyright (c) 1995-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -66,6 +66,11 @@ package body Tcl.Tk is
    end Is_Null;
 
    function Is_Null (Ptr : in Tk_OptionTable) return Boolean is
+   begin -- Is_Null
+      return Ptr = null;
+   end Is_Null;
+
+   function Is_Null (Ptr : in Tk_PostscriptInfo) return Boolean is
    begin -- Is_Null
       return Ptr = null;
    end Is_Null;
@@ -140,6 +145,11 @@ package body Tcl.Tk is
       return Ptr = null;
    end Is_Null;
 
+   function Is_Null (Ptr : in Tk_SmoothMethod) return Boolean is
+   begin -- Is_Null
+      return Ptr = null;
+   end Is_Null;
+
    function Is_Null (Ptr : in Tk_Item) return Boolean is
    begin -- Is_Null
       return Ptr = null;
@@ -151,6 +161,21 @@ package body Tcl.Tk is
    end Is_Null;
 
    function Is_Null (Ptr : in Tk_CanvasTextInfo) return Boolean is
+   begin -- Is_Null
+      return Ptr = null;
+   end Is_Null;
+
+   function Is_Null (Ptr : in Tk_Dash) return Boolean is
+   begin -- Is_Null
+      return Ptr = null;
+   end Is_Null;
+
+   function Is_Null (Ptr : in Tk_TSOffset) return Boolean is
+   begin -- Is_Null
+      return Ptr = null;
+   end Is_Null;
+
+   function Is_Null (Ptr : in Tk_Outline) return Boolean is
    begin -- Is_Null
       return Ptr = null;
    end Is_Null;

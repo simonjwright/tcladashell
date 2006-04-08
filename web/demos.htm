@@ -1,7 +1,3 @@
-<!-- Header; be sure to edit <head> description, keywords, and title.
-     It'd be nice if we could do this with an include file or macro.
-     Perhaps we can someday do this with an XML element or entity. -->
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Final//EN">
 <html>
 <head>
@@ -11,109 +7,42 @@
     TASH, Ada, binding, Tcl/Tk">
   <TITLE>TASH Demonstration Programs</TITLE>
   <LINK REL="stylesheet" TYPE="text/css" HREF="tash.css">
+  <SCRIPT LANGUAGE="JavaScript1.2" SRC="inithiermenu.js" TYPE="text/javascript"></SCRIPT>
 </head>
 
 <BODY>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 
-  <!-- Page Heading -->
-  <tr>
-    <td colspan="2"> <h1> &nbsp; </h1></td>
-    <td colspan="3"> <h1> T<span class="smallcap">CL</span>
-                          A<span class="smallcap">DA</span>
-                          SH<span class="smallcap">ELL</span>
-                     </h1></td>
-    </tr>
-  <tr>
-    <td colspan="2"> <h2> &nbsp; </h2></td>
-    <td colspan="3"> <h2> Demonstration Programs </h2></td>
-    </tr>
+<!-- Page Heading -->
+<tr>
+  <td colspan="2"> <h1> &nbsp; </h1></td>
+  <td colspan="3"> <h1> T<span class="smallcap">CL</span>
+                        A<span class="smallcap">DA</span>
+                        SH<span class="smallcap">ELL</span>
+                   </h1></td>
+  </tr>
+<tr>
+  <td colspan="2"> <h2> &nbsp; </h2></td>
+  <td colspan="3"> <h2> Demonstration Programs </h2></td>
+  </tr>
 
-  <!-- Body of Page (includes navigation and page content) -->
-  <tr>
+<!-- Body of Page (includes navigation and page content) -->
+<tr>
 
-    <!-- Site Index (left column) -->
-    <td valign="top">
-      <div align=left class="nav">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <th> TASH </th>
-          </tr>
-        <tr>
-          <td> <a href="index.htm"> Home </a></td>
-          </tr>
-        <tr>
-          <td> <a href="tash.htm">Introduction&nbsp;to&nbsp;TASH</a></td>
-          </tr>
-        <tr>
-          <td> <A href="download.htm">Download&nbsp;Now</A></td>
-          </tr>
-        <tr>
-          <td> <a href="license.htm">TASH&nbsp;Software&nbsp;License</a></td>
-          </tr>
-        <tr>
-          <td> <A href="release.htm">Release&nbsp;Notes</A></td>
-          </tr>
-        <tr>
-          <td> <a href="docs/README.htm">Documentation Index</a></td>
-          </tr>
-        <tr>
-          <td> <a href="unix.htm">Install&nbsp;and&nbsp;Build&nbsp;Unix</a></td>
-          </tr>
-        <tr>
-          <td> <a href="windows.htm">Install&nbsp;and&nbsp;Build&nbsp;Windows</a></td>
-          </tr>
-        <tr>
-          <td> <a href="maillist.htm">Mailing&nbsp;List</a></td>
-          </tr>
-        <tr>
-          <th> Tcl/Tk</th>
-          </tr>
-        <tr>
-          <td> <a href="http://www.scriptics.com/">Scriptics&nbsp;Home</a></td>
-          </tr>
-        <tr>
-          <td> <a href="http://www.scriptics.com/scripting/scripting.html">
-               Scriptics&#146;&nbsp;Intro&nbsp;to&nbsp;Tcl/Tk</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.tclconsortium.org/">Tcl/Tk&nbsp;Consortium</A></td>
-          </tr>
-        <!--tr>
-          <td> Books</td>
-          </tr-->
-        <tr>
-          <th> Ada</th>
-          </tr>
-        <tr>
-          <td> <a href="http://www.adahome.com">Ada&nbsp;Home</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.adahome.com/FAQ/">
-               FAQ&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.adahome.com/Tutorials/Lovelace/lovelace.html">
-               Tutorial&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.acm.org/sigada/">ACM&nbsp;SIGAda</A></td>
-          </tr>
-        <!--tr>
-          <td> Books</td>
-          </tr-->
-      </table>
-      </div>
-      </td>
+  <!-- Site Index (left column) -->
+  <td valign="top">
+    <SCRIPT LANGUAGE='JavaScript' SRC='siteindex.js'></SCRIPT>
+    <SCRIPT LANGUAGE='JavaScript' SRC='chaser.js'></SCRIPT>
+    </td>
     
-    <!-- Body text left margin -->
-    <td width="20"> &nbsp;
+<!-- Body text left margin -->
+<td width="20"> &nbsp;
 
-    <!-- Body text -->
-    <td valign="top" colspan="2" width="535">            
+<!-- Body text -->
+<td valign="top" colspan="2" width="535">            
 
-      <div align=left class="body">
+<div align=left class="body">
       
 <!-- Page content -->
 
@@ -122,69 +51,36 @@ directory and execute <b>make all test</b>.
 
 <h3>Build and Execute freq Program</h3>
 
-<p>The <strong>freq</strong> demo program is a frequency counter. The
-Tcl code version is in <strong>freq.tcl</strong>; the Ada source
-code is in <strong>freq.adb</strong>. This program demonstrates the
-use of several Tcl features, including hash tables, in an
-Ada program.</p>
+<p>The <b>freq</b> demo program is a frequency counter. The Tcl code
+version is in <b>freq.tcl</b>; the Ada source code is in
+<b>freq.adb</b>. This program demonstrates the use of several Tcl
+features, including hash tables, in an Ada program.</p>
 
 <h3>Build and Execute timer Program</h3>
 
-<p>The <strong>timer</strong> program was adapted 
-from the timer demo program provided in the Tk
-distribution.  It implements a simple stopwatch.</p>
+<p>The <b>timer</b> program was adapted from the timer demo program
+provided in the Tk distribution.  It implements a simple
+stopwatch.</p>
 
-<p>A Tcl script version of this program is also
-provided (<strong>timer.tcl</strong>)
-so you can compare it to the TASH version.
-Execute the Tcl script version by entering the command,
-<strong>wish -f timer.tcl</strong>. Notice that there
-are no apparent differences in appearance or performance
-between the Ada and Tcl versions.</p>
+<p>A Tcl script version of this program is also provided
+(<b>timer.tcl</b>) so you can compare it to the TASH version.  Execute
+the Tcl script version by entering the command, <b>wish -f
+timer.tcl</b>. Notice that there are no apparent differences in
+appearance or performance between the Ada and Tcl versions.</p>
 
 <h3>Build and Execute futurevalue Program</h3>
 
-<p>The purpose of the <strong>futurevalue</strong> program is to
-demonstrate the capability of TASH to use Ada to read,
-process, and update data in a GUI application.</p>
+<p>The purpose of the <b>futurevalue</b> program is to demonstrate the
+capability of TASH to use Ada to read, process, and update data in a
+GUI application.</p>
 
-<p>When running this progrram, try entering a formula in any
-of the data entry fields, e.g., 10*10 instead of 100 for the
+<p>When running this progrram, try entering an <i>expression</i> in
+any of the data entry fields (e.g. 10*10) instead of 100 for the
 <b>Monthly Savings Amount</b>.<p>
 
-<!-- Footer; wish we could do this with an include file. -->
+<!-- footer -->
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="footer.js" TYPE="text/javascript"></SCRIPT>
 
-      </div>
-
-      </td>
-
-    <!-- Body text right margin -->
-    <td width="20"> &nbsp;</td>
-
-    </tr>
-
-  <!-- Signature -->
-  <tr class="sig">
-    <th> &nbsp; Author  </th>
-    <th> &nbsp;         </th>
-    <th> E-Mail Address </th>
-    <th> Last Revised   </th>
-    <th> &nbsp;         </th>
-    </tr>
-  <tr class="sig">
-    <td> &nbsp; Terry J. Westley </td>
-    <td> &nbsp;                  </td>
-    <td> <a href="mailto:twestley@buffalo.veridian.com">
-         twestley@buffalo.veridian.com</a> </td>
-    <td> <script language="JavaScript"><!--
-           // hide script code from old browsers
-           document.write(document.lastModified);
-           // end script hiding
-           // -->
-         </script> </td>
-    <td> &nbsp; </td>
-    </tr>
 </table>
-
 </body>
 </html>

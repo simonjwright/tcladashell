@@ -1,37 +1,38 @@
 %UNIT NAME
 TASH
 %VERSION
-8.0.0
+8.3.2
 %REVIEW CODE
 NR
 %INET ADDRESS
-http://ocsystems.com/xada/tash/
+http://www.adatcl/
 %AUTHOR
 Terry J. Westley
 TWestley@ACM.org
-http://www.buffnet.net/~westley/
+http://www.adatcl.com/
 %RIGHTS
 Approved for Public Release; Distribution Unlimited
 %COPYRIGHT
 Copyright (c) 1987-1994 The Regents of the University of California.
 Copyright (c) 1994-1997 Sun Microsystems, Inc.
-Copyright (c) 1995-1997 Terry J. Westley
+Copyright (c) 1995-2000 Terry J. Westley
 %DATE CREATED
 16-Sep-97
 %DATE RELEASED
 16-Sep-97
 %DATE LAST UPDATED
-16-Sep-97
+01-Oct-2000
 %LOCATION
-XAda site at OC Systems, Inc. (http://ocsystems.com/xada/tash/)
+TASH web site (http://www.adatcl.com/)
 PAL
 %ENVIRONMENT
 Any environment that has an Ada 95 compiler and for which a binary
-or source distribution of Tcl/tk version 8.0 is available.  Has been
-tested with Solaris 2.5.1/GNAT 3.09 and Windows95/GNAT 3.09.
+or source distribution of Tcl/tk version 8.3.2 is available.  Has been
+tested with GNAT 3.12p on Solaris 2.5.1, Windows95/98/NT and Red Hat
+Linux 6.2.
 %LIMITATIONS
 Requires Ada 95 compiler and
-binary or source distribution of Tcl/Tk version 8.0.
+binary or source distribution of Tcl/Tk version 8.3.2.
 %=CLASSIFICATION
 %CATEGORY LEVEL 1
 <I fill this in>
@@ -51,9 +52,9 @@ platform-independent graphical user interface toolkit
 <I fill this in>
 %DEPENDENCIES
 Requires Ada 95 compiler and
-binary or source distribution of Tcl/Tk version 8.0.
+binary or source distribution of Tcl/Tk version 8.3.2.
 %SEE ALSO
-Get more information on Tcl/Tk at http://sunscript.sun.com/.
+Get more information on Tcl/Tk at http://dev.scriptics.com/.
 Get more information on GNAT at
 http://www.adahome.com/Resources/Compilers/GNAT.html and
 http://www.gnat.com.
@@ -89,41 +90,35 @@ purpose is to
 %=REVISION HISTORY
 Date        Version   Comment
 ----        -------   -------
+01-Oct-00   8.3.2     New TASH thick binding for using Tcl
+                      scripting facilities more easily in Ada
 16-Sep-97   8.0.0     Upgrade to Tcl/Tk version 8.0
 16-Sep-97   7.6.1     First Windows 95 version
 25-Nov-96   7.6.0     Upgrade to Tcl version 7.6 and Tk version 4.2
 23-Apr-96   1.1b1     First support for Tk
             1.0b1     First public release
 %=RELEASE NOTICE
-This prologue must be included in all copies of this software.
+Copyright (c) 1995-2000 Terry J. Westley
 
-This software is copyrighted by the Regents of the University of
-California, Sun Microsystems, Inc., Terry J. Westley, and other
-parties.  The following terms apply to all files associated with the
-software unless explicitly disclaimed in individual files.
+Tash is free software; you can redistribute it and/or modify it under
+terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2, or (at your option) any later
+version. Tash is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+for more details. You should have received a copy of the GNU General
+Public License distributed with Tash; see file COPYING. If not, write to
 
-The authors hereby grant permission to use, copy, modify, distribute,
-and license this software and its documentation for any purpose, provided
-that existing copyright notices are retained in all copies and that this
-notice is included verbatim in any distributions. No written agreement,
-license, or royalty fee is required for any of the authorized uses.
-Modifications to this software may be copyrighted by their authors
-and need not follow the licensing terms described here, provided that
-the new terms are clearly indicated on the first page of each file where
-they apply.
+         Software Foundation
+         59 Temple Place - Suite 330
+         Boston, MA 02111-1307, USA
 
-RESTRICTED RIGHTS: Use, duplication or disclosure by the government
-is subject to the restrictions as set forth in subparagraph (c) (1) (ii)
-of the Rights in Technical Data and Computer Software Clause as DFARS
-252.227-7013 and FAR 52.227-19.
-%=DISCLAIMER
-	This software and its documentation are provided "AS IS" and
-without any expressed or implied warranties whatsoever.  No warranties
-as to performance, merchantability, or fitness for a particular
-purpose exist.
-	The user is advised to test the software thoroughly before
-relying on it.  The user must assume the entire risk and liability of
-using this software.  In no event shall any person or organization of
-people be held responsible for any direct, indirect, consequential or
-inconsequential damages or lost profits.
+As a special exception, if other files instantiate generics from this
+unit, or you link this unit with other files to produce an executable,
+this unit does not by itself cause the resulting executable to be
+covered by the GNU General Public License. This exception does not
+however invalidate any other reasons why the executable file might be
+covered by the GNU Public License.
+
+Tash is maintained by Terry Westley (http://www.adatcl.com).
 %=

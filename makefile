@@ -16,15 +16,14 @@
 include makeconf
 
 all test : 
-	cd src   ; make $@
-	cd tests ; make $@
-	cd demos ; make $@
-	cd apps  ; make $@
+	make -C src   $@
+	make -C tests $@
+	make -C demos $@
+	make -C apps  $@
 
 clean : 
-	@ $(TCLSH) bin/clean.tcl . *.htm COPYING tash.css \
-	   docs src bin lib \* images \*
-	@ cd src   ; make clean
-	@ cd tests ; make clean
-	@ cd demos ; make clean
-	@ cd apps  ; make clean
+	@ $(TCLSH) bin/clean.tcl . src tests demos apps
+	make -C src   $@
+	make -C tests $@
+	make -C demos $@
+	make -C apps  $@

@@ -7,7 +7,7 @@
 -- Purpose:      This TASH demo program determines the programming
 --               language of specified files.
 --
--- Copyright (c) 1999 Terry J. Westley
+-- Copyright (c) 1999-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -50,18 +50,16 @@
 with Ada.Command_Line;
 with Ada.Exceptions;
 with Ada.Text_IO;
+with Tash.File;
 with Tash.Lists;
 with Tash.Regexp;
-with Tash.Strings;
 
 procedure PLang is -- PLang
 
    use type Tash.Lists.Tash_List;
    use type Tash.Regexp.Tash_Regexp;
-   use type Tash.Strings.Tash_String;
 
    Args      : aliased Tash.Lists.Tash_List;
-   Arg       : Tash.Strings.Tash_String;
    Verbose   : Boolean := False;
    Print_Why : Boolean := False;
    Line      : String (1..1000);
@@ -69,16 +67,15 @@ procedure PLang is -- PLang
 
    -- Regular expressions
    ----------------------
-   White_Space      : constant String         := "[ " & ASCII.HT & "]";
-   R_White_Space    : Tash.Regexp.Tash_Regexp := +White_Space;
-   R_Makefile       : Tash.Regexp.Tash_Regexp := +"[Mm]akefile";
-   R_Object         : Tash.Regexp.Tash_Regexp := +"^(o|ali)$";
-   R_C_Source       : Tash.Regexp.Tash_Regexp := +"^[ch]$";
-   R_Ada_Source     : Tash.Regexp.Tash_Regexp := +"^(a|ada|ads|adb)$";
-   R_Fortran_Source : Tash.Regexp.Tash_Regexp := +"^(f|for)$";
-   R_HTML_Source    : Tash.Regexp.Tash_Regexp := +"^(htm|html)$";
-   R_Bourne_Shell   : Tash.Regexp.Tash_Regexp := +"^(:|#)";
-   R_Exec_Line      : Tash.Regexp.Tash_Regexp := +"^[  ]*(#|$)";
+   RE_White_Space    : Tash.Regexp.Tash_Regexp := +("[ " & ASCII.HT & "]");
+   RE_Makefile       : Tash.Regexp.Tash_Regexp := +"[Mm]akefile";
+   RE_Object         : Tash.Regexp.Tash_Regexp := +"^.(o|ali|exe)$";
+   RE_C_Source       : Tash.Regexp.Tash_Regexp := +"^.[ch]$";
+   RE_Ada_Source     : Tash.Regexp.Tash_Regexp := +"^.(ada|ads|adb)$";
+   RE_Fortran_Source : Tash.Regexp.Tash_Regexp := +"^.(f|for)$";
+   RE_HTML_Source    : Tash.Regexp.Tash_Regexp := +"^.(htm|html)$";
+   RE_Bourne_Shell   : Tash.Regexp.Tash_Regexp := +"^(:|#)";
+   RE_Exec_Line      : Tash.Regexp.Tash_Regexp := +"^[  ]*(#|$)";
 
    procedure Show_Usage is
       use Ada.Text_IO;
@@ -106,7 +103,7 @@ procedure PLang is -- PLang
       Put_Line ("      Language     Extension(s)");
       Put_Line ("      --------     ------------");
       Put_Line ("      C            .c, .h");
-      Put_Line ("      Ada          .a, .ada, .ads, .adb");
+      Put_Line ("      Ada          .ada, .ads, .adb");
       Put_Line ("      Tcl          .tcl");
       Put_Line ("      Perl         .pl");
       Put_Line ("      Emacs List   .el");
@@ -153,43 +150,35 @@ procedure PLang is -- PLang
    -- the exec line (usually the first non-comment line).
    -- Returns an empty list if no program was found.
    ------------------------------------------------------
-   function Get_Program (Line : in String) return Tash.Strings.Tash_String is
-
-      Program_Path_Name : Tash.Strings.Tash_String;
+   function Get_Program (Line : in String) return String is
 
    begin -- Get_Program
 
       -- Line must start with #! to contain a program name
       ----------------------------------------------------
       if Line'Length < 2 then
-         return Tash.Strings.Null_Tash_String;
+         return "";
       end if;
       if Line(Line'First..Line'First+1) /= "#!" then
-         return Tash.Strings.Null_Tash_String;
+         return "";
       end if;
 
-      -- Split the line at space characters and get the
-      -- first element as the path name of the program.
-      -------------------------------------------------
-      Program_Path_Name := Tash.Lists.Head (Tash.Lists.Split (
-         Line(Line'First+2..Line'Last), " "));
-
-      -- Split the program path name at "/" characters
-      -- and return the last element as the program name.
-      ---------------------------------------------------
-      return Tash.Lists.Tail (Tash.Lists.Split (Program_Path_Name, "/"));
+      declare
+         -- Split the line at space characters and get the
+         -- first element as the path name of the program.
+         -------------------------------------------------
+         Program_Path_Name : constant String :=
+            Tash.Lists.Head (Tash.Lists.Split (
+               Line(Line'First+2..Line'Last), " "));
+      begin
+         -- Split the program path name at "/" characters
+         -- and return the last element as the program name.
+         ---------------------------------------------------
+         -- return Tash.Lists.Tail (Tash.Lists.Split (Program_Path_Name, "/"));
+         return Tash.Lists.Tail (Tash.File.Split (Program_Path_Name));
+      end;
 
    end Get_Program;
-
-   -- Extracts the extension from a file name.
-   -- Split the input string at . characters and
-   -- return the last element as the extension.
-   -------------------------------------------
-   function Get_Extension (
-      File_Name : in String) return Tash.Strings.Tash_String is
-   begin -- Get_Extension
-      return Tash.Lists.Tail (Tash.Lists.Split (File_Name, "."));
-   end Get_Extension;
 
    -- This procedure attempts to determine the programming language
    -- of a file.  Where we successfully determine the language, the
@@ -202,11 +191,9 @@ procedure PLang is -- PLang
    procedure Print_Programming_Language (
       File_Name : in String) is
 
-      Extension  : Tash.Strings.Tash_String;
       Input_File : Ada.Text_IO.File_Type;
       Raw_Line   : String (1..1000);
       Last       : Natural;
-      Program    : Tash.Strings.Tash_String;
 
    begin -- Print_Programming_Language
 
@@ -225,78 +212,90 @@ procedure PLang is -- PLang
          return;
       end if;
 
+      -- skip this file if it is a directory
+      --------------------------------------
+      if Tash.File.Is_Directory (File_Name) then
+         if Print_Why then
+            Ada.Text_IO.Put_Line (File_Name & ": skipped because is a directory");
+         end if;
+         return;
+      end if;
+
       -- is it a makefile?
       --------------------
-      if Tash.Regexp.Match (File_Name, R_Makefile) then
+      if Tash.Regexp.Match (File_Name, RE_Makefile) then
          Ada.Text_IO.Put_Line (File_Name & ": makefile");
          return;
       end if;
 
       -- Can we determine language from the file extension?
       -----------------------------------------------------
-      Extension := Get_Extension (File_Name);
-      if Verbose then
-         Ada.Text_IO.Put_Line ("plang: ext=" &
-            Tash.Strings.To_String (Extension));
-      end if;
+      declare
+         Extension : constant String := Tash.File.Extension (File_Name);
+      begin
+         if Verbose then
+            Ada.Text_IO.Put_Line ("plang: ext=" & Extension);
+         end if;
 
-      if Tash.Strings.Length (Extension) > 0 then
+         if Extension'length > 0 then
 
-         -- Check for file extensions of files to be skipped
-         ---------------------------------------------------
-         if Tash.Regexp.Match (Extension, R_Object) then
-            if Print_Why then
-               Ada.Text_IO.Put_Line (File_Name &
-                  ": skipped because it is an object file (.o or .ali extension)");
+            -- Check for file extensions of files to be skipped
+            ---------------------------------------------------
+            if Tash.Regexp.Match (Extension, RE_Object) then
+               if Print_Why then
+                  Ada.Text_IO.Put_Line (File_Name &
+                     ": skipped because it is an object file (.o, .ali, or .exe extension)");
+               end if;
+               return;
             end if;
-            return;
+
+            -- Print languages of those extensions we recognize,
+            -- then return immediately.
+            ----------------------------------------------------
+            if Tash.Regexp.Match (Extension, RE_C_Source) then
+               Ada.Text_IO.Put_Line (File_Name & ": c");
+               return;
+            end if;
+            if Tash.Regexp.Match (Extension, RE_Ada_Source) then
+               Ada.Text_IO.Put_Line (File_Name & ": ada");
+               return;
+            end if;
+            if Extension = ".tcl" then
+               Ada.Text_IO.Put_Line (File_Name & ": tcl");
+               return;
+            end if;
+            if Extension = ".pl" then
+               Ada.Text_IO.Put_Line (File_Name & ": perl");
+               return;
+            end if;
+            if Extension = ".el" then
+               Ada.Text_IO.Put_Line (File_Name & ": emacs-lisp");
+               return;
+            end if;
+            if Extension = ".awk" then
+               Ada.Text_IO.Put_Line (File_Name & ": awk");
+               return;
+            end if;
+            if Tash.Regexp.Match (Extension, RE_Fortran_Source) then
+               Ada.Text_IO.Put_Line (File_Name & ": fortran");
+               return;
+            end if;
+            if Extension = ".sql" then
+               Ada.Text_IO.Put_Line (File_Name & ": sql");
+               return;
+            end if;
+            if Tash.Regexp.Match (Extension, RE_HTML_Source) then
+               Ada.Text_IO.Put_Line (File_Name & ": html");
+               return;
+            end if;
+            if Extension = ".xml" then
+               Ada.Text_IO.Put_Line (File_Name & ": xml");
+               return;
+            end if;
+
          end if;
 
-         -- Print languages of those extensions we recognize,
-         -- then return immediately.
-         ----------------------------------------------------
-         if Tash.Regexp.Match (Extension, R_C_Source) then
-            Ada.Text_IO.Put_Line (File_Name & ": c");
-            return;
-         end if;
-         if Tash.Regexp.Match (Extension, R_Ada_Source) then
-            Ada.Text_IO.Put_Line (File_Name & ": ada");
-            return;
-         end if;
-         if Extension = "tcl" then
-            Ada.Text_IO.Put_Line (File_Name & ": tcl");
-            return;
-         end if;
-         if Extension = "pl" then
-            Ada.Text_IO.Put_Line (File_Name & ": perl");
-            return;
-         end if;
-         if Extension = "el" then
-            Ada.Text_IO.Put_Line (File_Name & ": emacs-lisp");
-            return;
-         end if;
-         if Extension = "awk" then
-            Ada.Text_IO.Put_Line (File_Name & ": awk");
-            return;
-         end if;
-         if Tash.Regexp.Match (Extension, R_Fortran_Source) then
-            Ada.Text_IO.Put_Line (File_Name & ": fortran");
-            return;
-         end if;
-         if Extension = "sql" then
-            Ada.Text_IO.Put_Line (File_Name & ": sql");
-            return;
-         end if;
-         if Tash.Regexp.Match (Extension, R_HTML_Source) then
-            Ada.Text_IO.Put_Line (File_Name & ": html");
-            return;
-         end if;
-         if Extension = "xml" then
-            Ada.Text_IO.Put_Line (File_Name & ": xml");
-            return;
-         end if;
-
-      end if;
+      end;
 
       ------------------------------------------------
       -- We arrive here if there was no file extension
@@ -319,83 +318,85 @@ procedure PLang is -- PLang
       -- Get the program name (if any).  This will
       -- be in a pattern similar to "#!/bin/sh".
       --------------------------------------------
-      Program := Get_Program (Raw_Line (1..Last));
-
-      if Tash.Strings.Is_Empty (Program) then
-         -- There was no program name on the first line.
-         -- But, if the first line starts with a : or #, it's
-         -- Bourne shell for sure.
-         -----------------------------------------------------
-         if Tash.Regexp.Match (Raw_Line (1..Last), R_Bourne_Shell) then
-            Ada.Text_IO.Put_Line (File_Name & ": sh");
-            Ada.Text_IO.Close (Input_File);
-            return;
-
-         else
-            -- The first line gives us no clue as to the
-            -- language or how to discover the language.
-            -- We won't learn any more by reading the rest
-            -- of the file, so we just give up.
-            ---------------------------------------------
-            Ada.Text_IO.Close (Input_File);
-            Ada.Text_IO.Put   (File_Name & ": unknown");
-            if Print_Why then
-               Ada.Text_IO.Put_Line (" because it has no extension and" &
-                  " isn't a scripting language we recognize");
-            else
-               Ada.Text_IO.New_Line;
-            end if;
-            return;
-         end if;
-
-      elsif Program /= "sh" then
-         -- We found a non-Bourne program name on the first
-         -- line of the file.  We print the name of the
-         -- program as the programming language.
-         --------------------------------------------------
-         Ada.Text_IO.Put_Line (File_Name & ": " &
-            Tash.Strings.To_String (Program));
-         Ada.Text_IO.Close (Input_File);
-         return;
-      end if;
-
-      -- We reach here when we have a Bourne shell script.
-      -- We must now read more of the file to check if this
-      -- script execs another program.
-      -------------------------------------------------------------------
-      while not Ada.Text_IO.End_Of_File (Input_File) loop
-
-         Ada.Text_IO.Get_Line (File => Input_File,
-                               Item => Raw_Line,
-                               Last => Last);
-
-         if not Tash.Regexp.Match (Raw_Line (1..Last), R_Exec_Line) then
-
-            -- We have found the first executable line of a
-            -- Bourne shell script.  Check if this script
-            -- execs another program.
-            -------------------------------------------------
-            Program := Get_Program (Raw_Line (1..Last));
-
-            if Tash.Strings.Is_Empty (Program) then
-
-               -- Does not exec another program.  We will
-               -- list it as a Bourne shell script.
-               ------------------------------------------
+      declare
+         Program : constant String := Get_Program (Raw_Line (1..Last));
+      begin
+         if Program'Length <= 0 then
+            -- There was no program name on the first line.
+            -- But, if the first line starts with a : or #, it's
+            -- Bourne shell for sure.
+            -----------------------------------------------------
+            if Tash.Regexp.Match (Raw_Line (1..Last), RE_Bourne_Shell) then
                Ada.Text_IO.Put_Line (File_Name & ": sh");
+               Ada.Text_IO.Close (Input_File);
+               return;
 
             else
-               -- Use the program name we've just found as
-               -- the name of the programming language.
-               -------------------------------------------
-               Ada.Text_IO.Put_Line (File_Name & ": " &
-                  Tash.Strings.To_String (Program));
+               -- The first line gives us no clue as to the
+               -- language or how to discover the language.
+               -- We won't learn any more by reading the rest
+               -- of the file, so we just give up.
+               ---------------------------------------------
+               Ada.Text_IO.Close (Input_File);
+               Ada.Text_IO.Put   (File_Name & ": unknown");
+               if Print_Why then
+                  Ada.Text_IO.Put_Line (" because it has no extension and" &
+                     " isn't a scripting language we recognize");
+               else
+                  Ada.Text_IO.New_Line;
+               end if;
+               return;
             end if;
+
+         elsif Program /= "sh" then
+            -- We found a non-Bourne program name on the first
+            -- line of the file.  We print the name of the
+            -- program as the programming language.
+            --------------------------------------------------
+            Ada.Text_IO.Put_Line (File_Name & ": " & Program);
             Ada.Text_IO.Close (Input_File);
             return;
          end if;
 
-      end loop;
+         -- We reach here when we have a Bourne shell script.
+         -- We must now read more of the file to check if this
+         -- script execs another program.
+         -------------------------------------------------------------------
+         while not Ada.Text_IO.End_Of_File (Input_File) loop
+
+            Ada.Text_IO.Get_Line (File => Input_File,
+                                  Item => Raw_Line,
+                                  Last => Last);
+
+            if not Tash.Regexp.Match (Raw_Line (1..Last), RE_Exec_Line) then
+
+               -- We have found the first executable line of a
+               -- Bourne shell script.  Check if this script
+               -- execs another program.
+               -------------------------------------------------
+               declare
+                  Program : constant String := Get_Program (Raw_Line (1..Last));
+               begin
+                  if Program'Length <= 0 then
+
+                     -- Does not exec another program.  We will
+                     -- list it as a Bourne shell script.
+                     ------------------------------------------
+                     Ada.Text_IO.Put_Line (File_Name & ": sh");
+
+                  else
+                     -- Use the program name we've just found as
+                     -- the name of the programming language.
+                     -------------------------------------------
+                     Ada.Text_IO.Put_Line (File_Name & ": " & Program);
+                  end if;
+               end;
+            end if;
+            Ada.Text_IO.Close (Input_File);
+            return;
+         end loop;
+
+      end;
 
       Ada.Text_IO.Close (Input_File);
 
@@ -442,11 +443,10 @@ begin -- PLang
             while not Ada.Text_IO.End_Of_File (Ada.Text_IO.Standard_Input) loop
                Ada.Text_IO.Get_Line (Item => Line,
                                      Last => Last);
-               Tash.Lists.Append (Args,
-                  Tash.Strings.To_Tash_String (Line (1..Last)));
+               Tash.Lists.Append (Args, Line (1..Last));
             end loop;
          else
-            Tash.Lists.Append (Args, Tash.Strings.To_Tash_String (Arg));
+            Tash.Lists.Append (Args, Arg);
          end if;
       end;
    end loop;
@@ -469,8 +469,7 @@ begin -- PLang
    ---------------------------------------------------
    while not Tash.Lists.Is_Empty (Args) loop
       declare
-         Arg : constant String :=
-            Tash.Strings.To_String (Tash.Lists.Head (Args));
+         Arg : constant String := Tash.Lists.Head (Args);
       begin
          Tash.Lists.Pop (Args);
          Print_Programming_Language (Arg);

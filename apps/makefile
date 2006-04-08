@@ -11,11 +11,10 @@ PROGRAMS = plang
 all : $(PROGRAMS)
 
 $(PROGRAMS) : *.adb ../makeconf
-	gnatmake -A../lib $@ -cargs $(CC_FLAGS) \
-	   -largs $(ALL_LINK_SWITCHES)
+	gnatmake $(GARGS) $@ -cargs $(CARGS) -bargs $(BARGS) -largs $(LARGS)
 
 test : plang
-	./plang ../demos/* /dev/null
+	./plang ../demos/*
 
 lib :
 	@ cd ../src ; make all install

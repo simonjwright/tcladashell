@@ -3,7 +3,7 @@
 --
 -- tcl.adb --
 --
--- Copyright (c) 1995-1999 Terry J. Westley
+-- Copyright (c) 1995-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -106,11 +106,6 @@ package body Tcl is
    end Is_Null;
 
    function Is_Null (Ptr : in Tcl_Var) return Boolean is
-   begin -- Is_Null
-      return Ptr = null;
-   end Is_Null;
-
-   function Is_Null (Ptr : in Tcl_RegExpIndices) return Boolean is
    begin -- Is_Null
       return Ptr = null;
    end Is_Null;

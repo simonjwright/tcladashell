@@ -1,23 +1,19 @@
 with Ada.Command_Line;
 with Ada.Strings;
-with Ada.Tags;
 with Ada.Text_IO;
-with Tash.Floats.Test;
-with Tash.Integers.Test;
+with Tash.Integer_Lists;
+with Tash.Float_Lists;
 with Tash.Lists.Test;
 with Tash.Regexp;
-with Tash.Strings.Test;
 with Tash.Test;
 
 procedure Test_Regexp is
 
    -- Make operators visible without qualification
    -----------------------------------------------
-   use type Ada.Tags.Tag;
-   use type Tash.Floats.Tash_Float;
-   use type Tash.Integers.Tash_Integer;
+   use Tash.Float_Lists;
+   use Tash.Integer_Lists;
    use type Tash.Lists.Tash_List;
-   use type Tash.Strings.Tash_String;
 
    Verbose : Boolean := False;
 
@@ -41,28 +37,20 @@ begin -- Test_Regexp
       A : Tash.Lists.Tash_List;
       B : Tash.Lists.Tash_List;
       C : aliased Tash.Lists.Tash_List;
-      D : Tash.Integers.Tash_Integer;
-      F : Tash.Floats.Tash_Float;
-      G : Tash.Strings.Tash_String;
+      G : constant String := "This is a string";
       U : aliased Tash.Lists.Tash_List;
 
    begin
 
       -- prepare various Tash objects for testing Regexp
       --------------------------------------------------
-      A := Tash.Lists.To_Tash_List (+3, +4);
-      D := +52;
-      C := Tash.Lists.To_Tash_List (
-         D, +3.14159, Tash.Strings.To_Tash_String ("This is a string"), A);
-      G := Tash.Strings.To_Tash_String ("This is a string");
+      A := Tash.Integer_Lists.To_Tash_List (3) & 4;
+      C := Tash.Integer_Lists.To_Tash_List (52) & 3.14159 &
+              "This is a string" & A;
 
       Tash.Test.Test_Case (
          Description     => "Simple regexp on an Ada string",
          Result          => Tash.Regexp.Match ("This is a string", "string"));
-
-      Tash.Test.Test_Case (
-         Description     => "Simple regexp on a Tash object",
-         Result          => Tash.Regexp.Match (G, "string"));
 
       Tash.Test.Test_Case (
          Description     => "Simple regexp on a Tash list",
@@ -97,25 +85,100 @@ begin -- Test_Regexp
                Result          => False);
       end;
 
---      B := Tash.Regexp.Match ("/etc/rc2.d", "/([^/]+)\.([^/]+)$");
---Ada.Text_IO.Put_Line ("B=" & Tash.Lists.To_String (B));
---      Tash.Test.Test_Case (
---         Description => "Match and get subexpression in an Ada string",
---         Result      => Tash.Lists.To_String (B) = "/rc2.d rc2 d");
+      B := Tash.Regexp.Match ("/etc/rc2.d", "/([^/]+)\.([^/]+)$");
+      Tash.Test.Test_Case (
+         Description => "Match and get subexpression in an Ada string",
+         Result      => Tash.Lists.To_String (B) = "/rc2.d rc2 d");
 
 --      B := Tash.Regexp.Match_Element (C, "a str([ing]*)");
 --      Tash.Test.Test_Case (
 --         Description => "Match and get subexpression in a Tash list",
 --         Result      => Tash.Lists.To_String (B) = "{a string} ing");
 
---      declare
---         Extension : Tash.Strings.Tash_String := Tash.Lists.Tail (
---            Tash.Regexp.Match ("test_regexp.adb", "\.(.*)$"));
---      begin
---         Tash.Test.Test_Case (
---            Description => "Use regexp match to get file extension",
---            Result      => Extension = "adb");
---      end;
+      declare
+         Extension : constant String := Tash.Lists.Tail (
+            Tash.Regexp.Match ("test.regexp.adb", "\.([^\.]*)$"));
+      begin
+         Tash.Test.Test_Case (
+            Description => "Use regexp match to get file extension",
+            Result      => Extension = "adb");
+      end;
+
+      Tash.Test.Test_Case (
+         Description     => "Basic regular expression match succeeds",
+         Result          => Tash.Regexp.Match (
+            "abcccd", "abc*d", Mode => Tash.Regexp.Basic));
+
+      Tash.Test.Test_Case (
+         Description     => "Basic regular expression match fails",
+         Result          => not Tash.Regexp.Match (
+            "abcccd", "abc+d", Mode => Tash.Regexp.Basic));
+
+      Tash.Test.Test_Case (
+         Description     => "Extended regular expression match succeeds",
+         Result          => Tash.Regexp.Match (
+            "abcccd", "abc+d", Mode => Tash.Regexp.Extended));
+
+      Tash.Test.Test_Case (
+         Description     => "Advanced regular expression match succeeds",
+         Result          => Tash.Regexp.Match (
+            "digits: 012", "\d", Mode => Tash.Regexp.Advanced));
+
+      Tash.Test.Test_Case (
+         Description     => "Advanced regular expression match fails",
+         Result          => not Tash.Regexp.Match (
+            "no digits", "\d", Mode => Tash.Regexp.Advanced));
+
+      Tash.Test.Test_Case (
+         Description     => "Quoted regular expression match succeeds",
+         Result          => Tash.Regexp.Match (
+            "abcccd", "abc", Mode => Tash.Regexp.Quote));
+
+      Tash.Test.Test_Case (
+         Description     => "Quoted regular expression match fails",
+         Result          => not Tash.Regexp.Match (
+            "abcccd", "abc*", Mode => Tash.Regexp.Quote));
+
+      Tash.Test.Test_Case (
+         Description     => "Advanced, expanded regular expression match succeeds",
+         Result          => Tash.Regexp.Match (
+            "digits: 012", "\d #put comment here!", Expanded => True));
+
+      Tash.Test.Test_Case (
+         Description     => "Ignore case in regular expression match 1",
+         Result          => Tash.Regexp.Match (
+            "ALL CAPS", "all caps", Ignore_Case => True));
+
+      Tash.Test.Test_Case (
+         Description     => "Ignore case in regular expression match 2",
+         Result          => Tash.Regexp.Match (
+            "all caps", "ALL CAPS", Ignore_Case => True));
+
+      Tash.Test.Test_Case (
+         Description     => "Regular expression substitution",
+         Result          => Tash.Regexp.Substitute (
+            "abbd", "b+", "ccc") = "acccd");
+
+      Tash.Test.Test_Case (
+         Description     => "Substitute only first pattern",
+         Result          => Tash.Regexp.Substitute (
+            "abbdbbx", "b+", "ccc") = "acccdbbx");
+
+      Tash.Test.Test_Case (
+         Description     => "Substitute all patterns",
+         Result          => Tash.Regexp.Substitute (
+            "abbdbbx", "b+", "ccc", Sub_All => True) = "acccdcccx");
+
+      Tash.Test.Test_Case (
+         Description     => "Substitute first pattern using expanded pattern",
+         Result          => Tash.Regexp.Substitute (
+            "abbdbbx", "b+ #comment", "ccc", Expanded => True) = "acccdbbx");
+
+      Tash.Test.Test_Case (
+         Description     => "Substitute all patterns, ignoring case",
+         Result          => Tash.Regexp.Substitute (
+              "abbdBBx", "b+", "ccc", Sub_All => True, Ignore_Case => True)
+            = "acccdcccx");
 
    end;
 

@@ -1,122 +1,49 @@
-<!-- Header; be sure to edit <head> description, keywords, and title.
-     It'd be nice if we could do this with an include file or macro.
-     Perhaps we can someday do this with an XML element or entity. -->
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Final//EN">
 <html>
 <head>
   <meta name="description" content="Test programs for TASH,
     an Ada binding to Tcl/Tk.">
   <meta name="keywords" content="test, programs, TASH, Ada, binding, Tcl/Tk">
-  <TITLE>TASH Test Programs </TITLE>
+  <TITLE>TASH Test Programs</TITLE>
   <LINK REL="stylesheet" TYPE="text/css" HREF="tash.css">
+  <SCRIPT LANGUAGE="JavaScript1.2" SRC="inithiermenu.js" TYPE="text/javascript"></SCRIPT>
 </head>
 
 <BODY>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 
-  <!-- Page Heading -->
-  <tr>
-    <td colspan="2"> <h1> &nbsp; </h1></td>
-    <td colspan="3"> <h1> T<span class="smallcap">CL</span>
-                          A<span class="smallcap">DA</span>
-                          SH<span class="smallcap">ELL</span>
-                     </h1></td>
-    </tr>
-  <tr>
-    <td colspan="2"> <h2> &nbsp; </h2></td>
-    <td colspan="3"> <h2> Test Programs </h2></td>
-    </tr>
+<!-- Page Heading -->
+<tr>
+  <td colspan="2"> <h1> &nbsp; </h1></td>
+  <td colspan="3"> <h1> T<span class="smallcap">CL</span>
+                        A<span class="smallcap">DA</span>
+                        SH<span class="smallcap">ELL</span>
+                   </h1></td>
+  </tr>
+<tr>
+  <td colspan="2"> <h2> &nbsp; </h2></td>
+  <td colspan="3"> <h2> Test Programs </h2></td>
+  </tr>
 
-  <!-- Body of Page (includes navigation and page content) -->
-  <tr>
+<!-- Body of Page (includes navigation and page content) -->
+<tr>
 
-    <!-- Site Index (left column) -->
-    <td valign="top">
-      <div align=left class="nav">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <th> TASH </th>
-          </tr>
-        <tr>
-          <td> <a href="index.htm"> Home </a></td>
-          </tr>
-        <tr>
-          <td> <a href="tash.htm">Introduction&nbsp;to&nbsp;TASH</a></td>
-          </tr>
-        <tr>
-          <td> <A href="download.htm">Download&nbsp;Now</A></td>
-          </tr>
-        <tr>
-          <td> <a href="license.htm">TASH&nbsp;Software&nbsp;License</a></td>
-          </tr>
-        <tr>
-          <td> <A href="release.htm">Release&nbsp;Notes</A></td>
-          </tr>
-        <tr>
-          <td> <a href="docs/README.htm">Documentation Index</a></td>
-          </tr>
-        <tr>
-          <td> <a href="unix.htm">Install&nbsp;and&nbsp;Build&nbsp;Unix</a></td>
-          </tr>
-        <tr>
-          <td> <a href="windows.htm">Install&nbsp;and&nbsp;Build&nbsp;Windows</a></td>
-          </tr>
-        <tr>
-          <td> <a href="maillist.htm">Mailing&nbsp;List</a></td>
-          </tr>
-        <tr>
-          <th> Tcl/Tk</th>
-          </tr>
-        <tr>
-          <td> <a href="http://www.scriptics.com/">Scriptics&nbsp;Home</a></td>
-          </tr>
-        <tr>
-          <td> <a href="http://www.scriptics.com/scripting/scripting.html">
-               Scriptics&#146;&nbsp;Intro&nbsp;to&nbsp;Tcl/Tk</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.tclconsortium.org/">Tcl/Tk&nbsp;Consortium</A></td>
-          </tr>
-        <!--tr>
-          <td> Books</td>
-          </tr-->
-        <tr>
-          <th> Ada</th>
-          </tr>
-        <tr>
-          <td> <a href="http://www.adahome.com">Ada&nbsp;Home</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.adahome.com/FAQ/">
-               FAQ&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.adahome.com/Tutorials/Lovelace/lovelace.html">
-               Tutorial&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.acm.org/sigada/">ACM&nbsp;SIGAda</A></td>
-          </tr>
-        <!--tr>
-          <td> Books</td>
-          </tr-->
-      </table>
-      </div>
-      </td>
+  <!-- Site Index (left column) -->
+  <td valign="top" width="104">
+    <SCRIPT LANGUAGE='JavaScript' SRC='siteindex.js'></SCRIPT>
+    <SCRIPT LANGUAGE='JavaScript' SRC='chaser.js'></SCRIPT>
+    </td>
     
-    <!-- Body text left margin -->
-    <td width="20"> &nbsp;
+  <!-- Body text left margin -->
+  <td width="20"> &nbsp;
 
-    <!-- Body text -->
-    <td valign="top" colspan="2" width="535">            
+  <!-- Body text -->
+  <td valign="top" colspan="2" width="535">            
 
-      <div align=left class="body">
+  <div align=left class="body">
       
-<!-- Page content -->
-
-<p> To build and run these test programs, cd to the <b>tash820a/tests</b>
+<p> To build and run these test programs, cd to the <b>tash832a/tests</b>
 directory and execute <b>make all test</b>.
 
 <h3>The TASHTest Program</h3>
@@ -131,43 +58,14 @@ in chapters 30 through 32.2 of Ousterhout's book.</p>
 
 <h3>The Thick Binding Tests</h3>
 
-<p> The programs <b>test_strings</b>, <b>test_integers</b>,
-<b>test_floats</b>, <b>test_lists</b>, <b>test_regexp</b>,
-and <b>test_format</b> test the TASH thick binding
-packages implemented so far.</p>
+<p> The programs <b>test_arrays</b>, <b>test_file</b>,
+<b>test_file_io</b>, <b>test_format</b>, <b>test_lists</b>,
+<b>test_platform</b>, <b>test_regexp</b>, and <b>test_system</b> test
+the TASH thick binding packages implemented so far.</p>
 
-<!-- Footer; wish we could do this with an include file. -->
+<!-- footer -->
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="footer.js" TYPE="text/javascript"></SCRIPT>
 
-      </div>
-
-      </td>
-
-    <!-- Body text right margin -->
-    <td width="20"> &nbsp;</td>
-
-    </tr>
-
-  <!-- Signature -->
-  <tr class="sig">
-    <th> &nbsp; Author  </th>
-    <th> &nbsp;         </th>
-    <th> E-Mail Address </th>
-    <th> Last Revised   </th>
-    <th> &nbsp;         </th>
-    </tr>
-  <tr class="sig">
-    <td> &nbsp; Terry J. Westley </td>
-    <td> &nbsp;                  </td>
-    <td> <a href="mailto:twestley@buffalo.veridian.com">
-         twestley@buffalo.veridian.com</a> </td>
-    <td> <script language="JavaScript"><!--
-           // hide script code from old browsers
-           document.write(document.lastModified);
-           // end script hiding
-           // -->
-         </script> </td>
-    <td> &nbsp; </td>
-    </tr>
 </table>
 
 </body>

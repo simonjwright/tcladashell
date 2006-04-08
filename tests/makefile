@@ -4,7 +4,7 @@
 #
 # To check for memory leaks (with gnatmem):
 #
-# 1) add "-g" debugging option to CC_FLAGS macro (in makeconf file,
+# 1) add "-g" debugging option to CARGS macro (in makeconf file,
 #    or make a private one here).
 #
 # 2) execute with gnatmem:
@@ -16,44 +16,64 @@
 include ../makeconf
 
 PROGRAMS = \
+        compare \
         tashtest \
-	test_strings \
-        test_integers \
-        test_floats \
         test_lists \
         test_format \
-        test_regexp
+        test_regexp \
+        test_arrays \
+        test_file \
+        test_file_io \
+        test_system \
+        test_platform
 
 all : $(PROGRAMS)
 
 # Compile and link all programs
 #------------------------------
-$(PROGRAMS) : *.ads *.adb ../lib/*.ads ../lib/*.adb ../makeconf
-	gnatmake -A../lib $@ -cargs $(CC_FLAGS) \
-	   -largs $(ALL_LINK_SWITCHES)
+$(PROGRAMS) : *.ads *.adb ../makeconf
+	gnatmake $(GARGS) $@ -cargs $(CARGS) -bargs $(BARGS) -largs $(LARGS)
 
 VERBOSE =
 GNATMEM =
 
-test : 
+test : compare tash lists regexp format arrays \
+       file file_io system platform
+
+tash :
 	@ $(GNATMEM) ./tashtest tashtest.tcl
-	@ $(GNATMEM) ./test_strings $(VERBOSE)
-	@ $(GNATMEM) ./test_integers $(VERBOSE)
-	@ $(GNATMEM) ./test_floats $(VERBOSE)
+
+lists : 
 	@ $(GNATMEM) ./test_lists $(VERBOSE)
+
+regexp :
 	@ $(GNATMEM) ./test_regexp $(VERBOSE)
+
+format :
 	@ $(GNATMEM) ./test_format $(VERBOSE)
 
-vtest :
-	$(MAKE) test VERBOSE=-verbose
+arrays :
+	@ $(GNATMEM) ./test_arrays $(VERBOSE)
 
-WHAT = lists
+old-arrays :
+	$(GNATMEM) ./test_arrays $(VERBOSE) > test_arrays.out
+	./compare test_arrays.out test_arrays.expected-output
+	type test_arrays.out
 
-gdb : test_$(WHAT)
-	@ gdb ./test_$(WHAT) &
+file :
+	@ $(GNATMEM) ./test_file $(VERBOSE)
+
+file_io :
+	@ $(GNATMEM) ./test_file_io $(VERBOSE)
+
+system :
+	@ $(GNATMEM) ./test_system $(VERBOSE)
+
+platform :
+	@ $(GNATMEM) ./test_platform $(VERBOSE)
 
 lib :
-	@ cd ../src ; make
+	@ make -C ../src
 
 clean :
 	@$(TCLSH) ../bin/clean.tcl $(PROGRAMS)

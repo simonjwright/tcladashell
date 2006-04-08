@@ -7,7 +7,7 @@
 -- Purpose:      Provides regular expression pattern matching
 --               on Tash strings and lists.
 --
--- Copyright (c) 1999 Terry J. Westley
+-- Copyright (c) 1999-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -35,13 +35,15 @@
 
 with CHelper;
 with Interfaces.C.Strings;
-with Tash.Strings;
+with System;
 with Tash.Test;
+with Tcl.Ada;
 
 package body Tash.Regexp is
 
    use type Ada.Strings.Direction;
    use type Interfaces.C.Int;
+   use type Interfaces.C.Long;
    use type Interfaces.C.Size_T;
    use type Interfaces.C.Strings.Chars_Ptr;
    use type Tcl.Tcl_RegExp;
@@ -57,120 +59,6 @@ package body Tash.Regexp is
          return Tcl.Tcl_GetStringFromObj (TString.Obj, Length'Access);
       end if;
    end To_CString;
-
-   procedure RegDump (R : Tcl.Tcl_Regexp);
-   pragma Import (C, RegDump, "regdump");
-
-   -------------------------------------------------
-   -- Converting a string to a Tash_Regexp is
-   -- merely converting it to a Tcl object.  Later,
-   -- when the object is first used as a pattern,
-   -- the pattern will be compiled and cached in
-   -- the object.
-   -------------------------------------------------
-
-   function To_Tash_Regexp (
-      Str : in String) return Tash_Regexp is
-   --
-      C_TString : aliased Interfaces.C.Char_Array := Interfaces.C.To_C (Str);
-      New_Obj   : Tcl.Tcl_Obj;
-   begin -- To_Tash_Regexp
-      New_Obj := Tcl.Tcl_NewStringObj (
-         Interfaces.C.Strings.To_Chars_Ptr (C_TString'Unchecked_access),
-         Interfaces.C.Int (Str'length));
-      Tcl.Tcl_IncrRefCount (New_Obj);
-      return (Ada.Finalization.Controlled with Obj => New_Obj);
-   end To_Tash_Regexp;
-
-   function "+" (
-      Str : in String) return Tash_Regexp is
-   begin -- "+"
-      return To_Tash_Regexp (Str);
-   end "+";
-   pragma Inline ("+");
-
-   function To_Tash_Regexp (
-      TString : in Tash.Strings.Tash_String) return Tash_Regexp is
-   --
-      New_Obj : Tcl.Tcl_Obj;
-   begin -- To_Tash_Regexp
-      New_Obj := Tcl.Tcl_DuplicateObj (TString.Obj);
-      Tcl.Tcl_IncrRefCount (New_Obj);
-      return (Ada.Finalization.Controlled with Obj => New_Obj);
-   end To_Tash_Regexp;
-
-   function To_String (
-      Regexp : in Tash_Regexp) return String is
-   begin -- To_String
-      if Is_Null (Regexp) then
-         return "";
-      else
-         return CHelper.Value (To_CString (Regexp));
-      end if;
-   end To_String;
-
-   function Match (
-      Source      : in String;
-      Pattern     : in String;
-      Mode        : in Regexp_Mode := Advanced;
-      Expanded    : in Boolean     := False;
-      Ignore_Case : in Boolean     := False;
-      Line        : in Boolean     := False;
-      Line_Stop   : in Boolean     := False;
-      Line_Anchor : in Boolean     := False) return Boolean is
-   begin -- Match
-      return Match (
-         Source      => Tash.Strings.To_Tash_String (Source),
-         Pattern     => To_Tash_Regexp (Pattern),
-         Mode        => Mode,
-         Expanded    => Expanded,
-         Ignore_Case => Ignore_Case,
-         Line        => Line,
-         Line_Stop   => Line_Stop,
-         Line_Anchor => Line_Anchor);
-   end Match;
-
-   function Match (
-      Source      : in String;
-      Pattern     : in Tash_Regexp;
-      Mode        : in Regexp_Mode := Advanced;
-      Expanded    : in Boolean     := False;
-      Ignore_Case : in Boolean     := False;
-      Line        : in Boolean     := False;
-      Line_Stop   : in Boolean     := False;
-      Line_Anchor : in Boolean     := False) return Boolean is
-   begin -- Match
-      return Match (
-         Source      => Tash.Strings.To_Tash_String (Source),
-         Pattern     => Pattern,
-         Mode        => Mode,
-         Expanded    => Expanded,
-         Ignore_Case => Ignore_Case,
-         Line        => Line,
-         Line_Stop   => Line_Stop,
-         Line_Anchor => Line_Anchor);
-   end Match;
-
-   function Match (
-      Source      : in Tash.Strings.Tash_String;
-      Pattern     : in String;
-      Mode        : in Regexp_Mode := Advanced;
-      Expanded    : in Boolean     := False;
-      Ignore_Case : in Boolean     := False;
-      Line        : in Boolean     := False;
-      Line_Stop   : in Boolean     := False;
-      Line_Anchor : in Boolean     := False) return Boolean is
-   begin -- Match
-      return Match (
-         Source      => Source,
-         Pattern     => To_Tash_Regexp (Pattern),
-         Mode        => Mode,
-         Expanded    => Expanded,
-         Ignore_Case => Ignore_Case,
-         Line        => Line,
-         Line_Stop   => Line_Stop,
-         Line_Anchor => Line_Anchor);
-   end Match;
 
    function CFlags (
       Mode        : in Regexp_Mode;
@@ -211,8 +99,50 @@ package body Tash.Regexp is
       return Flags;
    end CFlags;
 
+   procedure RegDump (R : Tcl.Tcl_Regexp);
+   pragma Import (C, RegDump, "regdump");
+
+   -------------------------------------------------
+   -- Converting a string to a Tash_Regexp is
+   -- merely converting it to a Tcl object.  Later,
+   -- when the object is first used as a pattern,
+   -- the pattern will be compiled and cached in
+   -- the object.
+   -------------------------------------------------
+
+   function To_Tash_Regexp (
+      Str : in String) return Tash_Regexp is
+   --
+      C_TString : aliased Interfaces.C.Char_Array := Interfaces.C.To_C (Str);
+      New_Obj   : Tcl.Tcl_Obj;
+   begin -- To_Tash_Regexp
+      New_Obj := Tcl.Tcl_NewStringObj (
+         Interfaces.C.Strings.To_Chars_Ptr (C_TString'Unchecked_access),
+         Interfaces.C.Int (Str'length));
+      Tcl.Tcl_IncrRefCount (New_Obj);
+      return (Ada.Finalization.Controlled with
+              Obj  => New_Obj);
+   end To_Tash_Regexp;
+
+   function "+" (
+      Str : in String) return Tash_Regexp is
+   begin -- "+"
+      return To_Tash_Regexp (Str);
+   end "+";
+   pragma Inline ("+");
+
+   function To_String (
+      Regexp : in Tash_Regexp) return String is
+   begin -- To_String
+      if Is_Null (Regexp) then
+         return "";
+      else
+         return CHelper.Value (To_CString (Regexp));
+      end if;
+   end To_String;
+
    function Match (
-      Source      : in Tash.Strings.Tash_String;
+      Source      : in Tcl.Tcl_Obj;
       Pattern     : in Tash_Regexp;
       Mode        : in Regexp_Mode := Advanced;
       Expanded    : in Boolean     := False;
@@ -239,12 +169,54 @@ package body Tash.Regexp is
          Tash_Interp.Raise_Exception (Interp, Regexp_Error'Identity);
       end if;
       Result := Tcl.Tcl_RegExpExecObj (
-         Interp, Regexp, Source.Obj, 0, 0, 0);
+         Interp, Regexp, Source, 0, 0, 0);
       if Result < 0 then
          Tash_Interp.Raise_Exception (Interp, Regexp_Error'Identity);
       end if;
       Tash_Interp.Release (Interp);
       return Result = 1;
+   end Match;
+
+   function Match (
+      Source      : in String;
+      Pattern     : in String;
+      Mode        : in Regexp_Mode := Advanced;
+      Expanded    : in Boolean     := False;
+      Ignore_Case : in Boolean     := False;
+      Line        : in Boolean     := False;
+      Line_Stop   : in Boolean     := False;
+      Line_Anchor : in Boolean     := False) return Boolean is
+   begin -- Match
+      return Match (
+         Source      => Tash.To_Tcl_Obj (Source),
+         Pattern     => To_Tash_Regexp (Pattern),
+         Mode        => Mode,
+         Expanded    => Expanded,
+         Ignore_Case => Ignore_Case,
+         Line        => Line,
+         Line_Stop   => Line_Stop,
+         Line_Anchor => Line_Anchor);
+   end Match;
+
+   function Match (
+      Source      : in String;
+      Pattern     : in Tash_Regexp;
+      Mode        : in Regexp_Mode := Advanced;
+      Expanded    : in Boolean     := False;
+      Ignore_Case : in Boolean     := False;
+      Line        : in Boolean     := False;
+      Line_Stop   : in Boolean     := False;
+      Line_Anchor : in Boolean     := False) return Boolean is
+   begin -- Match
+      return Match (
+         Source      => Tash.To_Tcl_Obj (Source),
+         Pattern     => Pattern,
+         Mode        => Mode,
+         Expanded    => Expanded,
+         Ignore_Case => Ignore_Case,
+         Line        => Line,
+         Line_Stop   => Line_Stop,
+         Line_Anchor => Line_Anchor);
    end Match;
 
    function Match_Element (
@@ -283,7 +255,7 @@ package body Tash.Regexp is
    begin -- Match_Element
       if Going = Ada.Strings.Forward then
          for I in 1..Tash.Lists.Length (Source) loop
-            if Match (Tash.Lists.Element (Source, I), Pattern,
+            if Match (Tash.Lists.Get_Element (Source, I), Pattern,
                       Mode, Expanded, Ignore_Case, Line,
                       Line_Stop, Line_Anchor) then
                return I;
@@ -291,7 +263,7 @@ package body Tash.Regexp is
          end loop;
       else
          for I in reverse 1..Tash.Lists.Length (Source) loop
-            if Match (Tash.Lists.Element (Source, I), Pattern,
+            if Match (Tash.Lists.Get_Element (Source, I), Pattern,
                       Mode, Expanded, Ignore_Case, Line,
                       Line_Stop, Line_Anchor) then
                return I;
@@ -300,5 +272,221 @@ package body Tash.Regexp is
       end if;
       return 0;
    end Match_Element;
+
+   function Match (
+      Source      : in String;
+      Pattern     : in Tash_Regexp;
+      Mode        : in Regexp_Mode := Advanced;
+      Expanded    : in Boolean     := False;
+      Ignore_Case : in Boolean     := False;
+      Line        : in Boolean     := False;
+      Line_Stop   : in Boolean     := False;
+      Line_Anchor : in Boolean     := False) return Tash.Lists.Tash_List is
+
+      Flags      : Interfaces.C.Int;
+      Interp     : Tcl.Tcl_Interp;
+      Regexp     : Tcl.Tcl_RegExp;
+      Result     : Interfaces.C.Int;
+      InfoRec    : aliased Tcl.Tcl_RegExpInfo_Rec;
+      InfoPtr    : Tcl.Tcl_RegExpInfo := InfoRec'Unchecked_Access;
+      Matches    : Tcl.Tcl_RegExpIndices;
+      Substrings : Tash.Lists.Tash_List;
+
+   begin -- Match
+
+      Flags := CFlags (
+         Mode        => Mode,
+         Expanded    => Expanded,
+         Ignore_Case => Ignore_Case,
+         Line        => Line,
+         Line_Stop   => Line_Stop,
+         Line_Anchor => Line_Anchor);
+
+      Tash_Interp.Get (Interp);
+
+      -- get regular expression
+      -------------------------
+      Regexp := Tcl.Tcl_GetRegExpFromObj (Interp, Pattern.Obj, Flags);
+      if Regexp = Null then
+         Tash_Interp.Raise_Exception (Interp, Regexp_Error'Identity);
+      end if;
+
+      -- perform regexp match
+      -----------------------
+      Result := Tcl.Tcl_RegExpExecObj (
+         Interp, Regexp, Tash.To_Tcl_Obj (Source), 0, -1, 0);
+      if Result < 0 then
+         Tash_Interp.Raise_Exception (Interp, Regexp_Error'Identity);
+      else
+         Tash_Interp.Release (Interp);
+      end if;
+
+      -- get information about this match
+      -----------------------------------
+      Tcl.Tcl_RegExpGetInfo (Regexp, InfoPtr);
+      Matches := InfoRec.Matches;
+
+      -- Each iteration of this loop gets the next matching
+      -- substring and appends it to Substrings.
+      -----------------------------------------------------
+      for I in 1..InfoRec.Nsubs+1 loop
+         declare
+            Substring : constant String := Source (
+               Positive (Matches.Start+1)..Positive (Matches.E_N_D));
+         begin
+            Tash.Lists.Append (Substrings, Substring);
+         end;
+         Tcl.Tcl_RegExpIndices_Pointer.Increment (Matches);
+      end loop;
+
+      return Substrings;
+
+   end Match;
+
+   function Match (
+      Source      : in String;
+      Pattern     : in String;
+      Mode        : in Regexp_Mode := Advanced;
+      Expanded    : in Boolean     := False;
+      Ignore_Case : in Boolean     := False;
+      Line        : in Boolean     := False;
+      Line_Stop   : in Boolean     := False;
+      Line_Anchor : in Boolean     := False) return Tash.Lists.Tash_List is
+   begin -- Match
+      return Match (
+         Source      => Source,
+         Pattern     => To_Tash_Regexp (Pattern),
+         Mode        => Mode,
+         Expanded    => Expanded,
+         Ignore_Case => Ignore_Case,
+         Line        => Line,
+         Line_Stop   => Line_Stop,
+         Line_Anchor => Line_Anchor);
+   end Match;
+
+   function Tcl_RegsubObjCmd (
+      dummy  : in Tcl.ClientData;
+      interp : in Tcl.Tcl_Interp;
+      objc   : in Interfaces.C.Int;
+      objv   : in Tcl.Tcl_Obj_Array
+   ) return Interfaces.C.Int;
+   pragma Import (C, Tcl_RegsubObjCmd, "Tcl_RegsubObjCmd");
+
+   function Substitute (
+      Source      : in String;
+      Pattern     : in String;
+      Sub_Spec    : in String;
+      Sub_All     : in Boolean := False;
+      Expanded    : in Boolean := False;
+      Ignore_Case : in Boolean := False;
+      Line        : in Boolean := False;
+      Line_Stop   : in Boolean := False;
+      Line_Anchor : in Boolean := False) return String is
+
+      Objc   : Interfaces.C.Int;
+      Interp : Tcl.Tcl_Interp;
+      Result : Interfaces.C.Int;
+
+   begin -- Substitute
+
+      -- Count how many object arguments we'll
+      -- have when calling Tcl_RegsubObjCmd.
+      ----------------------------------------
+      Objc := 6;
+      if Sub_All then
+         Objc := Objc + 1;
+      end if;
+      if Expanded then
+         Objc := Objc + 1;
+      end if;
+      if Ignore_Case then
+         Objc := Objc + 1;
+      end if;
+      if Line then
+         Objc := Objc + 1;
+      end if;
+      if Line_Stop then
+         Objc := Objc + 1;
+      end if;
+      if Line_Anchor then
+         Objc := Objc + 1;
+      end if;
+
+      declare
+         Objv : Tcl.Tcl_Obj_Array (1..Objc);
+         I    : Interfaces.C.Int := 1;
+      begin
+
+         -- Create object arguments for
+         -- call to Tcl_RegesubObjCmd.
+         ------------------------------
+         Objv(I) := Tash.To_Tcl_Obj ("regsub");
+         I := I + 1;
+         if Sub_All then
+            Objv(I) := Tash.To_Tcl_Obj ("-all");
+            I := I + 1;
+         end if;
+         if Expanded then
+            Objv(I) := Tash.To_Tcl_Obj ("-expanded");
+            I := I + 1;
+         end if;
+         if Ignore_Case then
+            Objv(I) := Tash.To_Tcl_Obj ("-nocase");
+            I := I + 1;
+         end if;
+         if Line then
+            Objv(I) := Tash.To_Tcl_Obj ("-line");
+            I := I + 1;
+         end if;
+         if Line_Stop then
+            Objv(I) := Tash.To_Tcl_Obj ("-linestop");
+            I := I + 1;
+         end if;
+         if Line_Anchor then
+            Objv(I) := Tash.To_Tcl_Obj ("-lineanchor");
+            I := I + 1;
+         end if;
+         Objv(I) := Tash.To_Tcl_Obj ("--");
+         I := I + 1;
+         Objv(I) := Tash.To_Tcl_Obj (Pattern);
+         I := I + 1;
+         Objv(I) := Tash.To_Tcl_Obj (Source);
+         I := I + 1;
+         Objv(I) := Tash.To_Tcl_Obj (Sub_Spec);
+         I := I + 1;
+
+         -- Create a variable in which regsub will store the
+         -- modified string.  Store the name of this variable
+         -- in the last object parameter for regsub.
+         ----------------------------------------------------
+         Tash_Interp.Get (Interp);
+         Tcl.Ada.Tcl_SetVar (Interp, "_TASH_Regsub_Result", "");
+         Objv(I) := Tash.To_Tcl_Obj ("_TASH_Regsub_Result");
+
+         -- Perform the substitution(s) and check for errors
+         ---------------------------------------------------
+         Tcl.Tcl_ResetResult (Interp);
+         Result := Tcl_RegsubObjCmd (
+            Dummy  => System.Null_Address,
+            Interp => Interp,
+            Objc   => Objc,
+            Objv   => Objv);
+         Tash_Interp.Assert (Interp, Result, Regexp_Error'identity);
+
+         -- Get and return the regsub'd string
+         -------------------------------------
+         declare
+            Regsub_Result : constant String :=
+              Tcl.Ada.Tcl_GetVar (Interp, "_TASH_Regsub_Result");
+         begin
+            Tcl.Ada.Tcl_UnsetVar (Interp, "_TASH_Regsub_Result");
+            Tcl.Tcl_ResetResult (Interp);
+            Tash_Interp.Release (Interp);
+            return Regsub_Result;
+         end;
+
+      end;
+
+   end Substitute;
 
 end Tash.Regexp;
