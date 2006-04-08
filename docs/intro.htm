@@ -1,0 +1,1081 @@
+<HTML>
+<HEAD>
+<TITLE>TASH: Tcl Ada SHell, An Ada/Tcl Binding</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.0z">
+</HEAD>
+<BODY bgcolor=white>
+<H1><CENTER>TASH: Tcl Ada SHell, An Ada/Tcl Binding</CENTER>
+</H1>
+<P>
+<CENTER>&copy;1996, Terry J. Westley</CENTER>
+<P>
+<CENTER>Calspan SRL Corporation</CENTER>
+<P>
+<CENTER>twestley@buffalo.veridian.com<BR>
+</CENTER>
+<H1>Abstract</H1>
+<P>
+A binding to Tcl from Ada is described. The goal
+of this binding is to make scripting language features, such as
+associative arrays, regular expression matching, and execution
+of OS commands available to an Ada programmer and to allow a Tcl
+programmer to use Ada in place of C where needed. This binding
+exploits several new features of Ada 95 that make interfacing
+to C much cleaner and more direct than Ada 83.
+<H1>The Ada Programming Language</H1>
+<P>
+The Ada programming language is a wonderful integration
+of traditional mainstream programming language design and newer
+software engineering features proven in more recent languages.
+The result is a language with great expressive power, but also
+with safety and reliability. New features added by Ada 95 promise
+further improvements.
+<H1>The Tcl Programming Language</H1>
+<P>
+Tcl (Tool Command Language) is a simple, but powerful,
+scripting language invented by John Ousterhout at University of
+California at Berkeley. It is so very different from Ada: interpreted,
+no data typing, poor management of the name space, and limited
+modularity. Obviously, this is because Tcl was designed for a
+different purpose than was Ada. But, Dr. Ousterhout designed Tcl
+with excellent facilities for using C where appropriate. The resulting
+environment combines the advantages of a simple scripting language
+with the power of a compiled systems language.
+<H1>Programming Languages</H1>
+<P>
+When starting a programming task, it is important
+to choose the right tools, especially the programming language.
+Every language has its strengths and weaknesses and these must
+be considered (among many other criteria) when making the choice.
+After choosing a language for a particular task, one often finds
+the need for features from another language. For example, if a
+Tcl program grows from a small script into a major program, the
+lack of good name space management and complex data structures
+(such as arrays of records) becomes a significant burden. In a
+similar way, an Ada programmer may find uses for associative arrays,
+regular expression matching and execution of OS commands found
+in scripting languages such as Tcl and Perl [5].
+<H1>Ada/Tcl</H1>
+<P>
+With its embeddable library of functions, Tcl offers
+the opportunity to ameliorate this dilemma, as long as one uses
+C as the &quot;host&quot; language. But, is it possible to use
+Ada in place of C? With the advent of Ada 95, the task of writing
+a binding to C has proven to be not only possible, but also very
+clean and direct.
+<P>
+The major objectives of this effort have been to
+produce a binding which would:
+<ul>
+<li>Allow a Tcl program to use Ada in place of
+C to implement Tcl commands where additional execution speed,
+more complex data structures, or better name space management
+was needed, and<p>
+<li>Make the Tcl library functions available to
+an Ada program. These include string and list handling, regular
+expression matching, hash tables, and access to the X window system
+(via Tk).
+</ul>
+<H1>Introduction to Tcl</H1>
+<P>
+Tcl is:
+<P>
+<B>Free</B>: the source code
+is copyrighted by the Regents of the University of California
+and Sun Microsystems and is freely available (via anonymous ftp)
+with few restrictions,
+<P>
+<B>Interpreted</B>: although
+compilers are available, the code is more commonly interpreted,
+<P>
+<B>General purpose</B>: provides
+general programming facilities such as variables, iteration, condition
+evaluation, and procedures,
+<P>
+<B>Extensible</B>: the language
+can be easily extended in Tcl as well as in C. One of the most
+popular extensions is Tk, a toolkit for building graphical user
+interfaces based on the X Window System,
+<P>
+<B>Embeddable</B>: its interpreter
+is implemented as a library of C functions which can be incorporated
+into and extended by a larger application.
+<P>
+<B>Portable</B>: beginning with
+Tcl7.5 and Tk4.1, the core Tcl/Tk system is available for Macs
+and PCs as well as for Unix.
+<P>
+Some of the advantages of using Tcl in an application
+are:
+<P>
+<B>Rapid development</B>: Because
+of its extensibility and availability of add-on packages, Tcl,
+along with Tk, provide a higher level language than C. Being an
+interpreted language also results in quicker turn-around than
+the traditional edit-compile-link-test cycle of software development.
+<P>
+<B>System integration</B>: Tcl
+makes an excellent language for integrating several programs into
+one single user environment. Because it is embeddable, Tcl can
+also serve as an inter-application language. Many also hope it
+to be used in the future as an internetworking software agent
+language.
+<P>
+<B>User programming</B>: Where
+appropriate, users can program an application directly in the
+scripting language. Many very successful applications, such as
+AutoCad and Excel, provide user-level programming through a custom
+language. With Tcl, the application designer can provide for user
+programming without having to design and implement a new language.
+<H1>Sample Tcl script</H1>
+<P>
+Figure 1 is a sample Tcl script. It reads standard
+input and produces a frequency count, treating each input line
+as a separate item. To count the frequency of each word in a document
+in a Unix environment, enter this command:
+<P>
+<TT><FONT FACE="Courier">deroff -w file | freq</FONT></TT>
+<P>
+The <TT><B><FONT FACE="Courier">deroff</FONT></B></TT>
+command replaces all word separators in a file with line terminators.
+Its output is piped to the input of the <TT><B><FONT FACE="Courier">freq</FONT></B></TT>
+script. Word separation is not done in the <TT><B><FONT FACE="Courier">freq</FONT></B></TT>
+script to keep the script pure in its purpose and implementation.
+<PRE>
+#!/usr/local/bin/tclsh
+
+# read lines from standard input until
+# end of file encountered
+while {[gets stdin line] &gt;= 0} {
+   if [info exists Freq($line)] {
+      # the item is already in the array,
+      # so just increment its count
+      incr Freq($line)
+   } else {
+      # the item is not in the array yet,
+      # so initialize its count
+      set Freq($line) 1
+   }
+}
+
+# iterate through every item and print it
+# and its frequency count
+foreach item [array names Freq] {
+   puts stdout &quot;$item $Freq($item)&quot;
+}
+
+<CENTER>Figure 1
+</CENTER>
+</PRE>
+<P>
+Notice the strong influence of C and scripting languages,
+such as the Unix C shell, in the syntax of Tcl. This program would
+not be very difficult to program in Ada, although coding the associative
+array Freq would prove to be somewhat verbose and time-consuming.
+<H1>Introduction to the Ada/Tcl binding</H1>
+<P>
+The binding presented in this paper is an Ada binding
+to Tcl version 7.5a2. It is our intention to add a Tk binding
+in the future. Other plans include investigating the addition
+of other extensions, such as TclX, and a general extension facility.
+<P>
+TASH is the name of the interactive shell provided
+by this binding. It operates exactly as does the <TT><B><FONT FACE="Courier">tclsh</FONT></B></TT>
+program distributed with Tcl. The name TASH is also used in this
+paper to refer to the binding itself. 
+<H1>&quot;Thin&quot; binding</H1>
+<P>
+This binding attempts to provide a faithful interface
+to the Tcl C library as represented in the Tcl header file, &quot;<TT><B><FONT FACE="Courier">tcl.h</FONT></B></TT>.&quot;
+One significant difference is that many Tcl data structures are
+declared <TT><B><FONT FACE="Courier">private</FONT></B></TT>
+in the Ada version where they are not in C, although this appears
+to be the intention of the original design.
+<P>
+Figure 2 is an example of this style. It shows the
+interface, via pragma &quot;import,&quot; for creating a Tcl interpreter.
+<PRE>
+type Interp_Rec is private;
+type Interp_Ptr is access all Interp_Rec;
+function CreateInterp return Interp_Ptr;
+pragma Import (C, CreateInterp,
+   &quot;Tcl_CreateInterp&quot;);
+
+<CENTER>Figure 2
+</CENTER>
+</PRE>
+<P>
+Every Tcl function is implemented with a <TT><B><FONT FACE="Courier">pragma</FONT></B></TT>
+<TT><B><FONT FACE="Courier">Import</FONT></B></TT>
+interface. This will be referred to as the &quot;thin&quot; binding
+because it uses the C data types in all function arguments and
+return values.
+<H1>&quot;Thick&quot; binding</H1>
+<P>
+The CreateInterp function of Figure 2 is used in
+an Ada program as follows:
+<PRE>
+declare
+   Interp : Tcl.Interp_Ptr;
+begin
+   Interp := Tcl.CreateInterp;
+   ...
+end;
+</PRE>
+<P>
+This function may be used easily in conventional
+Ada programming styles. Use of other functions, such as Tcl.StringMatch,
+shown in Figure 3, might be considered awkward by an Ada programmer.
+<PRE>
+function StringMatch (
+   Str     : in C.Strings.Chars_Ptr;
+   Pattern : in C.Strings.Chars_Ptr)
+      return C.Int;
+pragma Import (C, StringMatch,
+   &quot;Tcl_StringMatch&quot;);
+-- Returns 1 if Str matches Pattern using
+-- glob-style rules for pattern matching,
+-- 0 otherwise.
+
+<CENTER>Figure 3
+</CENTER>
+</PRE>
+<P>
+This is because it requires the use of integer result
+codes in place of Booleans and exception handlers and does not
+work conveniently with the standard Ada string type. This is demonstrated
+in the following code which uses the StringMatch function to check
+whether the string &quot;tartar sauce&quot; contains the pattern
+&quot;tar:&quot;
+<PRE>
+declare
+   Result_Code : C.Int;
+begin
+   Result_Code := Tcl.StringMatch (
+      Str =&gt; New_String (&quot;tartar sauce&quot;),
+      Pattern =&gt; New_String (&quot;tar&quot;));
+end;
+</PRE>
+<P>
+To our dismay, however, we have a created a problem
+greater than writing Ada in a verbose C style: memory leakage.
+Without automatic garbage collection (rare in Ada environments),
+the code above may consume memory. One solution is to declare
+the strings as accessible variables and free them explicitly:
+<PRE>
+declare
+   Str : Chars_Ptr := New_String (
+      &quot;tartar sauce&quot;);
+   Pat : Chars_Ptr := New_String (&quot;tar&quot;);
+   Result_Code : C.Int;
+begin
+   Result_Code := Tcl.StringMatch (
+      Str, Pat);
+   Free (Str);
+   Free (Pat);
+end;
+</PRE>
+<P>
+Any good programmer is far too lazy to write code
+in this verbose manner! Our Ada/Tcl binding, through the &quot;magic&quot;
+of overloading, provides a reasonable set of additional subprograms
+for many of the primitive operations. Figure 4 shows those of
+StringMatch.
+<PRE>
+function StringMatch (
+   Str     : in C.Strings.Chars_Ptr;
+   Pattern : in C.Strings.Chars_Ptr)
+      return Boolean;
+function StringMatch (
+   Str     : in String;
+   Pattern : in C.Strings.Chars_Ptr)
+      return Boolean;
+function StringMatch (
+   Str     : in C.Strings.Chars_Ptr;
+   Pattern : in String) return Boolean;
+function StringMatch (
+   Str     : in String;
+   Pattern : in String) return Boolean;
+-- Returns True if Str matches Pattern
+-- using glob-style rules for pattern
+-- matching, False otherwise.
+
+<CENTER>Figure 4
+</CENTER>
+</PRE>
+<P>
+The purpose of the additional subprograms is to provide
+an interface which better reflects typical Ada usage. This includes
+the use of exceptions, standard Ada data types, procedure subprograms,
+default parameter values, and appropriate return types.
+<P>
+For small strings, such as variable names and values,
+the inefficiency of converting to a C string, then releasing its
+space, is minimal. Where it is not, the programmer has the choice
+to work in C strings directly. The combinations in input parameter
+types of standard Ada strings and C strings allows the programmer
+freedom to choose what is needed for each situation. Now, the
+search for &quot;tar&quot; can be coded as follows:
+<PRE>
+if Tcl.StringMatch (
+      &quot;tartar sauce&quot;, &quot;tar&quot;) then
+   Text_IO.Put_Line (&quot;tar found&quot;);
+end if;
+</PRE>
+<H1>More Thoughts on the &quot;Thin&quot; vs. &quot;Thick&quot;
+Binding</H1>
+<P>
+While building this interface, the author struggled
+for quite some time between a pure C interface (often called a
+&quot;thin&quot; binding) and a pure Ada interface (&quot;thick&quot;
+binding).
+<P>
+The first version was a simple &quot;thin&quot; binding.
+The resulting programming style was particularly unsatisfying
+as is demonstrated in the pervious section. More frustrating was
+the unavailability of the string handling functions for &quot;native&quot;
+strings in package Ada.Strings. The Interfaces.C package does
+not provide a similar set of functions for handling C strings.
+<P>
+The second version was a pure Ada interface, or &quot;thick&quot;
+binding. All the pragmas to C were hidden in the body of the package.
+The resulting programming style was more pleasing and convenient.
+However, the requirement to provide every feature of Tcl in a
+pure Ada binding proved very daunting with little apparent payback.
+For example, many Tcl capabilities are implemented with callbacks.
+It is essential that the subprogram called from Tcl have the correct
+specification, including the use of C data types.
+<P>
+At this point, other bindings, such as the POSIX
+Ada binding and several Ada bindings to the X Window System were
+reviewed for ideas. None of these offered a satisfactory solution
+for Tcl.
+<P>
+Finally, a compromise was reached in which both the
+&quot;thin&quot; and &quot;thick&quot; binding facilities were
+mixed in one package. Splitting these into two separate packages
+is feasible and may be desirable from a binding maintenance viewpoint.
+However, this makes the programmer's task of finding, selecting,
+and qualifying the needed features more difficult. Also, some
+of the overloaded subprograms provide mixtures of Ada and C data
+types. It is not clear whether these should go into the &quot;thin&quot;
+or &quot;thick&quot; layer as they have been defined here.
+<P>
+The string handling problem was resolved by writing
+a string handling package for the Interfaces.C.Strings.Chars_Ptr
+data type in the pattern of Ada.Strings.Unbounded. Although this
+package is not directly used in the Ada/Tcl binding, it is included
+with the distribution.
+<H1>Naming conventions</H1>
+<P>
+All names in the C interface which begin with &quot;Tcl_&quot;
+were changed to remove this prefix. This was done with the intention
+that the Ada programmer would use fully qualified names, thus
+reducing the redundancy of a call such as &quot;Tcl.Tcl_CreateInterp&quot;
+to simply &quot;Tcl.CreateInterp.&quot;
+<P>
+Although case is not significant in Ada, all identifiers
+are capitalized as in the C library to aid in reading and recognizing
+corresponding identifiers.
+<P>
+In cases where a C name is an Ada reserved word,
+the name was generally shortened, e.g. TCL_RETURN became Tcl.RETRN.
+<H1>Choosing subprogram variants</H1>
+<P>
+As mentioned before, many variants of the subprograms
+were added to make the binding more directly usable in an Ada
+program. These guidelines were used in deciding where this was
+appropriate:
+<P>
+1) Add procedures where the original subprogram is
+a function and the return value is actually a completion code.
+This corresponds to common usage in C where a function is used
+as a procedure. In Ada, we can raise an exception where an error
+occurs. All such procedures in this binding raise the Tcl_Error
+exception when an error return code is returned from the Tcl function.
+<P>
+2) Replace C.Strings.Chars_Ptr input parameters with
+standard Ada string type. Where reasonable, also provide combinations
+of Chars_Ptr and String. The implementation of such subprograms
+takes care of converting String to Chars_Ptr and freeing them
+after use to prevent memory leaks.
+<P>
+3) Replace C.Strings.Chars_Ptr in function return
+types with standard Ada string type and handle all necessary conversions
+and memory management.
+<P>
+4) Replace use of pointers in C functions with &quot;out&quot;,
+&quot;in out&quot;, or &quot;access&quot; mode parameters where
+appropriate.
+<P>
+5) Replace C.Int in function return types with Boolean
+where appropriate.
+<P>
+6) <B>Don't</B> replace C.Int in function
+return types where an integer return value is appropriate. This
+minimizes the combinations of subprogram variants without great
+sacrifice of speed or readability in the caller.
+<H1>Client Data</H1>
+<P>
+The Tcl library uses a common technique for passing
+private types to C functions:
+<PRE>
+typedef void *ClientData;
+</PRE>
+<P>
+Unfortunately, the compiler can provide no assistance
+in verifying consistent data type usage across function calls
+which should operate on the same data type.
+<P>
+This Ada/Tcl binding takes advantage of Ada generics
+to provide type consistency. Use of a tagged type with a common
+ancestor was rejected as it seemed unnecessary and would have
+required coupling of potentially very different data types.
+<P>
+To reduce the number of necessary instantiations,
+related functions using the same data type are collected in packages.
+The &quot;man&quot; pages in the Tcl distribution were used as
+guidelines to determine how to classify the ClientData functions.
+Figures 5 and 6 show an example of this: a subset of the C function
+prototypes (macros are incomplete) and Ada generic specification
+for hash table handling.
+<PRE>
+EXTERN void Tcl_InitHashTable _ANSI_ARGS_((
+   Tcl_HashTable *tablePtr, int keyType));
+
+EXTERN void Tcl_DeleteHashTable _ANSI_ARGS_
+   ((Tcl_HashTable *tablePtr));
+
+#define Tcl_CreateHashEntry(\
+   tablePtr, key, newPtr)
+
+#define Tcl_GetHashValue(h)
+
+#define Tcl_SetHashValue(h, value)
+
+
+<CENTER>Figure 5
+</CENTER>
+</PRE>
+<H1>Variable-length Argument Lists</H1>
+<P>
+Variable-length argument lists are used in the Tcl
+library primarily to pass one or more strings to be made into
+a proper list or to construct a larger string. Since all Tcl variables
+are stored as strings, it is not necessary to pass lists of mixed
+data types as is required to implement an interface to &quot;printf.&quot;
+<PRE>
+procedure InitHashTable (
+   tablePtr : in HashTable_Ptr;
+   keyType  : in C.Int);
+pragma Import (C, InitHashTable,
+   &quot;Tcl_InitHashTable&quot;);
+
+procedure DeleteHashTable (
+   tablePtr : in HashTable_Ptr);
+pragma Import (C, DeleteHashTable,
+   &quot;Tcl_DeleteHashTable&quot;);
+
+function CreateHashEntry (
+   tablePtr : in HashTable_Ptr;
+   Key      : in C.Strings.Chars_Ptr;
+   NewPtr   : in C_Aux.Int_Ptr) return
+      HashEntry_Ptr;
+pragma Inline (CreateHashEntry);
+
+function GetHashValue (
+   EntryPtr : in HashEntry_Ptr) return
+      ClientData_Ptr;
+pragma Inline (GetHashValue);
+
+procedure SetHashValue (
+   EntryPtr : in HashEntry_Ptr;
+   Value    : in ClientData_Ptr);
+pragma Inline (SetHashValue);
+
+
+<CENTER>Figure 6
+</CENTER>
+</PRE>
+<P>
+Thus, it was not considered necessary to implement
+a general-purpose interface to C &quot;varargs&quot; as described
+in [1] in order to pass arguments of different data types. This
+capability is being considered as a future addition, but for now,
+it appears to be adequate to simply provide a function interface
+which may take many arguments as shown in Figure 7. The body of
+these subprograms adds a tenth string argument, guaranteed to
+be a CS.Null_Ptr before calling the C function. This allows the
+programmer to utilize all 9 of the String arguments.
+<PRE>
+package CS renames Interfaces.C.Strings;
+<FONT FACE="Courier New">procedure AppendResult (
+ interp  : in Interp_Ptr;
+ String1 : in CS.Chars_Ptr;
+ String2 : in CS.Chars_Ptr := CS.Null_Ptr;
+ String3 : in CS.Chars_Ptr := CS.Null_Ptr;
+ String4 : in CS.Chars_Ptr := CS.Null_Ptr;
+ String5 : in CS.Chars_Ptr := CS.Null_Ptr;
+ String6 : in CS.Chars_Ptr := CS.Null_Ptr;
+ String7 : in CS.Chars_Ptr := CS.Null_Ptr;
+ String8 : in CS.Chars_Ptr := CS.Null_Ptr;
+ String9 : in CS.Chars_Ptr := CS.Null_Ptr);
+
+</FONT><CENTER>Figure 7
+</CENTER>
+</PRE>
+<H1>Accessibility checks</H1>
+<P>
+In developing the TASH main program in the same style
+as tclAppInit.c, accessibility check errors were encountered using
+the Access attribute to reference both variables and subprograms.
+Figure 8 shows the C version of the Tcl shell main program.
+<PRE>
+int Tcl_AppInit(Tcl_Interp *interp);
+<FONT FACE="Courier New">int main(argc, argv)
+   int argc;
+   char **argv;
+{
+   Tcl_Main(argc, argv, Tcl_AppInit);
+   return 0;
+}
+
+</FONT><CENTER>Figure 8
+</CENTER>
+</PRE>
+<P>
+When attempting to duplicate the C model in Ada,
+the code in Figure 9 was produced. However, both uses of the Access
+attribute in the call to Tcl.Main cause accessibility errors because
+both Argv and AppInit are declared at a deeper accessibility level
+than are C.Int and Tcl.AppInitProc_Ptr.
+<PRE>
+procedure tash is
+<FONT FACE="Courier New">   Argc : C.Int := C.Int (
+      Ada.Command_Line.Argument_Count) + 1;
+   Argv : C_Aux.Arg_Vector(1..Argc);
+   function AppInit (
+         Interp : in Tcl.Interp_Ptr)
+      return C.Int;
+begin -- tash
+   C_Aux.Get_Argv (Argv);
+   Tcl.Main (Argc,
+      Argv(Argv'first)'access,
+      AppInit'access);
+end tash;
+
+</FONT><CENTER>Figure 9
+</CENTER>
+</PRE>
+<P>
+Knowing that Argv will not go out of scope before
+completion of its use in Tcl.Main allows us to change the Access
+attribute referencing it to Unchecked_Access. Unfortunately, no
+equivalent to Unchecked_Access is available for subprogram references.
+Since Tcl.AppInitProc_Ptr is declared at library level, so must
+AppInit. Thus, the package TashApp was created to declare AppInit
+and so this package and the main program, TASH, together make
+up the Ada version of tclAppInit.c. This is shown in Figure 10.
+<H1>Callbacks</H1>
+<P>
+Tcl uses callbacks extensively. These are defined
+as pointer to function typedefs in the C Tcl public interface
+(<TT><B><FONT FACE="Courier">tcl.h</FONT></B></TT>),
+for example:
+<PRE>
+typedef int (Tcl_AppInitProc)
+   _ANSI_ARGS_((Tcl_Interp *interp));
+</PRE>
+<P>
+This example defines the interface to a function,
+to be provided by the user, which performs the application-specific
+initialization.
+<PRE>
+package TashApp is
+   function Init (
+         Interp : in Tcl.Interp_Ptr)
+      return C.Int;
+   pragma Convention (C, Init);
+end TashApp;
+
+-----------------------------------------
+
+with TashApp;
+
+procedure tash is
+
+   Argc : C.Int := C.Int (
+      Ada.Command_Line.Argument_Count) + 1;
+   Argv : C_Aux.Arg_Vector(1..Argc);
+
+begin -- tash
+   C_Aux.Get_Argv (Argv);
+   Tcl.Main (Argc,
+      Argv(Argv'first)'unchecked_access,
+      TashApp.Init'access);
+end tash;
+
+<CENTER>Figure 10
+</CENTER>
+</PRE>
+<P>
+This design has been faithfully duplicated in the
+Ada binding by the use of the Ada 95 access to subprogram capability:
+<PRE>
+type AppInitProc_Ptr is access function (
+   Interp : in Interp_Ptr) return C.Int;
+pragma Convention (C, AppInitProc_Ptr);
+</PRE>
+<P>
+The Ada subprogram used to initialize the TASH Tcl
+interpreter for this situation is shown in Figure 11. 
+<PRE>
+function Init (Interp : in Tcl.Interp_Ptr)
+   return C.Int is
+<FONT FACE="Courier New">begin -- Init
+   if Tcl.Init(interp) = Tcl.ERROR then
+      return Tcl.ERROR;
+   end if;
+   Tcl.SetVar(interp, &quot;tcl_rcFileName&quot;,
+      &quot;~/.tashrc&quot;, Tcl.GLOBAL_ONLY);
+   return Tcl.OK;
+end Init;
+
+</FONT><CENTER>Figure 11
+</CENTER>
+</PRE>
+<P>
+This actual subprogram would be passed to a Tcl function
+as follows:
+<PRE>
+Tcl.Main (Argc,
+   Argv(Argv'first)'unchecked_access,
+   Init'access);
+</PRE>
+<H1>TWASH: Tcl Windowing Ada SHell</H1>
+<P>
+TWASH is a version of the TASH program which adds
+the Tk extension. Although it does not provide an Ada binding
+to Tk, it does allow a Tcl/Tk procedure to be written in Ada.
+Future plans for this Tcl/Tk binding include providing the capability
+to use Tk directly from Ada code, similar to the way the <TT><B><FONT FACE="Courier">freq</FONT></B></TT>
+program of Appendix B uses Tcl.
+<H1>Colorado Adatcl</H1>
+<P>
+The University of Colorado's Arcadia project
+[3] has implemented Adatcl [4], an Ada binding to Tcl. Adatcl
+predates TASH, but has had little influence other than to motivate
+work on a more complete binding. This section describes the differences
+between Adatcl and TASH.
+<P>
+Adatcl provides a mutex feature which serializes
+calls to the Tcl C library. TASH does not. It is clear that this
+will be necessary if Tcl calls will be made from multiple tasks.
+This might be especially useful in a situation where multiple
+Tcl interpreters are needed. This capability has been postponed
+for a future enhancement.
+<P>
+TASH was built from the ground up for Ada 95 and
+is not based on an earlier Ada 83 version. It should be more portable
+than Adatcl because it takes better advantage of new features
+in Ada 95. See the section on Ada 95 features used in this binding
+for specifics.
+<P>
+TASH is a more complete implementation. It includes
+all public Tcl C functions declared in <TT><B><FONT FACE="Courier">tcl.h</FONT></B></TT>
+and is based on the latest tcl7.5a2 version.
+<P>
+TASH uses generics to implement ClientData so that
+an Ada programmer need not use the address attribute or unchecked
+conversion to manipulate data in hash tables et. al. See the Client
+Data section for more details. 
+<P>
+TASH provides both a &quot;thin&quot; C-style binding
+as well as an Ada programmer-friendly &quot;thick&quot; binding.
+<H1>Tasking not used</H1>
+<P>
+The Colorado Adatcl uses a mutex semaphore to serialize
+Ada calls to C functions. This prevents potential problems which
+may occur as a result of interrupting calls to malloc. 
+<P>
+The TASH binding does nothing special to protect
+calls to C functions. This may be a problem when the binding is
+called from more than one task. A future release will use protected
+types to address this issue.
+<H1>Ada 95 features used</H1>
+<P>
+Most obvious among the Ada 95 features used was the
+Interfaces.C family of packages. These packages provide C-compatible
+data types for int, char *, and many others.
+<P>
+Pragma Import provides the capability to call a non-Ada
+subprogram while assuring compatible argument passing conventions
+and exerting control over the external name and the link name.
+This was used to interface to all functions in the Tcl library.
+<P>
+Pragma Convention was used to implement function
+pointer typedefs as subprogram access types for callbacks from
+C to Ada. It was also used to assure compatible record and array
+layout.
+<P>
+Access to subprograms was used for implementing function
+pointer typedefs.
+<P>
+Access to named objects was used for passing arguments
+to C functions which require pointers to named objects.
+<P>
+Altogether, the availability of these features in
+Ada 95 promise to make this binding more portable than one done
+in Ada 83.
+<P>
+No object-oriented features were used since Tcl is
+not an object-oriented system.
+<H1>Testing</H1>
+<P>
+Comprehensive testing of this binding has not yet
+been completed.
+<P>
+All examples in [2], chapters 30 through 32.2 have
+been implemented in package TestApp (included in the TASH software
+distribution) and successfully tested. This includes <I>eq</I>,
+<I>concat</I>, <I>list</I>, <I>sum</I>, and <I>expr </I>commands
+and an object-oriented counter.
+<P>
+The test scripts in the Tcl distribution were executed
+successfully except those which require the additional implementation
+of the commands in tclTest.c.
+<P>
+Future testing plans include implementation of an
+Ada version of tclTest.c, completion of all examples in [2] as
+well as testing of all other functions in the binding not already
+covered.
+<H1>Sample programs</H1>
+<P>
+One goal of TASH is to allow Ada to be used in place
+of C to implement Tcl commands. Appendix A contains a complete
+example extracted from the test software included with the TASH
+distribution. This program implements one Tcl command in Ada:
+the eq command defined in [2], section 30.2.
+<P>
+The second goal of TASH is to make the Tcl library
+functions available for use in Ada programs in which use of Tcl
+as a scripting language is not necessarily a requirement but where
+such features as string and list handling, regular expression
+matching, and hash tables is needed. Appendix B contains a complete
+Ada program which implements the <TT><FONT FACE="Courier">freq</FONT></TT>
+script of Figure 1 by using Tcl library functions.
+<H1>How to get and install TASH</H1>
+<P>
+Get TASH via anonymous ftp from <TT><B><FONT FACE="Courier">ocsystems.com</FONT></B></TT>.
+It is the file, <TT><B><FONT FACE="Courier">tash1.1b1.tar.gz</FONT></B></TT>
+in the directory, <TT><B><FONT FACE="Courier">/xada/tash</FONT></B></TT>.
+<P>
+Uncompress and extract it from the tar archive:
+<PRE>
+gzcat tash1.1b1.tar.gz | tar xvf -
+</PRE>
+<P>
+Then, follow these steps to build and test it:
+<P>
+1. Modify the file, &quot;<TT><B><FONT FACE="Courier">makefile.common</FONT></B></TT>&quot;
+in the <TT><B><FONT FACE="Courier">tash1.1b1</FONT></B></TT>
+directory to reference the correct location of your local Tcl
+C library, <TT><B><FONT FACE="Courier">libtcl.a</FONT></B></TT>.
+<P>
+2. Type &quot;<TT><B><FONT FACE="Courier">make</FONT></B></TT>&quot;
+in the <TT><B><FONT FACE="Courier">tash1.1b1</FONT></B></TT>
+directory. This executes a make in each of three subdirectories
+to build the Ada/Tcl interface, the Tcl Ada Shell program, <TT><B><FONT FACE="Courier">tash</FONT></B></TT>,
+the <TT><B><FONT FACE="Courier">freq</FONT></B></TT>
+demo program, and a test program.
+<P>
+3. Test that the system was correctly built by changing
+to the <TT><B><FONT FACE="Courier">tash1.1b1/test</FONT></B></TT>
+directory and executing &quot;<TT><B><FONT FACE="Courier">make
+test</FONT></B></TT>.&quot;
+<P>
+4. Try the <TT><B><FONT FACE="Courier">freq</FONT></B></TT>
+demo by executing &quot;<TT><B><FONT FACE="Courier">make
+test</FONT></B></TT>&quot; in the <TT><B><FONT FACE="Courier">tash1.1b1/demos</FONT></B></TT>
+directory. To compare the execution time of Tcl versus Ada <TT><B><FONT FACE="Courier">freq</FONT></B></TT>,
+execute &quot;<TT><B><FONT FACE="Courier">make time</FONT></B></TT>.&quot;
+<H1>Future plans</H1>
+<P>
+Plans for the immediate future are to:
+<ul>
+<li> finish implementation of Tcl command procedure
+examples from [2].
+<P>
+<li> implement Ada version of tclTest.c. This program
+is included with the Tcl distribution; it contains extra Tcl command
+procedures for testing Tcl's C interfaces.
+<P>
+<li> perform comprehensive testing of all subprograms
+in Ada/Tcl interface package.
+</ul>
+<P>
+Additional plans include preparation of Ada interfaces
+for the Tk and TclX extensions and usage of protected types to
+access multiple interpreters and serialize calls to C code.
+<H1>References</H1>
+<P>
+1. Gart, M., Interfacing Ada to C &ntilde; Solutions
+to Four Problems, <I>TriAda '95 Proceedings</I>, ACM Press, New
+York, N.Y., 1995.
+<P>
+2. Ousterhout, J., <I>Tcl and the Tk Toolkit</I>,
+Addison-Wesley, Reading, Mass, 1994.
+<P>
+3. Arcadia Project, University of Colorado, http://www.cs.colorado.edu/homes/arcadia/public_html/.
+<P>
+4. Adatcl7.3, Arcadia Project, University of Colorado,
+http://www.cs.colorado.edu/~arcadia/Software/adatcl.html.
+<P>
+5. Wall, Larry and Schwartz, Randy L., <I>Programming
+Perl</I>, O'Reilly &amp; Associates, Sebastopol, CA, 1991.
+<P>
+<B>Appendix A </B>
+<P>
+The following code defines a full Tcl application
+which contains one new Tcl command, &quot;eq.&quot; The package,
+TestApp, contains the Ada code of the new Tcl command as well
+as the required application-specific Tcl initialization function,
+Init.
+<PRE>
+with Interfaces.C;
+with Tcl;
+
+package TestApp is
+
+   package C renames Interfaces.C;
+
+   function Init (
+         Interp : in Tcl.Interp_Ptr)
+      return C.Int;
+   pragma Convention (C, Init);
+
+end TestApp;
+
+-------------------------------------------
+
+with Ada.Strings.Fixed;
+with C_Aux;
+with Text_IO;
+with Unchecked_Deallocation;
+
+package body TestApp is
+
+   function &quot;+&quot; (Left, Right : in C.Int)
+      return C.Int   renames C.&quot;+&quot;;
+   function &quot;=&quot; (Left, Right : in C.Int)
+      return Boolean renames C.&quot;=&quot;;
+   function &quot;=&quot; (
+      Left, Right : in C.Strings.Chars_Ptr)
+      return Boolean renames C_Aux.&quot;=&quot;;
+
+   package CreateCommands is new
+      Tcl.Generic_CreateCommands (Integer);
+
+   function EqCmd (
+      ClientData : in Integer;
+      Interp     : in Tcl.Interp_Ptr;
+      Argc       : in C.Int;
+      Argv       : in C_Aux.Chars_Ptr_Ptr)
+         return C.Int is
+
+   -- Compares two arguments for equality
+   -- using string comparision.
+   -- Returns 1 if equal, 0 if not.
+
+      Vector : C_Aux.Arg_Vector (1..Argc);
+   begin -- EqCmd
+      if Argc /= 3 then
+         Tcl.SetResult (
+            Interp, &quot;wrong # args&quot;);
+         return Tcl.ERROR;
+      end if;
+      Vector := C_Aux.Argv.Value (
+         Argv, C.Ptrdiff_t(Argc));
+      if Vector(Vector'first+1) =
+            Vector(Vector'first+2)) then
+         Tcl.SetResult (Interp, &quot;1&quot;);
+      else
+         Tcl.SetResult (Interp, &quot;0&quot;);
+      end if;
+      return Tcl.OK;
+   end EqCmd;
+   pragma Convention (C, EqCmd);
+
+   function Init (
+      Interp : in Tcl.Interp_Ptr)
+      return C.Int is
+   begin -- Init
+      if Tcl.Init(interp) = Tcl.ERROR then
+         return Tcl.ERROR;
+      end if;
+      CreateCommands.CreateCommand (
+         interp, &quot;eq&quot;, EqCmd'access,
+         0, NULL);
+      Tcl.SetVar(interp, &quot;tcl_rcFileName&quot;,
+         &quot;~/.tashrc&quot;, Tcl.GLOBAL_ONLY);
+      return Tcl.OK;
+   end Init;
+
+end TestApp;
+
+-------------------------------------------
+
+with Ada.Command_Line;
+with C_Aux;
+with Interfaces.C.Strings;
+with Tcl;
+with TestApp;
+
+procedure TaShTest is -- Tcl Ada SHell Test
+
+   package C renames Interfaces.C;
+
+   function &quot;+&quot; (Left, Right : in C.Int)
+      return C.Int renames C.&quot;+&quot;;
+
+   Argc : C.Int := C.Int (
+      Ada.Command_Line.Argument_Count) + 1;
+   Argv : C_Aux.Arg_Vector(1..Argc);
+
+begin -- TaShTest
+
+   -- Get command-line arguments and put
+   -- them into C-style &quot;argv,&quot; as required
+   -- by Tcl.Main.
+   C_Aux.Get_Argv (Argv);
+
+   -- Start Tcl
+   Tcl.Main (Argc,
+      Argv(Argv'first)'unchecked_access,
+      TestApp.Init'access);
+
+end TaShTest;
+</PRE>
+<P>
+<B>Appendix B</B>
+<P>
+The following code is a complete Ada program which
+implements the <TT><FONT FACE="Courier">freq</FONT></TT>
+script of Figure 1 by using Tcl library functions. In this case,
+there is no need to create a Tcl interpreter since none of the
+Tcl library functions used require it. The Ada version is approximately
+75 lines of code while the Tcl version is 10. The extra effort
+of recoding into Ada yields a 10 to 1 improvement in speed using
+GNAT 2.07 on a Sun Sparc2 with SunOS 4.1.3.
+<PRE>
+with C_Aux;
+with Interfaces.C.Strings;
+with Tcl;
+with Text_IO;
+
+procedure Freq is -- Frequency counter
+
+   package C renames Interfaces.C;
+
+   function &quot;=&quot; (Left, Right : in
+      Tcl.Integer_Hash.HashEntry_Ptr)
+      return Boolean renames
+      Tcl.Integer_Hash.&quot;=&quot;;
+   function &quot;=&quot; (Left, Right : in C.Int)
+      return Boolean renames C.&quot;=&quot;;
+
+   Line         : C.Strings.Chars_Ptr;
+   Freq_Count   : Integer;
+   Item         : C.Strings.Chars_Ptr;
+   Freq_Hash    : aliased
+      Tcl.Integer_Hash.HashTable_Rec;
+   Entry_Ptr    :
+      Tcl.Integer_Hash.HashEntry_Ptr;
+   Is_New_Entry : aliased C.Int;
+   Search       : aliased
+      Tcl.Integer_Hash.HashSearch_Rec;
+
+   procedure Get_Line (
+      Line : in out C.Strings.Chars_Ptr) is
+   -- This procedure gets a line from
+   -- standard input and converts it to a
+   -- &quot;C&quot; string.
+      Input_Line : String (1..1024);
+      Length     : Natural;
+   begin -- Get_Line
+      Text_IO.Get_Line (
+         Input_Line, Length);
+      C.Strings.Free (Line);
+      Line := C.Strings.New_String (
+         Input_Line (1..Length));
+   end Get_Line;
+
+begin -- Freq
+
+   -- create a hash table for holding
+   -- frequency counts
+   Tcl.Integer_Hash.InitHashTable (
+      Freq_Hash'unchecked_access,
+      Tcl.STRING_KEYS);
+
+   -- read lines from standard input until
+   -- end of file encountered
+   while not Text_IO.End_of_File loop
+      Get_Line (Line);
+      -- create (or find, if already
+      -- created) an entry for this line
+      Entry_Ptr :=
+         Tcl.Integer_Hash.CreateHashEntry (
+            Freq_Hash'unchecked_access,
+            Line,
+            Is_New_Entry'unchecked_access);
+      if Is_New_Entry = 1 then
+         Freq_Count := 1;
+      else
+         -- get the frequency count from
+         -- the hash
+         Freq_Count :=
+            Tcl.Integer_Hash.GetHashValue (
+               Entry_Ptr) + 1;
+      end if;
+      -- Store the updated frequency count
+      -- in the table.
+      -- WARNING: We take advantage of the
+      -- fact that an integer is the same
+      -- size as a C pointer and store the
+      -- count in the table, rather than a
+      -- pointer to it.
+      Tcl.Integer_Hash.SetHashValue (
+         Entry_Ptr, Freq_Count);
+   end loop;
+
+   -- iterate through every item and print
+   -- it and its frequency count
+   Entry_Ptr :=
+      Tcl.Integer_Hash.FirstHashEntry (
+         Freq_Hash'unchecked_access,
+         Search'unchecked_access);
+   while Entry_Ptr /= Null loop
+      Freq_Count :=
+         Tcl.Integer_Hash.GetHashValue (
+            Entry_Ptr);
+      Item := Tcl.Integer_Hash.GetHashKey (
+         Freq_Hash'unchecked_access,
+         Entry_Ptr);
+      Text_IO.Put_Line (C_Aux.Value (Item)
+         &amp; Integer'image (Freq_Count));
+      Entry_Ptr  :=
+         Tcl.Integer_Hash.NextHashEntry (
+            Search'unchecked_access);
+   end loop;
+
+   -- delete the frequency counter
+   -- hash table
+   Tcl.Integer_Hash.DeleteHashTable (
+      Freq_Hash'unchecked_access);
+
+end Freq;
+</PRE>
+</BODY>
+</HTML>
