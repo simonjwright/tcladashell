@@ -1,0 +1,129 @@
+%UNIT NAME
+TASH
+%VERSION
+8.0.0
+%REVIEW CODE
+NR
+%INET ADDRESS
+http://ocsystems.com/xada/tash/
+%AUTHOR
+Terry J. Westley
+TWestley@ACM.org
+http://www.buffnet.net/~westley/
+%RIGHTS
+Approved for Public Release; Distribution Unlimited
+%COPYRIGHT
+Copyright (c) 1987-1994 The Regents of the University of California.
+Copyright (c) 1994-1997 Sun Microsystems, Inc.
+Copyright (c) 1995-1997 Terry J. Westley
+%DATE CREATED
+16-Sep-97
+%DATE RELEASED
+16-Sep-97
+%DATE LAST UPDATED
+16-Sep-97
+%LOCATION
+XAda site at OC Systems, Inc. (http://ocsystems.com/xada/tash/)
+PAL
+%ENVIRONMENT
+Any environment that has an Ada 95 compiler and for which a binary
+or source distribution of Tcl/tk version 8.0 is available.  Has been
+tested with Solaris 2.5.1/GNAT 3.09 and Windows95/GNAT 3.09.
+%LIMITATIONS
+Requires Ada 95 compiler and
+binary or source distribution of Tcl/Tk version 8.0.
+%=CLASSIFICATION
+%CATEGORY LEVEL 1
+<I fill this in>
+%CATEGORY LEVEL 2
+<I fill this in>
+%CATEGORY LEVEL 3
+<I fill this in>
+%CATEGORY LEVEL 4
+<I fill this in>
+%KEYWORD
+Tcl/Tk binding
+TASH
+platform-independent graphical user interface toolkit
+%INDEX
+<I fill this in>
+%TAXONOMY
+<I fill this in>
+%DEPENDENCIES
+Requires Ada 95 compiler and
+binary or source distribution of Tcl/Tk version 8.0.
+%SEE ALSO
+Get more information on Tcl/Tk at http://sunscript.sun.com/.
+Get more information on GNAT at
+http://www.adahome.com/Resources/Compilers/GNAT.html and
+http://www.gnat.com.
+%SHORT DESCRIPTION
+TASH is the implementation of a binding to Tcl/Tk from Ada. Its
+purpose is to
+
+- allow a Tcl program to use Ada in place of C to implement Tcl
+  commands where additional execution speed, more complex data
+  structures, or better name space management is needed, and
+
+- make the Tcl library functions available to an Ada program. These
+  include string and list handling, regular expression matching, hash
+  tables, and rapid development of Platform-Independent Graphical User
+  Interfaces via Tk.
+%=FILE LISTING
+%FILE SPECS
+<I fill this in>
+%DIRECTORY DISPLAY
+<I fill this in>
+%=ABSTRACT
+TASH is the implementation of a binding to Tcl/Tk from Ada. Its
+purpose is to
+
+- allow a Tcl program to use Ada in place of C to implement Tcl
+  commands where additional execution speed, more complex data
+  structures, or better name space management is needed, and
+
+- make the Tcl library functions available to an Ada program. These
+  include string and list handling, regular expression matching, hash
+  tables, and rapid development of Platform-Independent Graphical User
+  Interfaces via Tk.
+%=REVISION HISTORY
+Date        Version   Comment
+----        -------   -------
+16-Sep-97   8.0.0     Upgrade to Tcl/Tk version 8.0
+16-Sep-97   7.6.1     First Windows 95 version
+25-Nov-96   7.6.0     Upgrade to Tcl version 7.6 and Tk version 4.2
+23-Apr-96   1.1b1     First support for Tk
+            1.0b1     First public release
+%=RELEASE NOTICE
+This prologue must be included in all copies of this software.
+
+This software is copyrighted by the Regents of the University of
+California, Sun Microsystems, Inc., Terry J. Westley, and other
+parties.  The following terms apply to all files associated with the
+software unless explicitly disclaimed in individual files.
+
+The authors hereby grant permission to use, copy, modify, distribute,
+and license this software and its documentation for any purpose, provided
+that existing copyright notices are retained in all copies and that this
+notice is included verbatim in any distributions. No written agreement,
+license, or royalty fee is required for any of the authorized uses.
+Modifications to this software may be copyrighted by their authors
+and need not follow the licensing terms described here, provided that
+the new terms are clearly indicated on the first page of each file where
+they apply.
+
+RESTRICTED RIGHTS: Use, duplication or disclosure by the government
+is subject to the restrictions as set forth in subparagraph (c) (1) (ii)
+of the Rights in Technical Data and Computer Software Clause as DFARS
+252.227-7013 and FAR 52.227-19.
+%=DISCLAIMER
+	This software and its documentation are provided "AS IS" and
+without any expressed or implied warranties whatsoever.  No warranties
+as to performance, merchantability, or fitness for a particular
+purpose exist.
+	The user is advised to test the software thoroughly before
+relying on it.  The user must assume the entire risk and liability of
+using this software.  In no event shall any person or organization of
+people be held responsible for any direct, indirect, consequential or
+inconsequential damages or lost profits.
+%=

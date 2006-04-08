@@ -1,0 +1,292 @@
+<!-- Header; be sure to edit <head> description, keywords, and title.
+     It'd be nice if we could do this with an include file or macro.
+     Perhaps we can someday do this with an XML element or entity. -->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Final//EN">
+<html>
+<head>
+  <meta name="description" content="Introduction to TASH,
+    an Ada binding to Tcl/Tk.">
+  <meta name="keywords" content="introduction, TASH, Ada, binding, Tcl/Tk">
+  <TITLE>Introduction to TASH</TITLE>
+  <LINK REL="stylesheet" TYPE="text/css" HREF="tash.css">
+</head>
+
+<BODY>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <!-- Page Heading -->
+  <tr>
+    <td colspan="2"> <h1> &nbsp; </h1></td>
+    <td colspan="3"> <h1> T<span class="smallcap">CL</span>
+                          A<span class="smallcap">DA</span>
+                          SH<span class="smallcap">ELL</span>
+                     </h1></td>
+    </tr>
+  <tr>
+    <td colspan="2"> <h2> &nbsp; </h2></td>
+    <td colspan="3"> <h2> Introduction to TASH </h2></td>
+    </tr>
+
+  <!-- Body of Page (includes navigation and page content) -->
+  <tr>
+
+    <!-- Site Index (left column) -->
+    <td valign="top">
+      <div align=left class="nav">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <th> TASH </th>
+          </tr>
+        <tr>
+          <td> <a href="index.htm"> Home </a></td>
+          </tr>
+        <tr>
+          <td> <a href="tash.htm">Introduction&nbsp;to&nbsp;TASH</a></td>
+          </tr>
+        <tr>
+          <td> <A HREF="download.htm">Download&nbsp;Now</A></td>
+          </tr>
+        <tr>
+          <td> <a href="license.htm">TASH&nbsp;Software&nbsp;License</a></td>
+          </tr>
+        <tr>
+          <td> <A HREF="release.htm">Release&nbsp;Notes</A></td>
+          </tr>
+        <tr>
+          <td> <a href="docs/README.htm">Documentation Index</a></td>
+          </tr>
+        <tr>
+          <td> <a href="unix.htm">Install&nbsp;and&nbsp;Build&nbsp;Unix</a></td>
+          </tr>
+        <tr>
+          <td> <a href="windows.htm">Install&nbsp;and&nbsp;Build&nbsp;Windows</a></td>
+          </tr>
+        <tr>
+          <td> <a href="maillist.htm">Mailing&nbsp;List</a></td>
+          </tr>
+        <tr>
+          <th> Tcl/Tk</th>
+          </tr>
+        <tr>
+          <td> <a href="http://www.scriptics.com/">Scriptics&nbsp;Home</a></td>
+          </tr>
+        <tr>
+          <td> <a href="http://www.scriptics.com/scripting/scripting.html">
+               Scriptics&#146;&nbsp;Intro&nbsp;to&nbsp;Tcl/Tk</a></td>
+          </tr>
+        <tr>
+          <td> <A HREF="http://www.tclconsortium.org/">Tcl/Tk&nbsp;Consortium</A></td>
+          </tr>
+        <!--tr>
+          <td> Books</td>
+          </tr-->
+        <tr>
+          <th> Ada</th>
+          </tr>
+        <tr>
+          <td> <a href="http://www.adahome.com">Ada&nbsp;Home</a></td>
+          </tr>
+        <tr>
+          <td> <A HREF="http://www.adahome.com/FAQ/">
+               FAQ&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
+          </tr>
+        <tr>
+          <td> <A HREF="http://www.adahome.com/Tutorials/Lovelace/lovelace.html">
+               Tutorial&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
+          </tr>
+        <tr>
+          <td> <A HREF="http://www.acm.org/sigada/">ACM&nbsp;SIGAda</A></td>
+          </tr>
+        <!--tr>
+          <td> Books</td>
+          </tr-->
+      </table>
+      </div>
+      </td>
+    
+    <!-- Body text left margin -->
+    <td width="20"> &nbsp;
+
+    <!-- Body text -->
+    <td valign="top" colspan="2" width="535">            
+
+      <div align=left class="body">
+      
+<!-- Page content -->
+
+      <h3>TASH New Thick Binding</h3>
+
+      <p>With TASH version 8.2.0a, a preliminary version of a new thick binding
+      is being released. The purpose of this interface is to</p>
+      
+<ul>
+  <li>simplify and &quot;Ada-fy&quot;
+      the
+      capabilities of the Tcl scripting language,</li>
+  <li>make access to Tcl facilities task-safe, and</li>
+  <li>manage memory allocation of TASH (Tcl) objects.</li>
+</ul>
+      
+      <p>Some TASH users have been attracted to TASH because they are already
+      using Tcl/Tk and, like me, would like to use it from Ada or extend it
+      with Ada instead of C.  Many of those users are already familiar with
+      Tcl/Tk and its C interface made public in the header files <b>tcl.h</b>
+      and <b>tk.h</b>.</p>
+      
+      <p>Others seem not to care to learn the Tcl/Tk way of doing
+      things (such as how to create a new command, how to start and shut down a
+      Tcl interpreter), but would like to use the capabilities of Tcl/Tk such
+      as:</p>
+      
+      <ul>
+        <li> read and process text
+          files</li>
+        <li>perform regular expression pattern matching</li>
+        <li>manipulate files
+          and directories</li>
+        <li>use associative arrays</li>
+        <li>use C-style printf</li>
+        <li>develop platform-independent GUI programs</li>
+      </ul>
+      <p>In my case, I'd also like to be able to write programs in Ada for which I'd
+      normally use a scripting language such as Bourne, Perl, Tcl, or
+      awk.&nbsp; These languages typically provide built-in functions for
+      interacting with the operating system and reading and processing text
+      files at a much higher level than do compiled languages such as C and Ada.
+      PERL, after all, stands for <b>P</b>ractical <b>E</b>xtraction and <b>R</b>eport
+      <b>L</b>anguage.</p>
+      <p>Also, what I had formerly called the <i>thick</i> binding to Tcl was
+      not really a thick binding.&nbsp; It was merely a rehash of the thin
+      binding (a translation of the <b>tcl.h</b> header file to Ada) while using
+      Ada data types, exceptions, and generics, in place of C data types,
+      integer return codes, and Tcl ClientData type.</p>
+      <p>Prior to version 8.2.0a, TASH was not really taking advantage of the new Tcl object
+      system which debuted in Tcl version 8.0.&nbsp; The Tcl object system is a
+      very clever implementation of dual-ported and typed variables intended to
+      speed the execution of Tcl but yet be backwards compatible with the fact
+      that Tcl variables were all of string type.&nbsp; You can read more about it
+      in <a href="http://www.scriptics.com/software/8.0.html#What's New in Tcl 8.0">What's New in Tcl 8.0</a>.</p>
+      
+      <p>So, with the new thick binding, I have set out to implement Tcl/Tk
+      functionality in an Ada style. I've begun by implementing the various Tcl
+      data types: string, integer, float, and lists (arrays are in progress).</p>
+<p>An attempt was made to mimic predefined Ada packages where available.&nbsp;
+For example, compare <b>Ada.Strings</b> package with <b>Tash.Strings</b>.</p>
+      <p>Each of the TASH data types is a tagged, controlled type derived from the
+      abstract type Tash_Object.&nbsp; They are each implemented in a child
+      package of the top-level package, <b>Tash</b>.</p>
+      <p>Also, to promote simplicity of use, users of the
+      thick binding need not create and initialize a Tcl interpreter.&nbsp; This is
+      done automatically upon elaboration of the thick binding package.&nbsp; The interpreter itself is in the private part of the package <b>Tash</b>
+      and is in a protected type so that multiple tasks may freely call any Tash
+      operation.&nbsp; One limitation, of course, is that you can have only one
+      interpreter.&nbsp; But, I thought this a reasonable compromise in order to
+      simplify all the Tash calls by leaving out the interpreter parameter.</p>
+      <p>For a concrete example of using the new thick binding, see the <b>plang</b>
+      program in the <b>tash820a/apps</b> directory.</p>
+
+      <h3>Tcl Thin Binding</h3>
+
+      <p>TASH includes both C and Ada <i>thin</i> bindings to Tcl. The C thin
+      binding is a direct translation of the public Tcl interface,
+      <strong>tcl.h</strong>, and is implemented in the Ada packages, <b>Tcl.&nbsp;
+      </b>It includes all the definitions in <b>tcl.h</b>. Some of the
+      subprograms in <b>Tcl</b> require C data types as defined in <b>Interfaces.C</b>. 
+      The package, <b>Tcl.Ada,</b> provides an Ada thin binding.&nbsp; By that,
+      I mean that</p>
+      
+      <ul>
+      
+        <li>C data types are replaced with Ada types.  For example, <b>String</b>
+          is used in place of <b>Interfaces.C.Strings.Chars_Ptr</b>.</li>
+          
+        <li>The use of integer return codes to signify error is replaced with
+          use of exceptions.</li>
+          
+        <li>Certain generic packages are declared to implement Tcl <i>clientdata</i>
+          types.</li>
+          
+      </ul>
+      
+      <h3>The TASHELL Interpreter</h3>
+
+      <p>The Tcl distribution includes a Tcl shell interpreter, named
+      <strong>tclsh</strong>.  The TASH binding derives its name
+      from the Ada version of the Tcl shell interpreter:
+      <strong>T</strong>cl <strong>A</strong>da SHELL.
+      Just like <strong>tclsh</strong>, <strong>tashell</strong> reads
+      and interprets a Tcl script.  It is also a good starting point
+      for building a custom Tcl interpreter in which new Tcl commands
+      are implemented in Ada rather than C. </p>
+
+      <p>An early paper describing the rationale of the design of TASH is
+      available in several different formats in the
+      <a href="docs/README.htm#intro">docs</a> directory.</p>
+
+      <h3>Tk Thin Binding</h3>
+
+      <p>TASH also includes both <i>thin</i> and <i>thick</i> bindings to Tk.
+      The thin binding is a direct translation of the public Tk interface,
+      <strong>tk.h</strong>, and is implemented in the Ada package,
+      <b>Tcl.Tk</b>.</p>
+
+      <h3>Tk Thick Binding</h3>
+
+      <p>An early, experimental thick binding to Tk is provided in the Ada
+      package, <b>Tcl.Tk.Ada</b>.  This binding does not support all Tk
+      widgets and has not yet been upgraded to take advantage of the new
+      TASH thick binding or the Tcl object system.</p>
+
+      <h3>The TWASHELL Interpreter</h3>
+
+      <p>TWASHELL is the <strong>T</strong>cl <strong>W</strong>indowing
+      <strong>A</strong>da SHELL. It is the Ada
+      version of the Tcl/Tk <strong>wish</strong> program.  Just like
+      <strong>wish</strong>, it reads and interprets a Tcl/Tk
+      script. It is also a starting point for building a custom
+      Tcl/Tk interpreter in which new Tcl/Tk commands are implemented in
+      Ada rather than C.</p>
+
+      <p>An early paper describing how TWASH is a Platform-Independent
+      toolkit for development of Graphical User Interfaces is available in
+      several different formats in the
+      <a href="docs/README.htm#pigui">docs</a> directory.<p>
+
+<!-- Footer; wish we could do this with an include file. -->
+
+      </div>
+
+      </td>
+
+    <!-- Body text right margin -->
+    <td width="20"> &nbsp;</td>
+
+    </tr>
+
+  <!-- Signature -->
+  <tr class="sig">
+    <th> &nbsp; Author  </th>
+    <th> &nbsp;         </th>
+    <th> E-Mail Address </th>
+    <th> Last Revised   </th>
+    <th> &nbsp;         </th>
+    </tr>
+  <tr class="sig">
+    <td> &nbsp; Terry J. Westley </td>
+    <td> &nbsp;                  </td>
+    <td> <a href="mailto:twestley@buffalo.veridian.com">
+         twestley@buffalo.veridian.com</a> </td>
+    <td> <script language="JavaScript"><!--
+           // hide script code from old browsers
+           document.write(document.lastModified);
+           // end script hiding
+           // -->
+         </script> </td>
+    <td> &nbsp; </td>
+    </tr>
+</table>
+
+</body>
+</html>
