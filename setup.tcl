@@ -299,7 +299,7 @@ proc Set_Macros {platform os osVersion} {
       # Operating system}
    setvar OSVERSION         $osVersion {
       # Operating system version}
-   setvar TASH_VERSION      "8.3.2a" {
+   setvar TASH_VERSION      "8.4.1a" {
       # TASH version}
    setvar TASH_DIRECTORY    [file tail $pwd] {
       # Main TASH directory}

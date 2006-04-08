@@ -747,15 +747,15 @@ begin -- Test_File
                         Tash.Lists.To_Tash_List (".. tests test_file.txt"));
    Tash.Test.Test_Case (
       Description => "split a file name into its path components 4",
-      Result      => Tash.File.Split ("/tash/tash832a/tests/test_file.txt") =
+      Result      => Tash.File.Split ("/tash/tash834b/tests/test_file.txt") =
                         Tash.Lists.To_Tash_List (
-                        "/ tash tash832a tests test_file.txt"));
+                        "/ tash tash834b tests test_file.txt"));
 
    -- get tail of a file name
    --------------------------
    Tash.Test.Test_Case (
       Description => "get tail of a file name",
-      Result      => Tash.File.Tail ("C:/tash/tash832a/tests/test_file.txt") =
+      Result      => Tash.File.Tail ("C:/tash/tash834b/tests/test_file.txt") =
                         "test_file.txt");
    Tash.Test.Test_Case (
       Description => "get tail of a file name",
@@ -788,8 +788,8 @@ begin -- Test_File
       Tash.Test.Test_Case (
          Description => "get list of volumes on this computer",
          Result      => Tash.Lists.Slice (Tash.File.Volume, 1, 3) =
-                        Tash.Lists.To_Tash_List ("a:/ c:/ d:/"),
-         Failure_Msg => "Expected: ""a:/ c:/ d:/""  Got: """
+                        Tash.Lists.To_Tash_List ("A:/ C:/ D:/"),
+         Failure_Msg => "Expected: ""A:/ C:/ D:/""  Got: """
                         & Tash.Lists.To_String (
                           Tash.Lists.Slice (Tash.File.Volume, 1, 3))
                         & """");

@@ -362,10 +362,11 @@ package body Tash.File_IO is
       -- Get result from interpreter, convert to a
       -- TASH list and return it.
       ---------------------------------------------
-      Pid_List.Obj := Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
+      Tash.Tash_Object(Pid_List).Obj :=
+         Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
-      Tcl.Tcl_IncrRefCount (Pid_List.Obj);
+      Tcl.Tcl_IncrRefCount (Tash.Tash_Object(Pid_List).Obj);
       return Pid_List;
 
    end Pid;

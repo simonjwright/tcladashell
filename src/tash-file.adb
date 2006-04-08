@@ -1696,10 +1696,11 @@ package body Tash.File is
       -- Get result from interpreter, convert to a
       -- TASH list and return it.
       ---------------------------------------------
-      Path_List.Obj := Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
+      Tash.Tash_Object(Path_List).Obj :=
+         Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
-      Tcl.Tcl_IncrRefCount (Path_List.Obj);
+      Tcl.Tcl_IncrRefCount (Tash.Tash_Object(Path_List).Obj);
       return Path_List;
 
    end Split;
@@ -1816,10 +1817,11 @@ package body Tash.File is
       -- Get result from interpreter, convert to a
       -- TASH list and return it.
       ---------------------------------------------
-      Path_List.Obj := Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
+      Tash.Tash_Object(Path_List).Obj :=
+         Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
-      Tcl.Tcl_IncrRefCount (Path_List.Obj);
+      Tcl.Tcl_IncrRefCount (Tash.Tash_Object(Path_List).Obj);
       return Path_List;
 
    end Volume;
@@ -2000,10 +2002,11 @@ package body Tash.File is
          -- Get result from interpreter, convert to a
          -- TASH list and return it.
          ---------------------------------------------
-         File_List.Obj := Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
+         Tash.Tash_Object(File_List).Obj :=
+            Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
          Tcl.Tcl_ResetResult (Interp);
          Tash_Interp.Release (Interp);
-         Tcl.Tcl_IncrRefCount (File_List.Obj);
+         Tcl.Tcl_IncrRefCount (Tash.Tash_Object(File_List).Obj);
          return File_List;
 
       end;

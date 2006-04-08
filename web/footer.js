@@ -6,7 +6,15 @@
 //
 //------------------------------------------------------------
 
-var output = "";
+var output  = "";
+
+// Disguise email address
+//-----------------------
+var first   = 'ma';
+var second  = 'il';
+var third   = 'to:';
+var address = '&#116;&#119;&#101;&#115;&#116;&#108;&#101;&#121;';
+var domain  = '&#97;&#100;&#97;&#116;&#99;&#108;&#46;&#99;&#111;&#109;';
 
 output += "      <br>\n";
 output += "      </div>\n";
@@ -24,8 +32,16 @@ output += "    </tr>\n";
 output += "  <tr class='sig'>\n";
 output += "    <td> &nbsp; Terry J. Westley </td>\n";
 output += "    <td> &nbsp;                  </td>\n";
-output += "    <td> <a href='mailto:twestley@adatcl.com'>\n";
-output += "         twestley@adatcl.com</a> </td>\n";
+output += '    <td> <a href="';
+output += first+second+third;
+output += address;
+output += '&#64;';
+output += domain;
+output += '">&nbsp;';
+output += address;
+output += '&#64;';
+output += domain;
+output += '<\/a></td>\n';
 output += "    <td> " + document.lastModified + " </td>\n";
 output += "    <td> &nbsp; </td>\n";
 output += "    </tr>\n";

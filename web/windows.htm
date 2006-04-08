@@ -7,7 +7,6 @@
         Ada, binding, Tcl/Tk">
   <TITLE>Install and Build Windows TASH</TITLE>
   <LINK REL="stylesheet" TYPE="text/css" HREF="tash.css">
-  <SCRIPT LANGUAGE="JavaScript1.2" SRC="inithiermenu.js" TYPE="text/javascript"></SCRIPT>
 </head>
 
 <BODY>
@@ -31,47 +30,45 @@
 <tr>
 
   <!-- Site Index (left column) -->
-  <td valign="top" width="104">
+  <td valign="top">
     <SCRIPT LANGUAGE='JavaScript' SRC='siteindex.js'></SCRIPT>
-    <SCRIPT LANGUAGE='JavaScript' SRC='chaser.js'></SCRIPT>
     </td>
     
   <!-- Body text left margin -->
   <td width="20"> &nbsp;
 
   <!-- Body text -->
-  <td valign="top" colspan="2" width="535">            
+  <td valign="top" colspan="2">
 
 <div align=left class="body">
       
 <!-- Page content -->
 
-<p>TASH is developed on a 200 MHz PC (64MB RAM) running Windows 98 and
-GNAT 3.12p. It has also been tested with GNAT 3.12p in the following
+<p>TASH is developed on a 600 MHz Celeron PC (192MB RAM) running Windows XP and
+GNAT 3.15p. It has also been tested with GNAT 3.15p in the following
 environments:</p>
 
 <ul>
-  <li> Sun/SPARC with Solaris 2.5.1</li>
-  <li> Red Hat Linux 6.2</li>
-  <li> Windows NT 4.0</li>
+  <li> Sun/SPARC with Solaris 8</li>
 </ul>
 
-<P>The fact that TASH can run in so many environments is a tribute
-primarily to the portability of Ada and Tcl/Tk.</P>
+<!--P>The fact that TASH can run in so many environments is a tribute
+primarily to the portability of Ada and Tcl/Tk.</P-->
 
 <h3>Get an Ada 95 Compiler</h3>
 
-<p>You will need an Ada 95 compiler to build TASH. A description
-of GNAT may be found at <a
-href="http://www.adahome.com/Resources/Compilers/GNAT.html">Ada
-Home</a> and the compiler is available via anonymous ftp from <a
-href="ftp://cs.nyu.edu/pub/gnat/">ftp://cs.nyu.edu/pub/gnat/</a> and
-its <a href="http://www.acm.org/sigada/resources/sources.html#GNAT">mirrors</a>.</p>
+<p>You will need an Ada 95 compiler to build TASH. A description of
+GNAT may be found at the <a href="http://libre.act-europe.fr/GNAT/">
+Libre Software</a> site and the compiler is available via anonymous
+ftp from <a href="ftp://cs.nyu.edu/pub/gnat/">
+ftp://cs.nyu.edu/pub/gnat/</a> and its <a
+href="http://www.acm.org/sigada/resources/sources.html#GNAT">
+mirrors</a>.</p>
 
 <h3>Get and Install Tcl/Tk</h3>
 
 <p>You will also need Tcl/Tk itself to build TASH.  The home page is
-<A HREF="http://dev.scriptics.com/">http://dev.scriptics.com/</A>.
+the <A HREF="http://www.tcl.tk/">Tcl Developer Xchange</A>.
 This provides additional information about Tcl/Tk and instructions on
 how to get and install it. Be sure to install, at a minimum, the
 binary installation along with the header files and libraries.</p>
@@ -79,16 +76,16 @@ binary installation along with the header files and libraries.</p>
 <h3>Get TASH</h3>
 
 <p>Download any one of
-<a href="http://www.adatcl.com/download/tash832a.tar.gz">tash832a.tar.gz</a>,
-<a href="http://www.adatcl.com/download/tash832a.tar.Z">tash832a.tar.Z</a>, or
-<a href="http://www.adatcl.com/download/tash832a.zip">tash832a.zip</a>.
+<a href="http://www.adatcl.com/download/tash841a.tar.gz">tash841a.tar.gz</a>,
+<a href="http://www.adatcl.com/download/tash841a.tar.Z">tash841a.tar.Z</a>, or
+<a href="http://www.adatcl.com/download/tash841a.zip">tash841a.zip</a>.
 All three contain the necessary files for building both the Unix and
 Windows variants of TASH.</p>
 
 <h3>Uncompress and extract TASH</h3>
 
 <p>Open and extract the files from the <A
-HREF="http://www.adatcl.com/download/tash832a.zip">zip archive
+HREF="http://www.adatcl.com/download/tash841a.zip">zip archive
 file</A>.  You do have PKZIP, WinZip, or a similar program and know
 how to use it, don't you?  If not, you can find one of them at any one
 of several Windows download sites such as <A
@@ -98,7 +95,7 @@ HREF="http://www.tucows.com/">http://www.tucows.com/</A>.</p>
 
 <h3>Configure makefiles for your system</h3>
 
-<p>Double-click the <b>setup.tcl</b> file in the <b>tash832a</b>
+<p>Double-click the <b>setup.tcl</b> file in the <b>tash841a</b>
 folder.</p>
 
 <p>If Tcl/Tk was installed correctly, a <strong>wish</strong> script
@@ -109,7 +106,7 @@ Note that <strong>wish</strong> must be in your path for setup to run
 properly.</p>
 
 <p>Press the <strong>Save</strong> button to create the
-<strong>makeconf</strong> file in the <strong>tash832a</strong>
+<strong>makeconf</strong> file in the <strong>tash841a</strong>
 directory.</p>
 
 <h3>Build TASH and run the "Hello World" test program</h3>
@@ -117,7 +114,7 @@ directory.</p>
 <p>Execute these commands at a DOS prompt:</p>
 
 <p><code>
-cd tash832a\src <br>
+cd tash841a\src <br>
 make all test
 </code></p>
 
@@ -141,7 +138,7 @@ environment, build and run the <a href="tests.htm">TASH test
 programs:</a> </p>
 
 <p> <code>
-cd tash832a\tests <br>
+cd tash841a\tests <br>
 make all test
 </code> </p>
 
@@ -151,7 +148,7 @@ make all test
 you can peruse and learn how to write your own TASH programs: </p>
 
 <p><code>
-cd tash832a\demos <br>
+cd tash841a\demos <br>
 make all test
 </code> </p>
 
@@ -163,11 +160,11 @@ can build and use as-is. Plang works somewhat like the Unix
 language each file on its command line was written in.</p>
 
 <p><code>
-cd tash832a\apps <br>
+cd tash841a\apps <br>
 make all test
 </code> </p>
 
-<SCRIPT LANGUAGE="JavaScript1.2" SRC="footer.js" TYPE="text/javascript"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="footer.js" TYPE="text/javascript"></SCRIPT>
 
 </table>
 </body>

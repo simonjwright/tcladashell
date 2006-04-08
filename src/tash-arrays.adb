@@ -143,6 +143,8 @@ package body Tash.Arrays is
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
 
+      Parray (TArray);
+
       return TArray;
 
    end To_Tash_Array;
@@ -698,7 +700,7 @@ package body Tash.Arrays is
       -- Create a Tcl list to hold the index and value
       ------------------------------------------------
       Listv(1) := Tash.To_Tcl_Obj (Index);
-      Listv(2) := Value.Obj;
+      Listv(2) := Tash.Tash_Object(Value).Obj;
       ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
       Tcl.Tcl_IncrRefCount (ListObj);
       Tcl.Tcl_DecrRefCount (Listv(1));
@@ -756,7 +758,7 @@ package body Tash.Arrays is
       Objv(1) := Array_Cmd;
       Objv(2) := Set_Option;
       Objv(3) := TArray.Obj;
-      Objv(4) := List.Obj;
+      Objv(4) := Tash.Tash_Object(List).Obj;
 
       -- Set the array elements
       -------------------------

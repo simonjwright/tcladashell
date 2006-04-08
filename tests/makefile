@@ -76,5 +76,5 @@ lib :
 	@ make -C ../src
 
 clean :
-	@$(TCLSH) ../bin/clean.tcl $(PROGRAMS)
+	@$(TCLSH) ../bin/clean.tcl $(PROGRAMS) make.out
 

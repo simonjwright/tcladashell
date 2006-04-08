@@ -48,7 +48,7 @@ H1 {
 H2 {
 	background-color : #006699;
 	color            : #FFFFCC;
-	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+	font-family      : arial,geneva,helvetica,sans-serif;
 	font-size        : 125%;
 	font-weight      : bold;
 	text-align       : left;
@@ -68,19 +68,12 @@ H3  {
 }
 
 /* Class navhead is used for heading on left-hand navigation menu
- * used for a site index
+ * used for a site index.  It cascades from class .nav.
  *------------------------------------------------------------------------*/
 .navhead {
 	background-color : #006699;
 	color            : #FFFFCC;
-	font-family      : verdana,arial,geneva,helvetica,sans-serif;
- 	font-size        : 90%;
-	font-weight      : bold;
-	text-align       : left;
-	border-width     : 1px;
-	border-color     : #006699;
-	border-style     : solid;
-        padding          : 3px;
+ 	font-size        : 100%;
 }
 
 /* Class nav is used for left-hand navigation menu used for a site index
@@ -88,8 +81,8 @@ H3  {
 .nav {
 	background-color : #FFFFCC;
 	color            : #006699;
-	font-family      : verdana,arial,geneva,helvetica,sans-serif;
- 	font-size        : 90%;
+	font-family      : arial,geneva,helvetica,sans-serif;
+ 	font-size        : 80%;
 	font-weight      : bold;
 	text-align       : left;
 	border-width     : 1px;
@@ -167,7 +160,7 @@ P {
 .sig TH {
 	background-color : #006699;
 	color            : #FFFFCC;
-	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+	font-family      : arial,geneva,helvetica,sans-serif;
  	font-size        : 65%;
 	font-weight      : bold;
 	text-align       : left;
@@ -178,7 +171,7 @@ P {
 .sig TD {
 	background-color : #FFFFCC;
 	color            : #006699;
-	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+	font-family      : arial,geneva,helvetica,sans-serif;
  	font-size        : 65%;
 	font-weight      : bold;
 	text-align       : left;
