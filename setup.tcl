@@ -11,7 +11,7 @@ exec wish $0 $@
 #    included in makefiles to customize to the local
 #    environment.
 #
-# Copyright (c) 1997-1999 Terry J. Westley
+# Copyright (c) 1997-2000 Terry J. Westley
 #
 # See the file "license.htm" for information on usage and
 # redistribution of this file, and  a DISCLAIMER OF ALL WARRANTIES.
@@ -57,7 +57,7 @@ proc CreateLinkerOptions {} {
    }
 
    puts $f "package TASH_Linker_Options is"
-   foreach macro [list TASH_LINK_SWITCHES TK_LINK_SWITCHES TCL_LINK_SWITCHES] {
+   foreach macro [list LARGS] {
       foreach option $tashvar($macro) {
 	 # substitute value of embedded macros
 	 if [regexp {\$\(([^)]*)\)} $option dummy embeddedMacro] {
@@ -143,7 +143,7 @@ proc EditSourceFile {} {
 # Create the makeconf file
 #--------------------------------
 proc Createmakefile {makefile} {
-   global tashorder tashvar tashcomments useLinkerOptions
+   global tashorder tashvar tashcomments useLinkerOptions link_switches
    if [catch {open $makefile w} makefid] {
       puts stderr $makefid
       exit
@@ -171,15 +171,14 @@ proc Createmakefile {makefile} {
    if $useLinkerOptions {
       WriteOneMacro $makefid TASH_LINKER_OPTIONS tash_linker_options.ads {
 	 # Source file containing TASH linker options}
-      WriteOneMacro $makefid ALL_LINK_SWITCHES "" {
+      WriteOneMacro $makefid LARGS "" {
 	 # All link switches macro is empty because we are
 	 # using pragma Linker_Options method}
 	  
    } else {
       WriteOneMacro $makefid TASH_LINKER_OPTIONS "" {
 	 # There is no source file containing TASH linker options}
-      WriteOneMacro $makefid ALL_LINK_SWITCHES \
-	 "\$(TASH_LINK_SWITCHES) \$(TK_LINK_SWITCHES) \$(TCL_LINK_SWITCHES)" {
+      WriteOneMacro $makefid LARGS $link_switches {
 	 # All link switches for TASH, Tcl, and Tk}
    }
 
@@ -229,6 +228,7 @@ proc fileDialog {w ent title initial} {
 #------------------------------------------------------
 proc Set_Macros {platform os osVersion} {
    global tcl_version tk_version tcl_interactive tcl_library tk_library env
+   global link_switches
 
    set x11home           ""
    set x11_lib           ""
@@ -236,8 +236,7 @@ proc Set_Macros {platform os osVersion} {
 
    set tclhome           [file dirname [file dirname $tcl_library]]
    set tcl_include       [file join \$(TCLHOME) include]
-   set tcl_link_switches ""
-   set tk_link_switches  ""
+   set link_switches     ""
 
    set pwd               [pwd]
 
@@ -246,25 +245,28 @@ proc Set_Macros {platform os osVersion} {
 	 regsub {\.} $tcl_version {} tcl_short_version
 	 regsub {\.} $tk_version  {} tk_short_version
 	 set tclsh "tclsh${tcl_short_version}"
-         set libtcl "../lib/libtcl${tcl_short_version}.a"
-         set libtk  "../lib/libtk${tk_short_version}.a"
-	 set tcl_link_switches "-L../lib -ltcl$tcl_short_version"
-	 set tk_link_switches  "-L../lib -ltk$tk_short_version"
+         set libtcl "../src/libtcl${tcl_short_version}.a"
+         set libtk  "../src/libtk${tk_short_version}.a"
+	 set link_switches "-L../src -ltk$tk_short_version "
+	 append link_switches "-ltcl$tcl_short_version "
+	 append link_switches "../src/tkmacro.o ../src/tclmacro.o "
 	 regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
       }
       "unix" {
 	 set tclsh "tclsh"
          set libtcl "\$(TCLHOME)/lib/libtcl${tcl_version}.so"
          set libtk  "\$(TCLHOME)/lib/libtk${tk_version}.so"
-	 set tcl_link_switches "-L\$(TCLHOME)/lib -ltcl$tcl_version -lm -ldl"
 	 if [cequal $os "SunOS"] {
-	    append tcl_link_switches " -lsocket -lnsl"
-	    set tk_link_switches "-R\$(TCLHOME)/lib"
+	    set link_switches "-R\$(TCLHOME)/lib -L\$(TCLHOME)/lib "
+	    append link_switches "-ltk$tk_version -ltcl$tcl_version "
+	    append link_switches " -lsocket -lnsl -ldl -lm "
 	 } else {
-	    set tk_link_switches "-Wl,-rpath,\$(TCLHOME)/lib"
+	    set link_switches "-Wl,-rpath,\$(TCLHOME)/lib "
+	    append link_switches "-L\$(TCLHOME)/lib "
+	    append link_switches "-ltk$tk_version -ltcl$tcl_version "
 	 }
-	 append tk_link_switches " -L\$(TCLHOME)/lib -ltk$tk_version"
-	 append tk_link_switches " -L\$(X11_LIB) -lX11"
+	 append link_switches "-L\$(X11_LIB) -lX11 "
+	 append link_switches "../src/tkmacro.o ../src/tclmacro.o "
 
 	 set PossibleXHomes [list /usr/openwin /usr/X /usr/X11R6 /usr]
 	 foreach dir $PossibleXHomes {
@@ -297,8 +299,10 @@ proc Set_Macros {platform os osVersion} {
       # Operating system}
    setvar OSVERSION         $osVersion {
       # Operating system version}
-   setvar TASH_VERSION      "8.2.0a" {
+   setvar TASH_VERSION      "8.3.2a" {
       # TASH version}
+   setvar TASH_DIRECTORY    [file tail $pwd] {
+      # Main TASH directory}
    if [lempty $x11home] {
       setvar X11HOME        "" {
 	 # X11 library directory}
@@ -330,22 +334,18 @@ proc Set_Macros {platform os osVersion} {
       # Tcl version}
    setvar TCL_LIBRARY       "$libtcl" {
       # Tcl library}
-   setvar TCL_LINK_SWITCHES "$tcl_link_switches" {
-      # Tcl link switches}
    setvar TK_VERSION        "$tk_version" {
       # Tk version}
    setvar TK_LIBRARY        "$libtk" {
       # Tk library}
-   setvar TK_LINK_SWITCHES  "$tk_link_switches" {
-      # Tk link switches}
-   setvar TASH_LIBRARY      "../lib/libtash.a" {
-      # TASH library}
-   setvar TASH_LINK_SWITCHES "-L../lib -ltash -lgnat" {
-      # TASH link switches}
    setvar CC                "gcc" {
       # This is gcc compiler (Note: must reference GNAT version)}
-   setvar CC_FLAGS          "-O2" {
-      # Compiler switches}
+   setvar GARGS             "-i -k -I../src" {
+      # gnatmake switches}
+   setvar CARGS             "-g -O2 -gnatnU" {
+      # compiler switches}
+   setvar BARGS             "" {
+      # gnatbind switches}
 }
 
 set useLinkerOptions 0

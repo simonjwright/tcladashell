@@ -1,13 +1,12 @@
 -------------------------------------------------------------------
 --
--- Unit Name:    Tash.Lists spec
+-- Unit Name:   Tash.Lists spec
 --
--- File Name:    tash-lists.ads
+-- File Name:   tash-lists.ads
 --
--- Purpose:      Defines the Tash list type which may
---               contain any Tash object, including lists.
+-- Purpose:     Defines the Tash list type and operations on it.
 --
--- Copyright (c) 1999 Terry J. Westley
+-- Copyright (c) 1999-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -49,6 +48,7 @@
 --    lsearch                   Tash.Regexp.Match
 --    lsort                     Sort
 --    split                     Split
+--    join                      Join
 --
 --        TclX Command Cross Reference
 --
@@ -61,19 +61,22 @@
 --------------------------------------------------------------------
 
 with Ada.Finalization;
-with Tash.Floats;
-with Tash.Integers;
-with Tash.Strings;
 with Tcl;
 
 package Tash.Lists is
 
-   --------------------------------------------------------
-   -- A Tash list is composed of zero or more Tash objects.
-   -- Since a Tash list is a Tash object, you can construct
-   -- lists of lists.  As each Tash object is added to and
-   -- removed from a list, its reference count is updated.
-   --------------------------------------------------------
+   ----------------------------------------------------------
+   -- A Tash list is composed of zero or more elements in an
+   -- ordered list.  Each element may be either a scalar type
+   -- (see the generics below for handling list elements of
+   -- integer and float) or a non-scalar type.
+   --
+   -- Currently, two non-scalar element types are supported:
+   -- strings and lists.  Since an element may be a Tash list,
+   -- you can construct lists of lists.
+   --
+   -- Elements of different types may to stored in a list.
+   -----------------------------------------------------------
 
    type Tash_List is new Tash.Tash_Object with null record;
 
@@ -83,16 +86,16 @@ package Tash.Lists is
 
    -----------------------------------------------
    -- Inherits Is_Null function from Tash.  It
-   -- returns True if TList has not been initialized
+   -- returns True if List has not been initialized
    -- or has been set to Null_Tash_List.
    -----------------------------------------------
 
    -- function Is_Null (
-   --   TList : in Tash_List) return Boolean;
+   --   List : in Tash_List) return Boolean;
 
    --------------------------------------------------------
-   -- Returns True if Is_Null(TList) is true or
-   -- Length(TList) = 0.
+   -- Is_Empty returns True if Is_Null(List) is true or
+   -- Length(List) = 0.
    --------------------------------------------------------
 
    function Is_Empty (
@@ -100,71 +103,73 @@ package Tash.Lists is
 
    --------------------------------------------------------
    -- Create a Tash list from a string.  This breaks a string
-   -- up into list elements separated by a sequence of spaces.
+   -- up into list.  Each element of the list is a string
+   -- taken from a sequence of non-blank characters in the
+   -- input string.
    --
-   -- Those elements which have embedded spaces must be enclosed
-   -- within a pair of braces ({}).  In this case, the whole
-   -- sequence of characters within the braces will be one list
-   -- element.  The braces will not be part of the element.
+   -- You may enclose phrases which contain blanks in a pair
+   -- of braces ({}).  Each such phrase will be a single
+   -- element in the returned list.  The braces will not be
+   -- part of the element.
    --
    -- Raises List_Error if a string that contains an
    -- opening brace does not also containing a closing brace.
    --
-   -- To escape a brace so that it is part of a string and
-   -- not a marker for a start of a string, precede it with
+   -- To escape a brace so that it is part of an element and
+   -- not a marker for a start of an element, precede it with
    -- a '\' character.
    -------------------------------------------------------------
 
    function To_Tash_List (
       Str : in String) return Tash_List;
 
+   function "+" (
+      Str : in String) return Tash_List;
+
+   -------------------------------------------------------------
+   -- Concatenate Tash lists and strings to create a new Tash list.
+   -------------------------------------------------------------
+
+   function "&" (
+      Left  : in Tash_List;
+      Right : in Tash_List) return Tash_List;
+
+   function "&" (
+      Left  : in String;
+      Right : in Tash_List) return Tash_List;
+
+   function "&" (
+      Left  : in Tash_List;
+      Right : in String) return Tash_List;
+
+   --------------------------------------------------------
+   -- Create a new list which is a copy of the original.
+   -- The resulting list is a new list, but the elements
+   -- "point" to the elements of the original list.
+   --
+   -- Some call this a "shallow" copy.
+   --------------------------------------------------------
+
+   function Copy (
+      List   : in Tash_List) return Tash_List;
+
+   --------------------------------------------------------
+   -- Create a new list which is a copy of the original.
+   -- The resulting list is a new list AND each element
+   -- is a new element.
+   --
+   -- Some call this a "deep" copy.
+   --------------------------------------------------------
+
+   function Duplicate (
+      List   : in Tash_List) return Tash_List;
+
    --------------------------------------------------------
    -- Convert a Tash list to a string.
-   --
-   -- Recall that all non-string Tash data types have a dual
-   -- representation.  At any time, you may fetch either the
-   -- string representation or the native (i.e. List)
-   -- representation.  The string representation is updated
-   -- to correspond with the native data type only when the
-   -- string is fetched.
    --------------------------------------------------------
 
    function To_String (
-      TList : in Tash_List) return String;
-
-   --------------------------------------------------------
-   -- Create a new list.
-   --
-   -- Where any of Element1..Element9 is a list and Expand
-   -- is True, each element of the parameter is an element
-   -- of the returned list.
-   --
-   -- Where any of Element1..Element9 is a list and Expand
-   -- is False, the list parameter is an element of the
-   -- returned list.  This, you now have a list of lists.
-   --
-   -- Where any of Element1..Element9 are null, the element
-   -- is not appended to the list.
-   --
-   -- Operator "+" is equivalent to the following call:
-   --    Create (Element, Expand => False);
-   --------------------------------------------------------
-
-   function To_Tash_List (
-      Element1 : in Tash.Tash_Object'Class;
-      Element2 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Element3 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Element4 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Element5 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Element6 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Element7 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Element8 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Element9 : in Tash.Tash_Object'Class := Tash.Strings.Null_Tash_String;
-      Expand   : in Boolean                := False)
-         return Tash_List;
-
-   function "+" (
-      Element : in Tash.Tash_Object'Class) return Tash_List;
+      List : in Tash_List) return String;
 
    -------------------------------------------------------------
    -- Create a Tash list by splitting the string, Str, into
@@ -185,9 +190,6 @@ package Tash.Lists is
    -- is empty.  Since a empty element is represented as the
    -- string, "{}", calling Tash.To_String (List) results in
    -- the string, "{} usr X lib X11".
-   --
-   -- In this particular situation (splitting unix path names)
-   -- see Pop below for removing the first element.
    -------------------------------------------------------------
 
    function Split (
@@ -195,10 +197,15 @@ package Tash.Lists is
       Split_At : in String := " " & ASCII.CR & ASCII.HT & ASCII.LF)
          return Tash_List;
 
-   function Split (
-      TObject  : in Tash.Tash_Object'Class;
-      Split_At : in String := " " & ASCII.CR & ASCII.HT & ASCII.LF)
-         return Tash_List;
+   ----------------------------------------------------------------
+   -- Join is the inverse of Split:  it creates a string by joining
+   -- all the elements of a list with JoinString separating each
+   -- adjacent element.
+   ----------------------------------------------------------------
+
+   function Join (
+      List       : in Tash_List;
+      JoinString : in String := " ") return String;
 
    ----------------------------------------
    -- Create a new Tash list from a range
@@ -234,7 +241,7 @@ package Tash.Lists is
       Order : in Ordering  := Increasing) return Tash_List;
 
    ----------------------------------------
-   -- Get length of a list.
+   -- Get the number of elements in the list.
    -- Returns 0 if Is_Empty (List) is true.
    ----------------------------------------
 
@@ -242,42 +249,41 @@ package Tash.Lists is
       List : in Tash_List) return Natural;
 
    --------------------------------------------------------
-   -- Get a specific list element.  If you don't know the
-   -- data type of the returned element, you can use either
-   -- Element that returns a string or Element_Obj.
-   -- Raises List_Error if the requested list item data type
-   -- doesn't match the return type.
-   --------------------------------------------------------
-
-   function Element (
-      List  : in Tash_List;
-      Index : in Positive) return Tash.Floats.Tash_Float;
-
-   function Element (
-      List  : in Tash_List;
-      Index : in Positive) return Tash.Integers.Tash_Integer;
-
-   function Element (
-      List  : in Tash_List;
-      Index : in Positive) return Tash.Strings.Tash_String;
-
-   function Element_Obj (
-      List  : in Tash_List;
-      Index : in Positive) return Tash.Tash_Object'Class;
-
-   --------------------------------------------------------
-   -- To iterate over a Tash list, use the
-   -- Length and Element subprograms:
+   -- Get a specific list element.
    --
-   -- declare
-   --    List : Tash_List;
-   --    Elem : Element_Ref;
-   -- begin
-   --    for i in 1..Length (List) loop
-   --       Elem := Element (List, i);
-   --    end loop;
-   -- end;
+   -- Any list element can be represented as a string, so
+   -- there is never a type mismatch when returning a list
+   -- element as a string.  If you specifically need to know
+   -- whether an element is a string or not, call Element_is_String.
+   --
+   -- The elements of a list are indexed starting at 1.
+   --
+   -- Raises List_Error if Index is greater than Length (List).
    --------------------------------------------------------
+
+   function Get_Element (
+      List  : in Tash_List;
+      Index : in Positive) return String;
+
+   --------------------------------------------------------
+   -- Returns the requested element as a list.
+   --------------------------------------------------------
+
+   function Get_Element (
+      List  : in Tash_List;
+      Index : in Positive) return Tash_List;
+
+   --------------------------------------------------------
+   -- Find out whether a list element is a string or a list
+   --------------------------------------------------------
+
+   function Element_Is_String (
+      List  : in Tash_List;
+      Index : in Positive) return Boolean;
+
+   function Element_Is_List (
+      List  : in Tash_List;
+      Index : in Positive) return Boolean;
 
    --------------------------------------------------------
    -- Get the first or last element of the list without
@@ -285,110 +291,110 @@ package Tash.Lists is
    --------------------------------------------------------
 
    function Head (
-      List : in Tash_List) return Tash.Integers.Tash_Integer;
+      List : in Tash_List) return String;
 
    function Head (
-      List : in Tash_List) return Tash.Floats.Tash_Float;
-
-   function Head (
-      List : in Tash_List) return Tash.Strings.Tash_String;
-
-   function Head_Obj (
-      List : in Tash_List) return Tash.Tash_Object'Class;
+      List : in Tash_List) return Tash_List;
 
    function Tail (
-      List : in Tash_List) return Tash.Integers.Tash_Integer;
+      List : in Tash_List) return String;
 
    function Tail (
-      List : in Tash_List) return Tash.Floats.Tash_Float;
-
-   function Tail (
-      List : in Tash_List) return Tash.Strings.Tash_String;
-
-   function Tail_Obj (
-      List : in Tash_List) return Tash.Tash_Object'Class;
+      List : in Tash_List) return Tash_List;
 
    --------------------------------------------------------
-   -- Append an element or a list to a Tash list.
-   --
-   -- If Element is a list and Expand is True, each
-   -- element of Element is appended to List.
-   --
-   -- If Element is a list and Expand is False, Element
-   -- is appended as a list.  You now have a list of lists.
-   --
-   -- If Element is not a list, Expand has no effect.
-   --
-   -- Raises List_Error when List to be appended to
-   -- is shared (reference by another list).
+   -- Append a string as a single element to a Tash list.
    --------------------------------------------------------
 
    procedure Append (
       List    : in out Tash_List;
-      Element : in     Tash.Tash_Object'Class;
-      Expand  : in     Boolean := False);
+      Element : in     String);
 
    --------------------------------------------------------
-   -- Replace the Index'th element in a Tash list with an
-   -- element or list.  The elements of a list are indexed
-   -- starting with element index 1.
-   --
-   -- If Element is a list and Expand is True, each
-   -- element of Element is appended to List.
-   --
-   -- If Element is a list and Expand is False, Element
-   -- is appended as a list.  You now have a list of lists.
-   --
-   -- If Element is not a list, Expand has no effect.
+   -- Append the elements of one list to another.
+   -- The length of the resulting list is equal to
+   -- Length (List) + Length (Elements).
+   --------------------------------------------------------
+
+   procedure Append_Elements (
+      List     : in out Tash_List;
+      Elements : in     Tash_List);
+
+   --------------------------------------------------------
+   -- Append a list as an element of another list.
+   -- The length of the resulting list is equal to
+   -- Length (List) + 1.
+   --------------------------------------------------------
+
+   procedure Append_List (
+      List     : in out Tash_List;
+      Element  : in     Tash_List);
+
+   --------------------------------------------------------
+   -- Replace the Index'th element in a Tash list with a
+   -- string or a list or the elements of a list.
    --------------------------------------------------------
 
    procedure Replace_Element (
-      List    : in out Tash_List;
-      Index   : in     Positive;
-      Element : in     Tash.Tash_Object'Class;
-      Expand  : in     Boolean := False);
+      List     : in out Tash_List;
+      Index    : in     Positive;
+      Element  : in     String);
+
+   procedure Replace_Element_With_List (
+      List     : in out Tash_List;
+      Index    : in     Positive;
+      Element  : in     Tash_List);
+
+   procedure Replace_Element_With_Elements (
+      List     : in out Tash_List;
+      Index    : in     Positive;
+      Elements : in     Tash_List);
 
    --------------------------------------------------------
-   -- Replace a slice of a Tash list with an element or list.
-   --
-   -- If Element is a list and Expand is True, each
-   -- element of Element is appended to List.
-   --
-   -- If Element is a list and Expand is False, Element
-   -- is appended as a list.  You now have a list of lists.
-   --
-   -- If Element is not a list, Expand has no effect.
+   -- Replace the slice From..to of a Tash list with a
+   -- string or a list or the elements of a list.
    --
    -- If To < From, has the effect of inserting Element
    -- in List before From.
    --------------------------------------------------------
 
    procedure Replace_Slice (
-      List    : in out Tash_List;
-      From    : in     Positive;
-      To      : in     Natural;
-      Element : in     Tash.Tash_Object'Class;
-      Expand  : in     Boolean := False);
+      List     : in out Tash_List;
+      From     : in     Positive;
+      To       : in     Natural;
+      Element  : in     String);
+
+   procedure Replace_Slice_With_List (
+      List     : in out Tash_List;
+      From     : in     Positive;
+      To       : in     Natural;
+      Element  : in     Tash_List);
+
+   procedure Replace_Slice_With_Elements (
+      List     : in out Tash_List;
+      From     : in     Positive;
+      To       : in     Natural;
+      Elements : in     Tash_List);
 
    --------------------------------------------------------
-   -- Insert an element or list into a Tash list before
-   -- the Index'th element.  The elements of a list are
-   -- indexed starting with element index 1.
-   --
-   -- If Element is a list and Expand is True, each
-   -- element of Element is inserted into List.
-   --
-   -- If Element is a list and Expand is False, Element
-   -- is inserted as a list.  You now have a list of lists.
-   --
-   -- If Element is not a list, Expand has no effect.
+   -- Insert a string or a list or the elements of a list
+   -- into a Tash list before the Index'th element.
    --------------------------------------------------------
 
    procedure Insert (
-     List    : in out Tash_List;
-     Index   : in     Positive;
-     Element : in     Tash.Tash_Object'Class;
-     Expand  : in     Boolean := False);
+     List     : in out Tash_List;
+     Index    : in     Positive;
+     Element  : in     String);
+
+   procedure Insert_List (
+     List     : in out Tash_List;
+     Index    : in     Positive;
+     Element  : in     Tash_List);
+
+   procedure Insert_Elements (
+     List     : in out Tash_List;
+     Index    : in     Positive;
+     Elements : in     Tash_List);
 
    --------------------------------------------------------
    -- Deletes an element or slice from a Tash list.
@@ -409,35 +415,266 @@ package Tash.Lists is
 
    --------------------------------------------------------
    -- Push and Pop treat a Tash list as a stack.
-   --
-   -- Push inserts Element before the first element of List.
-   --
-   -- If Element is a list and Expand is True, each
-   -- element of Element is inserted before the first
-   -- element of List.
-   --
-   -- If Element is a list and Expand is False, Element
-   -- is inserted as a list element before the first
-   -- element of List.  You now have a list of lists.
-   --
-   -- If Element is not a list, Expand has no effect.
-   --
+   --------------------------------------------------------
+   -- Push inserts a string or a list or the elements of a
+   -- list before the first element of List.
    -- Pop removes the first element and "throws it away."
    -- It is identical to Delete_Element with Index = 1.
    --------------------------------------------------------
 
    procedure Push (
-      List    : in out Tash_List;
-      Element : in     Tash.Tash_Object'Class;
-      Expand  : in     Boolean := False);
+      List     : in out Tash_List;
+      Element  : in     String);
+
+   procedure Push_List (
+      List     : in out Tash_List;
+      Element  : in     Tash_List);
+
+   procedure Push_Elements (
+      List     : in out Tash_List;
+      Elements : in     Tash_List);
 
    procedure Pop (
       List : in out Tash_List);
 
    --------------------------------------------------------
-   -- Compare Tash lists as if they had first been converted
-   -- to strings.
+   -- Generic for handling Integer list elements
    --------------------------------------------------------
+
+   generic
+      type Item is range <>;
+   package Generic_Integer_Lists is
+
+      --------------------------------------------------------
+      -- Create a Tash list with one element, an integer.
+      --------------------------------------------------------
+
+      function To_Tash_List (
+         Num : in Item) return Tash_List;
+
+      function "+" (
+         Num : in Item) return Tash_List;
+
+      function "-" (
+         Num : in Item) return Tash_List;
+
+      -----------------------------------------------------------------
+      -- Concatenate Tash lists and integers to create a new Tash list.
+      -----------------------------------------------------------------
+
+      function "&" (
+         Left  : in Item;
+         Right : in Tash_List) return Tash_List;
+
+      function "&" (
+         Left  : in Tash_List;
+         Right : in Item) return Tash_List;
+
+      --------------------------------------------------------
+      -- Get a specific list element.
+      --
+      -- Raises List_Error if Index is greater than Length (List).
+      --
+      -- Raises Constraint_Error if the Index'th element of the
+      -- list does not match the return type.
+      --------------------------------------------------------
+
+      function Get_Element (
+         List  : in Tash_List;
+         Index : in Positive) return Item;
+
+      --------------------------------------------------------
+      -- Find out whether a list element is an integer
+      --------------------------------------------------------
+
+      function Element_Is_Integer (
+         List  : in Tash_List;
+         Index : in Positive) return Boolean;
+
+      --------------------------------------------------------
+      -- Get the first or last element of the list without
+      -- modifying the list.
+      --------------------------------------------------------
+
+      function Head (
+         List : in Tash_List) return Item;
+
+      function Tail (
+         List : in Tash_List) return Item;
+
+      --------------------------------------------------------
+      -- Append an integer as a single element to a Tash list.
+      --
+      -- Raises List_Error when List to be appended to
+      -- is shared (referenced by another list).
+      --------------------------------------------------------
+
+      procedure Append (
+         List    : in out Tash_List;
+         Element : in     Item);
+
+      ---------------------------------------------------------------
+      -- Replace the Index'th element in a Tash list with an integer.
+      ---------------------------------------------------------------
+
+      procedure Replace_Element (
+         List     : in out Tash_List;
+         Index    : in     Positive;
+         Element  : in     Item);
+
+      -------------------------------------------------------------
+      -- Replace the slice From..to of a Tash list with an integer.
+      --
+      -- If To < From, has the effect of inserting Element
+      -- in List before From.
+      -------------------------------------------------------------
+
+      procedure Replace_Slice (
+         List     : in out Tash_List;
+         From     : in     Positive;
+         To       : in     Natural;
+         Element  : in     Item);
+
+      -----------------------------------------------------------------
+      -- Insert an integer into a Tash list before the Index'th element.
+      -----------------------------------------------------------------
+
+      procedure Insert (
+        List     : in out Tash_List;
+        Index    : in     Positive;
+        Element  : in     Item);
+
+      ------------------------------------------------------------
+      -- Push inserts an integer before the first element of List.
+      ------------------------------------------------------------
+
+      procedure Push (
+         List     : in out Tash_List;
+         Element  : in     Item);
+
+   end Generic_Integer_Lists;
+
+   --------------------------------------------------------
+   -- Generic for handling float list elements
+   --------------------------------------------------------
+
+   generic
+      type Item is digits <>;
+   package Generic_Float_Lists is
+
+      --------------------------------------------------------
+      -- Create a Tash list with one element, a float.
+      --------------------------------------------------------
+
+      function To_Tash_List (
+         Num : in Item) return Tash_List;
+
+      function "+" (
+         Num : in Item) return Tash_List;
+
+      function "-" (
+         Num : in Item) return Tash_List;
+
+      -----------------------------------------------------------------
+      -- Concatenate Tash lists and floats to create a new Tash list.
+      -----------------------------------------------------------------
+
+      function "&" (
+         Left  : in Item;
+         Right : in Tash_List) return Tash_List;
+
+      function "&" (
+         Left  : in Tash_List;
+         Right : in Item) return Tash_List;
+
+      --------------------------------------------------------
+      -- Get a specific list element.
+      --
+      -- Raises List_Error if Index is greater than Length (List).
+      --
+      -- Raises Constraint_Error if the Index'th element of the
+      -- list does not match the return type.
+      --------------------------------------------------------
+
+      function Get_Element (
+         List  : in Tash_List;
+         Index : in Positive) return Item;
+
+      --------------------------------------------------------
+      -- Find out whether a list element is a float
+      --------------------------------------------------------
+
+      function Element_Is_Float (
+         List  : in Tash_List;
+         Index : in Positive) return Boolean;
+
+      --------------------------------------------------------
+      -- Get the first or last element of the list without
+      -- modifying the list.
+      --------------------------------------------------------
+
+      function Head (
+         List : in Tash_List) return Item;
+
+      function Tail (
+         List : in Tash_List) return Item;
+
+      --------------------------------------------------------
+      -- Append a float as a single element to a Tash list.
+      --
+      -- Raises List_Error when List to be appended to
+      -- is shared (referenced by another list).
+      --------------------------------------------------------
+
+      procedure Append (
+         List    : in out Tash_List;
+         Element : in     Item);
+
+      ---------------------------------------------------------------
+      -- Replace the Index'th element in a Tash list with a float.
+      ---------------------------------------------------------------
+
+      procedure Replace_Element (
+         List     : in out Tash_List;
+         Index    : in     Positive;
+         Element  : in     Item);
+
+      -------------------------------------------------------------
+      -- Replace the slice From..to of a Tash list with a float.
+      --
+      -- If To < From, has the effect of inserting Element
+      -- in List before From.
+      -------------------------------------------------------------
+
+      procedure Replace_Slice (
+         List     : in out Tash_List;
+         From     : in     Positive;
+         To       : in     Natural;
+         Element  : in     Item);
+
+      -----------------------------------------------------------------
+      -- Insert a float into a Tash list before the Index'th element.
+      -----------------------------------------------------------------
+
+      procedure Insert (
+        List     : in out Tash_List;
+        Index    : in     Positive;
+        Element  : in     Item);
+
+      ------------------------------------------------------------
+      -- Push inserts a float before the first element of List.
+      ------------------------------------------------------------
+
+      procedure Push (
+         List     : in out Tash_List;
+         Element  : in     Item);
+
+   end Generic_Float_Lists;
+
+   ----------------------------------------------------------
+   -- Compare string representations of Tash lists.  Uses the
+   -- same collating sequence as comparing two Ada strings.
+   ----------------------------------------------------------
 
    function "="  (
       Left  : in Tash_List;
@@ -479,12 +716,12 @@ package Tash.Lists is
 
    --------------------------------------------------------
    -- Following subprograms are used for examining the
-   -- internal representation of a Tash object.  They are
+   -- internal representation of a element.  They are
    -- primarily used in verification of the Tash interface.
    --------------------------------------------------------
 
    function Internal_Rep (
-      TList : in Tash_List) return String;
+      List : in Tash_List) return String;
    -- Returns an image of the internal representation,
    -- including the string representation, identity, and
    -- reference count of the whole list and of each element.
@@ -492,7 +729,8 @@ package Tash.Lists is
 private
 
    Null_Tash_List : constant Tash_List := (
-      Ada.Finalization.Controlled with Obj => Tcl.Null_Tcl_Obj);
+      Ada.Finalization.Controlled with
+         Obj  => Tcl.Null_Tcl_Obj);
 
    Verbose  : Boolean := False;
 

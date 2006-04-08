@@ -1,1 +1,199 @@
-/*------------------------------------------------------------- * Cascading Stylesheet for TASH website. * * Purpose        HTML Tag  CSS Class    Background  Text * -------------  --------  -----------  ----------  ---- * Main heading   H1                     #FFFFCC     #003366 * Sub heading    H2                     #006699     #FFFFCC * Nav head       TH        nav          #006699     #FFFFCC * Nav links      TD        nav          #FFFFCC     #003366 * Body           BODY                   white       black * Body heads     H3                     white       black * download head  TH        download     #006699     #FFFFCC * download cells TD        download     #FFFFCC     #003366 * Sig head       TH        sig          #006699     #FFFFCC * Sig links      TD        sig          #FFFFCC     #003366 *--------------------------------------------------------------*//* Tag H1 is used for the main TASH heading at top of every page *--------------------------------------------------------------*/H1 {	background-color : #FFFFCC;	color            : #003366;	font-family      : times,serif;	font-size        : 300%;	font-weight      : bold;	text-align       : left;	margin           : 0px;}/* Class smallcap is used for contrast within the TASH heading *------------------------------------------------------------*/.smallcap {	font-size        : 50%;}/* Tag H2 is used for the page title *----------------------------------*/H2 {	background-color : #006699;	color            : #FFFFCC;	font-family      : verdana,arial,geneva,helvetica,sans-serif;	font-size        : 125%;	font-weight      : bold;	text-align       : left;	margin           : 0px;}/* Tag H3 is used for body text downstyle headlines *-------------------------------------------------*/H3  {	background-color : white;	color            : black;	font-family      : verdana,arial,geneva,helvetica,sans-serif;	font-size        : 100%;	font-weight      : bold;	text-align       : left;	margin           : 0px;}/* Class nav is used in an outer tag to invoke navigation TH and TD styles *------------------------------------------------------------------------*/.nav {	margin-top       : 2px;}/* Tag TH within class nav is used for left-side navigation bar titles *--------------------------------------------------------------------*/.nav TH {	background-color : #006699;	color            : #FFFFCC;	font-family      : verdana,arial,geneva,helvetica,sans-serif; 	font-size        : 65%;	font-weight      : bold;	text-align       : left;	padding-left     : 3px;}/* Tag TD within class nav is used for left-side navigation bar links *-------------------------------------------------------------------*/.nav TD {	background-color : #FFFFCC;	color            : #003366;	font-family      : verdana,arial,geneva,helvetica,sans-serif; 	font-size        : 65%;	font-weight      : bold;	text-align       : left;	padding-left     : 3px;}.nav A:link {	text-decoration  : none;	color            : #003366;}.nav A:visited {	text-decoration  : none;	color            : #003366;}.nav A:hover {	text-decoration  : none;	color            : red;}/* Tag BODY is used for the main body text *----------------------------------------*/BODY {	background-color : white;	color            : black;	font-family      : times,serif;	margin-top       : 0px;	margin-left      : 0px;	margin-right     : 0px;	margin-bottom    : 0px;}.body {	margin-top       : 10px;}/* Tag P is used in main body text paragraphs *-------------------------------------------*/P {	margin-top       : 0px;	margin-bottom    : 10px;}/* Class download is used in an outer tag to * invoke download TH and TD styles *------------------------------------------*/.download {}/* Tag TH within class download is used for download titles *---------------------------------------------------------*/.download TH {	background-color : #006699;	color            : #FFFFCC;}/* Tag TD within class download is used for download table cells *--------------------------------------------------------------*/.download TD {	background-color : #FFFFCC;	color            : #003366;}/* Class sig is used in an outer tag to invoke signature TH and TD styles *-----------------------------------------------------------------------*/.sig {}/* Tag TH within class sig is used for signature titles *-----------------------------------------------------*/.sig TH {	background-color : #006699;	color            : #FFFFCC;	font-family      : verdana,arial,geneva,helvetica,sans-serif; 	font-size        : 65%;	font-weight      : bold;	text-align       : left;}/* Tag TD within class sig is used for signature links *----------------------------------------------------*/.sig TD {	background-color : #FFFFCC;	color            : #003366;	font-family      : verdana,arial,geneva,helvetica,sans-serif; 	font-size        : 65%;	font-weight      : bold;	text-align       : left;}.sig A:link {	text-decoration  : none;	color            : #003366;}.sig A:visited {	text-decoration  : none;	color            : #003366;}.sig A:hover {	text-decoration  : none;	color            : red;}
+/*-------------------------------------------------------------
+ * Cascading Stylesheet for TASH website.
+ *
+ * Purpose        HTML Tag  CSS Class    Background  Text
+ * -------------  --------  -----------  ----------  ----
+ * Main heading   H1                     #FFFFCC     #006699
+ * Sub heading    H2                     #006699     #FFFFCC
+ * Nav            N/A       nav          #006699     #FFFFCC
+ * Nav head       N/A       navhead      #FFFFCC     #006699
+ * Body           BODY                   white       black
+ * Body heads     H3                     white       black
+ * download head  TH        download     #006699     #FFFFCC
+ * download cells TD        download     #FFFFCC     #006699
+ * Sig head       TH        sig          #006699     #FFFFCC
+ * Sig links      TD        sig          #FFFFCC     #006699
+ *--------------------------------------------------------------*/
+
+/* The following is the style declaration that defines the site
+ * index chaser layer.
+ *--------------------------------------------------------------*/
+#myChaser {
+	position         : absolute;
+	left             : 3px;
+	top              : 3px;
+	width            : 100px;
+}
+
+/* Tag H1 is used for the main TASH heading at top of every page
+ *--------------------------------------------------------------*/
+H1 {
+	background-color : #FFFFCC;
+	color            : #006699;
+	font-family      : times,serif;
+	font-size        : 300%;
+	font-weight      : bold;
+	text-align       : left;
+	margin           : 0px;
+}
+
+/* Class smallcap is used for contrast within the TASH heading
+ *------------------------------------------------------------*/
+.smallcap {
+	font-size        : 50%;
+}
+
+/* Tag H2 is used for the page title
+ *----------------------------------*/
+H2 {
+	background-color : #006699;
+	color            : #FFFFCC;
+	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+	font-size        : 125%;
+	font-weight      : bold;
+	text-align       : left;
+	margin           : 0px;
+}
+
+/* Tag H3 is used for body text downstyle headlines
+ *-------------------------------------------------*/
+H3  {
+	background-color : white;
+	color            : black;
+	font-family      : arial,geneva,helvetica,sans-serif;
+	font-size        : 100%;
+	font-weight      : bold;
+	text-align       : left;
+	margin           : 0px;
+}
+
+/* Class navhead is used for heading on left-hand navigation menu
+ * used for a site index
+ *------------------------------------------------------------------------*/
+.navhead {
+	background-color : #006699;
+	color            : #FFFFCC;
+	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+ 	font-size        : 90%;
+	font-weight      : bold;
+	text-align       : left;
+	border-width     : 1px;
+	border-color     : #006699;
+	border-style     : solid;
+        padding          : 3px;
+}
+
+/* Class nav is used for left-hand navigation menu used for a site index
+ *------------------------------------------------------------------------*/
+.nav {
+	background-color : #FFFFCC;
+	color            : #006699;
+	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+ 	font-size        : 90%;
+	font-weight      : bold;
+	text-align       : left;
+	border-width     : 1px;
+	border-color     : #006699;
+	border-style     : solid;
+        padding          : 3px;
+}
+
+.nav A:link {
+	text-decoration  : none;
+	color            : #006699;
+}
+
+.nav A:visited {
+	text-decoration  : none;
+	color            : #006699;
+}
+
+.nav A:hover {
+	text-decoration  : none;
+	background-color : #006699;
+	color            : #FFFFCC;
+}
+
+/* Tag BODY is used for the main body text
+ *----------------------------------------*/
+BODY {
+	background-color : white;
+	color            : black;
+	font-family      : times,serif;
+	margin-top       : 0px;
+	margin-left      : 0px;
+	margin-right     : 0px;
+	margin-bottom    : 0px;
+}
+
+.body {
+	margin-top       : 10px;
+}
+
+/* Tag P is used in main body text paragraphs
+ *-------------------------------------------*/
+P {
+	margin-top       : 0px;
+	margin-bottom    : 10px;
+}
+
+/* Class download is used in an outer tag to
+ * invoke download TH and TD styles
+ *------------------------------------------*/
+.download {
+}
+
+/* Tag TH within class download is used for download titles
+ *---------------------------------------------------------*/
+.download TH {
+	background-color : #006699;
+	color            : #FFFFCC;
+}
+
+/* Tag TD within class download is used for download table cells
+ *--------------------------------------------------------------*/
+.download TD {
+	background-color : #FFFFCC;
+	color            : #006699;
+}
+
+/* Class sig is used in an outer tag to invoke signature TH and TD styles
+ *-----------------------------------------------------------------------*/
+.sig {
+}
+
+/* Tag TH within class sig is used for signature titles
+ *-----------------------------------------------------*/
+.sig TH {
+	background-color : #006699;
+	color            : #FFFFCC;
+	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+ 	font-size        : 65%;
+	font-weight      : bold;
+	text-align       : left;
+}
+
+/* Tag TD within class sig is used for signature links
+ *----------------------------------------------------*/
+.sig TD {
+	background-color : #FFFFCC;
+	color            : #006699;
+	font-family      : verdana,arial,geneva,helvetica,sans-serif;
+ 	font-size        : 65%;
+	font-weight      : bold;
+	text-align       : left;
+}
+
+.sig A:link {
+	text-decoration  : none;
+	color            : #006699;
+}
+
+.sig A:visited {
+	text-decoration  : none;
+	color            : #006699;
+}
+
+.sig A:hover {
+	text-decoration  : none;
+}

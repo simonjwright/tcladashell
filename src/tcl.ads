@@ -2,7 +2,7 @@
 --
 -- tcl.ads -- This package is the "thin" binding to Tcl.
 --
--- Copyright (c) 1995-1999 Terry J. Westley
+-- Copyright (c) 1995-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -37,6 +37,7 @@
 
 with CArgv;
 with CHelper;
+with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 with System;
 
@@ -75,27 +76,29 @@ package Tcl is
    --  When version numbers change here, must also go into the following files
    --  and update the version numbers:
    --
-   --  library/init.tcl {only if major.minor changes, not patchlevel}
-   --  unix/configure.in
-   --  win/configure.in {only if major.minor changes, not patchlevel}
-   --  win/makefile.bc  {only if major.minor changes, not patchlevel}
-   --  win/makefile.vc  {only if major.minor changes, not patchlevel}
-   --  win/pkgIndex.tcl {for tclregNN.dll, not patchlevel}
-   --  README
-   --  mac/README
-   --  win/README.binary
-   --  win/README               {only if major.minor changes, not patchlevel}
-   --  unix/README              {only if major.minor changes, not patchlevel}
-   --  tools/tcl.hpj.in {for windows installer}
+   --  library/init.tcl {only if Major.minor changes, not patchlevel} 1 LOC
+   --  unix/configure.in        {2 LOC Major, 2 LOC minor, 1 LOC patch}
+   --  win/configure.in {as above}
+   --  win/tcl.m4               {not patchlevel}
+   --  win/makefile.vc  {not patchlevel} 2 LOC
+   --  win/pkgIndex.tcl {not patchlevel, for tclregNN.dll}
+   --  README           {sections 0 and 2}
+   --  mac/README               {2 LOC, not patchlevel}
+   --  win/README.binary        {sections 0-4}
+   --  win/README               {not patchlevel} {sections 0 and 2}
+   --  unix/README              {not patchlevel} {part {h}}
+   --  tests/basic.test {not patchlevel} {version checks}
+   --  tools/tcl.hpj.in {not patchlevel, for windows installer}
    --  tools/tcl.wse.in {for windows installer}
+   --  tools/tclSplash.bmp      {not patchlevel}
    --
 
    TCL_MAJOR_VERSION              : constant := 8;
-   TCL_MINOR_VERSION              : constant := 2;
+   TCL_MINOR_VERSION              : constant := 3;
    TCL_RELEASE_LEVEL              : constant String := "TCL_FINAL_RELEASE";
    TCL_RELEASE_SERIAL             : constant := 0;
-   TCL_VERSION                    : constant String := "8.2";
-   TCL_PATCH_LEVEL                : constant String := "8.2.0";
+   TCL_VERSION                    : constant String := "8.3";
+   TCL_PATCH_LEVEL                : constant String := "8.3.0";
    --
    --  The following definitions set up the proper options for Windows
    --  compilers.  We use this method because there is no autoconf equivalent.
@@ -172,6 +175,12 @@ package Tcl is
    --  Definitions that allow this header file to be used either with or
    --  without ANSI C features like function prototypes.
    --
+
+   --
+   --  Make sure extern isn't defined elsewhere
+   --
+
+   -- extern
 
    --
    --  Macro to use instead of "void" for arguments that must have
@@ -406,19 +415,40 @@ package Tcl is
    --  entire string.
    --
 
-   type Tcl_RegExpIndices_Rec is private;
-   type Tcl_RegExpIndices is access all Tcl_RegExpIndices_Rec;
-   pragma Convention (C, Tcl_RegExpIndices);
+   type Tcl_RegExpIndices_Rec is
+      record
+         Start : C.Long;    -- character offset of first character in match
+         E_n_d : C.Long;    -- character offset of first character after the
+                            -- match.
+      end record;
 
-   Null_Tcl_RegExpIndices : constant Tcl_RegExpIndices;
+   type Tcl_RegExpIndices_Array is array (CArgv.CNatural range <>) of
+      aliased Tcl_RegExpIndices_Rec;
 
-   function Is_Null (Ptr : in Tcl_RegExpIndices) return Boolean;
+   package Tcl_RegExpIndices_Pointer is new C.Pointers (
+      Index              => CArgv.CNatural,
+      Element            => Tcl_RegExpIndices_Rec,
+      Element_Array      => Tcl_RegExpIndices_Array,
+      Default_Terminator => (0, 0));
 
-   type Tcl_RegExpInfo_Rec is private;
+   subtype Tcl_RegExpIndices is Tcl_RegExpIndices_Pointer.Pointer;
+
+   type Tcl_RegExpInfo_Rec is
+      record
+         nsubs           : C.Int;        -- number of subexpressions in the
+                                         -- compiled expression
+         matches         : Tcl_RegExpIndices;
+                                         -- array of nsubs match offset
+                                         -- pairs
+         extendStart     : C.Long;       -- The offset at which a subsequent
+                                         -- match might begin.
+         reserved        : C.Long;       -- Reserved for later use.
+      end record;
+
    type Tcl_RegExpInfo is access all Tcl_RegExpInfo_Rec;
    pragma Convention (C, Tcl_RegExpInfo);
 
-   Null_Tcl_RegExpInfo : constant Tcl_RegExpInfo;
+   Null_Tcl_RegExpInfo : constant Tcl_RegExpInfo := null;
 
    function Is_Null (Ptr : in Tcl_RegExpInfo) return Boolean;
 
@@ -791,7 +821,7 @@ package Tcl is
    --
    --  The following definitions support Tcl's namespace facility.
    --  Note: the first five fields must match exactly the fields in a
-   --  Namespace structure {see tcl.h}.
+   --  Namespace structure {see tclInt.h}.
    --
 
    type Tcl_Namespace_Rec is private;
@@ -1625,13 +1655,6 @@ package Tcl is
    --  implementation in the main library in case an extension is statically
    --  linked into an application.
    --
-
-   function Tcl_InitStubs (
-      interp          : in Tcl_Interp;
-      version         : in C.Strings.Chars_Ptr;
-      exact           : in C.Int
-   ) return C.Strings.Chars_Ptr;
-   pragma Import (C, Tcl_InitStubs, "Tcl_InitStubs");
 
    --
    --  When not using stubs, make it a macro.
@@ -3063,7 +3086,7 @@ package Tcl is
    procedure Tcl_GetOpenFile (
       interp          : in Tcl_Interp;
       str             : in C.Strings.Chars_Ptr;
-      write           : in C.Int;
+      forWriting      : in C.Int;
       checkUsage      : in C.Int;
       fileptr         : in ClientData
    );
@@ -3370,6 +3393,11 @@ package Tcl is
    );
    pragma Import (C, Tcl_PrintDouble, "Tcl_PrintDouble");
 
+   procedure Tcl_PrintObj (
+      Ptr : in Tcl_Obj
+   );
+   pragma Import (C, Tcl_PrintObj, "Tcl_PrintObj");
+
    -- 203
 
    function Tcl_PutEnv (
@@ -3622,7 +3650,6 @@ package Tcl is
       str             : in C.Strings.Chars_Ptr;
       freeProc        : in Tcl_FreeProc
    );
-   pragma Import (C, Tcl_SetResult, "Tcl_SetResult");
 
    procedure Tcl_SetResult (
       interp          : in Tcl_Interp;
@@ -4911,6 +4938,24 @@ package Tcl is
    ) return C.Int;
    pragma Import (C, Tcl_GetChannelNames, "Tcl_GetChannelNames");
 
+   -- 389
+
+   function Tcl_GetChannelNamesEx (
+      interp          : in Tcl_Interp;
+      pattern         : in C.Strings.Chars_Ptr
+   ) return C.Int;
+   pragma Import (C, Tcl_GetChannelNamesEx, "Tcl_GetChannelNamesEx");
+
+   -- 390
+
+   function Tcl_ProcObjCmd (
+      data            : in ClientData;
+      interp          : in Tcl_Interp;
+      objc            : in C.Int;
+      objv            : in Tcl_Obj_Array
+   ) return C.Int;
+   pragma Import (C, Tcl_ProcObjCmd, "Tcl_ProcObjCmd");
+
    -- defined {USE_TCL_STUBS} && !defined {USE_TCL_STUB_PROCS}
 
    -- !END!: Do not edit above this line.
@@ -5331,34 +5376,6 @@ private
 
    type Tcl_RegExp_rec is null record;
    Null_Tcl_RegExp : constant Tcl_RegExp := null;
-
-   type Tcl_RegExpIndices_rec is
-      record
-         start           : C.Long;
-         -- character offset of first character in match
-         e_n_d           : C.Long;
-         -- character offset of first character after the
-         -- match.
-      end record;
-
-   Null_Tcl_RegExpIndices : constant Tcl_RegExpIndices := null;
-
-   type Tcl_RegExpInfo_rec is
-      record
-         nsubs           : C.Int;
-         -- number of subexpressions in the
-         -- compiled expression
-         matches         : Tcl_RegExpIndices;
-         -- array of nsubs match offset
-         -- pairs
-         extendStart     : C.Long;
-         -- The offset at which a subsequent
-         -- match might begin.
-         reserved        : C.Long;
-         -- Reserved for later use.
-      end record;
-
-   Null_Tcl_RegExpInfo : constant Tcl_RegExpInfo := null;
 
    type Tcl_SavedResult_rec is
       record

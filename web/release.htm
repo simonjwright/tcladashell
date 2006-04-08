@@ -1,7 +1,3 @@
-<!-- Header; be sure to edit <head> description, keywords, and title.
-     It'd be nice if we could do this with an include file or macro.
-     Perhaps we can someday do this with an XML element or entity. -->
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Final//EN">
 <html>
 <head>
@@ -10,6 +6,7 @@
   <meta name="keywords" content="release notes, TASH, Ada, binding, Tcl/Tk">
   <TITLE>TASH Release Notes</TITLE>
   <LINK REL="stylesheet" TYPE="text/css" HREF="tash.css">
+  <SCRIPT LANGUAGE="JavaScript1.2" SRC="inithiermenu.js" TYPE="text/javascript"></SCRIPT>
 </head>
 
 <BODY>
@@ -29,110 +26,66 @@
     <td colspan="3"> <h2> Release Notes </h2></td>
     </tr>
 
-  <!-- Body of Page (includes navigation and page content) -->
-  <tr>
+<!-- Body of Page (includes navigation and page content) -->
+<tr>
 
-    <!-- Site Index (left column) -->
-    <td valign="top">
-      <div align=left class="nav">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <th> TASH </th>
-          </tr>
-        <tr>
-          <td> <a href="index.htm"> Home </a></td>
-          </tr>
-        <tr>
-          <td> <a href="tash.htm">Introduction&nbsp;to&nbsp;TASH</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="download.htm">Download&nbsp;Now</A></td>
-          </tr>
-        <tr>
-          <td> <a href="license.htm">TASH&nbsp;Software&nbsp;License</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="release.htm">Release&nbsp;Notes</A></td>
-          </tr>
-        <tr>
-          <td> <a href="docs/README.htm">Documentation Index</a></td>
-          </tr>
-        <tr>
-          <td> <a href="unix.htm">Install&nbsp;and&nbsp;Build&nbsp;Unix</a></td>
-          </tr>
-        <tr>
-          <td> <a href="windows.htm">Install&nbsp;and&nbsp;Build&nbsp;Windows</a></td>
-          </tr>
-        <tr>
-          <td> <a href="maillist.htm">Mailing&nbsp;List</a></td>
-          </tr>
-        <tr>
-          <th> Tcl/Tk</th>
-          </tr>
-        <tr>
-          <td> <a href="http://www.scriptics.com/">Scriptics&nbsp;Home</a></td>
-          </tr>
-        <tr>
-          <td> <a href="http://www.scriptics.com/scripting/scripting.html">
-               Scriptics&#146;&nbsp;Intro&nbsp;to&nbsp;Tcl/Tk</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.tclconsortium.org/">Tcl/Tk&nbsp;Consortium</A></td>
-          </tr>
-        <!--tr>
-          <td> Books</td>
-          </tr-->
-        <tr>
-          <th> Ada</th>
-          </tr>
-        <tr>
-          <td> <a href="http://www.adahome.com">Ada&nbsp;Home</a></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.adahome.com/FAQ/">
-               FAQ&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.adahome.com/Tutorials/Lovelace/lovelace.html">
-               Tutorial&nbsp;at&nbsp;Ada&nbsp;Home</A></td>
-          </tr>
-        <tr>
-          <td> <A HREF="http://www.acm.org/sigada/">ACM&nbsp;SIGAda</A></td>
-          </tr>
-        <!--tr>
-          <td> Books</td>
-          </tr-->
-      </table>
-      </div>
-      </td>
+  <!-- Site Index (left column) -->
+  <td valign="top">
+    <SCRIPT LANGUAGE='JavaScript' SRC='siteindex.js'></SCRIPT>
+    <SCRIPT LANGUAGE='JavaScript' SRC='chaser.js'></SCRIPT>
+    </td>
     
-    <!-- Body text left margin -->
-    <td width="20"> &nbsp;
+  <!-- Body text left margin -->
+  <td width="20"> &nbsp;
 
-    <!-- Body text -->
-    <td valign="top" colspan="2" width="535">            
+  <!-- Body text -->
+  <td valign="top" colspan="2" width="535">            
 
-      <div align=left class="body">
+  <div align=left class="body">
       
 <!-- Page content -->
+
+<h3>8.3.1b, 01-Oct-2000</h3>
+
+<P> TASH version 8.3.1b supports Tcl/Tk version 8.3.1 and was compiled
+with GNAT 3.12p. See the <A
+HREF="http://dev.scriptics.com/software/8.3.html">Scriptics Tcl/Tk</A>
+site for information on new features Tcl/Tk 8.3.1.</P>
+
+<p> First full release of the TASH thick binding to Tcl.  For more
+information on this new binding, see <a href="tash.htm">Introduction
+to TASH</a>. If you have been using the preliminary thick binding,
+note that TASH object types string, integer and float
+were removed in favor of using Ada string, generic integer and
+float types.</p>
+
+<p> TASH is now available with pre-compiled Windows binary libraries
+(libtcl82.a and libtk82.a).</p>
+
+<p> Removed the <b>lib</b> directory which was used as a GNAT
+Ada library in order to simplify the build procedures.  You can
+still build a GNAT library yourself by copying the .ali, .ads,
+and .o files to a separate directory.</p>
+
+<p> Removed extra import of <b>Tcl_SetResult</b> in <b>tcl.ads</b>.</p>
 
 <h3>8.2.0a, 15-Nov-1999</h3>
 
 <P> TASH version 8.2.0a supports Tcl/Tk version 8.2.  See the <A
-HREF="http://www.scriptics.com/software/8.1.html">Scriptics Tcl/Tk</A>
+HREF="http://dev.scriptics.com/software/8.2.html">Scriptics Tcl/Tk</A>
 site for information on new features Tcl/Tk 8.2.</P>
 
-<P> The big news in this release is that the preliminary version of the new
-thick binding to Tcl is available.&nbsp; There are thick bindings for Tcl
-integers, floats, strings, lists, and regular expressions.&nbsp; Access to the
-Tcl interpreter is now task-safe through use of a protected type.&nbsp; Also,
-all TASH objects (integers, floats, strings, and lists) are controlled types so
-memory is properly freed when you leave scope or there are no more references to
-an object.</P>
+<P> The big news in this release is that the preliminary version of
+the new thick binding to Tcl is available. There are thick bindings
+for Tcl integers, floats, strings, lists, and regular
+expressions. Access to the Tcl interpreter is now task-safe through
+use of a protected type. Also, all TASH objects (integers, floats,
+strings, and lists) are controlled types so memory is properly freed
+when you leave scope or there are no more references to an object.</P>
 
 <P> TASH now builds a TASH library.  This library is made up of a Unix-style
 archive file and all the .ali and .ads files necessary to build TASH
-applications.&nbsp; Note this applies only to GNAT compilations.</P>
+applications. Note this applies only to GNAT compilations.</P>
 
 <P> Upon initial setup of TASH, you may now choose whether to use the
 popular &quot;pragma Linker_Options&quot; method for specifying linker
@@ -142,133 +95,103 @@ you've chosen.  Even if you don't use the makefiles for building TASH,
 you can still take advantage of the creation of the TASH linker
 options package.</P>
 	   
-<P> For those who might still be using older versions of Tcl/Tk (here at
-Calspan, we're stuck at 7.6/4.2!), <A HREF="download.htm#Archive">older versions
-of TASH</A> are now available online.</P>
+<P> For those who might still be using older versions of Tcl/Tk (for
+example, at my place of employment, we're still stuck at 7.6/4.2!), <A
+HREF="download.htm#Archive">older versions of TASH</A> are now
+available online.</P>
 	   
-<i>Need list of bugs fixed here.</i>
-
 <h3>8.0.2, 02-Jun-1998</h3>
 
-Minor fixes to the TASH web site pages.  No code changes.
+<p>Minor fixes to the TASH web site pages.  No code changes.</p>
 
 <h3>8.0.1, 22-May-1998</h3>
 
-Upgraded Windows 95 version to Tcl/Tk 8.0.<p>
+<p>Upgraded Windows 95 version to Tcl/Tk 8.0.</p>
 
-Improved test and demo directory makefiles to remove
+<p>Improved test and demo directory makefiles to remove
 Unix dependencies on commands deroff and diff.  This
 was done by writing the Ada programs, wordify and compare.
 Now, Win95 users can use these programs to verify that
-the test and demo programs are working properly.<p>
+the test and demo programs are working properly.</p>
 
-Added a thin binding to Tk in package <b>Tcl.Tk</b>.
+<p>Added a thin binding to Tk in package <b>Tcl.Tk</b>.
 This implements an almost complete binding to <b>tk.h</b>.
 I say &quot;almost&quot; because references to X data types and all
 subprograms which use them have <strong>not</strong>
-been implemented.<p>
+been implemented.</p>
 
-The thick binding to Tk has now been moved to package <b>Tcl.Tk.Ada</b>
+<p>The thick binding to Tk has now been moved to package <b>Tcl.Tk.Ada</b>
 to accomodate the thin binding in package <b>Tcl.Tk</b>.
 Unfortunately, this will force you to change a few references
-to <b>Tcl.Tk</b> to reference <b>Tcl.Tk.Ada</b> instead.<p>
+to <b>Tcl.Tk</b> to reference <b>Tcl.Tk.Ada</b> instead.</p>
 
-Bug Fix: Corrected procedure Free in cargv.adb. It was going
+<p>Bug Fix: Corrected procedure Free in cargv.adb. It was going
 into a recursive loop calling itself from which it could
-never return.<p>
+never return.</p>
 
-Bug Fix: Corrected function &quot;&amp;&quot; in cargv.adb.
+<p>Bug Fix: Corrected function &quot;&amp;&quot; in cargv.adb.
 It was not correctly constructing the concatenated array
-of strings.<p>
+of strings.</p>
 
 <h3>8.0.0, 16-Sep-1997</h3>
 
-Upgraded to Tcl/Tk 8.0<p>
+<p>Upgraded to Tcl/Tk 8.0</p>
 
-Unfortunately, this release does not yet support Windows 95.  You
-must use version 7.6.1 for Windows 95.<p>
+<p>Unfortunately, this release does not yet support Windows 95.  You
+must use version 7.6.1 for Windows 95.</p>
 
-Removed Tcl_Alloc, Tcl_Free, and Tcl_Realloc in the entire
+<p>Removed Tcl_Alloc, Tcl_Free, and Tcl_Realloc in the entire
 binding: we don't want Tcl going about allocating and freeing
-memory beyond Ada's control<p>
+memory beyond Ada's control</p>
  
-Bug Fix: Corrected function &quot;=&quot; renames in cargv.adb <p>
+<p>Bug Fix: Corrected function &quot;=&quot; renames in cargv.adb </p>
 
-Bug Fix: Changed several references to Widget(Buttn) in tcl-tk.adb to
-Widget'Class(Buttn)<p>
+<p>Bug Fix: Changed several references to Widget(Buttn) in tcl-tk.adb to
+Widget'Class(Buttn)</p>
 
-Bug Fix: Referenced deallocated memory in twash<p>
+<p>Bug Fix: Referenced deallocated memory in twash</p>
 
-Changed the way Ada strings are converted to C strings in
-tcl-ada.adb to reduce memory leaks<p>
+<p>Changed the way Ada strings are converted to C strings in
+tcl-ada.adb to reduce memory leaks</p>
 
 <h3>7.6.1, 16-Sep-1997</h3>
 
-First version to support Windows 95.<p>
+<p>First version to support Windows 95.</p>
 
-Even so, there are still problems: twash.exe is not
+<p>Even so, there are still problems: twash.exe is not
 interactive and both tash.exe and twash.exe crash when they are
-terminated.<p>
+terminated.</p>
 
 <h3>7.6.0, 25-Nov-1996</h3>
 
-This version of TASH is compatible with Tcl 7.6 and Tk 4.2. <p>
+<p>This version of TASH is compatible with Tcl 7.6 and Tk 4.2. </p>
 
-Changed version numbering system to include the Tcl version with
-which TASH is compatible. <p>
+<p>Changed version numbering system to include the Tcl version with
+which TASH is compatible. </p>
 
-Converted to two layer binding in which &quot;thin&quot; binding
+<p>Converted to two layer binding in which &quot;thin&quot; binding
 is in the package Tcl and the &quot;thick&quot; binding is in the
 package &quot;Tcl.Ada.&quot; This makes it easier to keep up with
 the latest version of Tcl because the Tcl package is now a direct
 translation from tcl.h. It also makes disambiguation of overloaded
-calls easier since they are now in different packages. <p>
+calls easier since they are now in different packages. </p>
 
-Now using an automatic tcl.h header file to Ada translator. This
+<p>Now using an automatic tcl.h header file to Ada translator. This
 is not a general purpose C to Ada translator. This will also make
-it easier to keep up with the latest version of Tcl. <p>
+it easier to keep up with the latest version of Tcl. </p>
 
 <h3>1.1b1, 23-Apr-1996</h3>
 
-Added very limited capability to support Tk by providing an import
-of Tk_Main. Had to use Tk_Eval to execute Tk commands. <p>
+<p>Added very limited capability to support Tk by providing an import
+of Tk_Main. Had to use Tk_Eval to execute Tk commands. </p>
 
 <h3>1.0b1</h3>
 
-First public release of TASH<p>
-<!-- Footer; wish we could do this with an include file. -->
+<p>First public release of TASH</p>
 
-      </div>
+<!-- footer -->
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="footer.js" TYPE="text/javascript"></SCRIPT>
 
-      </td>
-
-    <!-- Body text right margin -->
-    <td width="20"> &nbsp;</td>
-
-    </tr>
-
-  <!-- Signature -->
-  <tr class="sig">
-    <th> &nbsp; Author  </th>
-    <th> &nbsp;         </th>
-    <th> E-Mail Address </th>
-    <th> Last Revised   </th>
-    <th> &nbsp;         </th>
-    </tr>
-  <tr class="sig">
-    <td> &nbsp; Terry J. Westley </td>
-    <td> &nbsp;                  </td>
-    <td> <a href="mailto:twestley@buffalo.veridian.com">
-         twestley@buffalo.veridian.com</a> </td>
-    <td> <script language="JavaScript"><!--
-           // hide script code from old browsers
-           document.write(document.lastModified);
-           // end script hiding
-           // -->
-         </script> </td>
-    <td> &nbsp; </td>
-    </tr>
 </table>
-
 </body>
 </html>

@@ -9,7 +9,7 @@
 --               this package contains the parent Tash data type,
 --               Tash_Object.
 --
--- Copyright (c) 1999 Terry J. Westley
+-- Copyright (c) 1999-2000 Terry J. Westley
 --
 -- Tash is free software; you can redistribute it and/or modify it under
 -- terms of the GNU General Public License as published by the Free
@@ -59,10 +59,13 @@
 
 with Ada.Exceptions;
 with Ada.Finalization;
+with Ada.Strings.Unbounded;
 with Interfaces.C;
 with Tcl;
 
 package Tash is
+
+   Tcl_Error : exception;
 
    --------------------------------------------------------
    -- Tash_Object is the base type of all Tash types.  It is
@@ -111,8 +114,8 @@ package Tash is
    function Internal_Rep (
       TObject : in Tash_Object) return String;
    -- Returns an image of the internal representation,
-   -- including the string representation, identity, tag,
-   -- and reference count.
+   -- including the string representation, tag, and
+   -- reference count.
 
    function Type_Of (
       TObject : in Tash_Object'Class) return String;
@@ -131,9 +134,10 @@ private
 
    type Tash_Object is abstract new Ada.Finalization.Controlled with
       record
-         Obj : Tcl.Tcl_Obj;
+         Obj  : Tcl.Tcl_Obj;
       end record;
 
+   procedure Finalize (Obj     : in out Tcl.Tcl_Obj);
    procedure Finalize (TObject : in out Tash_Object);
    procedure Adjust   (TObject : in out Tash_Object);
 
@@ -175,14 +179,22 @@ private
       Tcl_Interp : Tcl.Tcl_Interp;
       Seized     : Boolean := False;
 
+      pragma Inline (Release, Assert, Raise_Exception);
+
    end Tash_Interp;
 
    Verbose  : Boolean := False;
+
+   function Image (
+      TObject : in Tcl.Tcl_Obj) return String;
 
    function Internal_Rep (
       TObj : in Tcl.Tcl_Obj) return String;
 
    function To_Tcl_Obj (
       Str : in String) return Tcl.Tcl_Obj;
+
+   function To_Tcl_Obj (
+      Num : in Integer) return Tcl.Tcl_Obj;
 
 end Tash;

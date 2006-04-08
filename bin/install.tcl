@@ -25,7 +25,7 @@ proc usage {} {
 #----------------------------------------------------------------
 
 proc copyFile {source target verify silent exclude} {
-   if { ! [string equal $exclude ""] && [regexp $exclude $source] } {
+   if { [string compare $exclude ""] != 0 && [regexp $exclude $source] } {
       return
    }
    if [file isdirectory $source] {
@@ -86,7 +86,7 @@ proc copyDir {sourceDir targetDir verify silent exclude} {
    set sourceTail [file tail $sourceDir]
    set targetTail [file tail $targetDir]
 
-   if [string equal $sourceTail $targetTail] {
+   if {[string compare $sourceTail $targetTail] == 0} {
       if [file isdirectory $targetDir] {
          # target directory already exists and is a directory,
          # so just copy the files in $sourceDir

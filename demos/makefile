@@ -9,24 +9,40 @@ include ../makeconf
 PROGRAMS = tashell \
            twashell \
            freq \
+           freq2 \
            timer \
            futurevalue \
-           wordify \
-           compare
+           wordify
 
 all : $(PROGRAMS)
 
 $(PROGRAMS) : *.adb ../makeconf
-	gnatmake -A../lib $@ -cargs $(CC_FLAGS) \
-	   -largs $(ALL_LINK_SWITCHES)
+	gnatmake $(GARGS) $@ -cargs $(CARGS) -bargs $(BARGS) -largs $(LARGS)
 
-test : tashell freq compare wordify timer futurevalue
+test : test-timer test-fv
+
+test-timer : timer
 	./timer
+
+test-fv : futurevalue
 	./futurevalue
-	./tashell testfreq.tcl ../lib words
+
+test-freq : tashell freq freq2 wordify
+	./tashell testfreq.tcl ../src words
+
+test-freq2 : freq2
+	./freq2 < words > freq2.unsorted
+
+profile : freq
+	./freq < words > freq.unsorted
+	gprof freq gmon.out > freq.gprof
+
+profile2 : freq2
+	./freq2 < words > freq2.unsorted
+	gprof freq2 gmon.out > freq2.gprof
 
 lib :
-	@ cd ../src ; make all install
+	@ cd ../src ; make all
 
 clean :
 	@$(TCLSH) ../bin/clean.tcl words freq.*.out $(PROGRAMS)

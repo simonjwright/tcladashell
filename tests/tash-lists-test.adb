@@ -2,7 +2,7 @@
 --
 -- tash-lists-test.adb -- Routines for testing tash lists.
 --
--- Copyright (c) 1998 Terry J. Westley
+-- Copyright (c) 1998-2000 Terry J. Westley
 --
 -- See the file "license.htm" for information on usage and
 -- redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -42,8 +42,7 @@ package body Tash.Lists.Test is
             Internal_Rep (Actual_Result));
          Ada.Text_IO.Put_Line (
             " Length=" & Integer'Image (Tash.Lists.Length (Actual_Result)));
-         Ada.Text_IO.Put ("   expected=(id=N/A");
-         Ada.Text_IO.Put (", s=""" & Expected_Result);
+         Ada.Text_IO.Put ("   expected=(s=""" & Expected_Result);
          Ada.Text_IO.Put (""" t=" & Expected_Type);
          Ada.Text_IO.Put (" c=");
          Ada.Text_IO.Put (

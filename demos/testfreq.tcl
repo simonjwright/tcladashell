@@ -17,71 +17,96 @@ proc lempty {string} {
 #---------------------------
 set source_dir [lindex $argv 0]
 set words      [lindex $argv 1]
+set head       [lindex $argv 2]
 
 set pwd        [pwd]
 set wordify    [file join $pwd        wordify]
 set input_file [file join $source_dir tcl.ads]
 set tashell    [file join $pwd        tashell]
 set freq       [file join $pwd        freq]
-set compare    [file join $pwd        compare]
+set freq2      [file join $pwd        freq2]
+set compare    [file join $pwd        .. tests compare]
 
 puts stdout "Testing freq"
 
 # Delete output files
 #--------------------
 puts stdout "   Deleting output files..."
-file delete $words freq.tcl.out freq.ada.out freq.perl.out
+file delete $words freq.tcl.out freq.ada.out freq.perl.out freq2.ada.out
 
 # Prepare file of words
 #----------------------
 puts stdout "   Preparing file of words..."
-exec $wordify < $input_file > $words
+if [lempty $head] {
+    exec $wordify < $input_file > $words
+} else {
+    # catch PROGRAM_ERROR from wordify
+    catch {exec $wordify < $input_file | head -$head > $words}
+}
 
 # Execute Tcl script version
 #---------------------------
 puts stdout "   Executing Tcl script version..."
-set tcl_time [time "exec $tashell freq.tcl < $words | sort > freq.tcl.out" 1]
+set tcl_time [time "exec $tashell freq.tcl < $words > freq.unsorted" 1]
+exec /bin/sort freq.unsorted > freq.tcl.out
 
 # Execute Ada version
 #--------------------
 puts stdout "   Executing Ada version..."
-set ada_time [time "exec $freq < $words | sort > freq.ada.out" 1]
+set ada_time [time "exec $freq < $words > freq.unsorted" 1]
+exec /bin/sort freq.unsorted > freq.ada.out
+
+# Execute Ada version 2
+#----------------------
+puts stdout "   Executing Ada version 2..."
+set ada_time2 [time "exec $freq2 < $words > freq2.unsorted" 1]
+exec /bin/sort freq.unsorted > freq2.ada.out
 
 # Execute Perl version
 #---------------------
 puts stdout "   Executing Perl version..."
 if [catch {
-   time "exec perl freq.pl < $words | sort > freq.perl.out" 1
-} perl_time] {
-    puts stdout "      $perl_time"
-    unset perl_time
+    set perl_time [time "exec perl freq.pl < $words > freq.unsorted" 1]
+   exec /bin/sort freq.unsorted > freq.perl.out
+} error] {
+    puts stdout "      $error"
+    set perl_time 0
 }
 
 # Compare outputs of both versions
 #---------------------------------
 puts stdout "   Comparing outputs..."
 catch {exec $compare freq.tcl.out freq.ada.out} diff
+catch {exec $compare freq.tcl.out freq2.ada.out} diff2
 catch {exec $compare freq.tcl.out freq.perl.out} perldiff
-if {[lempty $diff] && [lempty $perldiff]} {
+if {[lempty $diff] && [lempty $diff2] && [lempty $perldiff]} {
    puts stdout "Freq test PASSED"
-} elseif { ! [lempty $diff] } {
-   puts stdout "Tcl Freq test FAILED: $diff"
-} elseif { ! [lempty $perldiff] } {
-   puts stdout "Perl Freq test FAILED: $perldiff"
+} else {
+   if { ! [lempty $diff] } {
+      puts stdout "Ada Freq test FAILED: $diff"
+   }
+   if { ! [lempty $diff2] } {
+      puts stdout "Ada Freq 2 test FAILED: $diff2"
+   }
+   if { ! [lempty $perldiff] } {
+      puts stdout "Perl Freq test FAILED: $perldiff"
+   }
 }
 
 # Display timing results
 #-----------------------
 set tcl_time [expr [lindex $tcl_time 0] / 1000000.0]
-puts stdout [format "   Elapsed time for executing Tcl version:  \
+puts stdout [format "   Elapsed time for executing Tcl version:     \
    %6.2f seconds" $tcl_time]
 
 set ada_time [expr [lindex $ada_time 0] / 1000000.0]
-puts stdout [format "   Elapsed time for executing Ada version:  \
+puts stdout [format "   Elapsed time for executing Ada version:     \
    %6.2f seconds" $ada_time]
 
-if [info exists perl_time] {
-   set perl_time [expr [lindex $perl_time 0] / 1000000.0]
-   puts stdout [format "   Elapsed time for executing Perl version: \
-      %6.2f seconds" $perl_time]
-}
+set ada_time2 [expr [lindex $ada_time2 0] / 1000000.0]
+puts stdout [format "   Elapsed time for executing Ada version 2:   \
+   %6.2f seconds" $ada_time2]
+
+set perl_time [expr [lindex $perl_time 0] / 1000000.0]
+puts stdout [format "   Elapsed time for executing Perl version:    \
+   %6.2f seconds" $perl_time]

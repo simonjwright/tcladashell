@@ -3,7 +3,7 @@
 -- cargv.ads -- Create C-style "argv" vectors from strings and
 --              Ada.Command_Line.
 --
--- Copyright (c) 1995-1997 Terry J. Westley
+-- Copyright (c) 1995-2000 Terry J. Westley
 --
 -- See the file "license.htm" for information on usage and
 -- redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.

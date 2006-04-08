@@ -5,7 +5,7 @@
 --                operations available for manipulating Ada strings in
 --                Ada.Strings.Fixed.
 --
--- Copyright (c) 1995-1997 Terry J. Westley
+-- Copyright (c) 1995-2000 Terry J. Westley
 --
 -- See the file "license.htm" for information on usage and
 -- redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
