@@ -19,137 +19,137 @@ exec wish $0 $@
 #------------------------------------------------
 
 proc cequal {left right} {
-   return [expr [string compare $left $right] == 0]
+    return [expr [string compare $left $right] == 0]
 }
 
 proc lempty {string} {
-   return [expr [string length $string] == 0]
+    return [expr [string length $string] == 0]
 }
 
 proc setvar {name value comments} {
-   global tashvar tashorder tashcomments
-   set tashvar($name) $value
-   set tashcomments($name) $comments
-   lappend tashorder $name
+    global tashvar tashorder tashcomments
+    set tashvar($name) $value
+    set tashcomments($name) $comments
+    lappend tashorder $name
 }
 
 # Write makefile macro
 #---------------------
 proc WriteOneMacro {f name value comments} {
-   foreach line [split $comments "\n"] {
-      puts $f [string trimleft $line]
-   }
-   puts $f [format "%-18s = %s" $name $value]
+    foreach line [split $comments "\n"] {
+	puts $f [string trimleft $line]
+    }
+    puts $f [format "%-18s = %s" $name $value]
 }
 
 # Create linker options package
 #------------------------------
 proc CreateLinkerOptions {} {
-   global tashvar
-
-   set filename [file join src tash_linker_options.ads]
-
-   if [catch {open $filename w} f] {
-      set text "Couldn't create linker options package because $f"
-      tk_messageBox -icon error -message $text \
-	 -parent . -title Error -type ok
-      return
-   }
-
-   puts $f "package TASH_Linker_Options is"
-   foreach macro [list LARGS] {
-      foreach option $tashvar($macro) {
-	 # substitute value of embedded macros
-	 if [regexp {\$\(([^)]*)\)} $option dummy embeddedMacro] {
-	    regsub {\$\([^)]*\)} $option $tashvar($embeddedMacro) option
-	 }
-	 # write the option as a Linker_Options pragma
-	 puts $f "   pragma Linker_Options (\"$option\");"
-      }
-   }
-   puts $f "end TASH_Linker_Options;"
-   close $f
+    global tashvar
+    
+    set filename [file join src tash_linker_options.ads]
+    
+    if [catch {open $filename w} f] {
+	set text "Couldn't create linker options package because $f"
+	tk_messageBox -icon error -message $text \
+	    -parent . -title Error -type ok
+	return
+    }
+    
+    puts $f "package TASH_Linker_Options is"
+    foreach macro [list LARGS] {
+	foreach option $tashvar($macro) {
+	    # substitute value of embedded macros
+	    if [regexp {\$\(([^)]*)\)} $option dummy embeddedMacro] {
+		regsub {\$\([^)]*\)} $option $tashvar($embeddedMacro) option
+            }
+            # write the option as a Linker_Options pragma
+            puts $f "   pragma Linker_Options (\"$option\");"
+        }
+    }
+    puts $f "end TASH_Linker_Options;"
+    close $f
 }
 
 # Edit tcl.adb to "with" the linker options package
 #--------------------------------------------------
 proc EditSourceFile {} {
-   global tashvar
-
-   set pwd [pwd]
-   cd src
-
-   set errorPrefix "Couldn't edit tcl.adb to with linker options\
+    global tashvar
+    
+    set pwd [pwd]
+    cd src
+    
+    set errorPrefix "Couldn't edit tcl.adb to with linker options\
       package because"
-
-   if [catch {
-
-      if { ! [file exists tcl.adb.orig] } {
-	 file copy -force tcl.adb tcl.adb.orig
-      }
-      set inputFileName  tcl.adb.orig
-      set outputFileName tcl.adb
-
-      # open input file
-      #-----------------
-      if [catch {open $inputFileName r} ifid] {
-	 tk_messageBox -icon error -message "$errorPrefix $ifid" \
-	    -parent . -title Error -type ok
-	 return
-      }
-
-      # open output file
-      #-----------------
-      if [catch {open $outputFileName w} ofid] {
-	 tk_messageBox -icon error -message "$errorPrefix $ofid" \
-	    -parent . -title Error -type ok
-	 return
-      }
-
-      # Read input file and copy to output file 'til we find line
-      # that contains start of the package body.  Insert "with" for
-      # tash linker options package, then break out.
-      #--------------------------------------------------------------
-      while {[gets $ifid line] >= 0} {
-	 set lcline [string tolower $line]
-	 if [regexp "^ *package +body +tcl +is" $lcline] {
-	    puts $ofid "with TASH_Linker_Options;"
-	    puts $ofid ""
+    
+    if [catch {
+	
+	if { ! [file exists tcl.adb.orig] } {
+	    file copy -force tcl.adb tcl.adb.orig
+	}
+	set inputFileName  tcl.adb.orig
+	set outputFileName tcl.adb
+	
+	# open input file
+	#-----------------
+	if [catch {open $inputFileName r} ifid] {
+	    tk_messageBox -icon error -message "$errorPrefix $ifid" \
+		-parent . -title Error -type ok
+	    return
+	}
+	
+	# open output file
+	#-----------------
+	if [catch {open $outputFileName w} ofid] {
+	    tk_messageBox -icon error -message "$errorPrefix $ofid" \
+		-parent . -title Error -type ok
+	    return
+	}
+	
+	# Read input file and copy to output file 'til we find line
+	# that contains start of the package body.  Insert "with" for
+	# tash linker options package, then break out.
+	#--------------------------------------------------------------
+	while {[gets $ifid line] >= 0} {
+	    set lcline [string tolower $line]
+	    if [regexp "^ *package +body +tcl +is" $lcline] {
+		puts $ofid "with TASH_Linker_Options;"
+		puts $ofid ""
+		puts $ofid $line
+		break
+	    } 
 	    puts $ofid $line
-	    break
-	 } 
-	 puts $ofid $line
-      }
-
-      # Finish copying input to output
-      #-------------------------------
-      while {[gets $ifid line] >= 0} {
-	 puts $ofid $line
-      }
-
-      close $ifid
-      close $ofid
-
-   } error] {
-      tk_messageBox -icon error -message "$errorPrefix $error" \
-	 -parent . -title Error -type ok
-   }
-
-   # We're done so return to the original working directory
-   #-------------------------------------------------------
-   cd $pwd
+	}
+	
+	# Finish copying input to output
+	#-------------------------------
+	while {[gets $ifid line] >= 0} {
+	    puts $ofid $line
+	}
+	
+	close $ifid
+	close $ofid
+	
+    } error] {
+	tk_messageBox -icon error -message "$errorPrefix $error" \
+	    -parent . -title Error -type ok
+    }
+    
+    # We're done so return to the original working directory
+    #-------------------------------------------------------
+    cd $pwd
 }
 
 # Create the makeconf file
 #--------------------------------
 proc Createmakefile {makefile} {
-   global tashorder tashvar tashcomments useLinkerOptions link_switches
-   if [catch {open $makefile w} makefid] {
-      puts stderr $makefid
-      exit
-   }
-   puts $makefid "#$makefile"
-   puts $makefid \
+    global tashorder tashvar tashcomments useLinkerOptions link_switches
+    if [catch {open $makefile w} makefid] {
+	puts stderr $makefid
+	exit
+    }
+    puts $makefid "#$makefile"
+    puts $makefid \
 {#####################################################
 #
 # This file, makeconf, contains macros used to
@@ -161,54 +161,54 @@ proc Createmakefile {makefile} {
 #
 #####################################################}
 
-   foreach name $tashorder {
-      WriteOneMacro $makefid $name $tashvar($name) $tashcomments($name)
-   }
+    foreach name $tashorder {
+	WriteOneMacro $makefid $name $tashvar($name) $tashcomments($name)
+    }
 
-   WriteOneMacro $makefid USE_LINKER_OPTIONS $useLinkerOptions {
-      # Specifies whether to use pragma Linker_Options build method}
+    WriteOneMacro $makefid USE_LINKER_OPTIONS $useLinkerOptions {
+	# Specifies whether to use pragma Linker_Options build method}
 
-   if $useLinkerOptions {
-      WriteOneMacro $makefid TASH_LINKER_OPTIONS tash_linker_options.ads {
-	 # Source file containing TASH linker options}
-      WriteOneMacro $makefid LARGS "" {
-	 # All link switches macro is empty because we are
-	 # using pragma Linker_Options method}
+    if $useLinkerOptions {
+	WriteOneMacro $makefid TASH_LINKER_OPTIONS tash_linker_options.ads {
+	  # Source file containing TASH linker options}
+        WriteOneMacro $makefid LARGS "" {
+	  # All link switches macro is empty because we are
+	  # using pragma Linker_Options method}
 	  
-   } else {
-      WriteOneMacro $makefid TASH_LINKER_OPTIONS "" {
-	 # There is no source file containing TASH linker options}
-      WriteOneMacro $makefid LARGS $link_switches {
-	 # All link switches for TASH, Tcl, and Tk}
-   }
+    } else {
+	WriteOneMacro $makefid TASH_LINKER_OPTIONS "" {
+	    # There is no source file containing TASH linker options}
+	WriteOneMacro $makefid LARGS $link_switches {
+	    # All link switches for TASH, Tcl, and Tk}
+    }
 
-   catch {close $makefid}
+    catch {close $makefid}
 }
 
 # Implement Save button command.  Creates makefile and
 # optionally creates linker options package.
 #-----------------------------------------------------
 proc Save {g} {
-   global tashorder tashvar useLinkerOptions makefile tcl_platform
-   set row 0
-   foreach name $tashorder {
-      set w [string tolower $name]
-      set tashvar($name) [$g.$w-entry get]
-      incr row
-   }
-   Createmakefile $makefile
-   if $useLinkerOptions {
-      CreateLinkerOptions
-      EditSourceFile
-   } else {
-      # restore original tcl.adb file, if necessary
-      set pwd [pwd]
-      cd src
-      if [file exists tcl.adb.orig] {
-	 file copy -force tcl.adb.orig tcl.adb
-      }
-      cd $pwd
-   }
+    global tashorder tashvar useLinkerOptions makefile tcl_platform
+    set row 0
+    foreach name $tashorder {
+	set w [string tolower $name]
+	set tashvar($name) [$g.$w-entry get]
+	incr row
+    }
+    Createmakefile $makefile
+    if $useLinkerOptions {
+	CreateLinkerOptions
+	EditSourceFile
+    } else {
+	# restore original tcl.adb file, if necessary
+	set pwd [pwd]
+	cd src
+	if [file exists tcl.adb.orig] {
+	    file copy -force tcl.adb.orig tcl.adb
+	}
+	cd $pwd
+    }
 }
 
 proc fileDialog {w ent title initial} {
@@ -216,7 +216,7 @@ proc fileDialog {w ent title initial} {
 	{"All files" *}
     }
     set file [tk_getOpenFile -filetypes $types -parent $w \
-       -initialdir $initial -title $title]
+		  -initialdir $initial -title $title]
     if [string compare $file ""] {
 	$ent delete 0 end
 	$ent insert 0 $file
@@ -227,125 +227,136 @@ proc fileDialog {w ent title initial} {
 # Establish values for all macros depending on platform
 #------------------------------------------------------
 proc Set_Macros {platform os osVersion} {
-   global tcl_version tk_version tcl_interactive tcl_library tk_library env
-   global link_switches
+    global tcl_version tk_version tcl_interactive tcl_library tk_library env
+    global link_switches
 
-   set x11home           ""
-   set x11_lib           ""
-   set x11_include       ""
-
-   set tclhome           [file dirname [file dirname $tcl_library]]
-   set tcl_include       [file join \$(TCLHOME) include]
-   set link_switches     ""
-
-   set pwd               [pwd]
-
-   switch $platform {
-      "windows" {
-	 regsub {\.} $tcl_version {} tcl_short_version
-	 regsub {\.} $tk_version  {} tk_short_version
-	 set tclsh "tclsh${tcl_short_version}"
-         set libtcl "../src/libtcl${tcl_short_version}.a"
-         set libtk  "../src/libtk${tk_short_version}.a"
-	 set link_switches "-L../src -ltk$tk_short_version "
-	 append link_switches "-ltcl$tcl_short_version "
-	 append link_switches "../src/tkmacro.o ../src/tclmacro.o "
-	 regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
-      }
-      "unix" {
-	 set tclsh "tclsh"
-         set libtcl "\$(TCLHOME)/lib/libtcl${tcl_version}.so"
-         set libtk  "\$(TCLHOME)/lib/libtk${tk_version}.so"
-	 if [cequal $os "SunOS"] {
-	    set link_switches "-R\$(TCLHOME)/lib -L\$(TCLHOME)/lib "
-	    append link_switches "-ltk$tk_version -ltcl$tcl_version "
-	    append link_switches " -lsocket -lnsl -ldl -lm "
-	 } else {
-	    set link_switches "-Wl,-rpath,\$(TCLHOME)/lib "
-	    append link_switches "-L\$(TCLHOME)/lib "
-	    append link_switches "-ltk$tk_version -ltcl$tcl_version "
-	 }
-	 append link_switches "-L\$(X11_LIB) -lX11 "
-	 append link_switches "../src/tkmacro.o ../src/tclmacro.o "
-
-	 set PossibleXHomes [list /usr/openwin /usr/X /usr/X11R6 /usr]
-	 foreach dir $PossibleXHomes {
-	    set lib [file join $dir lib]
-	    foreach file [list "libX11.so" "libX11.a"] {
-	       if [file exists [file join $lib $file]] {
-                  set x11home $dir
-		  set x11_lib [file join \$(X11HOME) lib]
-		  break
-	       }
+    set x11home           ""
+    set x11_lib           ""
+    set x11_include       ""
+    
+    if [cequal $os "Darwin"] {
+	set tclhome "/usr"
+    } else {
+	set tclhome [file dirname [file dirname $tcl_library]]
+    }
+    set tcl_include       [file join \$(TCLHOME) include]
+    set link_switches     ""
+    
+    set pwd               [pwd]
+    
+    switch $platform {
+	"windows" {
+	    regsub {\.} $tcl_version {} tcl_short_version
+	    regsub {\.} $tk_version  {} tk_short_version
+	    set tclsh "tclsh${tcl_short_version}"
+	    set libtcl "../src/libtcl${tcl_short_version}.a"
+	    set libtk  "../src/libtk${tk_short_version}.a"
+	    set link_switches "-L../src -ltk$tk_short_version "
+	    append link_switches "-ltcl$tcl_short_version "
+	    append link_switches "../src/tkmacro.o ../src/tclmacro.o "
+	    regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
+	}
+	"unix" {
+	    set tclsh "tclsh"
+	    set dynlib [info sharedlibextension]
+	    set libtcl "\$(TCLHOME)/lib/libtcl${tcl_version}$dynlib"
+	    set libtk  "\$(TCLHOME)/lib/libtk${tk_version}$dynlib"
+	    set link_switches "../src/tkmacro.o ../src/tclmacro.o "
+	    if [cequal $os "SunOS"] {
+		append link_switches "-R\$(TCLHOME)/lib -L\$(TCLHOME)/lib "
+		append link_switches "-ltk$tk_version -ltcl$tcl_version "
+		append link_switches " -lsocket -lnsl -ldl -lm "
+		append link_switches "-L\$(X11_LIB) -lX11 "
+	    } elseif [cequal $os "Darwin"] {
+		append link_switches "-Wl,-bind_at_load -L\$(TCLHOME)/lib "
+		append link_switches "-ltk$tk_version -ltcl$tcl_version "
+		append link_switches "-L\$(X11_LIB) -lX11 "
+		append link_switches "-lobjc -lgcc_s.1 "
+	    } else {
+		append link_switches "-Wl,-rpath,\$(TCLHOME)/lib "
+		append link_switches "-L\$(TCLHOME)/lib "
+		append link_switches "-ltk$tk_version -ltcl$tcl_version "
+		append link_switches "-L\$(X11_LIB) -lX11 "
 	    }
-	 }
-	 if [file isdirectory [file join $x11home include]] {
-            set x11_include [file join \$(X11HOME) include]
-	 } else {
+	    
+	    set PossibleXHomes [list /usr/openwin /usr/X /usr/X11R6 /usr]
 	    foreach dir $PossibleXHomes {
-	       set include [file join $dir include]
-	       if [file isdirectory $include] {
-		  set x11_include $include
-		  break
-	       }
+		set lib [file join $dir lib]
+		foreach file [list "libX11.so" "libX11.a"] {
+		    if [file exists [file join $lib $file]] {
+			set x11home $dir
+			set x11_lib [file join \$(X11HOME) lib]
+			break
+		    }
+		}
 	    }
-	 }
-      }
-   }
-
-   setvar PLATFORM          $platform {
-      # OS platform}
-   setvar OS                $os {
-      # Operating system}
-   setvar OSVERSION         $osVersion {
-      # Operating system version}
-   setvar TASH_VERSION      "8.4.1a" {
-      # TASH version}
-   setvar TASH_DIRECTORY    [file tail $pwd] {
-      # Main TASH directory}
-   if [lempty $x11home] {
-      setvar X11HOME        "" {
-	 # X11 library directory}
-   } else {
-      setvar X11HOME        "$x11home" {
-	 # X11 home directory}
-   }
-   if [lempty $x11_lib] {
-      setvar X11_LIB        "" {
-	 # X11 library directory}
-   } else {
-      setvar X11_LIB        "$x11_lib" {
-	 # X11 library directory}
-   }
-   if [lempty $x11_include] {
-      setvar X11_INCLUDE   "" {
-	 # X11 include directory}
-   } else {
-      setvar X11_INCLUDE   "-I$x11_include" {
-	 # X11 include directory}
-   }
-   setvar TCLSH             $tclsh {
-      # Tclsh executable}
-   setvar TCLHOME           "$tclhome" {
-      # Tcl Home directory}
-   setvar TCL_INCLUDE      "-I$tcl_include" {
-      # TCL include directory}
-   setvar TCL_VERSION       "$tcl_version" {
-      # Tcl version}
-   setvar TCL_LIBRARY       "$libtcl" {
-      # Tcl library}
-   setvar TK_VERSION        "$tk_version" {
-      # Tk version}
-   setvar TK_LIBRARY        "$libtk" {
-      # Tk library}
-   setvar CC                "gcc" {
-      # This is gcc compiler (Note: must reference GNAT version)}
-   setvar GARGS             "-i -k -I../src" {
-      # gnatmake switches}
-   setvar CARGS             "-g -O2 -gnatnU" {
-      # compiler switches}
-   setvar BARGS             "" {
-      # gnatbind switches}
+	    if [file isdirectory [file join $x11home include]] {
+		set x11_include [file join \$(X11HOME) include]
+	    } else {
+		foreach dir $PossibleXHomes {
+		    set include [file join $dir include]
+		    if [file isdirectory $include] {
+			set x11_include $include
+			break
+		    }
+		}
+	    }
+	}
+    }
+    
+    setvar PLATFORM          $platform {
+	# OS platform}
+    setvar OS                $os {
+        # Operating system}
+    setvar OSVERSION         $osVersion {
+      	# Operating system version}
+    setvar TASH_VERSION      "8.4.1a" {
+        # TASH version}
+    setvar TASH_DIRECTORY    [file tail $pwd] {
+        # Main TASH directory}
+    if [lempty $x11home] {
+	setvar X11HOME        "" {
+	    # X11 library directory}
+    } else {
+	setvar X11HOME        "$x11home" {
+	    # X11 home directory}
+    }
+    if [lempty $x11_lib] {
+	setvar X11_LIB        "" {
+	    # X11 library directory}
+    } else {
+	setvar X11_LIB        "$x11_lib" {
+	    # X11 library directory}
+    }
+    if [lempty $x11_include] {
+	setvar X11_INCLUDE   "" {
+	    # X11 include directory}
+    } else {
+	setvar X11_INCLUDE   "-I$x11_include" {
+	    # X11 include directory}
+    }
+    setvar TCLSH             $tclsh {
+	# Tclsh executable}
+    setvar TCLHOME           "$tclhome" {
+	# Tcl Home directory}
+    setvar TCL_INCLUDE      "-I$tcl_include" {
+	# TCL include directory}
+    setvar TCL_VERSION       "$tcl_version" {
+	# Tcl version}
+    setvar TCL_LIBRARY       "$libtcl" {
+	# Tcl library}
+    setvar TK_VERSION        "$tk_version" {
+	# Tk version}
+    setvar TK_LIBRARY        "$libtk" {
+	# Tk library}
+    setvar CC                "gcc" {
+	# This is gcc compiler (Note: must reference GNAT version)}
+    setvar GARGS             "-i -k -I../src" {
+	# gnatmake switches}
+    setvar CARGS             "-g -O2 -gnatoy" {
+	# compiler switches}
+    setvar BARGS             "" {
+	# gnatbind switches}
 }
 
 set useLinkerOptions 0
@@ -374,20 +385,20 @@ set f [frame .link]
 pack $f -side top
 
 checkbutton .link.useLinkerOptions -text "Use pragma Linker_Options" \
-   -variable useLinkerOptions -pady 10
+    -variable useLinkerOptions -pady 10
 pack .link.useLinkerOptions -side left
 
 button .link.help -text "Explain..." -command {
-   set text "When you check the \"Use pragma Linker_Options\" checkbox,\
+    set text "When you check the \"Use pragma Linker_Options\" checkbox,\
       and press the \"Save\" button, this is what happens:\n\n\
       1) An Ada package containing Linker_Options\
       pragmas will be created for TASH in the file\
       tash_linker_options.ads, and\n\n\
       2) Tcl.adb file will be edited to \"with\" the\
       TASH_Linker_Options package."
-   tk_messageBox -icon info -message $text -parent . \
-      -title "Explain \"Use pragma Linker_Options\"" \
-      -type ok 
+    tk_messageBox -icon info -message $text -parent . \
+	-title "Explain \"Use pragma Linker_Options\"" \
+	-type ok 
 }
 pack .link.help -side left
 
@@ -397,21 +408,21 @@ pack $g -side top
 set row 0
 
 foreach name $tashorder {
-   set w [string tolower $name]
-   label $g.$w-label -text "$name: " -anchor e
-   grid $g.$w-label  -row $row -column 0 -sticky e
-   entry $g.$w-entry -width 40
-   $g.$w-entry insert end $tashvar($name)
-   switch -regexp $name {
-      "(TK|TCL|TASH)_VERSION" {
-	 $g.$w-entry configure -state disabled
-      }
-      default {
-	 $g.$w-entry configure -bg white
-      }
-   }
-   grid $g.$w-entry  -row $row -column 1
-   incr row
+    set w [string tolower $name]
+    label $g.$w-label -text "$name: " -anchor e
+    grid $g.$w-label  -row $row -column 0 -sticky e
+    entry $g.$w-entry -width 40
+    $g.$w-entry insert end $tashvar($name)
+    switch -regexp $name {
+	"(TK|TCL|TASH)_VERSION" {
+	    $g.$w-entry configure -state disabled
+	}
+	default {
+	    $g.$w-entry configure -bg white
+	}
+    }
+    grid $g.$w-entry  -row $row -column 1
+    incr row
 }
 
 frame .buttons
@@ -420,3 +431,7 @@ button .buttons.save   -text Save   -command "Save $g;exit"
 button .buttons.cancel -text Cancel -command exit
 pack .buttons.save .buttons.cancel -side left -expand 1
 
+#;; for emacs:
+#;; Local Variables:
+#;; mode: tcl
+#;; End:
