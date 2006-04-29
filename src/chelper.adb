@@ -2,10 +2,10 @@
 --
 -- chelper.adb --
 --
--- Copyright (c) 1995-2000 Terry J. Westley
+--  Copyright (c) 1995-2000 Terry J. Westley
 --
--- See the file "license.htm" for information on usage and
--- redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+--  See the file "license.htm" for information on usage and
+--  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 --
 --
 --------------------------------------------------------------------
@@ -17,31 +17,39 @@ package body CHelper is
 
    package ASF renames Ada.Strings.Fixed;
 
-   use type C.Int;
-   use type C.Size_T;
+   use type C.int;
+   use type C.size_t;
 
-   function Value (Item : in C.Strings.Chars_Ptr) return String is
+   function Value (Item : in C.Strings.chars_ptr) return String is
    begin -- Value
-      -- We use fully qualified C.Strings."=" to avoid recursive
-      -- call that would result from calling CHelper."=".
-      if C.Strings."=" (Item, C.Strings.Null_Ptr) then
+      --  We use fully qualified C.Strings."=" to avoid recursive
+      --  call that would result from calling CHelper."=".
+      if C.Strings. "=" (Item, C.Strings.Null_Ptr) then
          return "";
       else
          return C.Strings.Value (Item);
       end if;
    end Value;
 
-   function "&" (Left, Right : in C.Strings.Chars_Ptr) return String is
+   function "&" (Left, Right : in C.Strings.chars_ptr) return String is
    begin -- "&"
       return Value (Left) & Value (Right);
    end "&";
 
-   function "&" (Left : in C.Strings.Chars_Ptr; Right : String) return String is
+   function "&"
+     (Left  : in C.Strings.chars_ptr;
+      Right : String)
+      return  String
+   is
    begin -- "&"
       return Value (Left) & Right;
    end "&";
 
-   function "&" (Left : String; Right : in C.Strings.Chars_Ptr) return String is
+   function "&"
+     (Left  : String;
+      Right : in C.Strings.chars_ptr)
+      return  String
+   is
    begin -- "&"
       return Left & Value (Right);
    end "&";
@@ -50,17 +58,25 @@ package body CHelper is
    -- "=" --
    ---------
 
-   function "=" (Left, Right : in C.Strings.Chars_Ptr) return Boolean is
+   function "=" (Left, Right : in C.Strings.chars_ptr) return Boolean is
    begin -- "="
       return Value (Left) = Value (Right);
    end "=";
 
-   function "=" (Left : in C.Strings.Chars_Ptr; Right : in String) return  Boolean is
+   function "="
+     (Left  : in C.Strings.chars_ptr;
+      Right : in String)
+      return  Boolean
+   is
    begin -- "="
       return Value (Left) = Right;
    end "=";
 
-   function "=" (Left : in String; Right : in C.Strings.Chars_Ptr) return  Boolean is
+   function "="
+     (Left  : in String;
+      Right : in C.Strings.chars_ptr)
+      return  Boolean
+   is
    begin -- "="
       return Left = Value (Right);
    end "=";
@@ -69,19 +85,23 @@ package body CHelper is
    -- "<" --
    ---------
 
-   function "<" (Left, Right : in C.Strings.Chars_Ptr) return Boolean is
+   function "<" (Left, Right : in C.Strings.chars_ptr) return Boolean is
    begin -- "<"
       return Value (Left) < Value (Right);
    end "<";
 
-   function "<" (Left : in C.Strings.Chars_Ptr; Right : in String) return Boolean is
+   function "<"
+     (Left  : in C.Strings.chars_ptr;
+      Right : in String)
+      return  Boolean
+   is
    begin -- "<"
       return Value (Left) < Right;
    end "<";
 
    function "<"
      (Left  : in String;
-      Right : in C.Strings.Chars_Ptr)
+      Right : in C.Strings.chars_ptr)
       return  Boolean
    is
    begin -- "<"
@@ -92,13 +112,13 @@ package body CHelper is
    -- "<=" --
    ----------
 
-   function "<=" (Left, Right : in C.Strings.Chars_Ptr) return Boolean is
+   function "<=" (Left, Right : in C.Strings.chars_ptr) return Boolean is
    begin -- "<="
       return Value (Left) <= Value (Right);
    end "<=";
 
    function "<="
-     (Left  : in C.Strings.Chars_Ptr;
+     (Left  : in C.Strings.chars_ptr;
       Right : in String)
       return  Boolean
    is
@@ -108,7 +128,7 @@ package body CHelper is
 
    function "<="
      (Left  : in String;
-      Right : in C.Strings.Chars_Ptr)
+      Right : in C.Strings.chars_ptr)
       return  Boolean
    is
    begin -- "<="
@@ -119,13 +139,13 @@ package body CHelper is
    -- ">" --
    ---------
 
-   function ">"  (Left, Right : in C.Strings.Chars_Ptr) return Boolean is
+   function ">" (Left, Right : in C.Strings.chars_ptr) return Boolean is
    begin -- ">"
       return Value (Left) > Value (Right);
    end ">";
 
    function ">"
-     (Left  : in C.Strings.Chars_Ptr;
+     (Left  : in C.Strings.chars_ptr;
       Right : in String)
       return  Boolean
    is
@@ -135,7 +155,7 @@ package body CHelper is
 
    function ">"
      (Left  : in String;
-      Right : in C.Strings.Chars_Ptr)
+      Right : in C.Strings.chars_ptr)
       return  Boolean
    is
    begin -- ">"
@@ -146,13 +166,13 @@ package body CHelper is
    -- ">=" --
    ----------
 
-   function ">=" (Left, Right : in C.Strings.Chars_Ptr) return Boolean is
+   function ">=" (Left, Right : in C.Strings.chars_ptr) return Boolean is
    begin -- ">="
       return Value (Left) >= Value (Right);
    end ">=";
 
    function ">="
-     (Left  : in C.Strings.Chars_Ptr;
+     (Left  : in C.Strings.chars_ptr;
       Right : in String)
       return  Boolean
    is
@@ -162,7 +182,7 @@ package body CHelper is
 
    function ">="
      (Left  : in String;
-      Right : in C.Strings.Chars_Ptr)
+      Right : in C.Strings.chars_ptr)
       return  Boolean
    is
    begin -- ">="
@@ -176,36 +196,33 @@ package body CHelper is
    function "*"
      (Left  : Natural;
       Right : Character)
-      return  C.Strings.Chars_Ptr
+      return  C.Strings.chars_ptr
    is
       Result : C.Strings.char_array_access :=
-         new C.char_array (1..C.Size_t (Left+1));
+         new C.char_array (1 .. C.size_t (Left + 1));
    begin -- "*"
-      Result.all := C.To_C (ASF."*" (Left, Right), Append_Nul => True);
+      Result.all := C.To_C (ASF. "*" (Left, Right), Append_Nul => True);
+      return C.Strings.To_Chars_Ptr (Result);
+   end "*";
+
+   function "*" (Left : Natural; Right : String) return C.Strings.chars_ptr is
+      Result : C.Strings.char_array_access :=
+         new C.char_array (1 .. C.size_t (Left * Right'Length + 1));
+   begin -- "*"
+      Result.all := C.To_C (ASF. "*" (Left, Right), Append_Nul => True);
       return C.Strings.To_Chars_Ptr (Result);
    end "*";
 
    function "*"
      (Left  : Natural;
-      Right : String)
-     return   C.Strings.Chars_Ptr
+      Right : C.Strings.chars_ptr)
+      return  C.Strings.chars_ptr
    is
       Result : C.Strings.char_array_access :=
-         new C.char_array (1..C.Size_t (Left * Right'length + 1));
+         new C.char_array (1 .. C.size_t (Left * Length (Right) + 1));
    begin -- "*"
-      Result.all := C.To_C (ASF."*" (Left, Right), Append_Nul => True);
-      return C.Strings.To_Chars_Ptr (Result);
-   end "*";
-
-   function "*"
-     (Left  : Natural;
-      Right : C.Strings.Chars_Ptr)
-      return  C.Strings.Chars_Ptr
-   is
-      Result : C.Strings.char_array_access :=
-         new C.char_array (1..C.Size_t (Left * Length (Right) + 1));
-   begin -- "*"
-      Result.all := C.To_C (ASF."*" (Left, Value (Right)), Append_Nul => True);
+      Result.all :=
+         C.To_C (ASF. "*" (Left, Value (Right)), Append_Nul => True);
       return C.Strings.To_Chars_Ptr (Result);
    end "*";
 
@@ -214,30 +231,30 @@ package body CHelper is
    -----------
 
    function Count
-     (Source   : C.Strings.Chars_Ptr;
-      Pattern  : String;
-      Mapping  : Ada.Strings.Maps.Character_Mapping :=
-                    Ada.Strings.Maps.Identity)
-      return     Natural
+     (Source  : C.Strings.chars_ptr;
+      Pattern : String;
+      Mapping : Ada.Strings.Maps.Character_Mapping :=
+        Ada.Strings.Maps.Identity)
+      return    Natural
    is
    begin -- Count
       return Ada.Strings.Fixed.Count (Value (Source), Pattern, Mapping);
    end Count;
 
    function Count
-     (Source   : in C.Strings.Chars_Ptr;
-      Pattern  : in String;
-      Mapping  : in Ada.Strings.Maps.Character_Mapping_Function)
-      return     Natural
+     (Source  : in C.Strings.chars_ptr;
+      Pattern : in String;
+      Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
+      return    Natural
    is
    begin -- Count
       return Ada.Strings.Fixed.Count (Value (Source), Pattern, Mapping);
    end Count;
 
    function Count
-     (Source   : C.Strings.Chars_Ptr;
-      Set      : Ada.Strings.Maps.Character_Set)
-      return     Natural
+     (Source : C.Strings.chars_ptr;
+      Set    : Ada.Strings.Maps.Character_Set)
+      return   Natural
    is
    begin -- Count
       return Ada.Strings.Fixed.Count (Value (Source), Set);
@@ -248,26 +265,26 @@ package body CHelper is
    ------------
 
    function Delete
-     (Source  : C.Strings.Chars_Ptr;
+     (Source  : C.Strings.chars_ptr;
       From    : Positive;
       Through : Natural)
-      return    C.Strings.Chars_Ptr
+      return    C.Strings.chars_ptr
    is
    begin -- Delete
-      return
-        C.Strings.New_String
-          (Ada.Strings.Fixed.Delete (Value (Source), From, Through));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Delete (Value (Source), From, Through));
    end Delete;
 
    procedure Delete
-     (Source  : in out C.Strings.Chars_Ptr;
+     (Source  : in out C.Strings.chars_ptr;
       From    : in Positive;
       Through : in Natural)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Delete
-      Source := C.Strings.New_String
-        (Ada.Strings.Fixed.Delete (Value (Source), From, Through));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Delete (Value (Source), From, Through));
       C.Strings.Free (Temp);
    end Delete;
 
@@ -276,7 +293,7 @@ package body CHelper is
    -------------
 
    function Element
-     (Source : C.Strings.Chars_Ptr;
+     (Source : C.Strings.chars_ptr;
       Index  : Positive)
       return   Character
    is
@@ -293,7 +310,7 @@ package body CHelper is
    ----------------
 
    procedure Find_Token
-     (Source : C.Strings.Chars_Ptr;
+     (Source : C.Strings.chars_ptr;
       Set    : Ada.Strings.Maps.Character_Set;
       Test   : Ada.Strings.Membership;
       First  : out Positive;
@@ -308,25 +325,26 @@ package body CHelper is
    ----------
 
    function Head
-     (Source : C.Strings.Chars_Ptr;
+     (Source : C.Strings.chars_ptr;
       Count  : Natural;
       Pad    : Character := Ada.Strings.Space)
-      return   C.Strings.Chars_Ptr
+      return   C.Strings.chars_ptr
    is
    begin -- Head
-      return
-        C.Strings.New_String (Ada.Strings.Fixed.Head (Value (Source), Count, Pad));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Head (Value (Source), Count, Pad));
    end Head;
 
    procedure Head
-     (Source : in out C.Strings.Chars_Ptr;
+     (Source : in out C.Strings.chars_ptr;
       Count  : in Natural;
       Pad    : in Character := Ada.Strings.Space)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Head
-      Source := C.Strings.New_String
-        (Ada.Strings.Fixed.Head (Value (Source), Count, Pad));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Head (Value (Source), Count, Pad));
       C.Strings.Free (Temp);
    end Head;
 
@@ -335,29 +353,38 @@ package body CHelper is
    -----------
 
    function Index
-     (Source   : C.Strings.Chars_Ptr;
-      Pattern  : String;
-      Going    : Ada.Strings.Direction := Ada.Strings.Forward;
-      Mapping  : Ada.Strings.Maps.Character_Mapping := Ada.Strings.Maps.Identity)
-      return     Natural
+     (Source  : C.Strings.chars_ptr;
+      Pattern : String;
+      Going   : Ada.Strings.Direction              := Ada.Strings.Forward;
+      Mapping : Ada.Strings.Maps.Character_Mapping :=
+        Ada.Strings.Maps.Identity)
+      return    Natural
    is
    begin -- Index
-      return Ada.Strings.Fixed.Index (Value (Source), Pattern, Going, Mapping);
+      return Ada.Strings.Fixed.Index
+               (Value (Source),
+                Pattern,
+                Going,
+                Mapping);
    end Index;
 
    function Index
-     (Source   : in C.Strings.Chars_Ptr;
-      Pattern  : in String;
-      Going    : in Ada.Strings.Direction := Ada.Strings.Forward;
-      Mapping  : in Ada.Strings.Maps.Character_Mapping_Function)
-      return Natural
+     (Source  : in C.Strings.chars_ptr;
+      Pattern : in String;
+      Going   : in Ada.Strings.Direction := Ada.Strings.Forward;
+      Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
+      return    Natural
    is
    begin -- Index
-      return Ada.Strings.Fixed.Index (Value (Source), Pattern, Going, Mapping);
+      return Ada.Strings.Fixed.Index
+               (Value (Source),
+                Pattern,
+                Going,
+                Mapping);
    end Index;
 
    function Index
-     (Source : C.Strings.Chars_Ptr;
+     (Source : C.Strings.chars_ptr;
       Set    : Ada.Strings.Maps.Character_Set;
       Test   : Ada.Strings.Membership := Ada.Strings.Inside;
       Going  : Ada.Strings.Direction  := Ada.Strings.Forward)
@@ -368,7 +395,7 @@ package body CHelper is
    end Index;
 
    function Index_Non_Blank
-     (Source : C.Strings.Chars_Ptr;
+     (Source : C.Strings.chars_ptr;
       Going  : Ada.Strings.Direction := Ada.Strings.Forward)
       return   Natural
    is
@@ -381,26 +408,26 @@ package body CHelper is
    ------------
 
    function Insert
-     (Source   : C.Strings.Chars_Ptr;
+     (Source   : C.Strings.chars_ptr;
       Before   : Positive;
       New_Item : String)
-      return     C.Strings.Chars_Ptr
+      return     C.Strings.chars_ptr
    is
    begin -- Insert
-      return
-        C.Strings.New_String
-          (Ada.Strings.Fixed.Insert (Value (Source), Before, New_Item));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Insert (Value (Source), Before, New_Item));
    end Insert;
 
    procedure Insert
-     (Source   : in out C.Strings.Chars_Ptr;
+     (Source   : in out C.Strings.chars_ptr;
       Before   : in Positive;
       New_Item : in String)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Insert
-      Source := C.Strings.New_String
-        (Ada.Strings.Fixed.Insert (Value (Source), Before, New_Item));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Insert (Value (Source), Before, New_Item));
       C.Strings.Free (Temp);
    end Insert;
 
@@ -408,14 +435,14 @@ package body CHelper is
    -- Length --
    ------------
 
-   function Length (Source : C.Strings.Chars_Ptr) return Natural is
+   function Length (Source : C.Strings.chars_ptr) return Natural is
    begin -- Length
       return Natural (C.Strings.Strlen (Source));
    end Length;
 
-   function Length (Source : C.Strings.Chars_Ptr) return C.Int is
+   function Length (Source : C.Strings.chars_ptr) return C.int is
    begin -- Length
-      return C.Int (C.Strings.Strlen (Source));
+      return C.int (C.Strings.Strlen (Source));
    end Length;
 
    ---------------
@@ -423,25 +450,29 @@ package body CHelper is
    ---------------
 
    function Overwrite
-     (Source    : C.Strings.Chars_Ptr;
-      Position  : Positive;
-      New_Item  : String)
-      return      C.Strings.Chars_Ptr is
-
+     (Source   : C.Strings.chars_ptr;
+      Position : Positive;
+      New_Item : String)
+      return     C.Strings.chars_ptr
+   is
    begin -- Overwrite
       return C.Strings.New_String
-        (Ada.Strings.Fixed.Overwrite (Value (Source), Position, New_Item));
+               (Ada.Strings.Fixed.Overwrite
+                   (Value (Source),
+                    Position,
+                    New_Item));
    end Overwrite;
 
    procedure Overwrite
-     (Source    : in out C.Strings.Chars_Ptr;
-      Position  : in Positive;
-      New_Item  : in String)
+     (Source   : in out C.Strings.chars_ptr;
+      Position : in Positive;
+      New_Item : in String)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Overwrite
-      Source := C.Strings.New_String
-        (Ada.Strings.Fixed.Overwrite (Value (Source), Position, New_Item));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Overwrite (Value (Source), Position, New_Item));
       C.Strings.Free (Temp);
    end Overwrite;
 
@@ -450,13 +481,13 @@ package body CHelper is
    ---------------------
 
    procedure Replace_Element
-     (Source : in out C.Strings.Chars_Ptr;
+     (Source : in out C.Strings.chars_ptr;
       Index  : Positive;
       By     : Character)
    is
    begin -- Replace_Element
       if Index <= Length (Source) then
-         C.Strings.Update (Source, C.Size_t (Index), By & "", Check => False);
+         C.Strings.Update (Source, C.size_t (Index), By & "", Check => False);
       else
          raise Ada.Strings.Index_Error;
       end if;
@@ -467,28 +498,32 @@ package body CHelper is
    -------------------
 
    function Replace_Slice
-     (Source   : C.Strings.Chars_Ptr;
-      Low      : Positive;
-      High     : Natural;
-      By       : String)
-      return     C.Strings.Chars_Ptr
+     (Source : C.Strings.chars_ptr;
+      Low    : Positive;
+      High   : Natural;
+      By     : String)
+      return   C.Strings.chars_ptr
    is
    begin -- Replace_Slice
-      return
-        C.Strings.New_String
-          (Ada.Strings.Fixed.Replace_Slice (Value (Source), Low, High, By));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Replace_Slice
+                   (Value (Source),
+                    Low,
+                    High,
+                    By));
    end Replace_Slice;
 
    procedure Replace_Slice
-     (Source   : in out C.Strings.Chars_Ptr;
-      Low      : in Positive;
-      High     : in Natural;
-      By       : in String)
+     (Source : in out C.Strings.chars_ptr;
+      Low    : in Positive;
+      High   : in Natural;
+      By     : in String)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Replace_Slice
-      Source := C.Strings.New_String
-        (Ada.Strings.Fixed.Replace_Slice (Value (Source), Low, High, By));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Replace_Slice (Value (Source), Low, High, By));
       C.Strings.Free (Temp);
    end Replace_Slice;
 
@@ -497,15 +532,15 @@ package body CHelper is
    -----------
 
    function Slice
-     (Source : C.Strings.Chars_Ptr;
+     (Source : C.Strings.chars_ptr;
       Low    : Positive;
       High   : Natural)
       return   String
    is
-      Result : String (1..High - Low + 1);
+      Result : String (1 .. High - Low + 1);
 
    begin -- Slice
-      Result := Value (Source) (Low..High);
+      Result := Value (Source) (Low .. High);
       return Result;
    end Slice;
 
@@ -514,26 +549,26 @@ package body CHelper is
    ----------
 
    function Tail
-     (Source : C.Strings.Chars_Ptr;
+     (Source : C.Strings.chars_ptr;
       Count  : Natural;
       Pad    : Character := Ada.Strings.Space)
-      return   C.Strings.Chars_Ptr is
-
+      return   C.Strings.chars_ptr
+   is
    begin -- Tail
-      return
-        C.Strings.New_String (
-           Ada.Strings.Fixed.Tail (Value (Source), Count, Pad));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Tail (Value (Source), Count, Pad));
    end Tail;
 
    procedure Tail
-     (Source : in out C.Strings.Chars_Ptr;
+     (Source : in out C.Strings.chars_ptr;
       Count  : in Natural;
       Pad    : in Character := Ada.Strings.Space)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Tail
-      Source := C.Strings.New_String
-        (Ada.Strings.Fixed.Tail (Value (Source), Count, Pad));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Tail (Value (Source), Count, Pad));
       C.Strings.Free (Temp);
    end Tail;
 
@@ -542,44 +577,48 @@ package body CHelper is
    ------------
 
    procedure Append
-     (Source   : in out C.Strings.Chars_Ptr;
-      New_Item : in C.Strings.Chars_Ptr)
+     (Source   : in out C.Strings.chars_ptr;
+      New_Item : in C.Strings.chars_ptr)
    is
-      S_Length : constant C.Size_t := C.Strings.Strlen (Source);
-      T_Length : constant C.Size_t := S_Length + C.Strings.Strlen (New_Item);
-      Result   : C.Strings.char_array_access := new C.char_array (1..T_Length+1);
+      S_Length : constant C.size_t           := C.Strings.Strlen (Source);
+      T_Length : constant C.size_t           :=
+         S_Length + C.Strings.Strlen (New_Item);
+      Result   : C.Strings.char_array_access :=
+         new C.char_array (1 .. T_Length + 1);
    begin -- Append
-      Result.all (1..S_Length+1) := C.Strings.Value (Source);
-      Result.all (S_Length + 1..T_Length+1) := C.Strings.Value (New_Item);
+      Result.all (1 .. S_Length + 1)            := C.Strings.Value (Source);
+      Result.all (S_Length + 1 .. T_Length + 1) := C.Strings.Value (New_Item);
       C.Strings.Free (Source);
       Source := C.Strings.To_Chars_Ptr (Result);
    end Append;
 
    procedure Append
-     (Source   : in out C.Strings.Chars_Ptr;
+     (Source   : in out C.Strings.chars_ptr;
       New_Item : in String)
    is
-      S_Length : constant C.Size_t := C.Strings.Strlen (Source);
-      Length   : constant C.Size_t := S_Length + New_Item'Length;
-      Result   : C.Strings.char_array_access := new C.char_array (1..Length+1);
+      S_Length : constant C.size_t           := C.Strings.Strlen (Source);
+      Length   : constant C.size_t           := S_Length + New_Item'Length;
+      Result   : C.Strings.char_array_access :=
+         new C.char_array (1 .. Length + 1);
    begin -- Append
-      Result.all (1..S_Length+1) := C.Strings.Value (Source);
-      Result.all (S_Length + 1..Length+1) := C.To_C (New_Item);
+      Result.all (1 .. S_Length + 1)          := C.Strings.Value (Source);
+      Result.all (S_Length + 1 .. Length + 1) := C.To_C (New_Item);
       C.Strings.Free (Source);
       Source := C.Strings.To_Chars_Ptr (Result);
    end Append;
 
    procedure Append
-     (Source   : in out C.Strings.Chars_Ptr;
+     (Source   : in out C.Strings.chars_ptr;
       New_Item : in Character)
    is
-      S_Length : constant C.Size_t := C.Strings.Strlen (Source);
-      Length   : constant C.Size_t := S_Length + 1;
-      Result   : C.Strings.char_array_access := new C.char_array (1..Length+1);
+      S_Length : constant C.size_t           := C.Strings.Strlen (Source);
+      Length   : constant C.size_t           := S_Length + 1;
+      Result   : C.Strings.char_array_access :=
+         new C.char_array (1 .. Length + 1);
    begin -- Append
-      Result.all (1..S_Length+1) := C.Strings.Value (Source);
-      Result.all (Length) := C.To_C (New_Item);
-      Result.all (Length+1)  := C.To_C (ASCII.Nul);
+      Result.all (1 .. S_Length + 1) := C.Strings.Value (Source);
+      Result.all (Length)            := C.To_C (New_Item);
+      Result.all (Length + 1)        := C.To_C (ASCII.NUL);
       C.Strings.Free (Source);
       Source := C.Strings.To_Chars_Ptr (Result);
    end Append;
@@ -589,46 +628,46 @@ package body CHelper is
    ---------------
 
    function Translate
-     (Source  : C.Strings.Chars_Ptr;
+     (Source  : C.Strings.chars_ptr;
       Mapping : Ada.Strings.Maps.Character_Mapping)
-      return    C.Strings.Chars_Ptr
+      return    C.Strings.chars_ptr
    is
    begin -- Translate
-      return
-        C.Strings.New_String (
-           Ada.Strings.Fixed.Translate (Value (Source), Mapping));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
    end Translate;
 
    procedure Translate
-     (Source  : in out C.Strings.Chars_Ptr;
+     (Source  : in out C.Strings.chars_ptr;
       Mapping : Ada.Strings.Maps.Character_Mapping)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Translate
-      Source := C.Strings.New_String (
-         Ada.Strings.Fixed.Translate (Value (Source), Mapping));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
       C.Strings.Free (Temp);
    end Translate;
 
    function Translate
-     (Source  : in C.Strings.Chars_Ptr;
+     (Source  : in C.Strings.chars_ptr;
       Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
-      return    C.Strings.Chars_Ptr
+      return    C.Strings.chars_ptr
    is
    begin -- Translate
-      return
-        C.Strings.New_String (
-           Ada.Strings.Fixed.Translate (Value (Source), Mapping));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
    end Translate;
 
    procedure Translate
-     (Source  : in out C.Strings.Chars_Ptr;
+     (Source  : in out C.Strings.chars_ptr;
       Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Translate
-      Source := C.Strings.New_String (
-         Ada.Strings.Fixed.Translate (Value (Source), Mapping));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
       C.Strings.Free (Temp);
    end Translate;
 
@@ -637,47 +676,48 @@ package body CHelper is
    ----------
 
    function Trim
-     (Source : in C.Strings.Chars_Ptr;
+     (Source : in C.Strings.chars_ptr;
       Side   : in Ada.Strings.Trim_End)
-      return   C.Strings.Chars_Ptr
+      return   C.Strings.chars_ptr
    is
    begin -- Trim
-      return C.Strings.New_String (
-         Ada.Strings.Fixed.Trim (Value (Source), Side));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Trim (Value (Source), Side));
    end Trim;
 
    procedure Trim
-     (Source : in out C.Strings.Chars_Ptr;
+     (Source : in out C.Strings.chars_ptr;
       Side   : in Ada.Strings.Trim_End)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Trim
-      Source := C.Strings.New_String (
-         Ada.Strings.Fixed.Trim (Value (Source), Side));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Trim (Value (Source), Side));
       C.Strings.Free (Temp);
    end Trim;
 
    function Trim
-     (Source : in C.Strings.Chars_Ptr;
+     (Source : in C.Strings.chars_ptr;
       Left   : in Ada.Strings.Maps.Character_Set;
       Right  : in Ada.Strings.Maps.Character_Set)
-      return   C.Strings.Chars_Ptr
+      return   C.Strings.chars_ptr
    is
    begin -- Trim
-      return
-        C.Strings.New_String (
-           Ada.Strings.Fixed.Trim (Value (Source), Left, Right));
+      return C.Strings.New_String
+               (Ada.Strings.Fixed.Trim (Value (Source), Left, Right));
    end Trim;
 
    procedure Trim
-     (Source : in out C.Strings.Chars_Ptr;
+     (Source : in out C.Strings.chars_ptr;
       Left   : in Ada.Strings.Maps.Character_Set;
       Right  : in Ada.Strings.Maps.Character_Set)
    is
-      Temp : C.Strings.Chars_Ptr := Source;
+      Temp : C.Strings.chars_ptr := Source;
    begin -- Trim
-      Source := C.Strings.New_String (
-         Ada.Strings.Fixed.Trim (Value (Source), Left, Right));
+      Source :=
+         C.Strings.New_String
+           (Ada.Strings.Fixed.Trim (Value (Source), Left, Right));
       C.Strings.Free (Temp);
    end Trim;
 
