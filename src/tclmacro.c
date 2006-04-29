@@ -1,9 +1,9 @@
 /*
  * tclmacro.c --
  *
- *    This file encapsulates calls to all tcl.h macro functions into
- *    C function calls.  These can then be called from Ada.  This
- *    avoids having to translate the macro.
+ *    This file encapsulates calls to all tcl.h macro functions into C
+ *    function calls.  These can then be called from Ada.  This avoids
+ *    having to translate the macro.
  *
  *  Copyright (c) 1999-2000 Terry J. Westley
  *
