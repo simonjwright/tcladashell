@@ -19,10 +19,10 @@ package CHelper is
 
    package C renames Interfaces.C;
 
-   type Int_Ptr is access all C.int;               -- int *
-   type Int_Ptr_Ptr is access all Int_Ptr;             -- int **
-   type Long_Ptr is access all C.long;              -- long *
-   type Double_Ptr is access all C.double;            -- double *
+   type Int_Ptr is access all C.int;                --  int *
+   type Int_Ptr_Ptr is access all Int_Ptr;              --  int **
+   type Long_Ptr is access all C.long;               --  long *
+   type Double_Ptr is access all C.double;             --  double *
    type Int_Array is array (C.int range <>) of C.int;
 
    function To_C (Str : in String) return C.Strings.chars_ptr renames

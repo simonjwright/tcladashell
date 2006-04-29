@@ -21,7 +21,7 @@ package body CHelper is
    use type C.size_t;
 
    function Value (Item : in C.Strings.chars_ptr) return String is
-   begin -- Value
+   begin --  Value
       --  We use fully qualified C.Strings."=" to avoid recursive
       --  call that would result from calling CHelper."=".
       if C.Strings. "=" (Item, C.Strings.Null_Ptr) then
@@ -32,7 +32,7 @@ package body CHelper is
    end Value;
 
    function "&" (Left, Right : in C.Strings.chars_ptr) return String is
-   begin -- "&"
+   begin --  "&"
       return Value (Left) & Value (Right);
    end "&";
 
@@ -41,7 +41,7 @@ package body CHelper is
       Right : String)
       return  String
    is
-   begin -- "&"
+   begin --  "&"
       return Value (Left) & Right;
    end "&";
 
@@ -50,7 +50,7 @@ package body CHelper is
       Right : in C.Strings.chars_ptr)
       return  String
    is
-   begin -- "&"
+   begin --  "&"
       return Left & Value (Right);
    end "&";
 
@@ -59,7 +59,7 @@ package body CHelper is
    ---------
 
    function "=" (Left, Right : in C.Strings.chars_ptr) return Boolean is
-   begin -- "="
+   begin --  "="
       return Value (Left) = Value (Right);
    end "=";
 
@@ -68,7 +68,7 @@ package body CHelper is
       Right : in String)
       return  Boolean
    is
-   begin -- "="
+   begin --  "="
       return Value (Left) = Right;
    end "=";
 
@@ -77,7 +77,7 @@ package body CHelper is
       Right : in C.Strings.chars_ptr)
       return  Boolean
    is
-   begin -- "="
+   begin --  "="
       return Left = Value (Right);
    end "=";
 
@@ -86,7 +86,7 @@ package body CHelper is
    ---------
 
    function "<" (Left, Right : in C.Strings.chars_ptr) return Boolean is
-   begin -- "<"
+   begin --  "<"
       return Value (Left) < Value (Right);
    end "<";
 
@@ -95,7 +95,7 @@ package body CHelper is
       Right : in String)
       return  Boolean
    is
-   begin -- "<"
+   begin --  "<"
       return Value (Left) < Right;
    end "<";
 
@@ -104,7 +104,7 @@ package body CHelper is
       Right : in C.Strings.chars_ptr)
       return  Boolean
    is
-   begin -- "<"
+   begin --  "<"
       return Left < Value (Right);
    end "<";
 
@@ -113,7 +113,7 @@ package body CHelper is
    ----------
 
    function "<=" (Left, Right : in C.Strings.chars_ptr) return Boolean is
-   begin -- "<="
+   begin --  "<="
       return Value (Left) <= Value (Right);
    end "<=";
 
@@ -122,7 +122,7 @@ package body CHelper is
       Right : in String)
       return  Boolean
    is
-   begin -- "<="
+   begin --  "<="
       return Value (Left) <= Right;
    end "<=";
 
@@ -131,7 +131,7 @@ package body CHelper is
       Right : in C.Strings.chars_ptr)
       return  Boolean
    is
-   begin -- "<="
+   begin --  "<="
       return Left <= Value (Right);
    end "<=";
 
@@ -140,7 +140,7 @@ package body CHelper is
    ---------
 
    function ">" (Left, Right : in C.Strings.chars_ptr) return Boolean is
-   begin -- ">"
+   begin --  ">"
       return Value (Left) > Value (Right);
    end ">";
 
@@ -149,7 +149,7 @@ package body CHelper is
       Right : in String)
       return  Boolean
    is
-   begin -- ">"
+   begin --  ">"
       return Value (Left) > Right;
    end ">";
 
@@ -158,7 +158,7 @@ package body CHelper is
       Right : in C.Strings.chars_ptr)
       return  Boolean
    is
-   begin -- ">"
+   begin --  ">"
       return Left > Value (Right);
    end ">";
 
@@ -167,7 +167,7 @@ package body CHelper is
    ----------
 
    function ">=" (Left, Right : in C.Strings.chars_ptr) return Boolean is
-   begin -- ">="
+   begin --  ">="
       return Value (Left) >= Value (Right);
    end ">=";
 
@@ -176,7 +176,7 @@ package body CHelper is
       Right : in String)
       return  Boolean
    is
-   begin -- ">="
+   begin --  ">="
       return Value (Left) >= Right;
    end ">=";
 
@@ -185,7 +185,7 @@ package body CHelper is
       Right : in C.Strings.chars_ptr)
       return  Boolean
    is
-   begin -- ">="
+   begin --  ">="
       return Left >= Value (Right);
    end ">=";
 
@@ -200,7 +200,7 @@ package body CHelper is
    is
       Result : C.Strings.char_array_access :=
          new C.char_array (1 .. C.size_t (Left + 1));
-   begin -- "*"
+   begin --  "*"
       Result.all := C.To_C (ASF. "*" (Left, Right), Append_Nul => True);
       return C.Strings.To_Chars_Ptr (Result);
    end "*";
@@ -208,7 +208,7 @@ package body CHelper is
    function "*" (Left : Natural; Right : String) return C.Strings.chars_ptr is
       Result : C.Strings.char_array_access :=
          new C.char_array (1 .. C.size_t (Left * Right'Length + 1));
-   begin -- "*"
+   begin --  "*"
       Result.all := C.To_C (ASF. "*" (Left, Right), Append_Nul => True);
       return C.Strings.To_Chars_Ptr (Result);
    end "*";
@@ -220,7 +220,7 @@ package body CHelper is
    is
       Result : C.Strings.char_array_access :=
          new C.char_array (1 .. C.size_t (Left * Length (Right) + 1));
-   begin -- "*"
+   begin --  "*"
       Result.all :=
          C.To_C (ASF. "*" (Left, Value (Right)), Append_Nul => True);
       return C.Strings.To_Chars_Ptr (Result);
@@ -237,7 +237,7 @@ package body CHelper is
         Ada.Strings.Maps.Identity)
       return    Natural
    is
-   begin -- Count
+   begin --  Count
       return Ada.Strings.Fixed.Count (Value (Source), Pattern, Mapping);
    end Count;
 
@@ -247,7 +247,7 @@ package body CHelper is
       Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
       return    Natural
    is
-   begin -- Count
+   begin --  Count
       return Ada.Strings.Fixed.Count (Value (Source), Pattern, Mapping);
    end Count;
 
@@ -256,7 +256,7 @@ package body CHelper is
       Set    : Ada.Strings.Maps.Character_Set)
       return   Natural
    is
-   begin -- Count
+   begin --  Count
       return Ada.Strings.Fixed.Count (Value (Source), Set);
    end Count;
 
@@ -270,7 +270,7 @@ package body CHelper is
       Through : Natural)
       return    C.Strings.chars_ptr
    is
-   begin -- Delete
+   begin --  Delete
       return C.Strings.New_String
                (Ada.Strings.Fixed.Delete (Value (Source), From, Through));
    end Delete;
@@ -281,7 +281,7 @@ package body CHelper is
       Through : in Natural)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Delete
+   begin --  Delete
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Delete (Value (Source), From, Through));
@@ -297,7 +297,7 @@ package body CHelper is
       Index  : Positive)
       return   Character
    is
-   begin -- Element
+   begin --  Element
       if Index <= Length (Source) then
          return Value (Source) (Index);
       else
@@ -316,7 +316,7 @@ package body CHelper is
       First  : out Positive;
       Last   : out Natural)
    is
-   begin -- Find_Token
+   begin --  Find_Token
       Ada.Strings.Fixed.Find_Token (Value (Source), Set, Test, First, Last);
    end Find_Token;
 
@@ -330,7 +330,7 @@ package body CHelper is
       Pad    : Character := Ada.Strings.Space)
       return   C.Strings.chars_ptr
    is
-   begin -- Head
+   begin --  Head
       return C.Strings.New_String
                (Ada.Strings.Fixed.Head (Value (Source), Count, Pad));
    end Head;
@@ -341,7 +341,7 @@ package body CHelper is
       Pad    : in Character := Ada.Strings.Space)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Head
+   begin --  Head
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Head (Value (Source), Count, Pad));
@@ -360,7 +360,7 @@ package body CHelper is
         Ada.Strings.Maps.Identity)
       return    Natural
    is
-   begin -- Index
+   begin --  Index
       return Ada.Strings.Fixed.Index
                (Value (Source),
                 Pattern,
@@ -375,7 +375,7 @@ package body CHelper is
       Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
       return    Natural
    is
-   begin -- Index
+   begin --  Index
       return Ada.Strings.Fixed.Index
                (Value (Source),
                 Pattern,
@@ -390,7 +390,7 @@ package body CHelper is
       Going  : Ada.Strings.Direction  := Ada.Strings.Forward)
       return   Natural
    is
-   begin -- Index
+   begin --  Index
       return Ada.Strings.Fixed.Index (Value (Source), Set, Test, Going);
    end Index;
 
@@ -399,7 +399,7 @@ package body CHelper is
       Going  : Ada.Strings.Direction := Ada.Strings.Forward)
       return   Natural
    is
-   begin -- Index_Non_Blank
+   begin --  Index_Non_Blank
       return Ada.Strings.Fixed.Index_Non_Blank (Value (Source), Going);
    end Index_Non_Blank;
 
@@ -413,7 +413,7 @@ package body CHelper is
       New_Item : String)
       return     C.Strings.chars_ptr
    is
-   begin -- Insert
+   begin --  Insert
       return C.Strings.New_String
                (Ada.Strings.Fixed.Insert (Value (Source), Before, New_Item));
    end Insert;
@@ -424,7 +424,7 @@ package body CHelper is
       New_Item : in String)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Insert
+   begin --  Insert
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Insert (Value (Source), Before, New_Item));
@@ -436,12 +436,12 @@ package body CHelper is
    ------------
 
    function Length (Source : C.Strings.chars_ptr) return Natural is
-   begin -- Length
+   begin --  Length
       return Natural (C.Strings.Strlen (Source));
    end Length;
 
    function Length (Source : C.Strings.chars_ptr) return C.int is
-   begin -- Length
+   begin --  Length
       return C.int (C.Strings.Strlen (Source));
    end Length;
 
@@ -455,7 +455,7 @@ package body CHelper is
       New_Item : String)
       return     C.Strings.chars_ptr
    is
-   begin -- Overwrite
+   begin --  Overwrite
       return C.Strings.New_String
                (Ada.Strings.Fixed.Overwrite
                    (Value (Source),
@@ -469,7 +469,7 @@ package body CHelper is
       New_Item : in String)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Overwrite
+   begin --  Overwrite
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Overwrite (Value (Source), Position, New_Item));
@@ -485,7 +485,7 @@ package body CHelper is
       Index  : Positive;
       By     : Character)
    is
-   begin -- Replace_Element
+   begin --  Replace_Element
       if Index <= Length (Source) then
          C.Strings.Update (Source, C.size_t (Index), By & "", Check => False);
       else
@@ -504,7 +504,7 @@ package body CHelper is
       By     : String)
       return   C.Strings.chars_ptr
    is
-   begin -- Replace_Slice
+   begin --  Replace_Slice
       return C.Strings.New_String
                (Ada.Strings.Fixed.Replace_Slice
                    (Value (Source),
@@ -520,7 +520,7 @@ package body CHelper is
       By     : in String)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Replace_Slice
+   begin --  Replace_Slice
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Replace_Slice (Value (Source), Low, High, By));
@@ -539,7 +539,7 @@ package body CHelper is
    is
       Result : String (1 .. High - Low + 1);
 
-   begin -- Slice
+   begin --  Slice
       Result := Value (Source) (Low .. High);
       return Result;
    end Slice;
@@ -554,7 +554,7 @@ package body CHelper is
       Pad    : Character := Ada.Strings.Space)
       return   C.Strings.chars_ptr
    is
-   begin -- Tail
+   begin --  Tail
       return C.Strings.New_String
                (Ada.Strings.Fixed.Tail (Value (Source), Count, Pad));
    end Tail;
@@ -565,7 +565,7 @@ package body CHelper is
       Pad    : in Character := Ada.Strings.Space)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Tail
+   begin --  Tail
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Tail (Value (Source), Count, Pad));
@@ -585,7 +585,7 @@ package body CHelper is
          S_Length + C.Strings.Strlen (New_Item);
       Result   : C.Strings.char_array_access :=
          new C.char_array (1 .. T_Length + 1);
-   begin -- Append
+   begin --  Append
       Result.all (1 .. S_Length + 1)            := C.Strings.Value (Source);
       Result.all (S_Length + 1 .. T_Length + 1) := C.Strings.Value (New_Item);
       C.Strings.Free (Source);
@@ -600,7 +600,7 @@ package body CHelper is
       Length   : constant C.size_t           := S_Length + New_Item'Length;
       Result   : C.Strings.char_array_access :=
          new C.char_array (1 .. Length + 1);
-   begin -- Append
+   begin --  Append
       Result.all (1 .. S_Length + 1)          := C.Strings.Value (Source);
       Result.all (S_Length + 1 .. Length + 1) := C.To_C (New_Item);
       C.Strings.Free (Source);
@@ -615,7 +615,7 @@ package body CHelper is
       Length   : constant C.size_t           := S_Length + 1;
       Result   : C.Strings.char_array_access :=
          new C.char_array (1 .. Length + 1);
-   begin -- Append
+   begin --  Append
       Result.all (1 .. S_Length + 1) := C.Strings.Value (Source);
       Result.all (Length)            := C.To_C (New_Item);
       Result.all (Length + 1)        := C.To_C (ASCII.NUL);
@@ -632,7 +632,7 @@ package body CHelper is
       Mapping : Ada.Strings.Maps.Character_Mapping)
       return    C.Strings.chars_ptr
    is
-   begin -- Translate
+   begin --  Translate
       return C.Strings.New_String
                (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
    end Translate;
@@ -642,7 +642,7 @@ package body CHelper is
       Mapping : Ada.Strings.Maps.Character_Mapping)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Translate
+   begin --  Translate
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
@@ -654,7 +654,7 @@ package body CHelper is
       Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
       return    C.Strings.chars_ptr
    is
-   begin -- Translate
+   begin --  Translate
       return C.Strings.New_String
                (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
    end Translate;
@@ -664,7 +664,7 @@ package body CHelper is
       Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Translate
+   begin --  Translate
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Translate (Value (Source), Mapping));
@@ -680,7 +680,7 @@ package body CHelper is
       Side   : in Ada.Strings.Trim_End)
       return   C.Strings.chars_ptr
    is
-   begin -- Trim
+   begin --  Trim
       return C.Strings.New_String
                (Ada.Strings.Fixed.Trim (Value (Source), Side));
    end Trim;
@@ -690,7 +690,7 @@ package body CHelper is
       Side   : in Ada.Strings.Trim_End)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Trim
+   begin --  Trim
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Trim (Value (Source), Side));
@@ -703,7 +703,7 @@ package body CHelper is
       Right  : in Ada.Strings.Maps.Character_Set)
       return   C.Strings.chars_ptr
    is
-   begin -- Trim
+   begin --  Trim
       return C.Strings.New_String
                (Ada.Strings.Fixed.Trim (Value (Source), Left, Right));
    end Trim;
@@ -714,7 +714,7 @@ package body CHelper is
       Right  : in Ada.Strings.Maps.Character_Set)
    is
       Temp : C.Strings.chars_ptr := Source;
-   begin -- Trim
+   begin --  Trim
       Source :=
          C.Strings.New_String
            (Ada.Strings.Fixed.Trim (Value (Source), Left, Right));
