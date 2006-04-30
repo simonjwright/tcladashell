@@ -1,42 +1,42 @@
 --------------------------------------------------------------------
 --
--- Unit Name:    Tash.Arrays body
+--  Unit Name:    Tash.Arrays body
 --
--- File Name:    tash-arrays.adb
+--  File Name:    tash-arrays.adb
 --
--- Purpose:      Defines the Tash array type which is
---               an associative array whose indices are
---               strings and contents may be any Tash data type.
+--  Purpose:      Defines the Tash array type which is
+--                an associative array whose indices are
+--                strings and contents may be any Tash data type.
 --
--- Copyright (c) 1999-2000 Terry J. Westley
+--  Copyright (c) 1999-2000 Terry J. Westley
 --
--- Tash is free software; you can redistribute it and/or modify it under
--- terms of the GNU General Public License as published by the Free
--- Software Foundation; either version 2, or (at your option) any later
--- version. Tash is distributed in the hope that it will be useful, but
--- WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
--- or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
--- for more details. You should have received a copy of the GNU General
--- Public License distributed with Tash; see file COPYING. If not, write to
+--  Tash is free software; you can redistribute it and/or modify it under
+--  terms of the GNU General Public License as published by the Free
+--  Software Foundation; either version 2, or (at your option) any later
+--  version. Tash is distributed in the hope that it will be useful, but
+--  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+--  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+--  for more details. You should have received a copy of the GNU General
+--  Public License distributed with Tash; see file COPYING. If not, write to
 --
---          Software Foundation
+--          Free Software Foundation
 --          59 Temple Place - Suite 330
 --          Boston, MA 02111-1307, USA
 --
--- As a special exception, if other files instantiate generics from this
--- unit, or you link this unit with other files to produce an executable,
--- this unit does not by itself cause the resulting executable to be
--- covered by the GNU General Public License. This exception does not
--- however invalidate any other reasons why the executable file might be
--- covered by the GNU Public License.
+--  As a special exception, if other files instantiate generics from this
+--  unit, or you link this unit with other files to produce an executable,
+--  this unit does not by itself cause the resulting executable to be
+--  covered by the GNU General Public License. This exception does not
+--  however invalidate any other reasons why the executable file might be
+--  covered by the GNU Public License.
 --
--- Tash is maintained by Terry Westley (http://www.adatcl.com).
+--  Tash is maintained by Terry Westley (http://www.adatcl.com).
 --
 --------------------------------------------------------------------
 --
--- We have chosen to implement Tash arrays by calling
--- Tcl_ArrayObjCmd.  This will provide a complete implementation
--- and is easier to develop than other possible implementation methods:
+--  We have chosen to implement Tash arrays by calling
+--  Tcl_ArrayObjCmd.  This will provide a complete implementation
+--  and is easier to develop than other possible implementation methods:
 --
 --   1) Call Tcl hash facilities directly (see tcl.ads), or
 --   2) Create Tash version of Tcl hash facilities and use it.
@@ -52,7 +52,12 @@ with System;
 
 package body Tash.Arrays is
 
-   use type Interfaces.C.Int;
+   function Get_Element (Interp : in Tcl.Tcl_Interp;
+                         TArray : in Tcl.Tcl_Obj;
+                         Index  : in String) return Tcl.Tcl_Obj_Ptr;
+   function Type_Of_Array_Element (ObjPtr : in Tcl.Tcl_Obj_Ptr) return String;
+
+   use type Interfaces.C.int;
 
    Array_Cmd    : Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("array");
 
@@ -65,17 +70,17 @@ package body Tash.Arrays is
    function Tcl_ArrayObjCmd (
       dummy  : in Tcl.ClientData;
       interp : in Tcl.Tcl_Interp;
-      objc   : in Interfaces.C.Int;
+      objc   : in Interfaces.C.int;
       objv   : in Tcl.Tcl_Obj_Array
-   ) return Interfaces.C.Int;
+   ) return Interfaces.C.int;
    pragma Import (C, Tcl_ArrayObjCmd, "Tcl_ArrayObjCmd");
 
    function Tcl_InfoObjCmd (
       dummy  : in Tcl.ClientData;
       interp : in Tcl.Tcl_Interp;
-      objc   : in Interfaces.C.Int;
+      objc   : in Interfaces.C.int;
       objv   : in Tcl.Tcl_Obj_Array
-   ) return Interfaces.C.Int;
+   ) return Interfaces.C.int;
    pragma Import (C, Tcl_InfoObjCmd, "Tcl_InfoObjCmd");
 
    protected Variable_Count is
@@ -104,17 +109,17 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.Int := 4;
-      Objv    : Tcl.Tcl_Obj_Array (1..Objc);
+      Objc    : Interfaces.C.int := 4;
+      Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
       TArray  : Tash_Array;
       Interp  : Tcl.Tcl_Interp;
-      Result  : Interfaces.C.Int;
+      Result  : Interfaces.C.int;
 
    begin -- To_Tash_Array
 
-      -- A Tash array is merely a unique variable name for a
-      -- Tcl array.  We will now create a Tcl object and a
-      -- unique variable name string to store in it.
+      --  A Tash array is merely a unique variable name for a
+      --  Tcl array.  We will now create a Tcl object and a
+      --  unique variable name string to store in it.
       ------------------------------------------------------
       Variable_Count.Next (Count);
       New_Obj := Tash.To_Tcl_Obj ("array" &
@@ -122,14 +127,14 @@ package body Tash.Arrays is
       TArray := (Ada.Finalization.Controlled with
                  Obj  => New_Obj);
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Set_Option;
-      Objv(3) := TArray.Obj;
-      Objv(4) := Tash.To_Tcl_Obj (Str);
+      Objv (1) := Array_Cmd;
+      Objv (2) := Set_Option;
+      Objv (3) := TArray.Obj;
+      Objv (4) := Tash.To_Tcl_Obj (Str);
 
-      -- Use Tcl_ArrayObjCmd to create a new Tcl array
+      --  Use Tcl_ArrayObjCmd to create a new Tcl array
       ------------------------------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -138,12 +143,12 @@ package body Tash.Arrays is
          Interp => Interp,
          Objc   => Objc,
          Objv   => Objv);
-      Tcl.Tcl_DecrRefCount (Objv(4));
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tcl.Tcl_DecrRefCount (Objv (4));
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
 
-      Parray (TArray);
+      PArray (TArray);
 
       return TArray;
 
@@ -165,12 +170,12 @@ package body Tash.Arrays is
    function To_String (
       TArray : in Tash_Array) return String is
 
-      Objc      : Interfaces.C.Int := 3;
-      Objv      : Tcl.Tcl_Obj_Array (1..Objc);
+      Objc      : Interfaces.C.int := 3;
+      Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
-      Result    : Interfaces.C.Int;
+      Result    : Interfaces.C.int;
       InterpObj : Tcl.Tcl_Obj;
-      Length    : aliased Interfaces.C.Int;
+      Length    : aliased Interfaces.C.int;
 
    begin -- To_String
 
@@ -178,14 +183,14 @@ package body Tash.Arrays is
          return "";
       end if;
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Get_Option;
-      Objv(3) := TArray.Obj;
+      Objv (1) := Array_Cmd;
+      Objv (2) := Get_Option;
+      Objv (3) := TArray.Obj;
 
-      -- Get the array value as a string into
-      -- Interp's result object.
+      --  Get the array value as a string into
+      --  Interp's result object.
       ---------------------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -194,10 +199,10 @@ package body Tash.Arrays is
          Interp => Interp,
          Objc   => Objc,
          Objv   => Objv);
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
 
-      -- Get and return the string in Interp's result object
+      --  Get and return the string in Interp's result object
       ------------------------------------------------------
       declare
          Image : constant String := CHelper.Value (
@@ -223,16 +228,16 @@ package body Tash.Arrays is
    function Length (
       TArray : in Tash_Array) return Natural is
    --
-      Objc      : Interfaces.C.Int := 3;
-      Objv      : Tcl.Tcl_Obj_Array (1..Objc);
+      Objc      : Interfaces.C.int := 3;
+      Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
-      Result    : Interfaces.C.Int;
+      Result    : Interfaces.C.int;
       InterpObj : Tcl.Tcl_Obj;
-      C_Length  : aliased Interfaces.C.Long;
+      C_Length  : aliased Interfaces.C.long;
    begin -- Length
-      Objv(1) := Array_Cmd;
-      Objv(2) := Size_Option;
-      Objv(3) := TArray.Obj;
+      Objv (1) := Array_Cmd;
+      Objv (2) := Size_Option;
+      Objv (3) := TArray.Obj;
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
@@ -240,7 +245,7 @@ package body Tash.Arrays is
          Interp => Interp,
          Objc   => Objc,
          Objv   => Objv);
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
       Result := Tcl.Tcl_GetLongFromObj (
          Interp, InterpObj, C_Length'Access);
@@ -254,29 +259,30 @@ package body Tash.Arrays is
       TArray : in Tcl.Tcl_Obj;
       Index  : in String) return Tcl.Tcl_Obj_Ptr is
 
-      Objc       : Interfaces.C.Int := 4;
-      Objv       : Tcl.Tcl_Obj_Array (1..Objc);
-      Result     : Interfaces.C.Int;
+      Objc       : Interfaces.C.int := 4;
+      Objv       : Tcl.Tcl_Obj_Array (1 .. Objc);
+      Result     : Interfaces.C.int;
       InterpObj  : Tcl.Tcl_Obj;
       ElementObj : Tcl.Tcl_Obj_Ptr;
 
    begin -- Get_Element
 
       if Tcl.Is_Null (TArray) then
-         Tash_Interp.Raise_Exception (
-            Interp  => Interp,
+         Tash_Interp.Raise_Exception
+           (Interp  => Interp,
             E       => Array_Error'Identity,
-            Message => "Element """ & Index & """ does not exist: array is null");
+            Message =>
+              "Element """ & Index & """ does not exist: array is null");
       end if;
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Get_Option;
-      Objv(3) := TArray;
-      Objv(4) := Tash.To_Tcl_Obj (Index);
+      Objv (1) := Array_Cmd;
+      Objv (2) := Get_Option;
+      Objv (3) := TArray;
+      Objv (4) := Tash.To_Tcl_Obj (Index);
 
-      -- Get the array element in Interp's result object
+      --  Get the array element in Interp's result object
       --------------------------------------------------
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
@@ -284,7 +290,7 @@ package body Tash.Arrays is
          Interp => Interp,
          Objc   => Objc,
          Objv   => Objv);
-      Tcl.Tcl_DecrRefCount (Objv(4));
+      Tcl.Tcl_DecrRefCount (Objv (4));
       if Result = Tcl.TCL_ERROR then
          Tash_Interp.Raise_Exception (
             Interp  => Interp,
@@ -292,8 +298,8 @@ package body Tash.Arrays is
             Message => CHelper.Value (Tcl.Tcl_GetStringResult (Interp)));
       end if;
 
-      -- The 2nd element of the list in the Interp's result object
-      -- is the array element value we're looking for.
+      --  The 2nd element of the list in the Interp's result object
+      --  is the array element value we're looking for.
       ------------------------------------------------------------
       InterpObj  := Tcl.Tcl_GetObjResult (Interp);
       ElementObj := new Tcl.Tcl_Obj;
@@ -327,10 +333,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       declare
          Obj   : Tcl.Tcl_Obj_Ptr := Get_Element (Interp, TArray.Obj, Index);
-         Len   : aliased Interfaces.C.Int;
+         Len   : aliased Interfaces.C.int;
       begin
          Tash_Interp.Release (Interp);
-         return Tcl.Ada.Tcl_GetStringFromObj (Obj.all, Len'access);
+         return Tcl.Ada.Tcl_GetStringFromObj (Obj.all, Len'Access);
       end;
    end Get_Element;
 
@@ -354,12 +360,12 @@ package body Tash.Arrays is
       TArray : in Tash_Array;
       Index  : in String) return Boolean is
 
-      Objc      : Interfaces.C.Int := 3;
-      Objv      : Tcl.Tcl_Obj_Array (1..Objc);
+      Objc      : Interfaces.C.int := 3;
+      Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
-      Result    : Interfaces.C.Int;
+      Result    : Interfaces.C.int;
       InterpObj : Tcl.Tcl_Obj;
-      Length    : aliased Interfaces.C.Int;
+      Length    : aliased Interfaces.C.int;
 
    begin -- Exists
 
@@ -367,13 +373,14 @@ package body Tash.Arrays is
          return False;
       end if;
 
-      -- Create object parameters for Tcl_InfoObjCmd call
+      --  Create object parameters for Tcl_InfoObjCmd call
       ----------------------------------------------------
-      Objv(1) := Tash.To_Tcl_Obj ("info");
-      Objv(2) := Tash.To_Tcl_Obj ("exists");
-      Objv(3) := Tash.To_Tcl_Obj (Tash.Image (TArray.Obj) & "(" & Index & ")");
+      Objv (1) := Tash.To_Tcl_Obj ("info");
+      Objv (2) := Tash.To_Tcl_Obj ("exists");
+      Objv (3) := Tash.To_Tcl_Obj (Tash.Image (TArray.Obj)
+                                   & "(" & Index & ")");
 
-      -- Execute the info command
+      --  Execute the info command
       ---------------------------
       Tash_Interp.Get (Interp);
       Result := Tcl_InfoObjCmd (
@@ -381,12 +388,12 @@ package body Tash.Arrays is
          Interp => Interp,
          Objc   => Objc,
          Objv   => Objv);
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
       Tash_Interp.Release (Interp);
 
-      -- Get the string in Interp's result object and
-      -- return whether it is equal to "1" or not
+      --  Get the string in Interp's result object and
+      --  return whether it is equal to "1" or not
       -----------------------------------------------
       declare
          Image : constant String := CHelper.Value (
@@ -397,7 +404,7 @@ package body Tash.Arrays is
 
    end Exists;
 
-   -- Determine type of array element
+   --  Determine type of array element
    ----------------------------------
    function Type_Of_Array_Element (
       ObjPtr : in Tcl.Tcl_Obj_Ptr) return String is
@@ -453,10 +460,10 @@ package body Tash.Arrays is
       TArray  : in Tash_Array;
       Pattern : in String := "") return Tash.Lists.Tash_List is
 
-      Objc       : Interfaces.C.Int := 4;
-      Objv       : Tcl.Tcl_Obj_Array (1..Objc);
+      Objc       : Interfaces.C.int := 4;
+      Objv       : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp     : Tcl.Tcl_Interp;
-      Result     : Interfaces.C.Int;
+      Result     : Interfaces.C.int;
       InterpObj  : Tcl.Tcl_Obj;
 
    begin -- Get_Elements
@@ -465,18 +472,18 @@ package body Tash.Arrays is
          raise Array_Error;
       end if;
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Get_Option;
-      Objv(3) := TArray.Obj;
+      Objv (1) := Array_Cmd;
+      Objv (2) := Get_Option;
+      Objv (3) := TArray.Obj;
       if Pattern = "" then
          Objc := 3;
       else
-         Objv(4) := Tash.To_Tcl_Obj (Pattern);
+         Objv (4) := Tash.To_Tcl_Obj (Pattern);
       end if;
 
-      -- Get the array elements in Interp's result object
+      --  Get the array elements in Interp's result object
       --------------------------------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -486,11 +493,11 @@ package body Tash.Arrays is
          Objc   => Objc,
          Objv   => Objv);
       if Objc = 4 then
-         Tcl.Tcl_DecrRefCount (Objv(4));
+         Tcl.Tcl_DecrRefCount (Objv (4));
       end if;
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
 
-      -- Return the list in the Interp's result object.
+      --  Return the list in the Interp's result object.
       -------------------------------------------------
       InterpObj  := Tcl.Tcl_GetObjResult (Interp);
       Tcl.Tcl_IncrRefCount (InterpObj);
@@ -517,9 +524,9 @@ package body Tash.Arrays is
          return Tash.Lists.Null_Tash_List;
       end if;
 
-      -- Get and sort the indices, then get the
-      -- array elements in order of the sorted
-      -- indices.
+      --  Get and sort the indices, then get the
+      --  array elements in order of the sorted
+      --  indices.
       -----------------------------------------
       declare
          Sorted_Indices : Tash.Lists.Tash_List :=
@@ -528,7 +535,7 @@ package body Tash.Arrays is
                Mode  => Mode,
                Order => Order);
       begin
-         for I in 1..Tash.Lists.Length (Sorted_Indices) loop
+         for I in 1 .. Tash.Lists.Length (Sorted_Indices) loop
             declare
                Index   : constant String :=
                  Tash.Lists.Get_Element (Sorted_Indices, I);
@@ -541,7 +548,7 @@ package body Tash.Arrays is
          end loop;
       end;
 
-      -- return the sorted indices for now for testing
+      --  return the sorted indices for now for testing
       ------------------------------------------------
       return Return_List;
 
@@ -551,27 +558,27 @@ package body Tash.Arrays is
       TArray  : in Tash_Array;
       Pattern : in String := "") return String is
 
-      Objc      : Interfaces.C.Int := 4;
-      Objv      : Tcl.Tcl_Obj_Array (1..Objc);
+      Objc      : Interfaces.C.int := 4;
+      Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
-      Result    : Interfaces.C.Int;
+      Result    : Interfaces.C.int;
       InterpObj : Tcl.Tcl_Obj;
-      Length    : aliased Interfaces.C.Int;
+      Length    : aliased Interfaces.C.int;
 
    begin -- Get_Indices
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Names_Option;
-      Objv(3) := TArray.Obj;
+      Objv (1) := Array_Cmd;
+      Objv (2) := Names_Option;
+      Objv (3) := TArray.Obj;
       if Pattern = "" then
          Objc := 3;
       else
-         Objv(4) := Tash.To_Tcl_Obj (Pattern);
+         Objv (4) := Tash.To_Tcl_Obj (Pattern);
       end if;
 
-      -- Get array indices
+      --  Get array indices
       -------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -581,12 +588,12 @@ package body Tash.Arrays is
          Objc   => Objc,
          Objv   => Objv);
       if Objc = 4 then
-         Tcl.Tcl_DecrRefCount (Objv(4));
+         Tcl.Tcl_DecrRefCount (Objv (4));
       end if;
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
 
-      -- Convert indices string to a Tash list
+      --  Convert indices string to a Tash list
       ----------------------------------------
       declare
          Indices : constant String := CHelper.Value (
@@ -615,20 +622,20 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.Int := 4;
-      Objv    : Tcl.Tcl_Obj_Array (1..Objc);
-      Listc   : Interfaces.C.Int := 2;
-      Listv   : Tcl.Tcl_Obj_Array (1..Listc);
+      Objc    : Interfaces.C.int := 4;
+      Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
+      Listc   : Interfaces.C.int := 2;
+      Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
       ListObj : Tcl.Tcl_Obj;
-      Result  : Interfaces.C.Int;
+      Result  : Interfaces.C.int;
       Interp  : Tcl.Tcl_Interp;
 
    begin -- Set_Element
 
       if Tcl.Is_Null (TArray.Obj) then
-         -- A Tash array is merely a unique variable name for a
-         -- Tcl array.  We will now create a Tcl object and a
-         -- unique variable name string to store in it.
+         --  A Tash array is merely a unique variable name for a
+         --  Tcl array.  We will now create a Tcl object and a
+         --  unique variable name string to store in it.
          ------------------------------------------------------
          Variable_Count.Next (Count);
          New_Obj := Tash.To_Tcl_Obj ("array" &
@@ -637,22 +644,22 @@ package body Tash.Arrays is
                     Obj  => New_Obj);
       end if;
 
-      -- Create a Tcl list to hold the index and value
+      --  Create a Tcl list to hold the index and value
       ------------------------------------------------
-      Listv(1) := Tash.To_Tcl_Obj (Index);
-      Listv(2) := Tash.To_Tcl_Obj (Value);
+      Listv (1) := Tash.To_Tcl_Obj (Index);
+      Listv (2) := Tash.To_Tcl_Obj (Value);
       ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
       Tcl.Tcl_IncrRefCount (ListObj);
-      Tcl.Tcl_DecrRefCount (Listv(1));
+      Tcl.Tcl_DecrRefCount (Listv (1));
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Set_Option;
-      Objv(3) := TArray.Obj;
-      Objv(4) := ListObj;
+      Objv (1) := Array_Cmd;
+      Objv (2) := Set_Option;
+      Objv (3) := TArray.Obj;
+      Objv (4) := ListObj;
 
-      -- Set the array element
+      --  Set the array element
       ------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -662,7 +669,7 @@ package body Tash.Arrays is
          Objc   => Objc,
          Objv   => Objv);
       Tcl.Tcl_DecrRefCount (ListObj);
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
 
@@ -675,20 +682,20 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.Int := 4;
-      Objv    : Tcl.Tcl_Obj_Array (1..Objc);
-      Listc   : Interfaces.C.Int := 2;
-      Listv   : Tcl.Tcl_Obj_Array (1..Listc);
+      Objc    : Interfaces.C.int := 4;
+      Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
+      Listc   : Interfaces.C.int := 2;
+      Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
       ListObj : Tcl.Tcl_Obj;
-      Result  : Interfaces.C.Int;
+      Result  : Interfaces.C.int;
       Interp  : Tcl.Tcl_Interp;
 
    begin -- Set_Element
 
       if Tcl.Is_Null (TArray.Obj) then
-         -- A Tash array is merely a unique variable name for a
-         -- Tcl array.  We will now create a Tcl object and a
-         -- unique variable name string to store in it.
+         --  A Tash array is merely a unique variable name for a
+         --  Tcl array.  We will now create a Tcl object and a
+         --  unique variable name string to store in it.
          ------------------------------------------------------
          Variable_Count.Next (Count);
          New_Obj := Tash.To_Tcl_Obj ("array" &
@@ -697,22 +704,22 @@ package body Tash.Arrays is
                     Obj  => New_Obj);
       end if;
 
-      -- Create a Tcl list to hold the index and value
+      --  Create a Tcl list to hold the index and value
       ------------------------------------------------
-      Listv(1) := Tash.To_Tcl_Obj (Index);
-      Listv(2) := Tash.Tash_Object(Value).Obj;
+      Listv (1) := Tash.To_Tcl_Obj (Index);
+      Listv (2) := Tash.Tash_Object (Value).Obj;
       ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
       Tcl.Tcl_IncrRefCount (ListObj);
-      Tcl.Tcl_DecrRefCount (Listv(1));
+      Tcl.Tcl_DecrRefCount (Listv (1));
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Set_Option;
-      Objv(3) := TArray.Obj;
-      Objv(4) := ListObj;
+      Objv (1) := Array_Cmd;
+      Objv (2) := Set_Option;
+      Objv (3) := TArray.Obj;
+      Objv (4) := ListObj;
 
-      -- Set the array element
+      --  Set the array element
       ------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -722,7 +729,7 @@ package body Tash.Arrays is
          Objc   => Objc,
          Objv   => Objv);
       Tcl.Tcl_DecrRefCount (ListObj);
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
 
@@ -734,17 +741,17 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.Int := 4;
-      Objv    : Tcl.Tcl_Obj_Array (1..Objc);
-      Result  : Interfaces.C.Int;
+      Objc    : Interfaces.C.int := 4;
+      Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
+      Result  : Interfaces.C.int;
       Interp  : Tcl.Tcl_Interp;
 
    begin -- Set_Elements
 
       if Tcl.Is_Null (TArray.Obj) then
-         -- A Tash array is merely a unique variable name for a
-         -- Tcl array.  We will now create a Tcl object and a
-         -- unique variable name string to store in it.
+         --  A Tash array is merely a unique variable name for a
+         --  Tcl array.  We will now create a Tcl object and a
+         --  unique variable name string to store in it.
          ------------------------------------------------------
          Variable_Count.Next (Count);
          New_Obj := Tash.To_Tcl_Obj ("array" &
@@ -753,14 +760,14 @@ package body Tash.Arrays is
                     Obj  => New_Obj);
       end if;
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Set_Option;
-      Objv(3) := TArray.Obj;
-      Objv(4) := Tash.Tash_Object(List).Obj;
+      Objv (1) := Array_Cmd;
+      Objv (2) := Set_Option;
+      Objv (3) := TArray.Obj;
+      Objv (4) := Tash.Tash_Object (List).Obj;
 
-      -- Set the array elements
+      --  Set the array elements
       -------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -769,7 +776,7 @@ package body Tash.Arrays is
          Interp => Interp,
          Objc   => Objc,
          Objv   => Objv);
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
 
@@ -779,10 +786,10 @@ package body Tash.Arrays is
       TArray : in Tash_Array;
       Index  : in String) is
 
-      Objc    : Interfaces.C.Int := 4;
-      Objv    : Tcl.Tcl_Obj_Array (1..Objc);
+      Objc    : Interfaces.C.int := 4;
+      Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp  : Tcl.Tcl_Interp;
-      Result  : Interfaces.C.Int;
+      Result  : Interfaces.C.int;
 
    begin -- Delete_Element
 
@@ -790,15 +797,15 @@ package body Tash.Arrays is
          return;
       end if;
 
-      -- Create object parameters for Tcl_ArrayObjCmd call
+      --  Create object parameters for Tcl_ArrayObjCmd call
       ----------------------------------------------------
-      Objv(1) := Array_Cmd;
-      Objv(2) := Unset_Option;
-      Objv(3) := TArray.Obj;
-      Objv(4) := Tash.To_Tcl_Obj (Index);
+      Objv (1) := Array_Cmd;
+      Objv (2) := Unset_Option;
+      Objv (3) := TArray.Obj;
+      Objv (4) := Tash.To_Tcl_Obj (Index);
 
-      -- Use Tcl_ArrayObjCmd to delete the
-      -- element indexed by Index
+      --  Use Tcl_ArrayObjCmd to delete the
+      --  element indexed by Index
       ------------------------------------
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
@@ -807,8 +814,8 @@ package body Tash.Arrays is
          Interp => Interp,
          Objc   => Objc,
          Objv   => Objv);
-      Tcl.Tcl_DecrRefCount (Objv(4));
-      Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+      Tcl.Tcl_DecrRefCount (Objv (4));
+      Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
 
@@ -816,10 +823,12 @@ package body Tash.Arrays is
 
    package body Generic_Integer_Arrays is
 
+      function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj;
+
       function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj is
          New_Obj : Tcl.Tcl_Obj;
       begin -- To_Tcl_Obj
-         New_Obj := Tcl.Tcl_NewIntObj (Interfaces.C.Int (Num));
+         New_Obj := Tcl.Tcl_NewIntObj (Interfaces.C.int (Num));
          Tcl.Tcl_IncrRefCount (New_Obj);
          return New_Obj;
       end To_Tcl_Obj;
@@ -831,19 +840,19 @@ package body Tash.Arrays is
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
          TArray  : Tash_Array;
-         Objc    : Interfaces.C.Int := 4;
-         Objv    : Tcl.Tcl_Obj_Array (1..Objc);
-         Listc   : Interfaces.C.Int := 2;
-         Listv   : Tcl.Tcl_Obj_Array (1..Listc);
+         Objc    : Interfaces.C.int := 4;
+         Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
+         Listc   : Interfaces.C.int := 2;
+         Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
-         Result  : Interfaces.C.Int;
+         Result  : Interfaces.C.int;
          Interp  : Tcl.Tcl_Interp;
 
       begin -- To_Tash_Array
 
-         -- A Tash array is merely a unique variable name for a
-         -- Tcl array.  We will now create a Tcl object and a
-         -- unique variable name string to store in it.
+         --  A Tash array is merely a unique variable name for a
+         --  Tcl array.  We will now create a Tcl object and a
+         --  unique variable name string to store in it.
          ------------------------------------------------------
          Variable_Count.Next (Count);
          New_Obj := Tash.To_Tcl_Obj ("array" &
@@ -851,22 +860,22 @@ package body Tash.Arrays is
          TArray := (Ada.Finalization.Controlled with
                     Obj  => New_Obj);
 
-         -- Create a Tcl list to hold the index and value
+         --  Create a Tcl list to hold the index and value
          ------------------------------------------------
-         Listv(1) := Tash.To_Tcl_Obj (Index);
-         Listv(2) := To_Tcl_Obj (Num);
+         Listv (1) := Tash.To_Tcl_Obj (Index);
+         Listv (2) := To_Tcl_Obj (Num);
          ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
-         Tcl.Tcl_DecrRefCount (Listv(1));
+         Tcl.Tcl_DecrRefCount (Listv (1));
 
-         -- Create object parameters for Tcl_ArrayObjCmd call
+         --  Create object parameters for Tcl_ArrayObjCmd call
          ----------------------------------------------------
-         Objv(1) := Array_Cmd;
-         Objv(2) := Set_Option;
-         Objv(3) := TArray.Obj;
-         Objv(4) := ListObj;
+         Objv (1) := Array_Cmd;
+         Objv (2) := Set_Option;
+         Objv (3) := TArray.Obj;
+         Objv (4) := ListObj;
 
-         -- Set the array element
+         --  Set the array element
          ------------------------
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
@@ -876,7 +885,7 @@ package body Tash.Arrays is
             Objc   => Objc,
             Objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
-         Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+         Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
          Tash_Interp.Release (Interp);
          return TArray;
@@ -893,8 +902,8 @@ package body Tash.Arrays is
          declare
             Obj : Tcl.Tcl_Obj_Ptr :=
               Get_Element (Interp, TArray.Obj, Index);
-            Value  : aliased Interfaces.C.Int;
-            Result : Interfaces.C.Int;
+            Value  : aliased Interfaces.C.int;
+            Result : Interfaces.C.int;
          begin
             if Type_Of_Array_Element (Obj) /= "int" then
                Tash_Interp.Raise_Exception (
@@ -934,44 +943,46 @@ package body Tash.Arrays is
 
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
-         Objc    : Interfaces.C.Int := 4;
-         Objv    : Tcl.Tcl_Obj_Array (1..Objc);
-         Listc   : Interfaces.C.Int := 2;
-         Listv   : Tcl.Tcl_Obj_Array (1..Listc);
+         Objc    : Interfaces.C.int := 4;
+         Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
+         Listc   : Interfaces.C.int := 2;
+         Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
-         Result  : Interfaces.C.Int;
+         Result  : Interfaces.C.int;
          Interp  : Tcl.Tcl_Interp;
 
       begin -- Set_Element
 
          if Tcl.Is_Null (TArray.Obj) then
-            -- A Tash array is merely a unique variable name for a
-            -- Tcl array.  We will now create a Tcl object and a
-            -- unique variable name string to store in it.
+            --  A Tash array is merely a unique variable name for a
+            --  Tcl array.  We will now create a Tcl object and a
+            --  unique variable name string to store in it.
             ------------------------------------------------------
             Variable_Count.Next (Count);
-            New_Obj := Tash.To_Tcl_Obj ("array" &
-               Ada.Strings.Fixed.Trim (Natural'Image (Count), Ada.Strings.Left));
+            New_Obj := Tash.To_Tcl_Obj
+              ("array" &
+               Ada.Strings.Fixed.Trim (Natural'Image (Count),
+                                       Ada.Strings.Left));
             TArray := (Ada.Finalization.Controlled with
                        Obj  => New_Obj);
          end if;
 
-         -- Create a Tcl list to hold the index and value
+         --  Create a Tcl list to hold the index and value
          ------------------------------------------------
-         Listv(1) := Tash.To_Tcl_Obj (Index);
-         Listv(2) := To_Tcl_Obj (Value);
+         Listv (1) := Tash.To_Tcl_Obj (Index);
+         Listv (2) := To_Tcl_Obj (Value);
          ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
-         Tcl.Tcl_DecrRefCount (Listv(1));
+         Tcl.Tcl_DecrRefCount (Listv (1));
 
-         -- Create object parameters for Tcl_ArrayObjCmd call
+         --  Create object parameters for Tcl_ArrayObjCmd call
          ----------------------------------------------------
-         Objv(1) := Array_Cmd;
-         Objv(2) := Set_Option;
-         Objv(3) := TArray.Obj;
-         Objv(4) := ListObj;
+         Objv (1) := Array_Cmd;
+         Objv (2) := Set_Option;
+         Objv (3) := TArray.Obj;
+         Objv (4) := ListObj;
 
-         -- Set the array element
+         --  Set the array element
          ------------------------
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
@@ -981,7 +992,7 @@ package body Tash.Arrays is
             Objc   => Objc,
             Objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
-         Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+         Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
          Tash_Interp.Release (Interp);
 
@@ -991,10 +1002,11 @@ package body Tash.Arrays is
 
    package body Generic_Float_Arrays is
 
+      function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj;
       function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj is
          New_Obj : Tcl.Tcl_Obj;
       begin -- To_Tcl_Obj
-         New_Obj := Tcl.Tcl_NewDoubleObj (Interfaces.C.Double (Num));
+         New_Obj := Tcl.Tcl_NewDoubleObj (Interfaces.C.double (Num));
          Tcl.Tcl_IncrRefCount (New_Obj);
          return New_Obj;
       end To_Tcl_Obj;
@@ -1006,19 +1018,19 @@ package body Tash.Arrays is
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
          TArray  : Tash_Array;
-         Objc    : Interfaces.C.Int := 4;
-         Objv    : Tcl.Tcl_Obj_Array (1..Objc);
-         Listc   : Interfaces.C.Int := 2;
-         Listv   : Tcl.Tcl_Obj_Array (1..Listc);
+         Objc    : Interfaces.C.int := 4;
+         Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
+         Listc   : Interfaces.C.int := 2;
+         Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
-         Result  : Interfaces.C.Int;
+         Result  : Interfaces.C.int;
          Interp  : Tcl.Tcl_Interp;
 
       begin -- To_Tash_Array
 
-         -- A Tash array is merely a unique variable name for a
-         -- Tcl array.  We will now create a Tcl object and a
-         -- unique variable name string to store in it.
+         --  A Tash array is merely a unique variable name for a
+         --  Tcl array.  We will now create a Tcl object and a
+         --  unique variable name string to store in it.
          ------------------------------------------------------
          Variable_Count.Next (Count);
          New_Obj := Tash.To_Tcl_Obj ("array" &
@@ -1026,22 +1038,22 @@ package body Tash.Arrays is
          TArray := (Ada.Finalization.Controlled with
                     Obj  => New_Obj);
 
-         -- Create a Tcl list to hold the index and value
+         --  Create a Tcl list to hold the index and value
          ------------------------------------------------
-         Listv(1) := Tash.To_Tcl_Obj (Index);
-         Listv(2) := To_Tcl_Obj (Num);
+         Listv (1) := Tash.To_Tcl_Obj (Index);
+         Listv (2) := To_Tcl_Obj (Num);
          ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
-         Tcl.Tcl_DecrRefCount (Listv(1));
+         Tcl.Tcl_DecrRefCount (Listv (1));
 
-         -- Create object parameters for Tcl_ArrayObjCmd call
+         --  Create object parameters for Tcl_ArrayObjCmd call
          ----------------------------------------------------
-         Objv(1) := Array_Cmd;
-         Objv(2) := Set_Option;
-         Objv(3) := TArray.Obj;
-         Objv(4) := ListObj;
+         Objv (1) := Array_Cmd;
+         Objv (2) := Set_Option;
+         Objv (3) := TArray.Obj;
+         Objv (4) := ListObj;
 
-         -- Set the array element
+         --  Set the array element
          ------------------------
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
@@ -1051,7 +1063,7 @@ package body Tash.Arrays is
             Objc   => Objc,
             Objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
-         Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+         Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
          Tash_Interp.Release (Interp);
          return TArray;
@@ -1068,8 +1080,8 @@ package body Tash.Arrays is
          declare
             Obj : Tcl.Tcl_Obj_Ptr :=
               Get_Element (Interp, TArray.Obj, Index);
-            Value  : aliased Interfaces.C.Double;
-            Result : Interfaces.C.Int;
+            Value  : aliased Interfaces.C.double;
+            Result : Interfaces.C.int;
          begin
             if Type_Of_Array_Element (Obj) /= "double" then
                Tash_Interp.Raise_Exception (
@@ -1109,44 +1121,46 @@ package body Tash.Arrays is
 
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
-         Objc    : Interfaces.C.Int := 4;
-         Objv    : Tcl.Tcl_Obj_Array (1..Objc);
-         Listc   : Interfaces.C.Int := 2;
-         Listv   : Tcl.Tcl_Obj_Array (1..Listc);
+         Objc    : Interfaces.C.int := 4;
+         Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
+         Listc   : Interfaces.C.int := 2;
+         Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
-         Result  : Interfaces.C.Int;
+         Result  : Interfaces.C.int;
          Interp  : Tcl.Tcl_Interp;
 
       begin -- Set_Element
 
          if Tcl.Is_Null (TArray.Obj) then
-            -- A Tash array is merely a unique variable name for a
-            -- Tcl array.  We will now create a Tcl object and a
-            -- unique variable name string to store in it.
+            --  A Tash array is merely a unique variable name for a
+            --  Tcl array.  We will now create a Tcl object and a
+            --  unique variable name string to store in it.
             ------------------------------------------------------
             Variable_Count.Next (Count);
-            New_Obj := Tash.To_Tcl_Obj ("array" &
-               Ada.Strings.Fixed.Trim (Natural'Image (Count), Ada.Strings.Left));
+            New_Obj := Tash.To_Tcl_Obj
+              ("array" &
+               Ada.Strings.Fixed.Trim (Natural'Image (Count),
+                                       Ada.Strings.Left));
             TArray := (Ada.Finalization.Controlled with
                        Obj  => New_Obj);
          end if;
 
-         -- Create a Tcl list to hold the index and value
+         --  Create a Tcl list to hold the index and value
          ------------------------------------------------
-         Listv(1) := Tash.To_Tcl_Obj (Index);
-         Listv(2) := To_Tcl_Obj (Value);
+         Listv (1) := Tash.To_Tcl_Obj (Index);
+         Listv (2) := To_Tcl_Obj (Value);
          ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
-         Tcl.Tcl_DecrRefCount (Listv(1));
+         Tcl.Tcl_DecrRefCount (Listv (1));
 
-         -- Create object parameters for Tcl_ArrayObjCmd call
+         --  Create object parameters for Tcl_ArrayObjCmd call
          ----------------------------------------------------
-         Objv(1) := Array_Cmd;
-         Objv(2) := Set_Option;
-         Objv(3) := TArray.Obj;
-         Objv(4) := ListObj;
+         Objv (1) := Array_Cmd;
+         Objv (2) := Set_Option;
+         Objv (3) := TArray.Obj;
+         Objv (4) := ListObj;
 
-         -- Set the array element
+         --  Set the array element
          ------------------------
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
@@ -1156,7 +1170,7 @@ package body Tash.Arrays is
             Objc   => Objc,
             Objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
-         Tash_Interp.Assert (Interp, Result, Array_Error'identity);
+         Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
          Tash_Interp.Release (Interp);
 
@@ -1178,7 +1192,7 @@ package body Tash.Arrays is
 
    begin -- Internal_Rep
 
-      -- Get the internal representation of the array itself
+      --  Get the internal representation of the array itself
       -----------------------------------------------------
       Image := Ada.Strings.Unbounded.To_Unbounded_String (
          Tash.Internal_Rep (Tash_Object (TArray)));
@@ -1188,42 +1202,44 @@ package body Tash.Arrays is
          return Ada.Strings.Unbounded.To_String (Image);
       end if;
 
-      -- Find max length of the indices
+      --  Find max length of the indices
       ---------------------------------
       Num_Elements := Tash.Lists.Length (Indices);
-      for I in 1..Num_Elements loop
+      for I in 1 .. Num_Elements loop
          declare
             Index  : constant String := Tash.Lists.Get_Element (Indices, I);
          begin
-            if Index'length > Max_Index_Len then
-               Max_Index_Len := Index'length;
+            if Index'Length > Max_Index_Len then
+               Max_Index_Len := Index'Length;
             end if;
          end;
       end loop;
 
-      -- Append index and internal rep of each element.
-      -- Note that we use the low-level internal rep of the
-      -- Tcl object, not the Tash Object.  This is because
-      -- if we declare Elem as Tash_Object'Class, we'll
-      -- increment the reference count and show a confusingly
-      -- high reference count.
+      --  Append index and internal rep of each element.
+      --  Note that we use the low-level internal rep of the
+      --  Tcl object, not the Tash Object.  This is because
+      --  if we declare Elem as Tash_Object'Class, we'll
+      --  increment the reference count and show a confusingly
+      --  high reference count.
       ------------------------------------------------
-      for I in 1..Num_Elements loop
+      for I in 1 .. Num_Elements loop
          declare
             Index : constant String := Tash.Lists.Get_Element (Indices, I);
          begin
             Tash_Interp.Get (Interp);
             Elem := Get_Element (Interp, TArray.Obj, Index);
             Tash_Interp.Release (Interp);
-            Ada.Text_IO.Put_Line ("TA.Internal_Rep: i=" & Integer'Image (I) &
+            Ada.Text_IO.Put_Line
+              ("TA.Internal_Rep: i=" & Integer'Image (I) &
                " index=" & Index &
                " value=" & Tash.Image (Elem.all) &
-               " count=" & Interfaces.C.Int'image (Tcl.Tcl_GetRefCount (Elem.all)));
+               " count=" & Interfaces.C.int'Image (Tcl.Tcl_GetRefCount
+                                                     (Elem.all)));
             Ada.Strings.Unbounded.Append (Image,
                ASCII.LF & "   " & Name & "(" & Index & ")" &
-               (Index'Length+1..Max_Index_Len => ' ') &
-               "=" & Tash.Internal_Rep(Elem.all));
-            --Tcl.Tcl_DecrRefCount (Elem.all);
+               (Index'Length + 1 .. Max_Index_Len => ' ') &
+               "=" & Tash.Internal_Rep (Elem.all));
+            --  Tcl.Tcl_DecrRefCount (Elem.all);
          end;
       end loop;
 
@@ -1234,7 +1250,7 @@ package body Tash.Arrays is
    function Internal_Name (
       TArray : in Tash_Array) return String is
    --
-      Length : aliased Interfaces.C.Int;
+      Length : aliased Interfaces.C.int;
    begin -- Internal_Name
       if Is_Null (TArray) then
          return "";
@@ -1247,7 +1263,7 @@ package body Tash.Arrays is
    procedure Finalize (
       TArray : in out Tash_Array) is
 
-      Ref_Count : Interfaces.C.Int;
+      Ref_Count : Interfaces.C.int;
       Indices   : Tash.Lists.Tash_List;
 
    begin -- Finalize
@@ -1257,11 +1273,11 @@ package body Tash.Arrays is
       end if;
       Ref_Count := Tcl.Tcl_GetRefCount (TArray.Obj);
       if Ref_Count = 1  then
-         -- array is now being de-referenced;
-         -- decrement count of each element
+         --  array is now being de-referenced;
+         --  decrement count of each element
          ------------------------------------
          Indices := Get_Indices (TArray);
-         for I in 1..Tash.Lists.Length (Indices) loop
+         for I in 1 .. Tash.Lists.Length (Indices) loop
             declare
                Index   : constant String :=
                   Tash.Lists.Get_Element (Indices, I);
