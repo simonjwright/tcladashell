@@ -11,7 +11,6 @@
 --------------------------------------------------------------------
 
 with Ada.Strings.Fixed;
-with Unchecked_Deallocation;
 
 package body CHelper is
 
@@ -198,7 +197,7 @@ package body CHelper is
       Right : Character)
       return  C.Strings.chars_ptr
    is
-      Result : C.Strings.char_array_access :=
+      Result : constant C.Strings.char_array_access :=
          new C.char_array (1 .. C.size_t (Left + 1));
    begin --  "*"
       Result.all := C.To_C (ASF. "*" (Left, Right), Append_Nul => True);
@@ -206,7 +205,7 @@ package body CHelper is
    end "*";
 
    function "*" (Left : Natural; Right : String) return C.Strings.chars_ptr is
-      Result : C.Strings.char_array_access :=
+      Result : constant C.Strings.char_array_access :=
          new C.char_array (1 .. C.size_t (Left * Right'Length + 1));
    begin --  "*"
       Result.all := C.To_C (ASF. "*" (Left, Right), Append_Nul => True);
@@ -218,7 +217,7 @@ package body CHelper is
       Right : C.Strings.chars_ptr)
       return  C.Strings.chars_ptr
    is
-      Result : C.Strings.char_array_access :=
+      Result : constant C.Strings.char_array_access :=
          new C.char_array (1 .. C.size_t (Left * Length (Right) + 1));
    begin --  "*"
       Result.all :=
@@ -583,7 +582,7 @@ package body CHelper is
       S_Length : constant C.size_t           := C.Strings.Strlen (Source);
       T_Length : constant C.size_t           :=
          S_Length + C.Strings.Strlen (New_Item);
-      Result   : C.Strings.char_array_access :=
+      Result : constant C.Strings.char_array_access :=
          new C.char_array (1 .. T_Length + 1);
    begin --  Append
       Result.all (1 .. S_Length + 1)            := C.Strings.Value (Source);
@@ -598,7 +597,7 @@ package body CHelper is
    is
       S_Length : constant C.size_t           := C.Strings.Strlen (Source);
       Length   : constant C.size_t           := S_Length + New_Item'Length;
-      Result   : C.Strings.char_array_access :=
+      Result   : constant C.Strings.char_array_access :=
          new C.char_array (1 .. Length + 1);
    begin --  Append
       Result.all (1 .. S_Length + 1)          := C.Strings.Value (Source);
@@ -613,7 +612,7 @@ package body CHelper is
    is
       S_Length : constant C.size_t           := C.Strings.Strlen (Source);
       Length   : constant C.size_t           := S_Length + 1;
-      Result   : C.Strings.char_array_access :=
+      Result   : constant C.Strings.char_array_access :=
          new C.char_array (1 .. Length + 1);
    begin --  Append
       Result.all (1 .. S_Length + 1) := C.Strings.Value (Source);

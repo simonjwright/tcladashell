@@ -16,10 +16,7 @@
 --------------------------------------------------------------------
 
 with Ada.Command_Line;
-with CHelper;
 with Text_IO;
-with Unchecked_Conversion;
-with Unchecked_Deallocation;
 
 package body CArgv is
 
@@ -78,7 +75,7 @@ package body CArgv is
    end Empty;
 
    function "&" (Argv : Chars_Ptr_Ptr; Arg : String) return Chars_Ptr_Ptr is
-      Size : C.int         :=
+      Size : constant C.int :=
          C.int (Argv_Pointer.Virtual_Length (Argv)) + 1;
       Vec  : Vector_Access := new Vector (0 .. Size);
 

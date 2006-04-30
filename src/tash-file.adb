@@ -34,7 +34,6 @@
 
 with Ada.Characters.Handling;
 with Ada.Strings.Fixed;
-with Ada.Text_IO;
 with Ada.Integer_Text_IO;
 with CHelper;
 with System;
@@ -104,7 +103,7 @@ package body Tash.File is
      (Seconds_Since_Epoch : in String)
       return                Ada.Calendar.Time
    is
-      Objc   : Interfaces.C.int := 5;
+      Objc   : constant Interfaces.C.int := 5;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -188,7 +187,7 @@ package body Tash.File is
       Dur_Seconds : Duration;
       DateString  : String (1 .. 19) := "MM/DD/YYYY HH:MM:SS";
 
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -267,7 +266,7 @@ package body Tash.File is
    end To_Epoch_Time;
 
    function Get_Access_Time (Name : String) return Ada.Calendar.Time is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -320,7 +319,7 @@ package body Tash.File is
 
    procedure Set_Access_Time (Name : String; Date : Ada.Calendar.Time) is
 
-      Objc        : Interfaces.C.int := 4;
+      Objc        : constant Interfaces.C.int := 4;
       Objv        : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result      : Interfaces.C.int;
       Interp      : Tcl.Tcl_Interp;
@@ -390,7 +389,7 @@ package body Tash.File is
       Attr : in Attribute)
       return String
    is
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -451,7 +450,7 @@ package body Tash.File is
       Value : in String)
    is
 
-      Objc   : Interfaces.C.int := 5;
+      Objc   : constant Interfaces.C.int := 5;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -484,20 +483,18 @@ package body Tash.File is
             Result_String : constant String :=
                CHelper.Value (Tcl.Tcl_GetStringResult (Interp));
          begin
-            if Result = Tcl.TCL_ERROR then
-               if Match (Result_String, "no such file") then
-                  Tash_Interp.Raise_Exception
-                    (Interp,
-                     No_Such_File'Identity,
-                     Result_String);
-               elsif Match (Result_String, "bad option") then
-                  null;
-               else
-                  Tash_Interp.Raise_Exception
-                    (Interp,
-                     Tash.Tcl_Error'Identity,
-                     Result_String);
-               end if;
+            if Match (Result_String, "no such file") then
+               Tash_Interp.Raise_Exception
+                 (Interp,
+                  No_Such_File'Identity,
+                  Result_String);
+            elsif Match (Result_String, "bad option") then
+               null;
+            else
+               Tash_Interp.Raise_Exception
+                 (Interp,
+                  Tash.Tcl_Error'Identity,
+                  Result_String);
             end if;
          end;
       end if;
@@ -525,7 +522,7 @@ package body Tash.File is
       --------------------------------------
       if Force then
          declare
-            Objc : Interfaces.C.int := 5;
+            Objc : constant Interfaces.C.int := 5;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("file");
@@ -545,7 +542,7 @@ package body Tash.File is
          end;
       else
          declare
-            Objc : Interfaces.C.int := 4;
+            Objc : constant Interfaces.C.int := 4;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("file");
@@ -609,7 +606,7 @@ package body Tash.File is
       ----------------------------------------
       if Force then
          declare
-            Objc : Interfaces.C.int := 4;
+            Objc : constant Interfaces.C.int := 4;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("file");
@@ -628,7 +625,7 @@ package body Tash.File is
          end;
       else
          declare
-            Objc : Interfaces.C.int := 3;
+            Objc : constant Interfaces.C.int := 3;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("file");
@@ -678,7 +675,7 @@ package body Tash.File is
    end Delete;
 
    function Directory_Name (Name : in String) return String is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -722,7 +719,7 @@ package body Tash.File is
    end Directory_Name;
 
    function Exists (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -766,7 +763,7 @@ package body Tash.File is
    end Exists;
 
    function Executable (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -810,7 +807,7 @@ package body Tash.File is
    end Executable;
 
    function Extension (Name : in String) return String is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -854,7 +851,7 @@ package body Tash.File is
    end Extension;
 
    function Is_Directory (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -898,7 +895,7 @@ package body Tash.File is
    end Is_Directory;
 
    function Is_File (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1053,7 +1050,7 @@ package body Tash.File is
 
    function Join (Name_List : in Tash.Lists.Tash_List) return String is
       Length : constant Natural := Tash.Lists.Length (Name_List);
-      Objc   : Interfaces.C.int := 2 + Interfaces.C.int (Length);
+      Objc   : constant Interfaces.C.int := 2 + Interfaces.C.int (Length);
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1110,13 +1107,14 @@ package body Tash.File is
    --  entry for stat(2) for details on the meanings of the values.  The
    --  type element gives the type of the file in the same form returned
    --  by the function Tash.File.Type.
+   pragma Unreferenced (Get_Link_Status);  --  XXX what is it for?
 
    procedure Get_Link_Status
      (Name   : in String;
       Status : in out Tash.Arrays.Tash_Array)
    is
 
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1155,18 +1153,16 @@ package body Tash.File is
             Result_String : constant String :=
                CHelper.Value (Tcl.Tcl_GetStringResult (Interp));
          begin
-            if Result = Tcl.TCL_ERROR then
-               if Match (Result_String, "no such file") then
-                  Tash_Interp.Raise_Exception
-                    (Interp,
-                     No_Such_File'Identity,
-                     Result_String);
-               else
-                  Tash_Interp.Raise_Exception
-                    (Interp,
-                     Tash.Tcl_Error'Identity,
-                     Result_String);
-               end if;
+            if Match (Result_String, "no such file") then
+               Tash_Interp.Raise_Exception
+                 (Interp,
+                  No_Such_File'Identity,
+                  Result_String);
+            else
+               Tash_Interp.Raise_Exception
+                 (Interp,
+                  Tash.Tcl_Error'Identity,
+                  Result_String);
             end if;
          end;
       end if;
@@ -1178,7 +1174,7 @@ package body Tash.File is
 
    procedure Make_Directory (Name : in String) is
 
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1209,18 +1205,16 @@ package body Tash.File is
             Result_String : constant String :=
                CHelper.Value (Tcl.Tcl_GetStringResult (Interp));
          begin
-            if Result = Tcl.TCL_ERROR then
-               if Match (Result_String, "file already exists") then
-                  Tash_Interp.Raise_Exception
-                    (Interp,
-                     File_Already_Exists'Identity,
-                     Result_String);
-               else
-                  Tash_Interp.Raise_Exception
-                    (Interp,
-                     Tash.Tcl_Error'Identity,
-                     Result_String);
-               end if;
+            if Match (Result_String, "file already exists") then
+               Tash_Interp.Raise_Exception
+                 (Interp,
+                  File_Already_Exists'Identity,
+                  Result_String);
+            else
+               Tash_Interp.Raise_Exception
+                 (Interp,
+                  Tash.Tcl_Error'Identity,
+                  Result_String);
             end if;
          end;
       end if;
@@ -1231,7 +1225,7 @@ package body Tash.File is
    end Make_Directory;
 
    function Get_Modified_Time (Name : String) return Ada.Calendar.Time is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1284,7 +1278,7 @@ package body Tash.File is
 
    procedure Set_Modified_Time (Name : String; Date : Ada.Calendar.Time) is
 
-      Objc          : Interfaces.C.int := 4;
+      Objc          : constant Interfaces.C.int := 4;
       Objv          : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result        : Interfaces.C.int;
       Interp        : Tcl.Tcl_Interp;
@@ -1337,7 +1331,7 @@ package body Tash.File is
    end Set_Modified_Time;
 
    function Native_Name (Name : in String) return String is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1381,7 +1375,7 @@ package body Tash.File is
    end Native_Name;
 
    function Owned (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1425,7 +1419,7 @@ package body Tash.File is
    end Owned;
 
    function Get_Path_Type (Name : in String) return Path_Type is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1469,7 +1463,7 @@ package body Tash.File is
    end Get_Path_Type;
 
    function Readable (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1513,7 +1507,7 @@ package body Tash.File is
    end Readable;
 
    function Is_Link (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1544,7 +1538,7 @@ package body Tash.File is
    end Is_Link;
 
    function Read_Link (Name : in String) return String is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1608,7 +1602,7 @@ package body Tash.File is
       ----------------------------------------
       if Force then
          declare
-            Objc : Interfaces.C.int := 5;
+            Objc : constant Interfaces.C.int := 5;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("file");
@@ -1628,7 +1622,7 @@ package body Tash.File is
          end;
       else
          declare
-            Objc : Interfaces.C.int := 4;
+            Objc : constant Interfaces.C.int := 4;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("file");
@@ -1679,7 +1673,7 @@ package body Tash.File is
    end Rename;
 
    function Root_Name (Name : in String) return String is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1723,7 +1717,7 @@ package body Tash.File is
    end Root_Name;
 
    function Size (Name : in String) return Natural is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1775,11 +1769,12 @@ package body Tash.File is
    end Size;
 
    function Split (Name : in String) return Tash.Lists.Tash_List is
-      Objc      : Interfaces.C.int := 3;
+      Objc      : constant Interfaces.C.int := 3;
       Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result    : Interfaces.C.int;
       Interp    : Tcl.Tcl_Interp;
       Path_List : Tash.Lists.Tash_List;
+      pragma Unreferenced (Result);  --  XXX why not?
 
    begin --  Split
 
@@ -1813,7 +1808,7 @@ package body Tash.File is
    end Split;
 
    function Tail (Name : in String) return String is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1857,7 +1852,7 @@ package body Tash.File is
    end Tail;
 
    function Get_File_Type (Name : in String) return File_Type is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1901,11 +1896,12 @@ package body Tash.File is
    end Get_File_Type;
 
    function Volume return Tash.Lists.Tash_List is
-      Objc      : Interfaces.C.int := 2;
+      Objc      : constant Interfaces.C.int := 2;
       Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result    : Interfaces.C.int;
       Interp    : Tcl.Tcl_Interp;
       Path_List : Tash.Lists.Tash_List;
+      pragma Unreferenced (Result);  --  XXX why not?
 
    begin --  Volume
 
@@ -1938,7 +1934,7 @@ package body Tash.File is
    end Volume;
 
    function Writable (Name : in String) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1992,7 +1988,7 @@ package body Tash.File is
       -------------------------------------------
       if Name = "" then
          declare
-            Objc : Interfaces.C.int := 1;
+            Objc : constant Interfaces.C.int := 1;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("cd");
@@ -2010,7 +2006,7 @@ package body Tash.File is
          end;
       else
          declare
-            Objc : Interfaces.C.int := 2;
+            Objc : constant Interfaces.C.int := 2;
             Objv : Tcl.Tcl_Obj_Array (1 .. Objc);
          begin
             Objv (1) := Tash.To_Tcl_Obj ("cd");
@@ -2036,12 +2032,10 @@ package body Tash.File is
             Result_String : constant String :=
                CHelper.Value (Tcl.Tcl_GetStringResult (Interp));
          begin
-            if Result = Tcl.TCL_ERROR then
-               Tash_Interp.Raise_Exception
-                 (Interp,
-                  Tash.Tcl_Error'Identity,
-                  Result_String);
-            end if;
+            Tash_Interp.Raise_Exception
+              (Interp,
+               Tash.Tcl_Error'Identity,
+               Result_String);
          end;
       end if;
 
@@ -2062,6 +2056,7 @@ package body Tash.File is
       Interp    : Tcl.Tcl_Interp;
       Types     : Tash.Lists.Tash_List;
       File_List : Tash.Lists.Tash_List;
+      pragma Unreferenced (Result);  -- XXX why not?
 
    begin --  Match
 
@@ -2134,7 +2129,7 @@ package body Tash.File is
    end Match;
 
    function Current_Working_Directory return String is
-      Objc   : Interfaces.C.int := 1;
+      Objc   : constant Interfaces.C.int := 1;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;

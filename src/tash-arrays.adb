@@ -44,9 +44,9 @@
 --------------------------------------------------------------------
 
 with Ada.Strings.Fixed;
+with Ada.Strings.Unbounded;
 with Ada.Text_IO;
 with CHelper;
-with Interfaces.C.Strings;
 with Tcl.Ada;
 with System;
 
@@ -59,13 +59,13 @@ package body Tash.Arrays is
 
    use type Interfaces.C.int;
 
-   Array_Cmd    : Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("array");
+   Array_Cmd    : constant Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("array");
 
-   Get_Option   : Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("get");
-   Names_Option : Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("names");
-   Set_Option   : Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("set");
-   Size_Option  : Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("size");
-   Unset_Option : Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("unset");
+   Get_Option   : constant Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("get");
+   Names_Option : constant Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("names");
+   Set_Option   : constant Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("set");
+   Size_Option  : constant Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("size");
+   Unset_Option : constant Tcl.Tcl_Obj := Tash.To_Tcl_Obj ("unset");
 
    function Tcl_ArrayObjCmd (
       dummy  : in Tcl.ClientData;
@@ -109,7 +109,7 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.int := 4;
+      Objc    : constant Interfaces.C.int := 4;
       Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
       TArray  : Tash_Array;
       Interp  : Tcl.Tcl_Interp;
@@ -170,7 +170,7 @@ package body Tash.Arrays is
    function To_String (
       TArray : in Tash_Array) return String is
 
-      Objc      : Interfaces.C.int := 3;
+      Objc      : constant Interfaces.C.int := 3;
       Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
       Result    : Interfaces.C.int;
@@ -228,7 +228,7 @@ package body Tash.Arrays is
    function Length (
       TArray : in Tash_Array) return Natural is
    --
-      Objc      : Interfaces.C.int := 3;
+      Objc      : constant Interfaces.C.int := 3;
       Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
       Result    : Interfaces.C.int;
@@ -259,7 +259,7 @@ package body Tash.Arrays is
       TArray : in Tcl.Tcl_Obj;
       Index  : in String) return Tcl.Tcl_Obj_Ptr is
 
-      Objc       : Interfaces.C.int := 4;
+      Objc       : constant Interfaces.C.int := 4;
       Objv       : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result     : Interfaces.C.int;
       InterpObj  : Tcl.Tcl_Obj;
@@ -332,7 +332,8 @@ package body Tash.Arrays is
    begin -- Get_Element
       Tash_Interp.Get (Interp);
       declare
-         Obj   : Tcl.Tcl_Obj_Ptr := Get_Element (Interp, TArray.Obj, Index);
+         Obj   : constant Tcl.Tcl_Obj_Ptr :=
+           Get_Element (Interp, TArray.Obj, Index);
          Len   : aliased Interfaces.C.int;
       begin
          Tash_Interp.Release (Interp);
@@ -348,7 +349,8 @@ package body Tash.Arrays is
    begin -- Get_Element
       Tash_Interp.Get (Interp);
       declare
-         Obj : Tcl.Tcl_Obj_Ptr := Get_Element (Interp, TArray.Obj, Index);
+         Obj : constant Tcl.Tcl_Obj_Ptr :=
+           Get_Element (Interp, TArray.Obj, Index);
       begin
          Tash_Interp.Release (Interp);
          Tcl.Tcl_IncrRefCount (Obj.all);
@@ -360,7 +362,7 @@ package body Tash.Arrays is
       TArray : in Tash_Array;
       Index  : in String) return Boolean is
 
-      Objc      : Interfaces.C.int := 3;
+      Objc      : constant Interfaces.C.int := 3;
       Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
       Result    : Interfaces.C.int;
@@ -622,9 +624,9 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.int := 4;
+      Objc    : constant Interfaces.C.int := 4;
       Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-      Listc   : Interfaces.C.int := 2;
+      Listc   : constant Interfaces.C.int := 2;
       Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
       ListObj : Tcl.Tcl_Obj;
       Result  : Interfaces.C.int;
@@ -682,9 +684,9 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.int := 4;
+      Objc    : constant Interfaces.C.int := 4;
       Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-      Listc   : Interfaces.C.int := 2;
+      Listc   : constant Interfaces.C.int := 2;
       Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
       ListObj : Tcl.Tcl_Obj;
       Result  : Interfaces.C.int;
@@ -741,7 +743,7 @@ package body Tash.Arrays is
 
       Count   : Natural;
       New_Obj : Tcl.Tcl_Obj;
-      Objc    : Interfaces.C.int := 4;
+      Objc    : constant Interfaces.C.int := 4;
       Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result  : Interfaces.C.int;
       Interp  : Tcl.Tcl_Interp;
@@ -786,7 +788,7 @@ package body Tash.Arrays is
       TArray : in Tash_Array;
       Index  : in String) is
 
-      Objc    : Interfaces.C.int := 4;
+      Objc    : constant Interfaces.C.int := 4;
       Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp  : Tcl.Tcl_Interp;
       Result  : Interfaces.C.int;
@@ -840,9 +842,9 @@ package body Tash.Arrays is
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
          TArray  : Tash_Array;
-         Objc    : Interfaces.C.int := 4;
+         Objc    : constant Interfaces.C.int := 4;
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-         Listc   : Interfaces.C.int := 2;
+         Listc   : constant Interfaces.C.int := 2;
          Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
          Result  : Interfaces.C.int;
@@ -900,10 +902,11 @@ package body Tash.Arrays is
       begin -- Get_Element
          Tash_Interp.Get (Interp);
          declare
-            Obj : Tcl.Tcl_Obj_Ptr :=
+            Obj : constant Tcl.Tcl_Obj_Ptr :=
               Get_Element (Interp, TArray.Obj, Index);
             Value  : aliased Interfaces.C.int;
             Result : Interfaces.C.int;
+            pragma Unreferenced (Result);  -- XXX this doesn't seem right!
          begin
             if Type_Of_Array_Element (Obj) /= "int" then
                Tash_Interp.Raise_Exception (
@@ -943,9 +946,9 @@ package body Tash.Arrays is
 
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
-         Objc    : Interfaces.C.int := 4;
+         Objc    : constant Interfaces.C.int := 4;
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-         Listc   : Interfaces.C.int := 2;
+         Listc   : constant Interfaces.C.int := 2;
          Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
          Result  : Interfaces.C.int;
@@ -1018,9 +1021,9 @@ package body Tash.Arrays is
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
          TArray  : Tash_Array;
-         Objc    : Interfaces.C.int := 4;
+         Objc    : constant Interfaces.C.int := 4;
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-         Listc   : Interfaces.C.int := 2;
+         Listc   : constant Interfaces.C.int := 2;
          Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
          Result  : Interfaces.C.int;
@@ -1078,10 +1081,11 @@ package body Tash.Arrays is
       begin -- Get_Element
          Tash_Interp.Get (Interp);
          declare
-            Obj : Tcl.Tcl_Obj_Ptr :=
+            Obj : constant Tcl.Tcl_Obj_Ptr :=
               Get_Element (Interp, TArray.Obj, Index);
             Value  : aliased Interfaces.C.double;
             Result : Interfaces.C.int;
+            pragma Unreferenced (Result);  -- XXX this doesn't seem right!
          begin
             if Type_Of_Array_Element (Obj) /= "double" then
                Tash_Interp.Raise_Exception (
@@ -1121,9 +1125,9 @@ package body Tash.Arrays is
 
          Count   : Natural;
          New_Obj : Tcl.Tcl_Obj;
-         Objc    : Interfaces.C.int := 4;
+         Objc    : constant Interfaces.C.int := 4;
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-         Listc   : Interfaces.C.int := 2;
+         Listc   : constant Interfaces.C.int := 2;
          Listv   : Tcl.Tcl_Obj_Array (1 .. Listc);
          ListObj : Tcl.Tcl_Obj;
          Result  : Interfaces.C.int;
@@ -1189,6 +1193,7 @@ package body Tash.Arrays is
       Interp        : Tcl.Tcl_Interp;
       Elem          : Tcl.Tcl_Obj_Ptr;
       Elements      : Tash.Lists.Tash_List;
+      pragma Unreferenced (Elements);  -- XXX why do we get it then?
 
    begin -- Internal_Rep
 

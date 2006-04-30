@@ -36,7 +36,6 @@
 --
 --------------------------------------------------------------------
 
-with Ada.Text_IO;
 with CHelper;
 with System;
 
@@ -53,7 +52,7 @@ package body Tash.System is
    pragma Import (C, Tcl_PidObjCmd, "Tcl_PidObjCmd");
 
    function Pid return Process_ID is
-      Objc   : Interfaces.C.int := 1;
+      Objc   : constant Interfaces.C.int := 1;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;

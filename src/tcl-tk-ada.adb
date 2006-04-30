@@ -28,8 +28,6 @@
 --
 --------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 with Tcl.Ada;
 with Text_IO;
 
@@ -41,6 +39,7 @@ package body Tcl.Tk.Ada is
 
    procedure Tcl_Eval (Interp : in Tcl_Interp; Cmd : in String);
    function Get_Main_Window (Interp : in Tcl_Interp) return Frame;
+   pragma Unreferenced (Get_Main_Window);  --  XXX what is it for, then?
 
    procedure Tcl_Eval (Interp : in Tcl_Interp; Cmd : in String) is
    begin --  Tcl_Eval

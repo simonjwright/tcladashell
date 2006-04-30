@@ -36,7 +36,6 @@
 --------------------------------------------------------------------
 
 with CArgv;
-with CHelper;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 with System;

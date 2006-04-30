@@ -5,9 +5,9 @@
 --  File Name:    tash.ads
 --
 --  Purpose:      This package is the root of a family of packages
---               which implement a binding to Tcl.  Specifically,
---               this package contains the parent Tash data type,
---               Tash_Object.
+--                which implement a binding to Tcl.  Specifically,
+--                this package contains the parent Tash data type,
+--                Tash_Object.
 --
 --  Copyright (c) 1999-2000 Terry J. Westley
 --
@@ -59,7 +59,6 @@
 
 with Ada.Exceptions;
 with Ada.Finalization;
-with Ada.Strings.Unbounded;
 with Interfaces.C;
 with Tcl;
 

@@ -29,6 +29,7 @@
 --------------------------------------------------------------------
 
 with Ada.Exceptions;
+with CHelper;
 
 package body Tcl.Ada is
 
@@ -1879,6 +1880,7 @@ package body Tcl.Ada is
       Result     : C.Strings.chars_ptr;
       C_varName  : aliased C.char_array := C.To_C (varName);
       C_newValue : aliased C.char_array := C.To_C (newValue);
+      pragma Unreferenced (Result);  --  XXX why not?
    begin --  Tcl_SetVar
       Result :=
          Tcl.Tcl_SetVar
@@ -1920,6 +1922,7 @@ package body Tcl.Ada is
       C_part1    : aliased C.char_array := C.To_C (part1);
       C_part2    : aliased C.char_array := C.To_C (part2);
       C_newValue : aliased C.char_array := C.To_C (newValue);
+      pragma Unreferenced (Result);  --  XXX why not?
    begin --  Tcl_SetVar2
       Result :=
          Tcl.Tcl_SetVar2

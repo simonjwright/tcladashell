@@ -32,17 +32,13 @@
 --
 --------------------------------------------------------------------
 
-with Ada.Exceptions;
 with Ada.Integer_Text_IO;
-with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Tags;
-with Ada.Text_IO;
 with CArgv;
 with CHelper;
 with Interfaces.C.Strings;
 with System;
-with Tash.Test;
 with Tcl.Ada;
 
 package body Tash.Lists is
@@ -103,6 +99,7 @@ package body Tash.Lists is
       S2   : in Interfaces.C.Strings.chars_ptr)
       return Interfaces.C.int;
    pragma Import (C, Strcmp, "strcmp");
+   pragma Unreferenced (Strcmp);  -- XXX why is it here?
 
    --  Get an element of a Tcl list.
    -------------------------------
@@ -114,7 +111,8 @@ package body Tash.Lists is
    is
       --
       Result     : Interfaces.C.int;
-      Length     : Interfaces.C.int := Tash.Lists.Length (Interp, List);
+      Length     : constant Interfaces.C.int :=
+        Tash.Lists.Length (Interp, List);
       New_Object : Tcl.Tcl_Obj_Ptr;
    begin --  Get_Element
       if Tcl.Is_Null (List) then
@@ -345,7 +343,7 @@ package body Tash.Lists is
       return     Tash_List
    is
       --
-      Objc     : Interfaces.C.int := 3;
+      Objc     : constant Interfaces.C.int := 3;
       Objv     : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result   : Interfaces.C.int;
       New_List : Tash_List;
@@ -386,7 +384,7 @@ package body Tash.Lists is
       JoinString : in String := " ")
       return       String
    is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -457,7 +455,7 @@ package body Tash.Lists is
       return  Tash_List
    is
       --
-      Objc     : Interfaces.C.int := 4;
+      Objc     : constant Interfaces.C.int := 4;
       Objv     : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result   : Interfaces.C.int;
       New_List : Tash_List;
@@ -526,7 +524,8 @@ package body Tash.Lists is
       else
          Tash_Interp.Get (Interp);
          declare
-            Obj : Tcl.Tcl_Obj_Ptr := Get_Element (Interp, List.Obj, Index);
+            Obj : constant Tcl.Tcl_Obj_Ptr :=
+              Get_Element (Interp, List.Obj, Index);
             Len : aliased Interfaces.C.int;
          begin
             Tash_Interp.Release (Interp);
@@ -548,7 +547,8 @@ package body Tash.Lists is
       else
          Tash_Interp.Get (Interp);
          declare
-            Obj : Tcl.Tcl_Obj_Ptr := Get_Element (Interp, List.Obj, Index);
+            Obj : constant Tcl.Tcl_Obj_Ptr :=
+              Get_Element (Interp, List.Obj, Index);
          begin
             Tash_Interp.Release (Interp);
             Tcl.Tcl_IncrRefCount (Obj.all);
@@ -635,7 +635,7 @@ package body Tash.Lists is
 
    function Tail (List : in Tash_List) return String is
       --
-      Length : Natural := Tash.Lists.Length (List);
+      Length : constant Natural := Tash.Lists.Length (List);
    begin --  Tail
       if Length = 0 then
          return "";
@@ -646,7 +646,7 @@ package body Tash.Lists is
 
    function Tail (List : in Tash_List) return Tash_List is
       --
-      Length : Natural := Tash.Lists.Length (List);
+      Length : constant Natural := Tash.Lists.Length (List);
    begin --  Tail
       if Length = 0 then
          raise List_Error;
@@ -929,7 +929,7 @@ package body Tash.Lists is
       --  member of the list Elements
       --------------------------------------
       declare
-         Objc    : Interfaces.C.int := Length (Interp, Elements.Obj);
+         Objc    : constant Interfaces.C.int := Length (Interp, Elements.Obj);
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
          Obj_Ptr : Tcl.Tcl_Obj_Ptr  := new Tcl.Tcl_Obj;
       begin
@@ -1180,10 +1180,11 @@ package body Tash.Lists is
          else
             Tash_Interp.Get (Interp);
             declare
-               Obj    : Tcl.Tcl_Obj_Ptr :=
+               Obj    : constant Tcl.Tcl_Obj_Ptr :=
                   Get_Element (Interp, List.Obj, Index);
                Value  : aliased Interfaces.C.int;
                Result : Interfaces.C.int;
+               pragma Unreferenced (Result);  -- XXX why not?
             begin
                if Type_Of_List_Element (Obj) /= "int" then
                   Tash_Interp.Raise_Exception
@@ -1229,7 +1230,7 @@ package body Tash.Lists is
 
       function Tail (List : in Tash_List) return Item is
          --
-         Length : Natural := Tash.Lists.Length (List);
+         Length : constant Natural := Tash.Lists.Length (List);
       begin --  Tail
          if Length = 0 then
             return 0;
@@ -1430,10 +1431,11 @@ package body Tash.Lists is
          else
             Tash_Interp.Get (Interp);
             declare
-               Obj    : Tcl.Tcl_Obj_Ptr :=
+               Obj    : constant Tcl.Tcl_Obj_Ptr :=
                   Get_Element (Interp, List.Obj, Index);
                Value  : aliased Interfaces.C.double;
                Result : Interfaces.C.int;
+               pragma Unreferenced (Result);  --  XXX why not?
             begin
                if Type_Of_List_Element (Obj) /= "double" then
                   Tash_Interp.Raise_Exception
@@ -1479,7 +1481,7 @@ package body Tash.Lists is
 
       function Tail (List : in Tash_List) return Item is
          --
-         Length : Natural := Tash.Lists.Length (List);
+         Length : constant Natural := Tash.Lists.Length (List);
       begin --  Tail
          if Length = 0 then
             return 0.0;
@@ -1644,7 +1646,7 @@ package body Tash.Lists is
       Tash_Interp.Get (Interp);
 
       declare
-         Objc    : aliased Interfaces.C.int :=
+         Objc    : aliased constant Interfaces.C.int :=
             Length (Interp, Values.Obj) + 2;
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
          Obj_Ptr : Tcl.Tcl_Obj_Ptr          := new Tcl.Tcl_Obj;
@@ -1731,7 +1733,7 @@ package body Tash.Lists is
       for I in  1 .. Integer (Length (Interp, List.Obj)) loop
          declare
             I_Image : String (1 .. 8);
-            Elem    : Tcl.Tcl_Obj_Ptr :=
+            Elem    : constant Tcl.Tcl_Obj_Ptr :=
                Tash.Lists.Get_Element (Interp, List.Obj, I);
          begin
             Ada.Integer_Text_IO.Put (I_Image, I);

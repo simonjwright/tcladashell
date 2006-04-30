@@ -37,7 +37,6 @@ with Ada.Command_Line;
 with Ada.Tags;
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
-with Ada.Strings.Unbounded;
 with CHelper;
 with Interfaces.C.Strings;
 
@@ -232,7 +231,7 @@ begin --  Tash
    --  Create and initialize the Tcl interpreter
    --------------------------------------------
    declare
-      Command_Name : String                          :=
+      Command_Name : constant String :=
          Ada.Command_Line.Command_Name;
       Executable   : aliased Interfaces.C.char_array :=
          Interfaces.C.To_C (Command_Name);

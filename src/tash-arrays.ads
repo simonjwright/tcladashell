@@ -35,7 +35,6 @@
 --------------------------------------------------------------------
 
 with Ada.Finalization;
-with Ada.Strings.Unbounded;
 with Tash.Lists;
 with Tcl;
 

@@ -38,7 +38,6 @@
 with CArgv;
 with CHelper;
 with Interfaces.C.Strings;
-with System;
 with Tcl;
 
 package Tcl.Tk is

@@ -56,6 +56,13 @@ package body Tash.File_IO is
    procedure Set_Translation_Mode (File     : in Tash_File;
                                    In_Mode  : in Translation_Mode;
                                    Out_Mode : in Translation_Mode);
+   pragma Unreferenced (Get_Encoding,
+                        Set_Encoding,
+                        Get_EOF_In_Char,
+                        Get_EOF_Out_Char,
+                        Set_EOF_Char,
+                        Get_Translation_Mode,
+                        Set_Translation_Mode); -- XXX what are they for, then?
 
    use type Interfaces.C.int;
 
@@ -168,7 +175,7 @@ package body Tash.File_IO is
       Perm : in Natural        := 8#0666#)
    is
 
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -229,7 +236,7 @@ package body Tash.File_IO is
 
    procedure Close (File : in out Tash_File) is
 
-      Objc   : Interfaces.C.int := 2;
+      Objc   : constant Interfaces.C.int := 2;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -273,7 +280,7 @@ package body Tash.File_IO is
    end Close;
 
    function End_Of_File (File : in Tash_File) return Boolean is
-      Objc   : Interfaces.C.int := 2;
+      Objc   : constant Interfaces.C.int := 2;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -318,7 +325,7 @@ package body Tash.File_IO is
 
    procedure Flush (File : in out Tash_File) is
 
-      Objc   : Interfaces.C.int := 2;
+      Objc   : constant Interfaces.C.int := 2;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -362,11 +369,12 @@ package body Tash.File_IO is
    end Flush;
 
    function Pid (File : in Tash_File) return Tash.Lists.Tash_List is
-      Objc     : Interfaces.C.int := 2;
+      Objc     : constant Interfaces.C.int := 2;
       Objv     : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result   : Interfaces.C.int;
       Interp   : Tcl.Tcl_Interp;
       Pid_List : Tash.Lists.Tash_List;
+      pragma Unreferenced (Result);  --  XXX why not?
 
    begin --  Pid
 
@@ -407,7 +415,7 @@ package body Tash.File_IO is
 
    procedure Get (File : in Tash_File; Item : out String) is
 
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -462,7 +470,7 @@ package body Tash.File_IO is
       Last : out Natural)
    is
 
-      Objc   : Interfaces.C.int := 2;
+      Objc   : constant Interfaces.C.int := 2;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -519,7 +527,7 @@ package body Tash.File_IO is
 
    procedure Put (File : in Tash_File; Item : in String) is
 
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -566,7 +574,7 @@ package body Tash.File_IO is
 
    procedure Put_Line (File : in Tash_File; Item : in String) is
 
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -611,7 +619,7 @@ package body Tash.File_IO is
    end Put_Line;
 
    function Get_Blocking_Mode (File : in Tash_File) return Boolean is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -657,7 +665,7 @@ package body Tash.File_IO is
    end Get_Blocking_Mode;
 
    function Get_Buffering_Mode (File : in Tash_File) return Buffering_Mode is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -706,7 +714,7 @@ package body Tash.File_IO is
       Mode : in Buffering_Mode)
    is
 
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -754,7 +762,7 @@ package body Tash.File_IO is
    end Set_Buffering_Mode;
 
    function Get_Buffer_Size (File : in Tash_File) return Buffer_Size is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -800,7 +808,7 @@ package body Tash.File_IO is
 
    procedure Set_Buffer_Size (File : in Tash_File; Size : in Buffer_Size) is
 
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -846,7 +854,7 @@ package body Tash.File_IO is
    end Set_Buffer_Size;
 
    function Get_Encoding (File : in Tash_File) return Encoding_Type is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -899,12 +907,13 @@ package body Tash.File_IO is
      (File     : in Tash_File;
       Encoding : in Encoding_Type)
    is
+      pragma Unreferenced (File, Encoding);
    begin --  Set_Encoding
       null;
    end Set_Encoding;
 
    function Get_EOF_Char (File : in Tash_File) return String is
-      Objc      : Interfaces.C.int := 3;
+      Objc      : constant Interfaces.C.int := 3;
       Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result    : Interfaces.C.int;
       Interp    : Tcl.Tcl_Interp;
@@ -987,7 +996,7 @@ package body Tash.File_IO is
 
    procedure Set_EOF_Char (File : in Tash_File; Char : in String) is
 
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1043,11 +1052,13 @@ package body Tash.File_IO is
    end Set_EOF_Char_To_Empty_String;
 
    function Get_EOF_In_Char (File : in Tash_File) return String is
+      pragma Unreferenced (File);
    begin --  Get_EOF_In_Char
       return "";
    end Get_EOF_In_Char;
 
    function Get_EOF_Out_Char (File : in Tash_File) return String is
+   pragma Unreferenced (File);
    begin --  Get_EOF_Out_Char
       return "";
    end Get_EOF_Out_Char;
@@ -1057,6 +1068,7 @@ package body Tash.File_IO is
       In_Char  : in String;
       Out_Char : in String)
    is
+      pragma Unreferenced (File, In_Char, Out_Char);
    begin --  Set_EOF_Char
       null;
    end Set_EOF_Char;
@@ -1065,7 +1077,7 @@ package body Tash.File_IO is
      (File : in Tash_File)
       return Translation_Mode
    is
-      Objc   : Interfaces.C.int := 3;
+      Objc   : constant Interfaces.C.int := 3;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1114,7 +1126,7 @@ package body Tash.File_IO is
       Mode : in Translation_Mode)
    is
 
-      Objc   : Interfaces.C.int := 4;
+      Objc   : constant Interfaces.C.int := 4;
       Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result : Interfaces.C.int;
       Interp : Tcl.Tcl_Interp;
@@ -1166,6 +1178,7 @@ package body Tash.File_IO is
       In_Mode  : out Translation_Mode;
       Out_Mode : out Translation_Mode)
    is
+   pragma Unreferenced (File);
    begin --  Get_Translation_Mode
       In_Mode  := Auto;
       Out_Mode := Auto;
@@ -1176,6 +1189,7 @@ package body Tash.File_IO is
       In_Mode  : in Translation_Mode;
       Out_Mode : in Translation_Mode)
    is
+      pragma Unreferenced (File, In_Mode, Out_Mode);
    begin --  Set_Translation_Mode
       null;
    end Set_Translation_Mode;
