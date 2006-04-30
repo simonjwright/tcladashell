@@ -279,7 +279,7 @@ proc Set_Macros {platform os osVersion} {
     } else {
 	set tclhome [file dirname [file dirname $tcl_library]]
     }
-    set tcl_include       [file join \$(TCLHOME) include]
+    set tcl_include       [file join $tclhome include]
     set link_switches     ""
     
     set pwd               [pwd]
@@ -301,6 +301,9 @@ proc Set_Macros {platform os osVersion} {
 	    set dynlib [info sharedlibextension]
 	    set libtcl "$tclhome/lib/libtcl${tcl_version}$dynlib"
 	    set libtk  "$tclhome/lib/libtk${tk_version}$dynlib"
+
+	    # Not quite sure why we need X11 here, because neither
+	    # Linux (Mandrake 8.2) nor Darwin need it.
 	    set PossibleXHomes [list /usr/openwin /usr/X /usr/X11R6 /usr]
 	    foreach dir $PossibleXHomes {
 		set lib [file join $dir lib]
@@ -331,15 +334,18 @@ proc Set_Macros {platform os osVersion} {
 		append link_switches " -lsocket -lnsl -ldl -lm "
 		append link_switches "-L$x11_lib -lX11 "
 	    } elseif [cequal $os "Darwin"] {
-		append link_switches "-Wl,-bind_at_load -L$tclhome/lib "
+		append link_switches "-Wl,-bind_at_load "
+		if {![cequal $tclhome "/usr"]} {
+		    # if we say -L/usr/lib we get all sorts of horrors
+		    # (sjw, Darwin 8.6.0)
+		    append link_switches "-L$tclhome/lib "
+		}
 		append link_switches "-ltk$tk_version -ltcl$tcl_version "
-		append link_switches "-L$x11_lib -lX11 "
 		append link_switches "-lobjc "
 	    } else {
 		append link_switches "-Wl,-rpath,$tclhome/lib "
 		append link_switches "-L$tclhome/lib "
 		append link_switches "-ltk$tk_version -ltcl$tcl_version "
-		#append link_switches "-L$x11_lib -lX11 "
 	    }
 	}
     }
