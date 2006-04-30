@@ -47,6 +47,16 @@ with Tcl.Ada;
 
 package body Tash.Lists is
 
+   function Length
+     (Interp : in Tcl.Tcl_Interp;
+      Obj    : in Tcl.Tcl_Obj) return Interfaces.C.int;
+   function Get_Element
+     (Interp : in Tcl.Tcl_Interp;
+      List   : in Tcl.Tcl_Obj;
+      Index  : in Positive) return Tcl.Tcl_Obj_Ptr;
+   function Type_Of_List_Element
+     (ObjPtr : in Tcl.Tcl_Obj_Ptr) return String;
+
    use type Interfaces.C.int;
    use type Interfaces.C.Strings.chars_ptr;
    use type Ada.Strings.Direction;
@@ -1090,6 +1100,7 @@ package body Tash.Lists is
 
    package body Generic_Integer_Lists is
 
+      function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj;
       function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj is
          New_Obj : Tcl.Tcl_Obj;
       begin --  To_Tcl_Obj
@@ -1339,6 +1350,7 @@ package body Tash.Lists is
 
    package body Generic_Float_Lists is
 
+      function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj;
       function To_Tcl_Obj (Num : in Item) return Tcl.Tcl_Obj is
          New_Obj : Tcl.Tcl_Obj;
       begin --  To_Tcl_Obj

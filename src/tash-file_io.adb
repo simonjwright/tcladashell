@@ -41,6 +41,22 @@ with System;
 
 package body Tash.File_IO is
 
+   function To_File_Mode_List (Mode : in File_Mode_List) return String;
+   function Get_Encoding (File : in Tash_File) return Encoding_Type;
+   procedure Set_Encoding (File : in Tash_File; Encoding : in Encoding_Type);
+   procedure Set_EOF_Char (File : in Tash_File; Char : in String);
+   function Get_EOF_In_Char (File : in Tash_File) return String;
+   function Get_EOF_Out_Char (File : in Tash_File) return String;
+   procedure Set_EOF_Char (File     : in Tash_File;
+                           In_Char  : in String;
+                           Out_Char : in String);
+   procedure Get_Translation_Mode (File     : in Tash_File;
+                                   In_Mode  : out Translation_Mode;
+                                   Out_Mode : out Translation_Mode);
+   procedure Set_Translation_Mode (File     : in Tash_File;
+                                   In_Mode  : in Translation_Mode;
+                                   Out_Mode : in Translation_Mode);
+
    use type Interfaces.C.int;
 
    function Tcl_OpenObjCmd
