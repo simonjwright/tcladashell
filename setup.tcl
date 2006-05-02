@@ -327,21 +327,19 @@ proc Set_Macros {platform os osVersion} {
 		}
 	    }
 	    set link_switches "../src/tkmacro.o ../src/tclmacro.o "
-	    set gpr_switches "../src/tkmacro.o ../src/tclmacro.o "
 	    if [cequal $os "SunOS"] {
 		append link_switches "-R$tclhome/lib -L$tclhome/lib "
 		append link_switches "-ltk$tk_version -ltcl$tcl_version "
 		append link_switches " -lsocket -lnsl -ldl -lm "
 		append link_switches "-L$x11_lib -lX11 "
 	    } elseif [cequal $os "Darwin"] {
-		append link_switches "-Wl,-bind_at_load "
 		if {![cequal $tclhome "/usr"]} {
-		    # if we say -L/usr/lib we get all sorts of horrors
-		    # (sjw, Darwin 8.6.0)
+		    # When I hadn't got Xcode properly installed
+		    # -L/usr/lib gave me all sorts of horrors (sjw,
+		    # Darwin 8.6.0)
 		    append link_switches "-L$tclhome/lib "
 		}
 		append link_switches "-ltk$tk_version -ltcl$tcl_version "
-		append link_switches "-lobjc "
 	    } else {
 		append link_switches "-Wl,-rpath,$tclhome/lib "
 		append link_switches "-L$tclhome/lib "
@@ -356,7 +354,7 @@ proc Set_Macros {platform os osVersion} {
         # Operating system}
     setvar OSVERSION         $osVersion {
       	# Operating system version}
-    setvar TASH_VERSION      "8.4.1a" {
+    setvar TASH_VERSION      "8.4.x" {
         # TASH version}
     setvar TASH_DIRECTORY    [file tail $pwd] {
         # Main TASH directory}
