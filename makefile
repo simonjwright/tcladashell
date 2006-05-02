@@ -1,3 +1,29 @@
+# $Id$
+#
+
+RSYNC ?= rsync
+
+all::
+
+SFUSER ?= simonjwright
+
+upload-docs: force
+	$(RSYNC) \
+	  --compress \
+	  --copy-unsafe-links \
+	  --cvs-exclude \
+	  --perms \
+	  --recursive \
+	  --rsh=ssh \
+	  --times \
+	  --update \
+	  --verbose \
+	  web/* \
+	  $(SFUSER)@shell.sourceforge.net:/home/groups/t/tc/tcladashell/htdocs/
+
+.PHONY: force
+
+
 ######################################################################
 #
 # This makefile builds TASH library for either Unix or Windows.
@@ -15,13 +41,19 @@
 
 include makeconf
 
-all test : 
+all::
 	make -C src   $@
 	make -C tests $@
 	make -C demos $@
 	make -C apps  $@
 
-clean : 
+test::
+	make -C src   $@
+	make -C tests $@
+	make -C demos $@
+	make -C apps  $@
+
+clean:: 
 	@ $(TCLSH) bin/clean.tcl . src tests demos apps
 	make -C src   $@
 	make -C tests $@
