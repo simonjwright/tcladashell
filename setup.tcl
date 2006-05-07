@@ -346,12 +346,7 @@ proc Set_Macros {platform os osVersion} {
 		append link_switches " -R$tclhome/lib -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
 	    } elseif [cequal $os "Darwin"] {
-		if {![cequal $tclhome "/usr"]} {
-		    # When I hadn't got Xcode properly installed
-		    # -L/usr/lib gave me all sorts of horrors (sjw,
-		    # Darwin 8.6.0)
-		    append link_switches " -L$tclhome/lib"
-		}
+		append link_switches " -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
 	    } else {
 		append link_switches " -Wl,-rpath,$tclhome/lib"
@@ -407,6 +402,8 @@ proc Set_Macros {platform os osVersion} {
     setvar TK_LIBRARY        "$libtk" {
 	# Tk library}
     setvar CC                "gcc" {
+	# This is gcc compiler (Note: must be Ada-aware)}
+    setvar ACC                "gcc" {
 	# This is gcc compiler (Note: must be Ada-aware)}
     setvar GARGS             "-i -k -I../src" {
 	# gnatmake switches}
