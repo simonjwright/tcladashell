@@ -402,9 +402,7 @@ proc Set_Macros {platform os osVersion} {
     setvar TK_LIBRARY        "$libtk" {
 	# Tk library}
     setvar CC                "gcc" {
-	# This is gcc compiler (Note: must be Ada-aware)}
-    setvar ACC                "gcc" {
-	# This is gcc compiler (Note: must be Ada-aware)}
+	# This is gcc compiler for the C files, uses gnatmake for Ada files.}
     setvar GARGS             "-i -k -I../src" {
 	# gnatmake switches}
     setvar CARGS             "-g -O2" {
