@@ -18,6 +18,8 @@ exec wish $0 $@
 #
 #------------------------------------------------
 
+set tash_version "8.4-2"
+
 proc cequal {left right} {
     return [expr [string compare $left $right] == 0]
 }
@@ -283,7 +285,7 @@ proc fileDialog {w ent title initial} {
 #------------------------------------------------------
 proc Set_Macros {platform os osVersion} {
     global tcl_version tk_version tcl_interactive tcl_library tk_library env
-    global link_switches gpr_switches
+    global tash_version link_switches gpr_switches
 
     set x11home           ""
     set x11_lib           ""
@@ -362,7 +364,7 @@ proc Set_Macros {platform os osVersion} {
         # Operating system}
     setvar OSVERSION         $osVersion {
       	# Operating system version}
-    setvar TASH_VERSION      "8.4.x" {
+    setvar TASH_VERSION      "$tash_version" {
         # TASH version}
     setvar TASH_DIRECTORY    [file tail $pwd] {
         # Main TASH directory}
