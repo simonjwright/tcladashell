@@ -32,7 +32,7 @@ all : $(PROGRAMS)
 # Compile and link all programs
 #------------------------------
 $(PROGRAMS) : *.ads *.adb ../makeconf
-	gnatmake $(GARGS) $@ -cargs $(CARGS) -bargs $(BARGS) -largs $(LARGS)
+	gnatmake $(GARGS) $@ -cargs $(CARGS) $(AARGS) -bargs $(BARGS) -largs $(LARGS)
 
 VERBOSE =
 GNATMEM =

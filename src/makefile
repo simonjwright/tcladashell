@@ -34,7 +34,7 @@ tkmacro.o : tkmacro.c
 # Build Hello_World program
 #--------------------------
 hello_world : $(TCL_LIBRARY) $(TK_LIBRARY) tclmacro.o tkmacro.o ../makeconf
-	gnatmake $(GARGS) hello_world -cargs $(CARGS) -bargs $(BARGS) -largs $(LARGS)
+	gnatmake $(GARGS) hello_world -cargs $(CARGS) $(AARGS) -bargs $(BARGS) -largs $(LARGS)
 
 # Build Tcl and Tk libraries (Windows only)
 #------------------------------------------
@@ -52,7 +52,7 @@ test :
 	./hello_world
 
 compile :
-	gnatmake $(GARGS) hello_world -cargs $(CARGS)
+	gnatmake $(GARGS) hello_world -cargs $(CARGS) $(AARGS)
 
 clean :
 	@$(TCLSH) ../bin/clean.tcl hello_world *.def *.a make.out
