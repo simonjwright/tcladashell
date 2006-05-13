@@ -15,7 +15,6 @@ with CArgv;
 with Interfaces.C;
 with Tcl.Tk;
 with Tcl;
-with Text_IO;
 with TWashApp;
 
 procedure TWASHell is --  Tcl Windowing Ada SHell

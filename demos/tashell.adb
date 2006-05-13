@@ -13,7 +13,6 @@
 with CArgv;
 with TashApp;
 with Tcl;     use Tcl;
-with Text_IO;
 
 procedure Tashell is --  Tcl Ada SHell
 
