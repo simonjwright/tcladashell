@@ -4,20 +4,27 @@
 #
 ######################################################################
 
+all::
+
 include ../makeconf
+
+# build directory, needed by tash_apps.gpr
+all:: .build
+.build:
+	mkdir $@
 
 PROGRAMS = plang
 
-all : $(PROGRAMS)
+all:: $(PROGRAMS)
 
-$(PROGRAMS) : *.adb ../makeconf
-	gnatmake $(GARGS) $@ -cargs $(CARGS) -bargs $(BARGS) -largs $(LARGS)
+$(PROGRAMS): *.adb ../makeconf
+	gnatmake -Ptash_apps
 
-test : plang
+test: plang
 	./plang ../demos/*
 
-lib :
+lib:
 	@ cd ../src ; make all install
 
-clean :
+clean:
 	@$(TCLSH) ../bin/clean.tcl $(PROGRAMS)
