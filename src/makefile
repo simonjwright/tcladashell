@@ -58,8 +58,9 @@ windows: tclmacro.o tkmacro.o ../src/libtcl84.a ../src/libtk84.a
 test:
 	./hello_world
 
-compile:
-	gnatmake -Ptash
+compile::
+	gnatmake -Ptash -c
+compile:: tclmacro.o tkmacro.o
 
 clean:
 	@$(TCLSH) ../bin/clean.tcl hello_world *.def *.a make.out
