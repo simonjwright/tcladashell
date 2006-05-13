@@ -1,14 +1,14 @@
 --------------------------------------------------------------------
 --
--- compare.adb -- This program compares two files.  If they are the
---                same, it has no output.  If they are different, it
---                reports the line number of the first difference,
---                then terminates.
+--  compare.adb -- This program compares two files.  If they are the
+--                 same, it has no output.  If they are different, it
+--                 reports the line number of the first difference,
+--                 then terminates.
 --
--- Copyright (c) 1998 Terry J. Westley
+--  Copyright (c) 1998 Terry J. Westley
 --
--- See the file "license.htm" for information on usage and
--- redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+--  See the file "license.htm" for information on usage and
+--  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 --
 --------------------------------------------------------------------
 
@@ -25,26 +25,25 @@ procedure Compare is
    Char2          : Character;
    File2_Is_Stdin : Boolean := False;
 
-   function "&" (
-      Left  : in String;
-      Right : in Text_IO.Count) return String is
-   begin -- "&"
+   function "&" (Left : in String; Right : in Text_IO.Count) return String;
+   function "&" (Left : in String; Right : in Text_IO.Count) return String is
+   begin --  "&"
       return Left & Text_IO.Count'Image (Right);
    end "&";
 
-begin -- Compare
+begin --  Compare
 
-   -- Check that we have correct number of command line arguments
-   --------------------------------------------------------------
+   --  Check that we have correct number of command line arguments
+   ---------------------------------------------------------------
    if Argument_Count < 2 then
       Text_IO.Put_Line ("usage: compare file1 file2");
       Set_Exit_Status (Failure);
       return;
    end if;
 
-   -- Get names of two files to be compared
-   -- from the command line and open them.
-   ----------------------------------------
+   --  Get names of two files to be compared
+   --  from the command line and open them.
+   -----------------------------------------
    declare
       Name : constant String := Argument (1);
    begin
@@ -91,10 +90,13 @@ begin -- Compare
          Text_IO.Get (File2, Char2);
       end if;
       if Char1 /= Char2 then
-         Text_IO.Put_Line (
-            Text_IO.Name (File1) & " " &
-            Text_IO.Name (File2) & " differ: char" &
-            Text_IO.Col (File1) & ", line" &
+         Text_IO.Put_Line
+           (Text_IO.Name (File1) &
+            " " &
+            Text_IO.Name (File2) &
+            " differ: char" &
+            Text_IO.Col (File1) &
+            ", line" &
             Text_IO.Line (File1));
          Set_Exit_Status (Failure);
          return;

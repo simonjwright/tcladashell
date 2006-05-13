@@ -11,8 +11,8 @@ procedure Test_Format is
 
 begin -- Test_Format
 
-   -- Demonstrate use of C-style printf
-   ------------------------------------
+   --  Demonstrate use of C-style printf
+   -------------------------------------
    Ada.Text_IO.Put_Line (Tash.Lists.Format (
       FormatString => "The result for %-30s is %10.2f (%08x)",
       Values       => +"{a piece of pi}" & 3.14159 & 89));

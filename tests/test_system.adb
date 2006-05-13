@@ -1,38 +1,23 @@
 with Ada.Command_Line;
-
 with Ada.Text_IO;
-
 with Tash.System;
-
 with Tash.Test;
-
-
 
 procedure Test_System is
 
-
-
    use type Tash.System.Process_ID;
-
-
 
    Verbose : Boolean := False;
 
-
-
-begin -- Test_System
-
-
+begin --  Test_System
 
    -------------------------------------------
-
-   -- Check for -verbose command line argument
-
+   --  Check for -verbose command line argument
    -------------------------------------------
 
-   GET_COMMAND_LINE_ARGUMENTS:
-
-   for I in 1..Ada.Command_Line.Argument_Count loop
+   GET_COMMAND_LINE_ARGUMENTS : for I in  1 ..
+        Ada.Command_Line.Argument_Count
+   loop
 
       if Ada.Command_Line.Argument (I) = "-verbose" then
 
@@ -44,13 +29,9 @@ begin -- Test_System
 
    end loop GET_COMMAND_LINE_ARGUMENTS;
 
-
-
    Tash.Test.Set_Verbose (On => Verbose);
 
-
-
-   -- get the process id of the current process
+   --  get the process id of the current process
 
    --------------------------------------------
 
@@ -62,9 +43,8 @@ begin -- Test_System
 
       Pid := Tash.System.Pid;
 
-      Tash.Test.Test_Case (
-
-         Description => "get the process id of the current process",
+      Tash.Test.Test_Case
+        (Description => "get the process id of the current process",
 
          Result      => Pid > 0,
 
@@ -72,23 +52,16 @@ begin -- Test_System
 
    end;
 
-
-
-   <<Finish>>
-
    if Tash.Test.All_Test_Cases_Passed then
 
-     Ada.Text_IO.Put_Line ("Test_System PASSED --" &
-
-        Integer'Image (Tash.Test.Test_Case_Number) & " tests completed");
+      Ada.Text_IO.Put_Line
+        ("Test_System PASSED --" &
+         Integer'Image (Tash.Test.Test_Case_Number) &
+         " tests completed");
 
    else
-
       Ada.Text_IO.Put_Line ("Test_System FAILED");
 
    end if;
 
-
-
 end Test_System;
-

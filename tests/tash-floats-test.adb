@@ -34,8 +34,9 @@ package body Tash.Floats.Test is
             Internal_Rep (Actual_Result));
          Ada.Text_IO.Put ("   expected=(id=N/A");
          Ada.Text_IO.Put (", s=""");
-         Ada.Text_IO.Put (
-            Ada.Strings.Fixed.Trim (Source => Long_Float'Image (Expected_Result),
+         Ada.Text_IO.Put
+           (Ada.Strings.Fixed.Trim (Source =>
+                                      Long_Float'Image (Expected_Result),
                                     Side   => Ada.Strings.Left));
          Ada.Text_IO.Put (""" t=" & Expected_Type & " c=");
          Ada.Text_IO.Put (
