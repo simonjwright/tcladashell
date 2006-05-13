@@ -19,40 +19,47 @@
 #
 ######################################################################
 
+all::
+
 include ../makeconf
 
-all : hello_world
+# build directory, needed by tash.gpr
+all:: .build
+.build:
+	mkdir $@
+
+all:: hello_world
 
 # Compile C files
 #----------------
-tclmacro.o : tclmacro.c
+tclmacro.o: tclmacro.c
 	$(CC) -c $(CARGS) $(TCL_INCLUDE) $?
 
-tkmacro.o : tkmacro.c
+tkmacro.o: tkmacro.c
 	$(CC) -c $(CARGS) $(TCL_INCLUDE) $(X11_INCLUDE) $?
 
 # Build Hello_World program
 #--------------------------
-hello_world : $(TCL_LIBRARY) $(TK_LIBRARY) tclmacro.o tkmacro.o ../makeconf
-	gnatmake $(GARGS) hello_world -cargs $(CARGS) $(AARGS) -bargs $(BARGS) -largs $(LARGS)
+hello_world: $(TCL_LIBRARY) $(TK_LIBRARY) tclmacro.o tkmacro.o ../makeconf
+	gnatmake -Ptash hello_world
 
 # Build Tcl and Tk libraries (Windows only)
 #------------------------------------------
-../src/libtcl84.a : $(TCLHOME)/bin/tcl84.dll
+../src/libtcl84.a: $(TCLHOME)/bin/tcl84.dll
 	dll2def $(TCLHOME)/bin/tcl84.dll > tcl84.def
 	dlltool --def tcl84.def --dllname tcl84.dll --output-lib $@
 
-../src/libtk84.a : $(TCLHOME)/bin/tk84.dll
+../src/libtk84.a: $(TCLHOME)/bin/tk84.dll
 	dll2def $(TCLHOME)/bin/tk84.dll > tk84.def
 	dlltool --def tk84.def --dllname tk84.dll --output-lib $@
 
-windows : tclmacro.o tkmacro.o ../src/libtcl84.a ../src/libtk84.a
+windows: tclmacro.o tkmacro.o ../src/libtcl84.a ../src/libtk84.a
 
-test :
+test:
 	./hello_world
 
-compile :
-	gnatmake $(GARGS) hello_world -cargs $(CARGS) $(AARGS)
+compile:
+	gnatmake -Ptash
 
-clean :
+clean:
 	@$(TCLSH) ../bin/clean.tcl hello_world *.def *.a make.out
