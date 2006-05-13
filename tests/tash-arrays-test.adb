@@ -12,8 +12,14 @@ package body Tash.Arrays.Test is
       Verbose := On;
    end Set_Verbose;
 
-   procedure Put_Error (
-      Description     : in String;
+   procedure Put_Error
+     (Description     : in String;
+      Reason          : in String;
+      Sorted_Result   : Tash.Lists.Tash_List;
+      Expected_Result : in String;
+      Expected_Count  : in Natural);
+   procedure Put_Error
+     (Description     : in String;
       Reason          : in String;
       Sorted_Result   : Tash.Lists.Tash_List;
       Expected_Result : in String;
