@@ -13,7 +13,14 @@
 #
 ######################################################################
 
+all::
+
 include ../makeconf
+
+# build directory, needed by tash.gpr
+all:: .build
+.build:
+	mkdir $@
 
 PROGRAMS = \
         compare \
@@ -27,54 +34,53 @@ PROGRAMS = \
         test_system \
         test_platform
 
-all : $(PROGRAMS)
+all:: $(PROGRAMS)
 
 # Compile and link all programs
 #------------------------------
-$(PROGRAMS) : *.ads *.adb ../makeconf
+$(PROGRAMS): *.ads *.adb ../makeconf
 	gnatmake $(GARGS) $@ -cargs $(CARGS) $(AARGS) -bargs $(BARGS) -largs $(LARGS)
 
 VERBOSE =
 GNATMEM =
 
-test : compare tash lists regexp format arrays \
+test: compare tash lists regexp format arrays \
        file file_io system platform
 
-tash :
+tash:
 	@ $(GNATMEM) ./tashtest tashtest.tcl
 
-lists : 
+lists: 
 	@ $(GNATMEM) ./test_lists $(VERBOSE)
 
-regexp :
+regexp:
 	@ $(GNATMEM) ./test_regexp $(VERBOSE)
 
-format :
+format:
 	@ $(GNATMEM) ./test_format $(VERBOSE)
 
-arrays :
+arrays:
 	@ $(GNATMEM) ./test_arrays $(VERBOSE)
 
-old-arrays :
+old-arrays:
 	$(GNATMEM) ./test_arrays $(VERBOSE) > test_arrays.out
 	./compare test_arrays.out test_arrays.expected-output
 	type test_arrays.out
 
-file :
+file:
 	@ $(GNATMEM) ./test_file $(VERBOSE)
 
-file_io :
+file_io:
 	@ $(GNATMEM) ./test_file_io $(VERBOSE)
 
-system :
+system:
 	@ $(GNATMEM) ./test_system $(VERBOSE)
 
-platform :
+platform:
 	@ $(GNATMEM) ./test_platform $(VERBOSE)
 
-lib :
+lib:
 	@ make -C ../src
 
-clean :
+clean:
 	@$(TCLSH) ../bin/clean.tcl $(PROGRAMS) make.out
-
