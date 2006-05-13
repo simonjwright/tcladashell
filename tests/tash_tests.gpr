@@ -15,7 +15,7 @@
 --  $Id$
 --
 --  This file provides the compilation options for building the Tash
---  source.
+--  tests.
 
 with "../tash_options";
 with "../src/tash";
