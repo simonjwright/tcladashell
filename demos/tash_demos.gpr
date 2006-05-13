@@ -1,0 +1,51 @@
+--  Copyright (C) Simon Wright <simon@pushface.org>
+
+--  This package is free software; you can redistribute it and/or
+--  modify it under terms of the GNU General Public License as
+--  published by the Free Software Foundation; either version 2, or
+--  (at your option) any later version. This package is distributed in
+--  the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+--  even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+--  PARTICULAR PURPOSE. See the GNU General Public License for more
+--  details. You should have received a copy of the GNU General Public
+--  License distributed with this package; see file COPYING.  If not,
+--  write to the Free Software Foundation, 59 Temple Place - Suite
+--  330, Boston, MA 02111-1307, USA.
+
+--  $Id$
+--
+--  This file provides the compilation options for building the Tash
+--  demos.
+
+with "../tash_options";
+with "../src/tash";
+
+project Tash_Demos is
+
+  for Main use
+    (
+     "tashell",
+     "twashell",
+     "freq",
+     "freq2",
+     "timer",
+     "futurevalue",
+     "wordify"
+    );
+  for Exec_Dir use ".";
+
+  --  The source locations for the project.
+  for Source_Dirs use (".");
+
+  --  Each Project that contains source must have its own build
+  --  directory.
+  for Object_Dir use ".build";
+
+  package IDE renames Tash.IDE;
+  package Builder renames Tash.Builder;
+  package Compiler renames Tash.Compiler;
+  package Binder renames Tash.Binder;
+  package Linker renames Tash.Linker;
+  package Pretty_Printer Renames Tash.Pretty_Printer;
+
+end Tash_Demos;
