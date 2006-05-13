@@ -45,7 +45,7 @@ package body Tash.Strings is
    function To_CString
      (TString : in Tash_String)
       return    Interfaces.C.Strings.chars_ptr;
-   function "+" (TString : in Tash_String) return String;
+--     function "+" (TString : in Tash_String) return String;
 
    function Is_Empty (TString : in Tash_String) return Boolean is
    begin --  Is_Empty
@@ -95,14 +95,14 @@ package body Tash.Strings is
       end if;
    end To_String;
 
-   function "+" (TString : in Tash_String) return String is
-   begin --  "+"
-      return To_String (TString);
-   end "+";
+--     function "+" (TString : in Tash_String) return String is
+--     begin --  "+"
+--        return To_String (TString);
+--     end "+";
 
    function Length (TString : Tash_String) return Natural is
-      --
       Str    : Interfaces.C.Strings.chars_ptr;
+      pragma Unreferenced (Str);
       Length : aliased Interfaces.C.int;
    begin --  Length
       if Is_Null (TString) then
@@ -214,10 +214,12 @@ package body Tash.Strings is
       Index   : in Positive;
       By      : Character)
    is
-      --
-      Str : Interfaces.C.Strings.chars_ptr;
+      --  XXX how can this possibly work?
+--        Str : Interfaces.C.Strings.chars_ptr;
+      Dodgy : exception;
    begin --  Replace_Element
-      CHelper.Replace_Element (Str, Index, By);
+      raise Dodgy;
+--        CHelper.Replace_Element (Str, Index, By);
    end Replace_Element;
 
    function Slice
