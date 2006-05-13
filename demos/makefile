@@ -4,7 +4,14 @@
 #
 ######################################################################
 
+all::
+
 include ../makeconf
+
+# build directory, needed by tash_demos.gpr
+all:: .build
+.build:
+	mkdir $@
 
 PROGRAMS = tashell \
            twashell \
@@ -14,35 +21,35 @@ PROGRAMS = tashell \
            futurevalue \
            wordify
 
-all : $(PROGRAMS)
+all:: $(PROGRAMS)
 
-$(PROGRAMS) : *.adb ../makeconf
-	gnatmake $(GARGS) $@ -cargs $(CARGS) -bargs $(BARGS) -largs $(LARGS)
+$(PROGRAMS): *.adb ../makeconf
+	gnatmake -Ptash_demos $@
 
-test : test-timer test-fv
+test: test-timer test-fv
 
-test-timer : timer
+test-timer: timer
 	./timer
 
-test-fv : futurevalue
+test-fv: futurevalue
 	./futurevalue
 
-test-freq : tashell freq freq2 wordify
+test-freq: tashell freq freq2 wordify
 	./tashell testfreq.tcl ../src words
 
-test-freq2 : freq2
+test-freq2: freq2
 	./freq2 < words > freq2.unsorted
 
-profile : freq
+profile: freq
 	./freq < words > freq.unsorted
 	gprof freq gmon.out > freq.gprof
 
-profile2 : freq2
+profile2: freq2
 	./freq2 < words > freq2.unsorted
 	gprof freq2 gmon.out > freq2.gprof
 
-lib :
+lib:
 	@ cd ../src ; make all
 
-clean :
+clean:
 	@$(TCLSH) ../bin/clean.tcl words freq.*.out $(PROGRAMS)
