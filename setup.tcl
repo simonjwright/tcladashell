@@ -2,21 +2,27 @@
 #\
 exec wish $0 $@
 
-#------------------------------------------------
-#
-# setup.tcl --
-#    This is a Tcl/Tk script which helps install TASH.
-#    It collects information about the environment
-#    and creates a file, makeconf, which is
-#    included in makefiles to customize to the local
-#    environment.
-#
-# Copyright (c) 1997-2000 Terry J. Westley
-#
-# See the file "license.htm" for information on usage and
-# redistribution of this file, and  a DISCLAIMER OF ALL WARRANTIES.
-#
-#------------------------------------------------
+# Copyright (C) 1997-2000 Terry J. Westley
+# Copyright (C) Simon Wright <simon@pushface.org>
+
+# This package is free software; you can redistribute it and/or
+# modify it under terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2, or
+# (at your option) any later version. This package is distributed in
+# the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more
+# details. You should have received a copy of the GNU General Public
+# License distributed with this package; see file COPYING.  If not,
+# write to the Free Software Foundation, 59 Temple Place - Suite
+# 330, Boston, MA 02111-1307, USA.
+
+# $Id$
+
+# This is a Tcl/Tk script which helps install TASH.  It collects
+# information about the environment and creates a file, makeconf,
+# which is included in makefiles to customize to the local
+# environment.
 
 set tash_version "8.4-2"
 
@@ -290,6 +296,7 @@ proc Set_Macros {platform os osVersion} {
     set x11home           ""
     set x11_lib           ""
     set x11_include       ""
+    set exec_suffix       ""
     
     if [cequal $os "Darwin"] {
 	set tclhome "/usr"
@@ -312,6 +319,7 @@ proc Set_Macros {platform os osVersion} {
 	    append link_switches "-ltcl$tcl_short_version "
 	    append link_switches "../src/tkmacro.o ../src/tclmacro.o "
 	    regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
+	    set exec_suffix ".exe"
 	}
 	"unix" {
 	    set tclsh "tclsh"
@@ -413,6 +421,8 @@ proc Set_Macros {platform os osVersion} {
 	# Ada compiler switches}
     setvar BARGS             "" {
 	# gnatbind switches}
+    setvar EXE               "$exec_suffix" {
+	# suffix for executable files}
 }
 
 set useLinkerOptions 0
@@ -471,6 +481,9 @@ foreach name $tashorder {
     $g.$w-entry insert end $tashvar($name)
     switch -regexp $name {
 	"(TK|TCL|TASH)_VERSION" {
+	    $g.$w-entry configure -state disabled
+	}
+	"EXE" {
 	    $g.$w-entry configure -state disabled
 	}
 	default {
