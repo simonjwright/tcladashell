@@ -53,18 +53,17 @@ tkmacro.o: tkmacro.c
 
 # Build Hello_World program
 #--------------------------
-hello_world$(EXE): \
- $(TCL_LIBRARY) $(TK_LIBRARY) tclmacro.o tkmacro.o ../makeconf
+hello_world$(EXE): tclmacro.o tkmacro.o ../makeconf
 	gnatmake -Ptash hello_world
 
 # Build Tcl and Tk libraries (Windows only)
 #------------------------------------------
 ../src/libtcl84.a: $(TCLHOME)/bin/tcl84.dll
-	dll2def $(TCLHOME)/bin/tcl84.dll > tcl84.def
+	pexports $(TCLHOME)/bin/tcl84.dll > tcl84.def
 	dlltool --def tcl84.def --dllname tcl84.dll --output-lib $@
 
 ../src/libtk84.a: $(TCLHOME)/bin/tk84.dll
-	dll2def $(TCLHOME)/bin/tk84.dll > tk84.def
+	pexports $(TCLHOME)/bin/tk84.dll > tk84.def
 	dlltool --def tk84.def --dllname tk84.dll --output-lib $@
 
 windows: tclmacro.o tkmacro.o ../src/libtcl84.a ../src/libtk84.a
