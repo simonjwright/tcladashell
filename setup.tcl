@@ -217,30 +217,18 @@ project Tash_Options is
    for Source_Dirs use ();
 
    Compiler_Options :=
-    (}
+     (}
 
-    foreach o $tashvar(CARGS) {
-	puts $gprfid "      \"$o\"," 
-    }
+    puts $gprfid "\      \"[join [concat $tashvar(CARGS) $tashvar(AARGS)] "\",\n      \""]\"\n    );"
 
-    foreach o $tashvar(AARGS) {
-	puts $gprfid "      \"$o\"," 
-    }
-
-    puts $gprfid \
-{      ""
-     );
+    puts $gprfid {\
 
    Linker_Options :=
      (}
 
-    foreach o $link_switches {
-	puts $gprfid "      \"$o\"," 
-    }
+    puts $gprfid "\      \"[join $link_switches "\",\n      \""]\"\n    );"
 
-    puts $gprfid \
-{      ""
-     );
+    puts $gprfid {\
 
 end Tash_Options;
 }
@@ -314,7 +302,9 @@ proc Set_Macros {platform os osVersion} {
 	    regsub {\.} $tk_version  {} tk_short_version
 	    set tclsh "tclsh${tcl_short_version}"
 	    set libtcl "../src/libtcl${tcl_short_version}.a"
+	    set tcldll "tcl${tcl_short_version}.dll"
 	    set libtk  "../src/libtk${tk_short_version}.a"
+	    set tkdll  "tk${tk_short_version}.dll"
 	    set link_switches "-L../src -ltk$tk_short_version "
 	    append link_switches "-ltcl$tcl_short_version "
 	    append link_switches "../src/tkmacro.o ../src/tclmacro.o "
