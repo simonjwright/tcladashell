@@ -301,13 +301,14 @@ proc Set_Macros {platform os osVersion} {
 	    regsub {\.} $tcl_version {} tcl_short_version
 	    regsub {\.} $tk_version  {} tk_short_version
 	    set tclsh "tclsh${tcl_short_version}"
-	    set libtcl "../src/libtcl${tcl_short_version}.a"
+	    set libtcl [file join $pwd src/libtcl${tcl_short_version}.a]
 	    set tcldll "tcl${tcl_short_version}.dll"
-	    set libtk  "../src/libtk${tk_short_version}.a"
+	    set libtk  [file join $pwd src/libtk${tk_short_version}.a]
 	    set tkdll  "tk${tk_short_version}.dll"
-	    set link_switches "-L../src -ltk$tk_short_version "
+	    set link_switches "-L[file join $pwd src] -ltk$tk_short_version "
 	    append link_switches "-ltcl$tcl_short_version "
-	    append link_switches "../src/tkmacro.o ../src/tclmacro.o "
+	    append link_switches "[file join $pwd src/tkmacro.o] \
+                                  [file join $pwd src/tclmacro.o] "
 	    regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
 	    set exec_suffix ".exe"
 	}
@@ -341,7 +342,8 @@ proc Set_Macros {platform os osVersion} {
 		    }
 		}
 	    }
-	    set link_switches "../src/tkmacro.o ../src/tclmacro.o "
+	    set link_switches "[file join $pwd src/tkmacro.o] \
+                               [file join $pwd src/tclmacro.o]"
 	    if [cequal $os "SunOS"] {
 		append link_switches " -R$tclhome/lib -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
@@ -403,7 +405,7 @@ proc Set_Macros {platform os osVersion} {
 	# Tk library}
     setvar CC                "gcc" {
 	# This is gcc compiler for the C files, uses gnatmake for Ada files.}
-    setvar GARGS             "-i -k -I../src" {
+	setvar GARGS             "-i -k -I[file join $pwd src]" {
 	# gnatmake switches}
     setvar CARGS             "-g -O2" {
 	# C compiler switches}
@@ -442,7 +444,7 @@ pack $f -side top
 
 checkbutton .link.useLinkerOptions -text "Use pragma Linker_Options" \
     -variable useLinkerOptions -pady 10
-pack .link.useLinkerOptions -side left
+#pack .link.useLinkerOptions -side left
 
 button .link.help -text "Explain..." -command {
     set text "When you check the \"Use pragma Linker_Options\" checkbox,\
@@ -456,7 +458,7 @@ button .link.help -text "Explain..." -command {
 	-title "Explain \"Use pragma Linker_Options\"" \
 	-type ok 
 }
-pack .link.help -side left
+#pack .link.help -side left
 
 set g [frame .grid]
 pack $g -side top
