@@ -28,7 +28,7 @@
 --  however invalidate any other reasons why the executable file might be
 --  covered by the GNU Public License.
 --
---  Tash is maintained by Terry Westley (http://www.adatcl.com).
+--  Tash is maintained at http://tcladashell.sourceforge.net/.
 --
 --------------------------------------------------------------------
 --

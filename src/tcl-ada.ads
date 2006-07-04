@@ -1,6 +1,6 @@
 --------------------------------------------------------------------
 --
---  tcl-ada.ads -- This package provides the "thick" binding to Tcl.
+--  tcl-ada.ads -- This package provides the "thin" binding to Tcl.
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
 --
@@ -24,7 +24,7 @@
 --  however invalidate any other reasons why the executable file might be
 --  covered by the GNU Public License.
 --
---  Tash is maintained by Terry Westley (http://www.adatcl.com).
+--  Tash is maintained at http://tcladashell.sourceforge.net/.
 --
 --------------------------------------------------------------------
 
@@ -68,9 +68,8 @@ package Tcl.Ada is
       --  Typically, it is either a scalar or access type.
    package Generic_AssocData is
 
-      type Tcl_InterpDeleteProc is access procedure
-     (data   : in ClientData;
-      interp : in Tcl_Interp);
+      type Tcl_InterpDeleteProc is access procedure (Data   : in ClientData;
+                                                     Interp : in Tcl_Interp);
       pragma Convention (C, Tcl_InterpDeleteProc);
 
       function Tcl_GetAssocData
