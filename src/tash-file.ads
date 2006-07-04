@@ -92,16 +92,19 @@
 --
 --  tcl_platform(platform) = "mac"
 ---------------------------------
---  On Apple Macintosh systems, Tcl supports two forms of path names.
---  The normal Mac style names use colons as path separators.  Paths
---  may be relative or absolute, and file names may contain any character
---  other than colon.  A leading colon causes the rest of the path to be
---  interpreted relative to the current directory.  If a path contains a
---  colon that is not at the beginning, then the path is interpreted as an
---  absolute path.  Sequences of two or more colons anywhere in the path
---  are used to construct relative paths where :: refers to the parent of
---  the current directory, ::: refers to the parent of the parent, and so
---  forth.
+--  This platform is reported on Mac OS 9 (and possibly earlier). Mac
+--  OS X reports "unix" (see below).
+--
+--  On these systems, Tcl supports two forms of path names.  The
+--  normal Mac style names use colons as path separators.  Paths may
+--  be relative or absolute, and file names may contain any character
+--  other than colon.  A leading colon causes the rest of the path to
+--  be interpreted relative to the current directory.  If a path
+--  contains a colon that is not at the beginning, then the path is
+--  interpreted as an absolute path.  Sequences of two or more colons
+--  anywhere in the path are used to construct relative paths where ::
+--  refers to the parent of the current directory, ::: refers to the
+--  parent of the parent, and so forth.
 --
 --  In addition to Macintosh style names, Tcl also supports a subset of
 --  Unix-like names.  If a path contains no colons, then it is interpreted
@@ -183,11 +186,12 @@
 --  the tilde and the next separator are taken as a user name, which is
 --  used to retrieve the user's home directory for substitution.
 --
---  The Macintosh and Windows platforms do not support tilde substitution
---  when a user name follows the tilde.  On these platforms, attempts to
---  use a tilde followed by a user name will generate an error.  File names
---  that have a tilde without a user name will be substituted using the $HOME
---  environment variable, just like for Unix.
+--  The Macintosh (OS 9) and Windows platforms do not support tilde
+--  substitution when a user name follows the tilde.  On these
+--  platforms, attempts to use a tilde followed by a user name will
+--  generate an error.  File names that have a tilde without a user
+--  name will be substituted using the $HOME environment variable,
+--  just like for Unix.
 --
 --  PORTABILITY ISSUES
 --  -==================
