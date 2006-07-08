@@ -58,15 +58,15 @@ hello_world$(EXE): tclmacro.o tkmacro.o ../makeconf
 
 # Build Tcl and Tk libraries (Windows only)
 #------------------------------------------
-../src/libtcl84.a: $(TCLHOME)/bin/tcl84.dll
+libtcl84.a: $(TCLHOME)/bin/tcl84.dll
 	pexports $(TCLHOME)/bin/tcl84.dll > tcl84.def
 	dlltool --def tcl84.def --dllname tcl84.dll --output-lib $@
 
-../src/libtk84.a: $(TCLHOME)/bin/tk84.dll
+libtk84.a: $(TCLHOME)/bin/tk84.dll
 	pexports $(TCLHOME)/bin/tk84.dll > tk84.def
 	dlltool --def tk84.def --dllname tk84.dll --output-lib $@
 
-windows: tclmacro.o tkmacro.o ../src/libtcl84.a ../src/libtk84.a
+windows: libtcl84.a libtk84.a
 
 test:
 	./hello_world
