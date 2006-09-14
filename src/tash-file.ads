@@ -552,7 +552,7 @@ package Tash.File is
    --  where all the Type_List strings given must match.  The string
    --  elements of Type_List are "r", "w", or "x" as file permissions,
    --  and "readonly" and "hidden" as special permission cases.  On
-   --  the Macintosh, MacOS types and creators are also supported,
+   --  MacOS 9, MacOS types and creators are also supported,
    --  where any item which is four characters long is assumed to be a
    --  MacOS type (e.g. TEXT).  Items which are of the form
    --  "{macintosh type XXXX}" or "{macintosh creator XXXX}" will match
@@ -583,7 +583,7 @@ package Tash.File is
    --       Match accepts patterns like ".../" and "..../" for
    --       successively higher up parent directories.
    --
-   --   Macintosh
+   --   MacOS 9
    --      When using the Directory or Path_Prefix parameters,
    --      Match assumes the directory separator for the entire pattern
    --      is the standard ":".  When not using these parameters
@@ -592,6 +592,6 @@ package Tash.File is
 
    function Current_Working_Directory return String;
    function Pwd return String renames Current_Working_Directory;
-   --  Returns the ful path name of the current working directory.
+   --  Returns the full path name of the current working directory.
 
 end Tash.File;
