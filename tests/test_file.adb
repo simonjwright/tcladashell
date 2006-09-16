@@ -797,16 +797,31 @@ begin --  Test_File
    end;
 
    --  simple file name match
-   -------------------------
-   Tash.Test.Test_Case
-     (Description => "simple file name match",
-      Result      => Tash.File.Match ("../bin/*") =
-                     Tash.Lists.To_Tash_List
-                        ("../bin/clean.tcl ../bin/install.tcl"),
-      Failure_Msg =>
-        "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
-        Tash.Lists.To_String (Tash.File.Match ("../bin/*")) &
-        """");
+   --------------------------
+   --  If this test is run in a tree checked out from CVS, there will
+   --  be CVS directories to be accounted for. Note that the order in
+   --  which directory entries is returned is OS-dependent; Linux is a
+   --  straight ASCII sort, MacOS X is case-independent, Solaris
+   --  appears not to sort.
+   declare
+      Directories : Tash.Lists.Tash_List
+        := Tash.Lists.Sort (Tash.File.Match ("../bin/*"));
+   begin
+      case Tash.Lists.Length (Directories) is
+         when 2 => null;
+         when 3 => Directories := Tash.Lists.Slice (Directories, 2, 3);
+         when others => null;  -- will fail
+      end case;
+      Tash.Test.Test_Case
+        (Description => "simple file name match",
+         Result      => Directories =
+           Tash.Lists.To_Tash_List
+           ("../bin/clean.tcl ../bin/install.tcl"),
+         Failure_Msg =>
+           "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
+           Tash.Lists.To_String (Directories) &
+           """");
+   end;
 
    Tash.Test.Test_Case
      (Description => "simple file name match",
@@ -814,41 +829,69 @@ begin --  Test_File
                      Tash.Lists.To_Tash_List ("tashtest.tcl"));
 
    --  specify directory in file name match
-   ---------------------------------------
-   Tash.Test.Test_Case
-     (Description => "specify directory in file name match",
-      Result      => Tash.File.Match ("*", Directory => "../bin") =
-                     Tash.Lists.To_Tash_List
-                        ("../bin/clean.tcl ../bin/install.tcl"),
-      Failure_Msg =>
-        "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
-        Tash.Lists.To_String (Tash.File.Match ("*", Directory => "../bin")) &
-        """");
+   ----------------------------------------
+   declare
+      Directories : Tash.Lists.Tash_List
+         := Tash.Lists.Sort (Tash.File.Match ("*", Directory => "../bin"));
+   begin
+      case Tash.Lists.Length (Directories) is
+         when 2 => null;
+         when 3 => Directories := Tash.Lists.Slice (Directories, 2, 3);
+         when others => null;  -- will fail
+      end case;
+      Tash.Test.Test_Case
+        (Description => "specify directory in file name match",
+         Result      => Directories =
+           Tash.Lists.To_Tash_List
+           ("../bin/clean.tcl ../bin/install.tcl"),
+         Failure_Msg =>
+           "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
+           Tash.Lists.To_String (Directories) &
+           """");
+   end;
 
    --  specify path prefix in file name match
-   ---------------------------------------
-   Tash.Test.Test_Case
-     (Description => "specify path prefix in file name match",
-      Result      => Tash.File.Match ("*", Path_Prefix => "../bin/") =
-                     Tash.Lists.To_Tash_List
-                        ("../bin/clean.tcl ../bin/install.tcl"),
-      Failure_Msg =>
-        "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
-        Tash.Lists.To_String
-           (Tash.File.Match ("*", Path_Prefix => "../bin/")) &
-        """");
+   ------------------------------------------
+   declare
+      Files : Tash.Lists.Tash_List
+        := Tash.Lists.Sort (Tash.File.Match ("*", Path_Prefix => "../bin/"));
+   begin
+      case Tash.Lists.Length (Files) is
+         when 2 => null;
+         when 3 => Files := Tash.Lists.Slice (Files, 2, 3);
+         when others => null;  -- will fail
+      end case;
+      Tash.Test.Test_Case
+        (Description => "specify path prefix in file name match",
+         Result      => Files =
+           Tash.Lists.To_Tash_List
+           ("../bin/clean.tcl ../bin/install.tcl"),
+         Failure_Msg =>
+           "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
+           Tash.Lists.To_String (Files) &
+           """");
+   end;
 
    --  find all directories in current directory
-   --------------------------------------------
-   Tash.Test.Test_Case
-     (Description => "find all directories in current directory",
-      Result      =>
-        Tash.Lists.Sort (Tash.File.Match ("*", Type_List => "d")) =
-        Tash.Lists.To_Tash_List ("dir new_directory"),
-      Failure_Msg => "Expected: ""dir new_directory""  Got: """ &
-                     Tash.Lists.To_String
-                        (Tash.File.Match ("*", Type_List => "d")) &
-                     """");
+   ---------------------------------------------
+   declare
+      Directories : Tash.Lists.Tash_List
+         := Tash.Lists.Sort (Tash.File.Match ("*", Type_List => "d"));
+   begin
+      case Tash.Lists.Length (Directories) is
+         when 2 => null;
+         when 3 => Directories := Tash.Lists.Slice (Directories, 2, 3);
+         when others => null;  -- will fail
+      end case;
+      Tash.Test.Test_Case
+        (Description => "find all directories in current directory",
+         Result      =>
+           Directories =
+           Tash.Lists.To_Tash_List ("dir new_directory"),
+         Failure_Msg => "Expected: ""dir new_directory""  Got: """ &
+           Tash.Lists.To_String (Directories) &
+           """");
+   end;
 
    if Tash.Test.All_Test_Cases_Passed then
       Ada.Text_IO.Put_Line
