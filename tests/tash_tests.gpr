@@ -52,5 +52,6 @@ project Tash_Tests is
   package Compiler renames Tash.Compiler;
   package Binder renames Tash.Binder;
   package Linker renames Tash.Linker;
+--    package Pretty_Printer Renames Tash.Pretty_Printer;
 
 end Tash_Tests;
