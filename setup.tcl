@@ -350,6 +350,7 @@ proc Set_Macros {platform os osVersion} {
 	    } elseif [cequal $os "Darwin"] {
 		append link_switches " -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
+		append link_switches " -lSystemStubs"
 	    } else {
 		append link_switches " -Wl,-rpath,$tclhome/lib"
 		append link_switches " -L$tclhome/lib"
@@ -491,8 +492,3 @@ pack .buttons -side bottom -fill x -pady 2m
 button .buttons.save   -text Save   -command "Save $g;exit"
 button .buttons.cancel -text Cancel -command exit
 pack .buttons.save .buttons.cancel -side left -expand 1
-
-#;; for emacs:
-#;; Local Variables:
-#;; mode: tcl
-#;; End:
