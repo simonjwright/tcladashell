@@ -56,14 +56,19 @@ tkmacro.o: tkmacro.c
 hello_world$(EXE): tclmacro.o tkmacro.o ../makeconf
 	gnatmake -Ptash hello_world
 
-# Build Tcl and Tk libraries (Windows only)
-#------------------------------------------
-libtcl84.a: $(TCLHOME)/bin/tcl84.dll
-	pexports $(TCLHOME)/bin/tcl84.dll > tcl84.def
+# Build Tcl and Tk libraries (Windows/Cygwin only)
+#-------------------------------------------------
+#
+# Cygwin works magic to make executables appear in both /usr/bin and
+# /bin, but really they're only in /bin, and TCLHOME is (eg)
+# c:/cygwin/usr. So use 'which' to find the thing (that will be the
+# one found at execution, after all).
+libtcl84.a: $(shell which tcl84.dll)
+	dll2def $(shell cygpath -m $<) >tcl84.def
 	dlltool --def tcl84.def --dllname tcl84.dll --output-lib $@
 
-libtk84.a: $(TCLHOME)/bin/tk84.dll
-	pexports $(TCLHOME)/bin/tk84.dll > tk84.def
+libtk84.a: $(shell which tk84.dll)
+	dll2def $(shell cygpath -m $<) >tk84.def
 	dlltool --def tk84.def --dllname tk84.dll --output-lib $@
 
 windows: libtcl84.a libtk84.a

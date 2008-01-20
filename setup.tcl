@@ -298,18 +298,30 @@ proc Set_Macros {platform os osVersion} {
     
     switch $platform {
 	"windows" {
+	    # This assumes ActiveTcl. Cygwin Tcl/Tk (at 30 Oct 2006)
+	    # wouldn't run properly when called from Ada.
+	    #
+	    # It also assumes a GNAT that recognises tcl84.lib as a
+	    # candidate for the linker switch -ltcl84.
+	    #
+	    # Most development tools get confused by paths with spaces.
+	    regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
 	    regsub {\.} $tcl_version {} tcl_short_version
 	    regsub {\.} $tk_version  {} tk_short_version
 	    set tclsh "tclsh${tcl_short_version}"
-	    set libtcl [file join $pwd src/libtcl${tcl_short_version}.a]
+	    # Why do we need this?
+	    #set libtcl [file join $pwd src/libtcl${tcl_short_version}.a]
+	    set libtcl ""
 	    set tcldll "tcl${tcl_short_version}.dll"
-	    set libtk  [file join $pwd src/libtk${tk_short_version}.a]
+	    # Why do we need this?
+	    #set libtk  [file join $pwd src/libtk${tk_short_version}.a]
+	    set libtk ""
 	    set tkdll  "tk${tk_short_version}.dll"
-	    set link_switches "-L[file join $pwd src] -ltk$tk_short_version "
+	    set link_switches "[file join $pwd src/tkmacro.o] "
+	    append link_switches "[file join $pwd src/tclmacro.o] "
+	    append link_switches "-L$tclhome/lib "
+	    append link_switches "-ltk$tk_short_version "
 	    append link_switches "-ltcl$tcl_short_version "
-	    append link_switches "[file join $pwd src/tkmacro.o] \
-                                  [file join $pwd src/tclmacro.o] "
-	    regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
 	    set exec_suffix ".exe"
 	}
 	"unix" {
