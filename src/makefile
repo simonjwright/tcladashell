@@ -91,5 +91,13 @@ test:
 	./hello_world
 .PHONY: test
 
+DIST = tash-$(TASH_VERSION)-$(OS)-$(shell date +%Y%m%d)
+
+dist: all
+	-rm -rf $(DIST) $(DIST).zip
+	mkdir $(DIST)
+	cp -R ../tash_options.gpr tash.gpr lib $(DIST)
+	zip -r $(DIST).zip $(DIST)
+
 clean:
 	-rm -rf hello_world$(EXE)  .build_lib .build lib *~
