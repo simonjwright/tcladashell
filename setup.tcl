@@ -223,6 +223,13 @@ project Tash_Options is
 
     puts $gprfid {\
 
+   C_Compiler_Options :=
+     (}
+
+    puts $gprfid "\      \"[join [concat $tashvar(CARGS) $tashvar(TCL_INCLUDE)] "\",\n      \""]\"\n    );"
+
+    puts $gprfid {\
+
    Linker_Options :=
      (}
 
@@ -292,7 +299,7 @@ proc Set_Macros {platform os osVersion} {
 	set tclhome [file dirname [file dirname $tcl_library]]
     }
     set tcl_include       [file join $tclhome include]
-    set link_switches     ""
+    set link_switches     "-ltash"
     
     set pwd               [pwd]
     
@@ -317,8 +324,8 @@ proc Set_Macros {platform os osVersion} {
 	    #set libtk  [file join $pwd src/libtk${tk_short_version}.a]
 	    set libtk ""
 	    set tkdll  "tk${tk_short_version}.dll"
-	    set link_switches "[file join $pwd src/tkmacro.o] "
-	    append link_switches "[file join $pwd src/tclmacro.o] "
+	    #append link_switches "[file join $pwd src/tkmacro.o] "
+	    #append link_switches "[file join $pwd src/tclmacro.o] "
 	    append link_switches "-L$tclhome/lib "
 	    append link_switches "-ltk$tk_short_version "
 	    append link_switches "-ltcl$tcl_short_version "
@@ -354,15 +361,15 @@ proc Set_Macros {platform os osVersion} {
 		    }
 		}
 	    }
-	    set link_switches "[file join $pwd src/tkmacro.o] \
-                               [file join $pwd src/tclmacro.o]"
+	    #set link_switches "[file join $pwd src/tkmacro.o] \
+            #                   [file join $pwd src/tclmacro.o]"
 	    if [cequal $os "SunOS"] {
 		append link_switches " -R$tclhome/lib -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
 	    } elseif [cequal $os "Darwin"] {
 		append link_switches " -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
-		append link_switches " -lSystemStubs"
+		#append link_switches " -lSystemStubs"
 	    } else {
 		append link_switches " -Wl,-rpath,$tclhome/lib"
 		append link_switches " -L$tclhome/lib"
@@ -504,3 +511,8 @@ pack .buttons -side bottom -fill x -pady 2m
 button .buttons.save   -text Save   -command "Save $g;exit"
 button .buttons.cancel -text Cancel -command exit
 pack .buttons.save .buttons.cancel -side left -expand 1
+
+#;; for emacs:
+#;; Local Variables:
+#;; mode: tcl
+#;; End:
