@@ -36,49 +36,60 @@ all::
 
 include ../makeconf
 
-# build directory, needed by tash.gpr
-all:: .build
-.build:
-	mkdir $@
+ADA_SRC = \
+cargv.adb \
+tash-integer_arrays.ads \
+tash-test.adb \
+cargv.ads \
+tash-integer_lists.ads \
+tash-test.ads \
+chelper.adb \
+tash-integers.adb \
+tash.adb \
+chelper.ads \
+tash-integers.ads \
+tash.ads \
+tash-arrays.adb \
+tash-lists.adb \
+tash-arrays.ads \
+tash-lists.ads \
+tcl-ada.adb \
+tash-file.adb \
+tash-platform.adb \
+tcl-ada.ads \
+tash-file.ads \
+tash-platform.ads \
+tcl-tk-ada.adb \
+tash-file_io.adb \
+tash-regexp.adb \
+tcl-tk-ada.ads \
+tash-file_io.ads \
+tash-regexp.ads \
+tcl-tk.adb \
+tash-float_arrays.ads \
+tash-strings.adb \
+tcl-tk.ads \
+tash-float_lists.ads \
+tash-strings.ads \
+tcl.adb \
+tash-floats.adb \
+tash-system.adb \
+tcl.ads \
+tash-floats.ads \
+tash-system.ads
 
-all:: hello_world$(EXE)
+all::
+	gprmake -P build_tash_library -p
+	gnatmake -P build_tash_library -p
+	chmod -w lib/*.ali
+	cp $(ADA_SRC) lib/
 
-# Compile C files
-#----------------
-tclmacro.o: tclmacro.c
-	$(CC) -c $(CARGS) $(TCL_INCLUDE) $?
-
-tkmacro.o: tkmacro.c
-	$(CC) -c $(CARGS) $(TCL_INCLUDE) $(X11_INCLUDE) $?
-
-# Build Hello_World program
-#--------------------------
-hello_world$(EXE): tclmacro.o tkmacro.o ../makeconf
-	gnatmake -Ptash hello_world
-
-# Build Tcl and Tk libraries (Windows/Cygwin only)
-#-------------------------------------------------
-#
-# Cygwin works magic to make executables appear in both /usr/bin and
-# /bin, but really they're only in /bin, and TCLHOME is (eg)
-# c:/cygwin/usr. So use 'which' to find the thing (that will be the
-# one found at execution, after all).
-libtcl84.a: $(shell which tcl84.dll)
-	dll2def $(shell cygpath -m $<) >tcl84.def
-	dlltool --def tcl84.def --dllname tcl84.dll --output-lib $@
-
-libtk84.a: $(shell which tk84.dll)
-	dll2def $(shell cygpath -m $<) >tk84.def
-	dlltool --def tk84.def --dllname tk84.dll --output-lib $@
-
-windows: libtcl84.a libtk84.a
+all::
+	gnatmake -P hello_world -p
 
 test:
 	./hello_world
-
-compile::
-	gnatmake -Ptash -c
-compile:: tclmacro.o tkmacro.o
+.PHONY: test
 
 clean:
-	@$(TCLSH) ../bin/clean.tcl hello_world *.def *.a make.out
+	-rm -rf hello_world$(EXE)  .build_lib .build lib *~
