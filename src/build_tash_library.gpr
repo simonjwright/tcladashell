@@ -15,7 +15,7 @@
 --  $Id$
 --
 --  This file provides the compilation options for building the
---  tcladashell library.
+--  tcladashell library libtash.a.
 --
 --  The withed 'tash_options.gpr' is created by running the script
 --  'setup.tcl' in the parent directory.
@@ -25,32 +25,11 @@ with "../tash_options";
 project Build_Tash_Library is
 
   for Library_Name use "tash";
-  for Library_Interface use
-    (
-     "cargv",
-     "chelper",
-     "tash.arrays",
-     "tash.file",
-     "tash.file_io",
-     "tash.float_arrays",
-     "tash.float_lists",
-     "tash.floats",
-     "tash.integer_arrays",
-     "tash.integer_lists",
-     "tash.integers",
-     "tash.lists",
-     "tash.platform",
-     "tash.regexp",
-     "tash.strings",
-     "tash.system",
-     "tash",
-     "tcl.ada",
-     "tcl.tk.ada",
-     "tcl.tk",
-     "tcl"
-     );
+  for Languages use ("Ada", "C");
   for Source_Files use
     (
+     "tclmacro.c",
+     "tkmacro.c",
      "cargv.adb",
      "cargv.ads",
      "chelper.adb",
@@ -107,6 +86,7 @@ project Build_Tash_Library is
 
   package Compiler is
      for Default_Switches ("ada") use Tash_Options.Compiler_Options;
+     for Default_Switches ("c") use Tash_Options.C_Compiler_Options;
   end Compiler;
 
 end Build_Tash_Library;
