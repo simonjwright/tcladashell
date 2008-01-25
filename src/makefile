@@ -78,6 +78,8 @@ tcl.ads \
 tash-floats.ads \
 tash-system.ads
 
+all::	tash_options.gpr
+
 all::
 	gprmake -P build_tash_library -p
 	gnatmake -P build_tash_library -p
@@ -86,6 +88,9 @@ all::
 
 all::
 	gnatmake -P hello_world -p
+
+tash_options.gpr: ../tash_options.gpr
+	cp $< $@
 
 test:
 	./hello_world
@@ -96,7 +101,7 @@ DIST = tash-$(TASH_VERSION)-$(OS)-$(shell date +%Y%m%d)
 dist: all
 	-rm -rf $(DIST) $(DIST).zip
 	mkdir $(DIST)
-	cp -R ../tash_options.gpr tash.gpr lib $(DIST)
+	cp -R tash_options.gpr tash.gpr lib $(DIST)
 	zip -r $(DIST).zip $(DIST)
 
 clean:
