@@ -292,6 +292,8 @@ proc Set_Macros {platform os osVersion} {
     set x11_lib           ""
     set x11_include       ""
     set exec_suffix       ""
+
+    regsub -all {[ \t]+} $os "_" os
     
     if [cequal $os "Darwin"] {
 	set tclhome "/usr"
@@ -299,7 +301,7 @@ proc Set_Macros {platform os osVersion} {
 	set tclhome [file dirname [file dirname $tcl_library]]
     }
     set tcl_include       [file join $tclhome include]
-    set link_switches     "-ltash"
+    set link_switches     "-ltash "
     
     set pwd               [pwd]
     
