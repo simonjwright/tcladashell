@@ -38,7 +38,6 @@ with Ada.Integer_Text_IO;
 with CHelper;
 with System;
 with Tash.Arrays;
-with Tash.Lists;
 
 package body Tash.File is
 
