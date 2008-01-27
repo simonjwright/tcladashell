@@ -38,45 +38,43 @@ include ../makeconf
 
 ADA_SRC = \
 cargv.adb \
-tash-integer_arrays.ads \
-tash-test.adb \
 cargv.ads \
-tash-integer_lists.ads \
-tash-test.ads \
 chelper.adb \
-tash-integers.adb \
-tash.adb \
 chelper.ads \
-tash-integers.ads \
-tash.ads \
 tash-arrays.adb \
-tash-lists.adb \
 tash-arrays.ads \
-tash-lists.ads \
-tcl-ada.adb \
 tash-file.adb \
-tash-platform.adb \
-tcl-ada.ads \
 tash-file.ads \
-tash-platform.ads \
-tcl-tk-ada.adb \
 tash-file_io.adb \
-tash-regexp.adb \
-tcl-tk-ada.ads \
 tash-file_io.ads \
-tash-regexp.ads \
-tcl-tk.adb \
 tash-float_arrays.ads \
-tash-strings.adb \
-tcl-tk.ads \
 tash-float_lists.ads \
-tash-strings.ads \
-tcl.adb \
 tash-floats.adb \
-tash-system.adb \
-tcl.ads \
 tash-floats.ads \
-tash-system.ads
+tash-integer_arrays.ads \
+tash-integer_lists.ads \
+tash-integers.adb \
+tash-integers.ads \
+tash-lists.adb \
+tash-lists.ads \
+tash-platform.adb \
+tash-platform.ads \
+tash-regexp.adb \
+tash-regexp.ads \
+tash-strings.adb \
+tash-strings.ads \
+tash-system.adb \
+tash-system.ads \
+tash.adb \
+tash.ads \
+tcl-ada.adb \
+tcl-ada.ads \
+tcl-tk-ada.adb \
+tcl-tk-ada.ads \
+tcl-tk.adb \
+tcl-tk.ads \
+tcl.adb \
+tcl.ads
 
 all::	tash_options.gpr
 
@@ -84,17 +82,12 @@ all::
 	gprmake -P build_tash_library -p
 	gnatmake -P build_tash_library -p
 	chmod -w lib/*.ali
-	cp $(ADA_SRC) lib/
-
-all::
-	gnatmake -P hello_world -p
+	if [ -d include ]; then rm -rf include; fi
+	mkdir include
+	cp $(ADA_SRC) include/
 
 tash_options.gpr: ../tash_options.gpr
 	cp $< $@
-
-test:
-	./hello_world
-.PHONY: test
 
 DIST = tash-$(TASH_VERSION)-$(OS)-$(shell date +%Y%m%d)
 
