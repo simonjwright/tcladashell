@@ -15,72 +15,54 @@
 
 all::
 
-include ../makeconf
-
-# build directory, needed by tash.gpr
-all:: .build
-.build:
-	mkdir $@
-
-PROGRAMS = \
-        compare \
-        tashtest \
-        test_lists \
-        test_format \
-        test_regexp \
+SIMPLE_PROGRAMS = \
         test_arrays \
         test_file \
         test_file_io \
-        test_system \
-        test_platform
-
-all:: $(PROGRAMS)
+	test_floats \
+        test_format \
+	test_integers \
+        test_lists \
+        test_platform \
+        test_regexp \
+	test_strings \
+        test_system
 
 # Compile and link all programs
 #------------------------------
-$(PROGRAMS): *.ads *.adb ../makeconf
-	gnatmake $(GARGS) $@ -cargs $(CARGS) $(AARGS) -bargs $(BARGS) -largs $(LARGS)
+all::
+	gnatmake -P tash_tests -p
 
 VERBOSE =
 GNATMEM =
 
-test: compare tash lists regexp format arrays \
-       file file_io system platform
+test::
+	cp compare.adb test_compare.ada
+	$(GNATMEM) ./compare compare.adb test_compare.ada
+	@echo "./compare compare.adb tash-arrays-test.adb"
+	@($(GNATMEM) ./compare compare.adb tash-arrays-test.adb && \
+	  echo "FAILED: comparison didn't fail!"; \
+	  true)
 
-tash:
-	@ $(GNATMEM) ./tashtest tashtest.tcl
+test::
+	$(GNATMEM) ./tashtest tashtest.tcl
 
-lists: 
-	@ $(GNATMEM) ./test_lists $(VERBOSE)
+test::
+	for p in $(SIMPLE_PROGRAMS); do \
+	  echo ./$$p; \
+	  $(GNATMEM) ./$$p $(VERBOSE); \
+	done
 
-regexp:
-	@ $(GNATMEM) ./test_regexp $(VERBOSE)
-
-format:
-	@ $(GNATMEM) ./test_format $(VERBOSE)
-
-arrays:
-	@ $(GNATMEM) ./test_arrays $(VERBOSE)
-
+# Don't understand this
 old-arrays:
 	$(GNATMEM) ./test_arrays $(VERBOSE) > test_arrays.out
 	./compare test_arrays.out test_arrays.expected-output
 	type test_arrays.out
 
-file:
-	@ $(GNATMEM) ./test_file $(VERBOSE)
-
-file_io:
-	@ $(GNATMEM) ./test_file_io $(VERBOSE)
-
-system:
-	@ $(GNATMEM) ./test_system $(VERBOSE)
-
-platform:
-	@ $(GNATMEM) ./test_platform $(VERBOSE)
-
 lib:
 	@ make -C ../src
 
+# TBD
 clean:
-	@$(TCLSH) ../bin/clean.tcl $(PROGRAMS) make.out
+
+.PHONY: force
