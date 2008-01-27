@@ -20,8 +20,7 @@
 --  The withed 'tash_options.gpr' is created by running the script
 --  'setup.tcl' in the parent directory.
 
-with "../tash_options";
-with "tash";
+with "../tash";
 
 project Hello_World is
 
