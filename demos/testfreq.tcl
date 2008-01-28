@@ -48,26 +48,26 @@ if [lempty $head] {
 #---------------------------
 puts stdout "   Executing Tcl script version..."
 set tcl_time [time "exec $tashell freq.tcl < $words > freq.unsorted" 1]
-exec /bin/sort freq.unsorted > freq.tcl.out
+exec sort freq.unsorted > freq.tcl.out
 
 # Execute Ada version
 #--------------------
 puts stdout "   Executing Ada version..."
 set ada_time [time "exec $freq < $words > freq.unsorted" 1]
-exec /bin/sort freq.unsorted > freq.ada.out
+exec sort freq.unsorted > freq.ada.out
 
 # Execute Ada version 2
 #----------------------
 puts stdout "   Executing Ada version 2..."
 set ada_time2 [time "exec $freq2 < $words > freq2.unsorted" 1]
-exec /bin/sort freq.unsorted > freq2.ada.out
+exec sort freq.unsorted > freq2.ada.out
 
 # Execute Perl version
 #---------------------
 puts stdout "   Executing Perl version..."
 if [catch {
     set perl_time [time "exec perl freq.pl < $words > freq.unsorted" 1]
-   exec /bin/sort freq.unsorted > freq.perl.out
+   exec sort freq.unsorted > freq.perl.out
 } error] {
     puts stdout "      $error"
     set perl_time 0
