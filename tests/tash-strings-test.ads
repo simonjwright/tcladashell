@@ -1,17 +1,13 @@
 --------------------------------------------------------------------
 --
--- tash-strings-test.ads -- Test routines for Tash.Strings.
+--  tash-strings-test.ads -- Test routines for Tash.Strings.
 --
--- Copyright (c) 1998 Terry J. Westley
+--  Copyright (c) 1998 Terry J. Westley
 --
--- See the file "license.htm" for information on usage and
--- redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+--  See the file "license.htm" for information on usage and
+--  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 --
 --------------------------------------------------------------------
-
-with Ada.Finalization;
-with Interfaces.C;
-with Tcl;
 
 package Tash.Strings.Test is
 
