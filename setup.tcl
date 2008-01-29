@@ -1,4 +1,4 @@
-#!/bin/sh
+!/bin/sh
 #\
 exec wish $0 $@
 
@@ -318,16 +318,10 @@ proc Set_Macros {platform os osVersion} {
 	    regsub {\.} $tcl_version {} tcl_short_version
 	    regsub {\.} $tk_version  {} tk_short_version
 	    set tclsh "tclsh${tcl_short_version}"
-	    # Why do we need this?
-	    #set libtcl [file join $pwd src/libtcl${tcl_short_version}.a]
 	    set libtcl ""
 	    set tcldll "tcl${tcl_short_version}.dll"
-	    # Why do we need this?
-	    #set libtk  [file join $pwd src/libtk${tk_short_version}.a]
 	    set libtk ""
 	    set tkdll  "tk${tk_short_version}.dll"
-	    #append link_switches "[file join $pwd src/tkmacro.o] "
-	    #append link_switches "[file join $pwd src/tclmacro.o] "
 	    append link_switches "-L$tclhome/lib "
 	    append link_switches "-ltk$tk_short_version "
 	    append link_switches "-ltcl$tcl_short_version "
@@ -363,16 +357,14 @@ proc Set_Macros {platform os osVersion} {
 		    }
 		}
 	    }
-	    #set link_switches "[file join $pwd src/tkmacro.o] \
-            #                   [file join $pwd src/tclmacro.o]"
 	    if [cequal $os "SunOS"] {
 		append link_switches " -R$tclhome/lib -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
 	    } elseif [cequal $os "Darwin"] {
 		append link_switches " -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
-		#append link_switches " -lSystemStubs"
 	    } else {
+		# Must be Linux (?)
 		append link_switches " -Wl,-rpath,$tclhome/lib"
 		append link_switches " -L$tclhome/lib"
 		append link_switches " -ltk$tk_version -ltcl$tcl_version"
