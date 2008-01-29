@@ -17,19 +17,19 @@
 --  This file provides the compilation options for building the Tash
 --  demos.
 
-with "../tash_options";
-with "../src/tash";
+with "../tash";
 
 project Tash_Demos is
 
   for Main use
     (
-     "tashell",
-     "twashell",
      "freq",
      "freq2",
-     "timer",
      "futurevalue",
+     "hello_world",
+     "tashell",
+     "timer",
+     "twashell",
      "wordify"
     );
   for Exec_Dir use ".";

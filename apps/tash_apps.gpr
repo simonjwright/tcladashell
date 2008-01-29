@@ -17,8 +17,7 @@
 --  This file provides the compilation options for building the Tash
 --  applications.
 
-with "../tash_options";
-with "../src/tash";
+with "../tash";
 
 project Tash_Apps is
 
@@ -39,7 +38,9 @@ project Tash_Apps is
   package Builder renames Tash.Builder;
   package Compiler renames Tash.Compiler;
   package Binder renames Tash.Binder;
-  package Linker renames Tash.Linker;
-  package Pretty_Printer Renames Tash.Pretty_Printer;
+  package Linker is
+     for Default_Switches ("ada") use Tash.Linker_Options;
+  end Linker;
+  package Pretty_Printer renames Tash.Pretty_Printer;
 
 end Tash_Apps;

@@ -17,8 +17,7 @@
 --  This file provides the compilation options for building the Tash
 --  tests.
 
-with "../tash_options";
-with "../src/tash";
+with "../tash";
 
 project Tash_Tests is
 
@@ -52,6 +51,6 @@ project Tash_Tests is
   package Compiler renames Tash.Compiler;
   package Binder renames Tash.Binder;
   package Linker renames Tash.Linker;
---    package Pretty_Printer Renames Tash.Pretty_Printer;
+  package Pretty_Printer Renames Tash.Pretty_Printer;
 
 end Tash_Tests;
