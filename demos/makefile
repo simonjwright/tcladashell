@@ -65,7 +65,6 @@ freq.tcl \
 futurevalue.tcl \
 testfreq.tcl \
 timer.tcl \
-compare.adb \
 freq.adb \
 freq2.adb \
 futurevalue.adb \
