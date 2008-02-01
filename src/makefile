@@ -76,26 +76,27 @@ tcl-tk.ads \
 tcl.adb \
 tcl.ads
 
-all::	tash_options.gpr
-
 all::
 	gprmake -P build_tash_library -p
 	gnatmake -P build_tash_library -p
-	chmod -w lib/*.ali
-	if [ -d include ]; then rm -rf include; fi
-	mkdir include
-	cp $(ADA_SRC) include/
+	chmod -w ../lib/*.ali
+	if [ -d ../include ]; then rm -rf ../include; fi
+	mkdir ../include
+	cp $(ADA_SRC) ../include/
 
-tash_options.gpr: ../tash_options.gpr
-	cp $< $@
+DATE = $(shell date +%Y%m%d)
+DIST = tash-$(TASH_VERSION)-$(OS)-$(DATE)
 
-DIST = tash-$(TASH_VERSION)-$(OS)-$(shell date +%Y%m%d)
+SUBDIRS = ../apps ../demos ../tests
 
 dist: all
 	-rm -rf $(DIST) $(DIST).zip
 	mkdir $(DIST)
-	cp -R tash_options.gpr tash.gpr lib $(DIST)
+	cp -R ../tash_options.gpr ../tash.gpr ../lib ../include $(DIST)
+	for s in $(SUBDIRS); do \
+	  $(MAKE) -C $$s DIST=../src/$(DIST) dist; \
+	done
 	zip -r $(DIST).zip $(DIST)
 
 clean:
-	-rm -rf hello_world$(EXE)  .build_lib .build lib *~
+	-rm -rf .build_lib lib *~
