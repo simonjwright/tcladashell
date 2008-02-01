@@ -1,4 +1,4 @@
-!/bin/sh
+#!/bin/sh
 #\
 exec wish $0 $@
 
