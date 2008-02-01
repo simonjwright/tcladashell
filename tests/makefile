@@ -97,7 +97,6 @@ tash-test.adb \
 tash-test.ads \
 tashtest.adb \
 test_arrays.adb \
-test_compare.ada \
 test_file.adb \
 test_file_io.adb \
 test_floats.adb \
