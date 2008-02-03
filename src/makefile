@@ -86,13 +86,28 @@ all::
 
 DATE = $(shell date +%Y%m%d)
 DIST = tash-$(TASH_VERSION)-$(OS)-$(DATE)
+SRC-DIST = tash-$(TASH_VERSION)-src-$(DATE)
 
 SUBDIRS = ../apps ../demos ../tests
 
+# To distribute source ...
+src-dist:
+	-rm -rf $(SRC-DIST) $(SRC-DIST).zip
+	mkdir $(SRC-DIST)
+	cp -R ../setup.tcl ../tash.gpr $(SRC-DIST)/
+	mkdir $(SRC-DIST)/src
+	cp makefile $(ADA_SRC) $(SRC-DIST)/src/ 
+	for s in $(SUBDIRS); do \
+	  $(MAKE) -C $$s DIST=../src/$(SRC-DIST) dist; \
+	done
+	zip -r $(SRC-DIST).zip $(SRC-DIST)
+
+# To distribute binary ...
 dist: all
 	-rm -rf $(DIST) $(DIST).zip
 	mkdir $(DIST)
-	cp -R ../tash_options.gpr ../tash.gpr ../lib ../include $(DIST)
+	cp -R ../makeconf ../tash_options.gpr ../tash.gpr ../lib \
+	  ../include $(DIST)/
 	for s in $(SUBDIRS); do \
 	  $(MAKE) -C $$s DIST=../src/$(DIST) dist; \
 	done
@@ -100,3 +115,5 @@ dist: all
 
 clean:
 	-rm -rf .build_lib lib *~
+
+.PHONY: src-dist dist
