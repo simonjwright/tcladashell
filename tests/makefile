@@ -44,7 +44,8 @@ SIMPLE_PROGRAMS = \
 # Compile and link all programs
 #------------------------------
 all::
-	gnatmake -P tash_tests -p
+	[ -d .build ] || mkdir .build
+	gnatmake -P tash_tests
 
 VERBOSE =
 GNATMEM =

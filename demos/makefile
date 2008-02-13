@@ -30,7 +30,8 @@ twashell \
 wordify
 
 all::
-	gnatmake -P tash_demos -p
+	[ -d .build ] || mkdir .build
+	gnatmake -P tash_demos
 
 test::
 	./timer
