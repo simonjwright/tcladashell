@@ -76,13 +76,18 @@ tcl-tk.ads \
 tcl.adb \
 tcl.ads
 
+C_SRC = tclmacro.c tkmacro.c
+
+SCRIPTS = makefile build_tash_library.gpr
+
 all::
-	gprmake -P build_tash_library -p
-	gnatmake -P build_tash_library -p
+	[ -d .build_lib ] || mkdir .build_lib
+	@rm -rf ../lib;  mkdir ../lib
+	@rm -rf ../include;  mkdir ../include
+	gprmake -P build_tash_library
+	gnatmake -P build_tash_library
 	chmod -w ../lib/*.ali
-	if [ -d ../include ]; then rm -rf ../include; fi
-	mkdir ../include
-	cp $(ADA_SRC) ../include/
+	cp -p $(ADA_SRC) ../include/
 
 DATE = $(shell date +%Y%m%d)
 DIST = tash-$(TASH_VERSION)-$(OS)-$(DATE)
@@ -96,7 +101,7 @@ src-dist:
 	mkdir $(SRC-DIST)
 	cp -R ../setup.tcl ../tash.gpr $(SRC-DIST)/
 	mkdir $(SRC-DIST)/src
-	cp makefile $(ADA_SRC) $(SRC-DIST)/src/ 
+	cp $(ADA_SRC) $(C_SRC) $(SCRIPTS) $(SRC-DIST)/src/ 
 	for s in $(SUBDIRS); do \
 	  $(MAKE) -C $$s DIST=../src/$(SRC-DIST) dist; \
 	done
@@ -114,6 +119,6 @@ dist: all
 	zip -r $(DIST).zip $(DIST)
 
 clean:
-	-rm -rf .build_lib lib *~
+	-rm -rf .build_lib *~
 
 .PHONY: src-dist dist
