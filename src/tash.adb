@@ -54,6 +54,7 @@ package body Tash is
    pragma Inline (Is_Null);
 
    procedure Finalize (Obj : in out Tcl.Tcl_Obj) is
+      pragma Warnings (Off, Obj); -- logically in out
    begin --  Finalize
       if not Tcl.Is_Null (Obj) then
          if Tcl.Tcl_GetRefCount (Obj) > 0 then

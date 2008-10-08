@@ -531,7 +531,7 @@ package body Tash.Arrays is
       --  indices.
       -----------------------------------------
       declare
-         Sorted_Indices : Tash.Lists.Tash_List :=
+         Sorted_Indices : constant Tash.Lists.Tash_List :=
             Tash.Lists.Sort (
                List  => Get_Indices (TArray, Pattern),
                Mode  => Mode,
