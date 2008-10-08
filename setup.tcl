@@ -1,4 +1,5 @@
 #!/bin/sh
+# -*- Tcl -*- (for Emacs)
 #\
 exec wish $0 $@
 
@@ -24,7 +25,7 @@ exec wish $0 $@
 # which is included in makefiles to customize to the local
 # environment.
 
-set tash_version "8.4-2"
+set tash_version "8.4-3"
 
 proc cequal {left right} {
     return [expr [string compare $left $right] == 0]
@@ -151,7 +152,7 @@ proc EditSourceFile {} {
 # Create the makeconf file
 #--------------------------------
 proc Createmakefile {makefile} {
-    global tashorder tashvar tashcomments useLinkerOptions link_switches
+    global tashorder tashvar tashcomments useLinkerOptions library_switches
     if [catch {open $makefile w} makefid] {
 	puts stderr $makefid
 	exit
@@ -178,16 +179,20 @@ proc Createmakefile {makefile} {
 
     if $useLinkerOptions {
 	WriteOneMacro $makefid TASH_LINKER_OPTIONS tash_linker_options.ads {
-	  # Source file containing TASH linker options}
+	  # Source file containing TASH linker options
+	}
         WriteOneMacro $makefid LARGS "" {
 	  # All link switches macro is empty because we are
-	  # using pragma Linker_Options method}
+	  # using pragma Linker_Options method
+	}
 	  
     } else {
 	WriteOneMacro $makefid TASH_LINKER_OPTIONS "" {
-	    # There is no source file containing TASH linker options}
-	WriteOneMacro $makefid LARGS $link_switches {
-	    # All link switches for TASH, Tcl, and Tk}
+	    # There is no source file containing TASH linker options
+	}
+	WriteOneMacro $makefid LARGS [join "-ltash" $library_switches] {
+	    # All link switches for TASH, Tcl, and Tk
+	}
     }
 
     catch {close $makefid}
@@ -196,7 +201,7 @@ proc Createmakefile {makefile} {
 # Create the tash_options.gpr file
 #--------------------------------
 proc CreateGprFile {} {
-    global link_switches tashvar
+    global library_switches tashvar
     if [catch {open "tash_options.gpr" w} gprfid] {
 	puts stderr $gprfid
 	exit
@@ -230,12 +235,14 @@ project Tash_Options is
 
     puts $gprfid {\
 
-   Linker_Options :=
+   Library_Options :=
      (}
 
-    puts $gprfid "\      \"[join $link_switches "\",\n      \""]\"\n    );"
+    puts $gprfid "\      \"[join $library_switches "\",\n      \""]\"\n    );"
 
     puts $gprfid {\
+
+    Linker_Options := ("-ltash") & Library_Options;
 
 end Tash_Options;
 }
@@ -286,7 +293,7 @@ proc fileDialog {w ent title initial} {
 #------------------------------------------------------
 proc Set_Macros {platform os osVersion} {
     global tcl_version tk_version tcl_interactive tcl_library tk_library env
-    global tash_version link_switches gpr_switches
+    global tash_version library_switches gpr_switches
 
     set x11home           ""
     set x11_lib           ""
@@ -301,7 +308,7 @@ proc Set_Macros {platform os osVersion} {
 	set tclhome [file dirname [file dirname $tcl_library]]
     }
     set tcl_include       [file join $tclhome include]
-    set link_switches     "-ltash "
+    set library_switches  ""
     
     set pwd               [pwd]
     
@@ -322,9 +329,9 @@ proc Set_Macros {platform os osVersion} {
 	    set tcldll "tcl${tcl_short_version}.dll"
 	    set libtk ""
 	    set tkdll  "tk${tk_short_version}.dll"
-	    append link_switches "-L$tclhome/lib "
-	    append link_switches "-ltk$tk_short_version "
-	    append link_switches "-ltcl$tcl_short_version "
+	    append library_switches "-L$tclhome/lib "
+	    append library_switches "-ltk$tk_short_version "
+	    append library_switches "-ltcl$tcl_short_version "
 	    set exec_suffix ".exe"
 	}
 	"unix" {
@@ -358,16 +365,16 @@ proc Set_Macros {platform os osVersion} {
 		}
 	    }
 	    if [cequal $os "SunOS"] {
-		append link_switches " -R$tclhome/lib -L$tclhome/lib"
-		append link_switches " -ltk$tk_version -ltcl$tcl_version"
+		append library_switches " -R$tclhome/lib -L$tclhome/lib"
+		append library_switches " -ltk$tk_version -ltcl$tcl_version"
 	    } elseif [cequal $os "Darwin"] {
-		append link_switches " -L$tclhome/lib"
-		append link_switches " -ltk$tk_version -ltcl$tcl_version"
+		append library_switches " -L$tclhome/lib"
+		append library_switches " -ltk$tk_version -ltcl$tcl_version"
 	    } else {
 		# Must be Linux (?)
-		append link_switches " -Wl,-rpath,$tclhome/lib"
-		append link_switches " -L$tclhome/lib"
-		append link_switches " -ltk$tk_version -ltcl$tcl_version"
+		append library_switches " -Wl,-rpath,$tclhome/lib"
+		append library_switches " -L$tclhome/lib"
+		append library_switches " -ltk$tk_version -ltcl$tcl_version"
 	    }
 	}
     }
@@ -505,8 +512,3 @@ pack .buttons -side bottom -fill x -pady 2m
 button .buttons.save   -text Save   -command "Save $g;exit"
 button .buttons.cancel -text Cancel -command exit
 pack .buttons.save .buttons.cancel -side left -expand 1
-
-#;; for emacs:
-#;; Local Variables:
-#;; mode: tcl
-#;; End:
