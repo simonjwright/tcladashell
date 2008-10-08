@@ -65,6 +65,7 @@ package body CArgv is
 
 
    procedure Free (Argv : in out Chars_Ptr_Ptr) is
+      pragma Warnings (Off, Argv);  -- logically in out
       Ptr : Chars_Ptr_Ptr := Argv;
    begin -- Free
       while Ptr.all /= C.Strings.Null_Ptr loop

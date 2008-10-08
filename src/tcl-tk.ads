@@ -28,7 +28,7 @@
 --
 --------------------------------------------------------------------
 --
---  This package is automatically generated from tk.h.
+--  This package was automatically generated from tk.h.
 --  Note that some of the comments below, preserved from tk.h,
 --  do not apply to the Ada version.  Someday, these comments may be
 --  customized better.
@@ -44,8 +44,6 @@ package Tcl.Tk is
 
    package C renames Interfaces.C;
 
-   use type C.int;
-   use type C.size_t;
    --
    --  tk.h --
    --

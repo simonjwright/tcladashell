@@ -33,7 +33,7 @@ with CHelper;
 
 package body Tcl.Ada is
 
-   use type C.int;
+--     use type C.int;
 
    procedure Assert (Interp : in Tcl_Interp; Return_Code : in C.int) is
    --  Raises Tcl_Error_Exception if Return_Code = TCL_ERROR

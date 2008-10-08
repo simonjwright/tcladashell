@@ -33,8 +33,6 @@ with Text_IO;
 
 package body Tcl.Tk.Ada is
 
-   use type C.int;
-
    Trace : Boolean := False;
 
    procedure Tcl_Eval (Interp : in Tcl_Interp; Cmd : in String);
