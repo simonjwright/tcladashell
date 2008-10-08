@@ -71,7 +71,6 @@ project Build_Tash_Library is
     );
   for Object_Dir use ".build_lib";
   for Library_Kind use "static";
-  for Library_Src_Dir use "../include";
   for Library_Dir use "../lib";
 
   package IDE is
