@@ -26,31 +26,31 @@ package CArgv is
    type Vector is array (CNatural range <>) of aliased C.Strings.chars_ptr;
    --  This is a C-style "argv" vector.
 
-   package Argv_Pointer is new C.Pointers (
-      Index => CNatural,
-      Element => C.Strings.chars_ptr,
-      Element_Array => Vector,
-      Default_Terminator => C.Strings.Null_Ptr);
+   package Argv_Pointer
+   is new C.Pointers (Index => CNatural,
+                      Element => C.Strings.chars_ptr,
+                      Element_Array => Vector,
+                      Default_Terminator => C.Strings.Null_Ptr);
 
    subtype Chars_Ptr_Ptr is Argv_Pointer.Pointer;
    --  This is C char **
 
    ---------------------------------------------------------------------
    --
-   --  The following subprograms support converting command line arguments
-   --  to C-style argc/argv command line arguments.
+   --  The following subprograms support converting command line
+   --  arguments to C-style argc/argv command line arguments.
    --
    ---------------------------------------------------------------------
 
-   procedure Create (Argc : out C.int; Argv : out Chars_Ptr_Ptr);
+   procedure Create (Argc : out CNatural; Argv : out Chars_Ptr_Ptr);
    --  Create returns the command line arguments from Ada.Command_Line
    --  and converts them to a C-style, null-terminated argument vector.
 
-   procedure Show (Argc : in C.int; Argv : in Chars_Ptr_Ptr);
+   procedure Show (Argc : in CNatural; Argv : in Chars_Ptr_Ptr);
    --  Prints Argc and Argv to standard out.
 
    procedure Free (Argv : in out Chars_Ptr_Ptr);
-   --  Free all space used by Vec.
+   --  Free all space used by Argv.
 
    --  Example of getting Ada command line arguments and passing them
    --  to a C function requiring argc/argv arguments:
@@ -66,6 +66,16 @@ package CArgv is
 
    ---------------------------------------------------------------------
    --
+   --  The following subprogram supports retrieving a command line
+   --  argument from C-style argv command line arguments.
+   --
+   ---------------------------------------------------------------------
+
+   function Arg (Argv : Chars_Ptr_Ptr; N : CNatural) return String;
+   --  Returns the Nth argument from Argv.
+
+   ---------------------------------------------------------------------
+   --
    --  The following subprograms support creating C-style argc/argv
    --  argument vectors from strings.
    --
@@ -77,7 +87,7 @@ package CArgv is
    function "&" (Argv : Chars_Ptr_Ptr; Arg : String) return Chars_Ptr_Ptr;
    --  Construct a Chars_Ptr_Ptr using concat operation.
 
-   function Argc (Argv : in Chars_Ptr_Ptr) return C.int;
+   function Argc (Argv : in Chars_Ptr_Ptr) return CNatural;
    --  Returns the number of arguments in a Chars_Ptr_Ptr.
 
    --  Example of creating a Chars_Ptr_Ptr to pass to a C function requiring
