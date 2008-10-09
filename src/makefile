@@ -84,8 +84,8 @@ all::
 	[ -d .build_lib ] || mkdir .build_lib
 	@rm -rf ../lib;  mkdir ../lib
 	@rm -rf ../include;  mkdir ../include
-	gprmake -P build_tash_library
-	gnatmake -P build_tash_library
+	gprmake -Pbuild_tash_library
+	gnatmake -Pbuild_tash_library
 	chmod -w ../lib/*.ali
 	cp -p $(ADA_SRC) ../include/
 
