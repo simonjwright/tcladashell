@@ -333,7 +333,6 @@ package body Tash.Regexp is
       Regexp     : Tcl.Tcl_RegExp;
       Result     : Interfaces.C.int;
       InfoRec    : aliased Tcl.Tcl_RegExpInfo_Rec;
-      InfoPtr    : constant Tcl.Tcl_RegExpInfo := InfoRec'Unchecked_Access;
       Matches    : Tcl.Tcl_RegExpIndices;
       Substrings : Tash.Lists.Tash_List;
 
@@ -375,7 +374,7 @@ package body Tash.Regexp is
 
       --  get information about this match
       -----------------------------------
-      Tcl.Tcl_RegExpGetInfo (Regexp, InfoPtr);
+      Tcl.Tcl_RegExpGetInfo (Regexp, InfoRec'Unchecked_Access);
       Matches := InfoRec.matches;
 
       --  Each iteration of this loop gets the next matching
