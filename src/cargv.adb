@@ -43,7 +43,7 @@ package body CArgv is
       end loop;
       Vec (Size) := C.Strings.Null_Ptr;
       Argc       := Size;
-      Argv       := Vec (Vec'First)'Unchecked_Access;
+      Argv       := Vec (Vec'First)'Access;
    end Create;
 
 
@@ -90,7 +90,7 @@ package body CArgv is
 
    function Empty return Chars_Ptr_Ptr is
    begin -- Empty
-      return Empty_Vector (Empty_Vector'First)'Unchecked_Access;
+      return Empty_Vector (Empty_Vector'First)'Access;
    end Empty;
 
 
@@ -111,7 +111,7 @@ package body CArgv is
       --  Insert null pointer for the new argv
       Vec (Size) := C.Strings.Null_Ptr;
 
-      return Vec (Vec'First)'Unchecked_Access;
+      return Vec (Vec'First)'Access;
 
    end "&";
 
