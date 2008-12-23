@@ -827,10 +827,10 @@ begin --  Test_Lists
          Expected_Length => 3);
 
       Tash.Lists.Test.Test_Case
-        (Description     => "Get a string element as a list",
+        (Description     => "Get a string element",
          Actual_Result   => Tash.Lists.Get_Element (A, 1),
          Expected_Result => "The",
-         Expected_Type   => "list",
+         Expected_Type   => "",
          Expected_Count  => 2,
          Expected_Length => 1);
 
