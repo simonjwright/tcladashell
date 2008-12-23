@@ -78,14 +78,14 @@ begin --  Test_File
    --------------------------------
    File_Access_Time := Tash.File.Get_Access_Time (Test_File_Name);
    Tash.Test.Test_Case
-     (Description => "get and set access time of a newly create file",
+     (Description => "get and set access time of a newly created file",
       Result      => New_Access_Time = File_Access_Time);
 
-   --  Set the access time of a non-existant file
+   --  Set the access time of a non-existent file
    ---------------------------------------------
    declare
       Description : constant String :=
-         "set access time of a non-existant file";
+         "set access time of a non-existent file";
    begin
       Tash.File.Set_Access_Time
         (Name => "no_such_file.txt",
@@ -101,11 +101,11 @@ begin --  Test_File
          Tash.Test.Test_Case (Description => Description, Result => False);
    end;
 
-   --  Get the access time of a non-existant file
+   --  Get the access time of a non-existent file
    ---------------------------------------------
    declare
       Description : constant String :=
-         "get access time of a non-existant file";
+         "get access time of a non-existent file";
    begin
       File_Access_Time := Tash.File.Get_Access_Time ("no_such_file.txt");
       Tash.Test.Test_Case (Description => Description, Result => False);
@@ -198,10 +198,10 @@ begin --  Test_File
      (Description => "check that the test file is not writable",
       Result      => not Tash.File.Writable (Test_File_Name));
 
-   --  check that a non-existant file is not writable
+   --  check that a non-existent file is not writable
    -------------------------------------------------
    Tash.Test.Test_Case
-     (Description => "check that a non-existant file is not writable",
+     (Description => "check that a non-existent file is not writable",
       Result      => not Tash.File.Writable ("no_such_file.txt"));
 
    --  Put file back to allow writes so that the Text_IO.Create
@@ -314,10 +314,10 @@ begin --  Test_File
      (Description => "test whether a directory is a directory",
       Result      => Tash.File.Is_Directory ("../src"));
 
-   --  test whether a non-existant file is a directory
+   --  test whether a non-existent file is a directory
    --------------------------------------------------
    Tash.Test.Test_Case
-     (Description => "test whether a non-existant file is a directory",
+     (Description => "test whether a non-existent file is a directory",
       Result      => not Tash.File.Is_Directory ("no_such_file.txt"));
 
    --  test whether a file is a regular file
@@ -332,10 +332,10 @@ begin --  Test_File
      (Description => "test whether a directory is a regular file",
       Result      => not Tash.File.Is_File ("../src"));
 
-   --  test whether a non-existant file is a regular file
+   --  test whether a non-existent file is a regular file
    -----------------------------------------------------
    Tash.Test.Test_Case
-     (Description => "test whether a non-existant file is a regular file",
+     (Description => "test whether a non-existent file is a regular file",
       Result      => not Tash.File.Is_File ("no_such_file.txt"));
 
    --  join path elements into a file name
@@ -435,14 +435,14 @@ begin --  Test_File
    --------------------------------
    File_Modified_Time := Tash.File.Get_Modified_Time (Test_File_Name);
    Tash.Test.Test_Case
-     (Description => "get and set modified time of a newly create file",
+     (Description => "get and set modified time of a newly created file",
       Result      => New_Modified_Time = File_Modified_Time);
 
-   --  Set the modified time of a non-existant file
+   --  Set the modified time of a non-existent file
    ---------------------------------------------
    declare
       Description : constant String :=
-         "set modified time of a non-existant file";
+         "set modified time of a non-existent file";
    begin
       Tash.File.Set_Modified_Time
         (Name => "no_such_file.txt",
@@ -458,11 +458,11 @@ begin --  Test_File
          Tash.Test.Test_Case (Description => Description, Result => False);
    end;
 
-   --  Get the modified time of a non-existant file
+   --  Get the modified time of a non-existent file
    ---------------------------------------------
    declare
       Description : constant String :=
-         "get modified time of a non-existant file";
+         "get modified time of a non-existent file";
    begin
       File_Modified_Time := Tash.File.Get_Modified_Time ("no_such_file.txt");
       Tash.Test.Test_Case (Description => Description, Result => False);
@@ -580,10 +580,10 @@ begin --  Test_File
      (Description => "read link of a regular file",
       Result      => Tash.File.Read_Link (Test_File_Name) = Test_File_Name);
 
-   --  read link of a non-existant file
+   --  read link of a non-existent file
    -----------------------------------
    declare
-      Description : constant String := "read link of a non-existant file";
+      Description : constant String := "read link of a non-existent file";
    begin
       Tash.Test.Test_Case
         (Description => Description,
@@ -683,10 +683,10 @@ begin --  Test_File
          Result      => Tash.File.Size (Test_File_Name) = 42);
    end if;
 
-   --  get size of non-existant file
+   --  get size of non-existent file
    --------------------------------
    declare
-      Description : constant String := "get size of non-existant file";
+      Description : constant String := "get size of non-existent file";
    begin
       Tash.Test.Test_Case
         (Description => Description,
