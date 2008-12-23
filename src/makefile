@@ -76,7 +76,7 @@ tcl-tk.ads \
 tcl.adb \
 tcl.ads
 
-C_SRC = tclmacro.c tkmacro.c
+C_SRC = tclmacro.c tcl_backward_compatibility_glue.c tkmacro.c
 
 SCRIPTS = makefile build_tash_library.gpr
 

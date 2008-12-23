@@ -75,13 +75,13 @@ package body Tash.Arrays is
    ) return Interfaces.C.int;
    pragma Import (C, Tcl_ArrayObjCmd, "Tcl_ArrayObjCmd");
 
-   function Tcl_InfoObjCmd (
+   function TclInfoExistsCmd (
       dummy  : in Tcl.ClientData;
       interp : in Tcl.Tcl_Interp;
       objc   : in Interfaces.C.int;
       objv   : in Tcl.Tcl_Obj_Array
    ) return Interfaces.C.int;
-   pragma Import (C, Tcl_InfoObjCmd, "Tcl_InfoObjCmd");
+   pragma Import (C, TclInfoExistsCmd, "TclInfoExistsCmd");
 
    protected Variable_Count is
       procedure Next (Value : out Natural);
@@ -362,7 +362,7 @@ package body Tash.Arrays is
       TArray : in Tash_Array;
       Index  : in String) return Boolean is
 
-      Objc      : constant Interfaces.C.int := 3;
+      Objc      : constant Interfaces.C.int := 2;
       Objv      : Tcl.Tcl_Obj_Array (1 .. Objc);
       Interp    : Tcl.Tcl_Interp;
       Result    : Interfaces.C.int;
@@ -375,17 +375,16 @@ package body Tash.Arrays is
          return False;
       end if;
 
-      --  Create object parameters for Tcl_InfoObjCmd call
+      --  Create object parameters for TclInfoExistsCmd call
       ----------------------------------------------------
-      Objv (1) := Tash.To_Tcl_Obj ("info");
-      Objv (2) := Tash.To_Tcl_Obj ("exists");
-      Objv (3) := Tash.To_Tcl_Obj (Tash.Image (TArray.Obj)
+      Objv (1) := Tash.To_Tcl_Obj ("exists");
+      Objv (2) := Tash.To_Tcl_Obj (Tash.Image (TArray.Obj)
                                    & "(" & Index & ")");
 
       --  Execute the info command
       ---------------------------
       Tash_Interp.Get (Interp);
-      Result := Tcl_InfoObjCmd (
+      Result := TclInfoExistsCmd (
          Dummy  => System.Null_Address,
          Interp => Interp,
          Objc   => Objc,

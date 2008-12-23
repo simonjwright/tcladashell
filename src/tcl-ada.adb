@@ -523,7 +523,7 @@ package body Tcl.Ada is
 
    function Tcl_DStringValue (dsPtr : in Tcl_DString) return String is
    begin --  Tcl_DStringValue
-      return CHelper.Value (Tcl.Tcl_DStringValue (dsPtr));
+      return CHelper.Value (dsPtr.strng);
    end Tcl_DStringValue;
 
    function Tcl_DbCkalloc

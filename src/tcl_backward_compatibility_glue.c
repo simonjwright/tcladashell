@@ -1,11 +1,10 @@
 /*
- * tclmacro.c --
+ * tcl_backward_compatibility_glue.c --
  *
- *    This file encapsulates calls to all tcl.h macro functions into C
- *    function calls.  These can then be called from Ada.  This avoids
- *    having to translate the macro.
+ *    This file furnishes functions required for Tcl-8.4 that emulate
+ *    the functions of newer Tcl versions.
  *
- *  Copyright (c) 1999-2000 Terry J. Westley
+ *  Copyright (c) 2008 Oliver Kellogg <okellogg@users.sourceforge.net>
  *
  *  Tash is free software; you can redistribute it and/or modify it
  *  under terms of the GNU General Public License as published by the
@@ -29,53 +28,21 @@
  *  executable file might be covered by the GNU Public License.
  */
 
-#if 0
-#define __CYGWIN__
-#endif
-
 #include <tcl.h>
 #include <stdlib.h>
 
-int Tcl_CallIncrRefCount (struct Tcl_Obj *objPtr)
+#if (TCL_MAJOR_VERSION < 8) || (TCL_MINOR_VERSION < 5)
+
+int
+TclInfoExistsCmd
+    (ClientData dummy, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])
 {
-   return Tcl_IncrRefCount (objPtr);
+  Tcl_Obj *inner_objv[3];
+  inner_objv[0] = Tcl_NewStringObj("info", -1);
+  inner_objv[1] = objv[0];
+  inner_objv[2] = objv[1];
+  return Tcl_InfoObjCmd(dummy, interp, 3, inner_objv);
 }
 
-void Tcl_CallDecrRefCount (struct Tcl_Obj *objPtr)
-{
-   Tcl_DecrRefCount (objPtr);
-}
-
-int Tcl_CallIsShared (struct Tcl_Obj *objPtr)
-{
-   return Tcl_IsShared (objPtr);
-}
-
-ClientData Tcl_CallGetHashValue (Tcl_HashEntry *h)
-{
-   return Tcl_GetHashValue (h);
-}
-
-void Tcl_CallSetHashValue (Tcl_HashEntry *h, ClientData value)
-{
-   Tcl_SetHashValue (h, value);
-}
-
-char *Tcl_CallGetHashKey (Tcl_HashTable *tablePtr, Tcl_HashEntry *h)
-{
-   return Tcl_GetHashKey (tablePtr, h);
-}
-
-Tcl_HashEntry *Tcl_CallFindHashEntry (Tcl_HashTable *tablePtr, char *key)
-{
-   return Tcl_FindHashEntry (tablePtr, key);
-}
-
-Tcl_HashEntry *Tcl_CallCreateHashEntry
- (Tcl_HashTable *tablePtr, char *key, int *newPtr)
-{
-   return Tcl_CreateHashEntry (tablePtr, key, newPtr);
-}
-
-
+#endif
 

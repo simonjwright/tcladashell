@@ -28,6 +28,9 @@
 --
 --------------------------------------------------------------------
 
+with Unchecked_Conversion;
+with Ada.Text_IO;
+
 package body Tcl is
    function Is_Null (Ptr : in Tcl_Interp) return Boolean is
    begin --  Is_Null
@@ -365,5 +368,46 @@ package body Tcl is
                 String8,
                 String9);
    end Tcl_VarEval;
+
+   function Tcl_GetObjId (objPtr : in Tcl_Obj) return C.int is
+      function To_Int is new Unchecked_Conversion (Tcl_Obj, C.int);
+   begin
+      return To_Int (objPtr);
+   end Tcl_GetObjId;
+
+   function Tcl_GetObjTypeName
+     (objPtr : in Tcl_Obj) return C.Strings.chars_ptr is
+   begin
+      if objPtr = null or else objPtr.typePtr = null then
+         return C.Strings.Null_Ptr;
+      end if;
+      return objPtr.typePtr.name;
+   end Tcl_GetObjTypeName;
+
+   function Tcl_GetRefCount (objPtr : in Tcl_Obj) return C.int is
+   begin
+      if objPtr = null then
+         return 0;
+      end if;
+      return objPtr.refCount;
+   end Tcl_GetRefCount;
+
+   procedure Tcl_PrintObj (Ptr : in Tcl_Obj) is
+      Len : aliased C.int;
+      StringFromValue : constant C.Strings.chars_ptr
+         := Tcl_GetStringFromObj (Ptr, Len'Access);
+      ObjTypeName : constant C.Strings.chars_ptr
+         := Tcl_GetObjTypeName (Ptr);
+      RefCount : constant C.int := Tcl_GetRefCount (Ptr);
+   begin
+      if Ptr = null then
+         Ada.Text_IO.Put ("NULL");
+      else
+         Ada.Text_IO.Put
+           ("s=""" & C.Strings.Value (StringFromValue) & """ " &
+            "t=" & C.Strings.Value (ObjTypeName) & " " &
+            "c=" & C.int'Image (RefCount));
+      end if;
+   end Tcl_PrintObj;
 
 end Tcl;

@@ -1,15 +1,14 @@
 %UNIT NAME
 TASH
 %VERSION
-8.3.2
+8.6.0
 %REVIEW CODE
 NR
 %INET ADDRESS
-http://www.adatcl/
+http://sourceforge.net/projects/tcladashell
 %AUTHOR
 Terry J. Westley
 TWestley@ACM.org
-http://www.adatcl.com/
 %RIGHTS
 Approved for Public Release; Distribution Unlimited
 %COPYRIGHT
@@ -21,18 +20,18 @@ Copyright (c) 1995-2000 Terry J. Westley
 %DATE RELEASED
 16-Sep-97
 %DATE LAST UPDATED
-01-Oct-2000
+23-Dec-2008
 %LOCATION
-TASH web site (http://www.adatcl.com/)
+TASH web site (http://sourceforge.net/projects/tcladashell)
 PAL
 %ENVIRONMENT
 Any environment that has an Ada 95 compiler and for which a binary
-or source distribution of Tcl/tk version 8.3.2 is available.  Has been
+or source distribution of Tcl/tk version >= 8.4 is available.  Has been
 tested with GNAT 3.12p on Solaris 2.5.1, Windows95/98/NT and Red Hat
 Linux 6.2.
 %LIMITATIONS
 Requires Ada 95 compiler and
-binary or source distribution of Tcl/Tk version 8.3.2.
+binary or source distribution of Tcl/Tk version >= 8.4.
 %=CLASSIFICATION
 %CATEGORY LEVEL 1
 <I fill this in>
@@ -52,7 +51,7 @@ platform-independent graphical user interface toolkit
 <I fill this in>
 %DEPENDENCIES
 Requires Ada 95 compiler and
-binary or source distribution of Tcl/Tk version 8.3.2.
+binary or source distribution of Tcl/Tk version >= 8.4.
 %SEE ALSO
 Get more information on Tcl/Tk at http://dev.scriptics.com/.
 Get more information on GNAT at
@@ -90,6 +89,7 @@ purpose is to
 %=REVISION HISTORY
 Date        Version   Comment
 ----        -------   -------
+23-Dec-08   8.6.0     Update for Tcl versions 8.4 thru 8.6alpha.
 01-Oct-00   8.3.2     New TASH thick binding for using Tcl
                       scripting facilities more easily in Ada
 16-Sep-97   8.0.0     Upgrade to Tcl/Tk version 8.0
@@ -120,5 +120,6 @@ covered by the GNU General Public License. This exception does not
 however invalidate any other reasons why the executable file might be
 covered by the GNU Public License.
 
-Tash is maintained by Terry Westley (http://www.adatcl.com).
+Tash is maintained by the TclAdaShell developers
+(http://tcladashell.sourceforge.net)
 %=

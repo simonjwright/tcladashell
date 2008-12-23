@@ -34,7 +34,7 @@
 
 with Ada.Characters.Handling;
 with Ada.Strings.Fixed;
-with Ada.Integer_Text_IO;
+with Ada.Text_IO;
 with CHelper;
 with System;
 with Tash.Arrays;
@@ -50,13 +50,31 @@ package body Tash.File is
    function To_Epoch_Time (Date : in Ada.Calendar.Time) return String;
    function To_Attribute_String (Attr : in Attribute) return String;
 
-   function Tcl_ClockObjCmd
-     (dummy  : in Tcl.ClientData;
-      interp : in Tcl.Tcl_Interp;
-      objc   : in Interfaces.C.int;
-      objv   : in Tcl.Tcl_Obj_Array)
-      return   Interfaces.C.int;
-   pragma Import (C, Tcl_ClockObjCmd, "Tcl_ClockObjCmd");
+   type time_t is new Interfaces.C.long;
+
+   type struct_tm is
+      record
+         tm_sec : Interfaces.C.int;     -- seconds
+         tm_min : Interfaces.C.int;     -- minutes
+         tm_hour : Interfaces.C.int;    -- hours
+         tm_mday : Interfaces.C.int;    -- day of the month
+         tm_mon : Interfaces.C.int;     -- month
+         tm_year : Interfaces.C.int;    -- year
+         tm_wday : Interfaces.C.int;    -- day of the week
+         tm_yday : Interfaces.C.int;    -- day in the year
+         tm_isdst : Interfaces.C.int;   -- daylight saving time
+         tm_gmtoff : Interfaces.C.long; -- seconds east of UTC
+         tm_zone : System.Address;      -- timezone abbreviation
+      end record;
+   pragma Convention (C, struct_tm);
+
+   type struct_tm_Access is access all struct_tm;
+
+   function TclpGetDate (
+      time   : access time_t;
+      useGMT : Interfaces.C.int
+   ) return struct_tm_Access;
+   pragma Import (C, TclpGetDate, "TclpGetDate");
 
    function Tcl_FileObjCmd
      (dummy  : in Tcl.ClientData;
@@ -96,80 +114,36 @@ package body Tash.File is
    end Match;
    pragma Inline (Match);
 
+   package Time_Text_IO is new Ada.Text_IO.Integer_IO (time_t);
+
    --  Convert time in seconds since the epoch to Ada Calendar time.
    ----------------------------------------------------------------
    function To_Calendar_Time
      (Seconds_Since_Epoch : in String)
       return                Ada.Calendar.Time
    is
-      Objc   : constant Interfaces.C.int := 5;
-      Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
-      Result : Interfaces.C.int;
-      Interp : Tcl.Tcl_Interp;
+      Time : aliased time_t;
+      Pos  : Natural := 0;
+      Tm   : struct_tm_Access;
+      Day_Duration : Interfaces.C.int;
+      use type Interfaces.C.int;
 
    begin --  To_Calendar_Time
 
-      --  Use Tcl_ClockObjCmd to format a time in seconds
-      --  to year, month, day, hours, minutes, and seconds.
-      --  It would be better if we could use something like
-      --  TclpGetDate so we don't have to convert from ASCII.
-      --  But, I don't know if we can portably match the
-      --  "struct tm" C data type.  This will do for now,
-      --  though it is, of course, not as efficient.
-      ----------------------------------------------------
-      Objv (1) := Tash.To_Tcl_Obj ("clock");
-      Objv (2) := Tash.To_Tcl_Obj ("format");
-      Objv (3) := Tash.To_Tcl_Obj (Seconds_Since_Epoch);
-      Objv (4) := Tash.To_Tcl_Obj ("-format");
-      Objv (5) := Tash.To_Tcl_Obj ("%Y %m %d %H %M %S");
-      Tash_Interp.Get (Interp);
-      Tcl.Tcl_ResetResult (Interp);
-      Result :=
-         Tcl_ClockObjCmd
-           (dummy  => System.Null_Address,
-            interp => Interp,
-            objc   => Objc,
-            objv   => Objv);
-      for I in  Objv'Range loop
-         Tcl.Tcl_DecrRefCount (Objv (I));
-      end loop;
+      Time_Text_IO.Get (Seconds_Since_Epoch, Time, Pos);
+      if Pos = 0 then
+         raise Time_Format_Error;
+      end if;
 
-      --  Get result from interpreter, convert to Ada
-      --  calendar time and return it
-      ----------------------------------------------
-      declare
-         Time    : constant String :=
-            CHelper.Value (Tcl.Tcl_GetStringResult (Interp));
-         Pos     : Natural         := 0;
-         Year    : Integer;
-         Month   : Integer;
-         Day     : Integer;
-         Hours   : Integer;
-         Minutes : Integer;
-         Seconds : Integer;
-      begin
-         if Result = Tcl.TCL_ERROR then
-            Tash_Interp.Raise_Exception
-              (Interp,
-               Time_Format_Error'Identity,
-               Time);
-         end if;
-         Tcl.Tcl_ResetResult (Interp);
-         Tash_Interp.Release (Interp);
-         Ada.Integer_Text_IO.Get (Time (Pos + 1 .. Time'Last), Year, Pos);
-         Ada.Integer_Text_IO.Get (Time (Pos + 1 .. Time'Last), Month, Pos);
-         Ada.Integer_Text_IO.Get (Time (Pos + 1 .. Time'Last), Day, Pos);
-         Ada.Integer_Text_IO.Get (Time (Pos + 1 .. Time'Last), Hours, Pos);
-         Ada.Integer_Text_IO.Get (Time (Pos + 1 .. Time'Last), Minutes, Pos);
-         Ada.Integer_Text_IO.Get (Time (Pos + 1 .. Time'Last), Seconds, Pos);
-         return Ada.Calendar.Time_Of
-                  (Year    => Year,
-                   Month   => Month,
-                   Day     => Day,
-                   Seconds =>
-                     Duration ((((Hours * 60) + Minutes) * 60) +
-                               Seconds));
-      end;
+      Tm := TclpGetDate (Time'Unrestricted_Access, useGMT => 0);
+
+      Day_Duration := (((Tm.tm_hour * 60) + Tm.tm_min) * 60) + Tm.tm_sec;
+
+      return Ada.Calendar.Time_Of (
+         Year    => Ada.Calendar.Year_Number (Tm.tm_year + 1900),
+         Month   => Ada.Calendar.Month_Number (Tm.tm_mon + 1),
+         Day     => Ada.Calendar.Day_Number (Tm.tm_mday),
+         Seconds => Ada.Calendar.Day_Duration (Day_Duration));
 
    end To_Calendar_Time;
 
@@ -179,17 +153,17 @@ package body Tash.File is
       Year        : Integer;
       Month       : Integer;
       Day         : Integer;
-      Hours       : Integer;
-      Minutes     : Integer;
-      Seconds     : Integer;
-      Day_Seconds : Integer;
+      --  Hours       : Integer;
+      --  Minutes     : Integer;
+      --  Seconds     : Integer;
+      Day_Seconds : time_t;
       Dur_Seconds : Duration;
-      DateString  : String (1 .. 19) := "MM/DD/YYYY HH:MM:SS";
 
-      Objc   : constant Interfaces.C.int := 3;
-      Objv   : Tcl.Tcl_Obj_Array (1 .. Objc);
-      Result : Interfaces.C.int;
-      Interp : Tcl.Tcl_Interp;
+      Tm : aliased struct_tm;
+      Unix_Time : time_t;
+
+      function timegm (tm : access struct_tm) return time_t;
+      pragma Import (C, timegm, "timegm");
 
    begin --  To_Epoch_Time
 
@@ -206,60 +180,32 @@ package body Tash.File is
       --  Compute hours, minutes, and integer
       --  seconds from "day_duration" seconds.
       ---------------------------------------
-      Day_Seconds := Integer (Float'Floor (Float (Dur_Seconds)));
-      Seconds     := Day_Seconds mod 60;
-      Minutes     := (Day_Seconds / 60) mod 60;
-      Hours       := Day_Seconds / 3600;
+      Day_Seconds := time_t (Float'Floor (Float (Dur_Seconds)));
+      --  Seconds     := Day_Seconds mod 60;
+      --  Minutes     := (Day_Seconds / 60) mod 60;
+      --  Hours       := Day_Seconds / 3600;
 
-      --  Now, store the year, month, day, hours, minutes
-      --  and seconds into the date string.
-      --------------------------------------------------
-      Ada.Integer_Text_IO.Put (DateString (1 .. 2), Month);
-      Ada.Integer_Text_IO.Put (DateString (4 .. 5), Day);
-      Ada.Integer_Text_IO.Put (DateString (7 .. 10), Year);
-      Ada.Integer_Text_IO.Put (DateString (12 .. 13), Hours);
-      Ada.Integer_Text_IO.Put (DateString (15 .. 16), Minutes);
-      Ada.Integer_Text_IO.Put (DateString (18 .. 19), Seconds);
-      for I in  DateString'Range loop
-         if DateString (I) = ' ' then
-            DateString (I) := '0';
-         end if;
-      end loop;
-      DateString (11) := ' ';
+      Tm :=
+        (tm_sec  => 0,
+         tm_min  => 0,
+         tm_hour => 0,
+         tm_mday => Interfaces.C.int (Day),
+         tm_mon  => Interfaces.C.int (Month) - 1,
+         tm_year => Interfaces.C.int (Year) - 1900,
+         tm_wday => 0,   -- unused
+         tm_yday => 0,   -- unused
+         tm_isdst => 0,
+         tm_gmtoff => 0,
+         tm_zone => System.Null_Address);
 
-      --  Use Tcl_ClockObjCmd to scan a date and time
-      --  to get number of seconds since epoch.
-      ----------------------------------------------------
-      Objv (1) := Tash.To_Tcl_Obj ("clock");
-      Objv (2) := Tash.To_Tcl_Obj ("scan");
-      Objv (3) := Tash.To_Tcl_Obj (DateString);
-      Tash_Interp.Get (Interp);
-      Tcl.Tcl_ResetResult (Interp);
-      Result :=
-         Tcl_ClockObjCmd
-           (dummy  => System.Null_Address,
-            interp => Interp,
-            objc   => Objc,
-            objv   => Objv);
-      for I in  Objv'Range loop
-         Tcl.Tcl_DecrRefCount (Objv (I));
-      end loop;
+      Unix_Time := timegm (Tm'Unrestricted_Access);
 
-      --  Get result from interpreter and return it as an integer
-      ----------------------------------------------------------
       declare
          Seconds_Since_Epoch : constant String :=
-            CHelper.Value (Tcl.Tcl_GetStringResult (Interp));
+            time_t'Image (Unix_Time + Day_Seconds);
       begin
-         if Result = Tcl.TCL_ERROR then
-            Tash_Interp.Raise_Exception
-              (Interp,
-               Time_Format_Error'Identity,
-               Seconds_Since_Epoch);
-         end if;
-         Tcl.Tcl_ResetResult (Interp);
-         Tash_Interp.Release (Interp);
-         return Seconds_Since_Epoch;
+         --  Do not return the leading space produced by 'Image
+         return Seconds_Since_Epoch (2 .. Seconds_Since_Epoch'Last);
       end;
 
    end To_Epoch_Time;

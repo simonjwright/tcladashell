@@ -1982,7 +1982,6 @@ package Tcl is
    function Tcl_GetObjTypeName
      (objPtr : in Tcl_Obj)
       return   C.Strings.chars_ptr;
-   pragma Import (C, Tcl_GetObjTypeName, "Tcl_GetObjTypeName");
 
    --  41
 
@@ -2898,7 +2897,6 @@ package Tcl is
    pragma Import (C, Tcl_GetHostName, "Tcl_GetHostName");
 
    function Tcl_GetObjId (objPtr : in Tcl_Obj) return C.int;
-   pragma Import (C, Tcl_GetObjId, "Tcl_GetObjId");
 
    --  163
 
@@ -2945,7 +2943,6 @@ package Tcl is
    pragma Import (C, Tcl_GetPathType, "Tcl_GetPathType");
 
    function Tcl_GetRefCount (objPtr : in Tcl_Obj) return C.int;
-   pragma Import (C, Tcl_GetRefCount, "Tcl_GetRefCount");
 
    function Tcl_GetResult
      (interp : in Tcl_Interp)
@@ -3214,7 +3211,6 @@ package Tcl is
    pragma Import (C, Tcl_PrintDouble, "Tcl_PrintDouble");
 
    procedure Tcl_PrintObj (Ptr : in Tcl_Obj);
-   pragma Import (C, Tcl_PrintObj, "Tcl_PrintObj");
 
    --  203
 
@@ -4940,7 +4936,16 @@ private
 
    Null_Tcl_NotifierProcs : constant Tcl_NotifierProcs := null;
 
-   type Tcl_Obj_rec is null record;
+   type Tcl_Obj_rec is
+      record
+         refCount : C.int;
+         bytes : C.Strings.chars_ptr;
+         length : C.int;
+         typePtr : Tcl_ObjType;
+         internalRep : C.double;  -- @todo make precise rep for C union
+      end record;
+   pragma Convention (C, Tcl_Obj_rec);
+
    Null_Tcl_Obj : constant Tcl_Obj := null;
 
    Null_Tcl_Obj_Ptr : constant Tcl_Obj_Ptr := null;

@@ -29,6 +29,7 @@ project Build_Tash_Library is
   for Source_Files use
     (
      "tclmacro.c",
+     "tcl_backward_compatibility_glue.c",
      "tkmacro.c",
      "cargv.adb",
      "cargv.ads",

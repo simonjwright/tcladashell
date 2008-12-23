@@ -25,7 +25,7 @@ exec wish $0 $@
 # which is included in makefiles to customize to the local
 # environment.
 
-set tash_version "8.4-3"
+set tash_version "8.6-0"
 
 proc cequal {left right} {
     return [expr [string compare $left $right] == 0]
