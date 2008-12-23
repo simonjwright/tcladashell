@@ -135,7 +135,7 @@ package body Tash.File is
          raise Time_Format_Error;
       end if;
 
-      Tm := TclpGetDate (Time'Unrestricted_Access, useGMT => 0);
+      Tm := TclpGetDate (Time'Unrestricted_Access, useGMT => 1);
 
       Day_Duration := (((Tm.tm_hour * 60) + Tm.tm_min) * 60) + Tm.tm_sec;
 
