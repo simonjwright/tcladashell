@@ -49,9 +49,9 @@ package body Tash.Lists is
    function Get_Element
      (Interp : in Tcl.Tcl_Interp;
       List   : in Tcl.Tcl_Obj;
-      Index  : in Positive) return Tcl.Tcl_Obj_Ptr;
+      Index  : in Positive) return Tcl.Tcl_Obj;
    function Type_Of_List_Element
-     (ObjPtr : in Tcl.Tcl_Obj_Ptr) return String;
+     (Obj : in Tcl.Tcl_Obj) return String;
 
    use type Interfaces.C.int;
    use type Interfaces.C.Strings.chars_ptr;
@@ -107,28 +107,27 @@ package body Tash.Lists is
      (Interp : in Tcl.Tcl_Interp;
       List   : in Tcl.Tcl_Obj;
       Index  : in Positive)
-      return   Tcl.Tcl_Obj_Ptr
+      return   Tcl.Tcl_Obj
    is
       --
       Result     : Interfaces.C.int;
       Length     : constant Interfaces.C.int :=
         Tash.Lists.Length (Interp, List);
-      New_Object : Tcl.Tcl_Obj_Ptr;
+      Object : aliased Tcl.Tcl_Obj;
    begin --  Get_Element
       if Tcl.Is_Null (List) then
          raise List_Error;
       elsif Length < Interfaces.C.int (Index) then
          raise List_Error;
       else
-         New_Object := new Tcl.Tcl_Obj;
          Result     :=
             Tcl.Tcl_ListObjIndex
               (interp    => Interp,
                listPtr   => List,
                index     => Interfaces.C.int (Index - 1),
-               objPtrPtr => New_Object);
+               objPtrPtr => Object'Unchecked_Access);
          Tash_Interp.Assert (Interp, Result, List_Error'Identity);
-         return New_Object;
+         return Object;
       end if;
    end Get_Element;
 
@@ -237,7 +236,7 @@ package body Tash.Lists is
       Len      : Natural;
       Objv     : Tcl.Tcl_Obj_Array (1 .. 1);
       Interp   : Tcl.Tcl_Interp;
-      Obj_Ptr  : Tcl.Tcl_Obj_Ptr;
+      Obj      : Tcl.Tcl_Obj;
       New_List : Tash_List;
       Result   : Interfaces.C.int;
 
@@ -257,7 +256,7 @@ package body Tash.Lists is
       ------------------------------
       Tash_Interp.Get (Interp);
       for I in  1 .. Len loop
-         Obj_Ptr :=
+         Obj :=
             Tash.Lists.Get_Element
               (Interp => Interp,
                List   => List.Obj,
@@ -266,7 +265,7 @@ package body Tash.Lists is
             Tcl.Tcl_ListObjAppendElement
               (interp  => Interp,
                listPtr => New_List.Obj,
-               objPtr  => Obj_Ptr.all);
+               objPtr  => Obj);
          Tash_Interp.Assert (Interp, Result, List_Error'Identity);
       end loop;
       Tash_Interp.Release (Interp);
@@ -279,7 +278,7 @@ package body Tash.Lists is
       Len      : Natural;
       Objv     : Tcl.Tcl_Obj_Array (1 .. 1);
       Interp   : Tcl.Tcl_Interp;
-      Obj_Ptr  : Tcl.Tcl_Obj_Ptr;
+      Obj      : Tcl.Tcl_Obj;
       New_List : Tash_List;
       Result   : Interfaces.C.int;
 
@@ -299,7 +298,7 @@ package body Tash.Lists is
       -------------------------------------------
       Tash_Interp.Get (Interp);
       for I in  1 .. Len loop
-         Obj_Ptr :=
+         Obj :=
             Tash.Lists.Get_Element
               (Interp => Interp,
                List   => List.Obj,
@@ -308,7 +307,7 @@ package body Tash.Lists is
             Tcl.Tcl_ListObjAppendElement
               (interp  => Interp,
                listPtr => New_List.Obj,
-               objPtr  => Tcl.Tcl_DuplicateObj (Obj_Ptr.all));
+               objPtr  => Tcl.Tcl_DuplicateObj (Obj));
          Tash_Interp.Assert (Interp, Result, List_Error'Identity);
       end loop;
       Tash_Interp.Release (Interp);
@@ -348,6 +347,7 @@ package body Tash.Lists is
       Result   : Interfaces.C.int;
       New_List : Tash_List;
       Interp   : Tcl.Tcl_Interp;
+      Interp_Result : Tcl.Tcl_Obj;
    begin --  Split
       Objv (1) := Tash.To_Tcl_Obj ("split");
       Objv (2) := Tash.To_Tcl_Obj (Str);
@@ -364,7 +364,8 @@ package body Tash.Lists is
          Tcl.Tcl_DecrRefCount (Objv (I));
       end loop;
       Tash_Interp.Assert (Interp, Result, List_Error'Identity);
-      New_List.Obj := Tcl.Tcl_DuplicateObj (Tcl.Tcl_GetObjResult (Interp));
+      Interp_Result := Tcl.Tcl_GetObjResult (Interp);
+      New_List.Obj := Tcl.Tcl_DuplicateObj (Interp_Result);
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
       Tcl.Tcl_IncrRefCount (New_List.Obj);
@@ -524,12 +525,12 @@ package body Tash.Lists is
       else
          Tash_Interp.Get (Interp);
          declare
-            Obj : constant Tcl.Tcl_Obj_Ptr :=
+            Obj : constant Tcl.Tcl_Obj :=
               Get_Element (Interp, List.Obj, Index);
             Len : aliased Interfaces.C.int;
          begin
             Tash_Interp.Release (Interp);
-            return Tcl.Ada.Tcl_GetStringFromObj (Obj.all, Len'Access);
+            return Tcl.Ada.Tcl_GetStringFromObj (Obj, Len'Access);
          end;
       end if;
    end Get_Element;
@@ -547,12 +548,12 @@ package body Tash.Lists is
       else
          Tash_Interp.Get (Interp);
          declare
-            Obj : constant Tcl.Tcl_Obj_Ptr :=
+            Obj : constant Tcl.Tcl_Obj :=
               Get_Element (Interp, List.Obj, Index);
          begin
             Tash_Interp.Release (Interp);
-            Tcl.Tcl_IncrRefCount (Obj.all);
-            return (Ada.Finalization.Controlled with Obj => Obj.all);
+            Tcl.Tcl_IncrRefCount (Obj);
+            return (Ada.Finalization.Controlled with Obj => Obj);
          end;
       end if;
    end Get_Element;
@@ -560,23 +561,19 @@ package body Tash.Lists is
    --  Determine type of list element
    ---------------------------------
    function Type_Of_List_Element
-     (ObjPtr : in Tcl.Tcl_Obj_Ptr)
+     (Obj : in Tcl.Tcl_Obj)
       return   String
    is
       --
       use type Tcl.Tcl_Obj;
-      use type Tcl.Tcl_Obj_Ptr;
    begin --  Type_Of_List_Element (
-      if ObjPtr = null then
+      if Obj = null then
          return "null";
       end if;
-      if ObjPtr.all = Tcl.Null_Tcl_Obj then
+      if Tcl.Is_Null (Obj) then
          return "null";
       end if;
-      if Tcl.Is_Null (ObjPtr.all) then
-         return "null";
-      end if;
-      return CHelper.Value (Tcl.Tcl_GetObjTypeName (ObjPtr.all));
+      return CHelper.Value (Tcl.Tcl_GetObjTypeName (Obj));
    end Type_Of_List_Element;
 
    function Element_Is_String
@@ -931,18 +928,18 @@ package body Tash.Lists is
       declare
          Objc    : constant Interfaces.C.int := Length (Interp, Elements.Obj);
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-         Obj_Ptr : Tcl.Tcl_Obj_Ptr  := new Tcl.Tcl_Obj;
+         Obj     : Tcl.Tcl_Obj;
       begin
 
          --  Create an array of Tcl objects from list Elements
          ----------------------------------------------------
          for I in  Objv'Range loop
-            Obj_Ptr  :=
+            Obj :=
                Tash.Lists.Get_Element
                  (Interp => Interp,
                   List   => Elements.Obj,
                   Index  => Integer (I));
-            Objv (I) := Obj_Ptr.all;
+            Objv (I) := Obj;
          end loop;
 
          --  Replace the indicated elements with the array of objects
@@ -1180,7 +1177,7 @@ package body Tash.Lists is
          else
             Tash_Interp.Get (Interp);
             declare
-               Obj    : constant Tcl.Tcl_Obj_Ptr :=
+               Obj    : constant Tcl.Tcl_Obj :=
                   Get_Element (Interp, List.Obj, Index);
                Value  : aliased Interfaces.C.int;
                Result : Interfaces.C.int;
@@ -1195,7 +1192,7 @@ package body Tash.Lists is
                Result :=
                   Tcl.Tcl_GetIntFromObj
                     (interp => Interp,
-                     objPtr => Obj.all,
+                     objPtr => Obj,
                      intPtr => Value'Access);
                Tash_Interp.Release (Interp);
                return Item (Value);
@@ -1431,7 +1428,7 @@ package body Tash.Lists is
          else
             Tash_Interp.Get (Interp);
             declare
-               Obj    : constant Tcl.Tcl_Obj_Ptr :=
+               Obj    : constant Tcl.Tcl_Obj :=
                   Get_Element (Interp, List.Obj, Index);
                Value  : aliased Interfaces.C.double;
                Result : Interfaces.C.int;
@@ -1446,7 +1443,7 @@ package body Tash.Lists is
                Result :=
                   Tcl.Tcl_GetDoubleFromObj
                     (interp    => Interp,
-                     objPtr    => Obj.all,
+                     objPtr    => Obj,
                      doublePtr => Value'Access);
                Tash_Interp.Release (Interp);
                return Item (Value);
@@ -1649,7 +1646,7 @@ package body Tash.Lists is
          Objc    : aliased constant Interfaces.C.int :=
             Length (Interp, Values.Obj) + 2;
          Objv    : Tcl.Tcl_Obj_Array (1 .. Objc);
-         Obj_Ptr : Tcl.Tcl_Obj_Ptr          := new Tcl.Tcl_Obj;
+         Obj     : Tcl.Tcl_Obj;
       begin
          Objv (1) := Tash.To_Tcl_Obj ("format");
          Objv (2) := Tash.To_Tcl_Obj (FormatString);
@@ -1657,12 +1654,12 @@ package body Tash.Lists is
          --  Create an array of Tcl objects from list Values
          --------------------------------------------------
          for I in  1 .. Length (Interp, Values.Obj) loop
-            Obj_Ptr      :=
+            Obj :=
                Tash.Lists.Get_Element
                  (Interp => Interp,
                   List   => Values.Obj,
                   Index  => Integer (I));
-            Objv (I + 2) := Obj_Ptr.all;
+            Objv (I + 2) := Obj;
          end loop;
 
       --  Call Tcl Format command
@@ -1733,13 +1730,13 @@ package body Tash.Lists is
       for I in  1 .. Integer (Length (Interp, List.Obj)) loop
          declare
             I_Image : String (1 .. 8);
-            Elem    : constant Tcl.Tcl_Obj_Ptr :=
+            Elem    : constant Tcl.Tcl_Obj :=
                Tash.Lists.Get_Element (Interp, List.Obj, I);
          begin
             Ada.Integer_Text_IO.Put (I_Image, I);
             Ada.Strings.Unbounded.Append
               (Image,
-               ASCII.LF & I_Image & ": " & Tash.Internal_Rep (Elem.all));
+               ASCII.LF & I_Image & ": " & Tash.Internal_Rep (Elem));
          end;
       end loop;
       Tash_Interp.Release (Interp);

@@ -532,10 +532,6 @@ package Tcl is
    pragma Convention (C, Tcl_Obj_Array);
 
    function Is_Null (Ptr : in Tcl_Obj) return Boolean;
-   type Tcl_Obj_Ptr is access all Tcl_Obj;
-   pragma Convention (C, Tcl_Obj_Ptr);
-
-   Null_Tcl_Obj_Ptr : constant Tcl_Obj_Ptr;
 
    --
    --  Procedure types defined by Tcl:
@@ -4947,8 +4943,6 @@ private
    pragma Convention (C, Tcl_Obj_rec);
 
    Null_Tcl_Obj : constant Tcl_Obj := null;
-
-   Null_Tcl_Obj_Ptr : constant Tcl_Obj_Ptr := null;
 
    type Tcl_ObjType_rec is record
       name : C.Strings.chars_ptr;

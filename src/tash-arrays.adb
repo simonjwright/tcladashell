@@ -54,8 +54,8 @@ package body Tash.Arrays is
 
    function Get_Element (Interp : in Tcl.Tcl_Interp;
                          TArray : in Tcl.Tcl_Obj;
-                         Index  : in String) return Tcl.Tcl_Obj_Ptr;
-   function Type_Of_Array_Element (ObjPtr : in Tcl.Tcl_Obj_Ptr) return String;
+                         Index  : in String) return Tcl.Tcl_Obj;
+   function Type_Of_Array_Element (ObjPtr : in Tcl.Tcl_Obj) return String;
 
    use type Interfaces.C.int;
 
@@ -257,13 +257,13 @@ package body Tash.Arrays is
    function Get_Element (
       Interp : in Tcl.Tcl_Interp;
       TArray : in Tcl.Tcl_Obj;
-      Index  : in String) return Tcl.Tcl_Obj_Ptr is
+      Index  : in String) return Tcl.Tcl_Obj is
 
       Objc       : constant Interfaces.C.int := 4;
       Objv       : Tcl.Tcl_Obj_Array (1 .. Objc);
       Result     : Interfaces.C.int;
       InterpObj  : Tcl.Tcl_Obj;
-      ElementObj : Tcl.Tcl_Obj_Ptr;
+      ElementObj : aliased Tcl.Tcl_Obj;
 
    begin -- Get_Element
 
@@ -302,19 +302,18 @@ package body Tash.Arrays is
       --  is the array element value we're looking for.
       ------------------------------------------------------------
       InterpObj  := Tcl.Tcl_GetObjResult (Interp);
-      ElementObj := new Tcl.Tcl_Obj;
       Result := Tcl.Tcl_ListObjIndex (
          interp    => Interp,
          listPtr   => InterpObj,
          index     => 1,
-         objPtrPtr => ElementObj);
+         objPtrPtr => ElementObj'Unchecked_Access);
       if Result = Tcl.TCL_ERROR then
          Tash_Interp.Raise_Exception (
             Interp  => Interp,
             E       => Array_Error'Identity,
             Message => CHelper.Value (Tcl.Tcl_GetStringResult (Interp)));
       end if;
-      if Tcl.Is_Null (ElementObj.all) then
+      if Tcl.Is_Null (ElementObj) then
          Tash_Interp.Raise_Exception (
             Interp  => Interp,
             E       => Array_Error'Identity,
@@ -332,12 +331,12 @@ package body Tash.Arrays is
    begin -- Get_Element
       Tash_Interp.Get (Interp);
       declare
-         Obj   : constant Tcl.Tcl_Obj_Ptr :=
+         Obj   : constant Tcl.Tcl_Obj :=
            Get_Element (Interp, TArray.Obj, Index);
          Len   : aliased Interfaces.C.int;
       begin
          Tash_Interp.Release (Interp);
-         return Tcl.Ada.Tcl_GetStringFromObj (Obj.all, Len'Access);
+         return Tcl.Ada.Tcl_GetStringFromObj (Obj, Len'Access);
       end;
    end Get_Element;
 
@@ -349,12 +348,12 @@ package body Tash.Arrays is
    begin -- Get_Element
       Tash_Interp.Get (Interp);
       declare
-         Obj : constant Tcl.Tcl_Obj_Ptr :=
+         Obj : constant Tcl.Tcl_Obj :=
            Get_Element (Interp, TArray.Obj, Index);
       begin
          Tash_Interp.Release (Interp);
-         Tcl.Tcl_IncrRefCount (Obj.all);
-         return (Ada.Finalization.Controlled with Obj => Obj.all);
+         Tcl.Tcl_IncrRefCount (Obj);
+         return (Ada.Finalization.Controlled with Obj => Obj);
       end;
    end Get_Element;
 
@@ -408,21 +407,17 @@ package body Tash.Arrays is
    --  Determine type of array element
    ----------------------------------
    function Type_Of_Array_Element (
-      ObjPtr : in Tcl.Tcl_Obj_Ptr) return String is
+      ObjPtr : in Tcl.Tcl_Obj) return String is
    --
       use type Tcl.Tcl_Obj;
-      use type Tcl.Tcl_Obj_Ptr;
    begin -- Type_Of_Array_Element (
       if ObjPtr = null then
          return "null";
       end if;
-      if ObjPtr.all = Tcl.Null_Tcl_Obj then
+      if Tcl.Is_Null (ObjPtr) then
          return "null";
       end if;
-      if Tcl.Is_Null (ObjPtr.all) then
-         return "null";
-      end if;
-      return CHelper.Value (Tcl.Tcl_GetObjTypeName (ObjPtr.all));
+      return CHelper.Value (Tcl.Tcl_GetObjTypeName (ObjPtr));
    end Type_Of_Array_Element;
 
    function Element_Is_String (
@@ -901,7 +896,7 @@ package body Tash.Arrays is
       begin -- Get_Element
          Tash_Interp.Get (Interp);
          declare
-            Obj : constant Tcl.Tcl_Obj_Ptr :=
+            Obj : constant Tcl.Tcl_Obj :=
               Get_Element (Interp, TArray.Obj, Index);
             Value  : aliased Interfaces.C.int;
             Result : Interfaces.C.int;
@@ -915,7 +910,7 @@ package body Tash.Arrays is
             end if;
             Result := Tcl.Tcl_GetIntFromObj (
                Interp => Interp,
-               ObjPtr => Obj.all,
+               ObjPtr => Obj,
                IntPtr => Value'Access);
             Tash_Interp.Release (Interp);
             return Item (Value);
@@ -1080,7 +1075,7 @@ package body Tash.Arrays is
       begin -- Get_Element
          Tash_Interp.Get (Interp);
          declare
-            Obj : constant Tcl.Tcl_Obj_Ptr :=
+            Obj : constant Tcl.Tcl_Obj :=
               Get_Element (Interp, TArray.Obj, Index);
             Value  : aliased Interfaces.C.double;
             Result : Interfaces.C.int;
@@ -1094,7 +1089,7 @@ package body Tash.Arrays is
             end if;
             Result := Tcl.Tcl_GetDoubleFromObj (
                Interp    => Interp,
-               ObjPtr    => Obj.all,
+               ObjPtr    => Obj,
                DoublePtr => Value'Access);
             Tash_Interp.Release (Interp);
             return Item (Value);
@@ -1190,7 +1185,7 @@ package body Tash.Arrays is
       Max_Index_Len : Natural := 0;
       Image         : Ada.Strings.Unbounded.Unbounded_String;
       Interp        : Tcl.Tcl_Interp;
-      Elem          : Tcl.Tcl_Obj_Ptr;
+      Elem          : Tcl.Tcl_Obj;
       Elements      : Tash.Lists.Tash_List;
       pragma Unreferenced (Elements);  -- XXX why do we get it then?
 
@@ -1236,14 +1231,14 @@ package body Tash.Arrays is
             Ada.Text_IO.Put_Line
               ("TA.Internal_Rep: i=" & Integer'Image (I) &
                " index=" & Index &
-               " value=" & Tash.Image (Elem.all) &
+               " value=" & Tash.Image (Elem) &
                " count=" & Interfaces.C.int'Image (Tcl.Tcl_GetRefCount
-                                                     (Elem.all)));
+                                                     (Elem)));
             Ada.Strings.Unbounded.Append (Image,
                ASCII.LF & "   " & Name & "(" & Index & ")" &
                (Index'Length + 1 .. Max_Index_Len => ' ') &
-               "=" & Tash.Internal_Rep (Elem.all));
-            --  Tcl.Tcl_DecrRefCount (Elem.all);
+               "=" & Tash.Internal_Rep (Elem));
+            --  Tcl.Tcl_DecrRefCount (Elem);
          end;
       end loop;
 

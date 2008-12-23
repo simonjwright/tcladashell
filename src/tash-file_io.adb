@@ -918,7 +918,7 @@ package body Tash.File_IO is
       Result    : Interfaces.C.int;
       Interp    : Tcl.Tcl_Interp;
       InterpObj : Tcl.Tcl_Obj;
-      ListElem  : Tcl.Tcl_Obj_Ptr;
+      ListElem  : aliased Tcl.Tcl_Obj;
 
    begin --  Get_EOF_Char
 
@@ -958,18 +958,17 @@ package body Tash.File_IO is
       --  return the first element of the list.
       ----------------------------------------------
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
-      ListElem  := new Tcl.Tcl_Obj;
       Result    :=
          Tcl.Tcl_ListObjIndex
            (interp    => Interp,
             listPtr   => InterpObj,
             index     => Interfaces.C.int (0),
-            objPtrPtr => ListElem);
+            objPtrPtr => ListElem'Unchecked_Access);
       Tash_Interp.Assert (Interp, Result, Tash.Tcl_Error'Identity);
 
       declare
          Result_String : constant String :=
-            CHelper.Value (Tcl.Tcl_GetString (ListElem.all));
+            CHelper.Value (Tcl.Tcl_GetString (ListElem));
       begin
          Tcl.Tcl_ResetResult (Interp);
          Tash_Interp.Release (Interp);
