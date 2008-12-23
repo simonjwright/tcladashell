@@ -31,7 +31,7 @@
 #include <tcl.h>
 #include <stdlib.h>
 
-#if (TCL_MAJOR_VERSION < 8) || (TCL_MINOR_VERSION < 5)
+#if (TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION < 5)
 
 int
 TclInfoExistsCmd
