@@ -34,7 +34,6 @@
 
 with Ada.Characters.Handling;
 with Ada.Strings.Fixed;
-with Ada.Text_IO;
 with CHelper;
 with System;
 with Tash.Arrays;
@@ -49,32 +48,6 @@ package body Tash.File is
       return                Ada.Calendar.Time;
    function To_Epoch_Time (Date : in Ada.Calendar.Time) return String;
    function To_Attribute_String (Attr : in Attribute) return String;
-
-   type time_t is new Interfaces.C.long;
-
-   type struct_tm is
-      record
-         tm_sec : Interfaces.C.int;     -- seconds
-         tm_min : Interfaces.C.int;     -- minutes
-         tm_hour : Interfaces.C.int;    -- hours
-         tm_mday : Interfaces.C.int;    -- day of the month
-         tm_mon : Interfaces.C.int;     -- month
-         tm_year : Interfaces.C.int;    -- year
-         tm_wday : Interfaces.C.int;    -- day of the week
-         tm_yday : Interfaces.C.int;    -- day in the year
-         tm_isdst : Interfaces.C.int;   -- daylight saving time
-         tm_gmtoff : Interfaces.C.long; -- seconds east of UTC
-         tm_zone : System.Address;      -- timezone abbreviation
-      end record;
-   pragma Convention (C, struct_tm);
-
-   type struct_tm_Access is access all struct_tm;
-
-   function TclpGetDate (
-      time   : access time_t;
-      useGMT : Interfaces.C.int
-   ) return struct_tm_Access;
-   pragma Import (C, TclpGetDate, "TclpGetDate");
 
    function Tcl_FileObjCmd
      (dummy  : in Tcl.ClientData;
@@ -114,7 +87,11 @@ package body Tash.File is
    end Match;
    pragma Inline (Match);
 
-   package Time_Text_IO is new Ada.Text_IO.Integer_IO (time_t);
+   Epoch : constant Ada.Calendar.Time
+     := Ada.Calendar.Time_Of (Year => 1970,
+                              Month => 1,
+                              Day => 1,
+                              Seconds => 0.0);
 
    --  Convert time in seconds since the epoch to Ada Calendar time.
    ----------------------------------------------------------------
@@ -122,92 +99,22 @@ package body Tash.File is
      (Seconds_Since_Epoch : in String)
       return                Ada.Calendar.Time
    is
-      Time : aliased time_t;
-      Pos  : Natural := 0;
-      Tm   : struct_tm_Access;
-      Day_Duration : Interfaces.C.int;
-      use type Interfaces.C.int;
-
+      use type Ada.Calendar.Time;
    begin --  To_Calendar_Time
-
-      Time_Text_IO.Get (Seconds_Since_Epoch, Time, Pos);
-      if Pos = 0 then
-         raise Time_Format_Error;
-      end if;
-
-      Tm := TclpGetDate (Time'Unrestricted_Access, useGMT => 1);
-
-      Day_Duration := (((Tm.tm_hour * 60) + Tm.tm_min) * 60) + Tm.tm_sec;
-
-      return Ada.Calendar.Time_Of (
-         Year    => Ada.Calendar.Year_Number (Tm.tm_year + 1900),
-         Month   => Ada.Calendar.Month_Number (Tm.tm_mon + 1),
-         Day     => Ada.Calendar.Day_Number (Tm.tm_mday),
-         Seconds => Ada.Calendar.Day_Duration (Day_Duration));
-
+      return Epoch + Duration'Value (Seconds_Since_Epoch);
    end To_Calendar_Time;
 
    --  Convert Ada calendar time to time in seconds since the epoch.
    ----------------------------------------------------------------
-   function To_Epoch_Time (Date : in Ada.Calendar.Time) return String is
-      Year        : Integer;
-      Month       : Integer;
-      Day         : Integer;
-      --  Hours       : Integer;
-      --  Minutes     : Integer;
-      --  Seconds     : Integer;
-      Day_Seconds : time_t;
-      Dur_Seconds : Duration;
-
-      Tm : aliased struct_tm;
-      Unix_Time : time_t;
-
-      function timegm (tm : access struct_tm) return time_t;
-      pragma Import (C, timegm, "timegm");
-
+   function To_Epoch_Time (Date : in Ada.Calendar.Time) return String
+   is
+      use type Ada.Calendar.Time;
+      Duration_Since_Epoch : constant Duration := Date - Epoch;
+      Seconds_Since_Epoch : constant Integer := Integer (Duration_Since_Epoch);
+      Result : constant String := Integer'Image (Seconds_Since_Epoch);
    begin --  To_Epoch_Time
-
-      --  First, split Ada calendar time into
-      --  year, month, day, and seconds.
-      --------------------------------------
-      Ada.Calendar.Split
-        (Date    => Date,
-         Year    => Year,
-         Month   => Month,
-         Day     => Day,
-         Seconds => Dur_Seconds);
-
-      --  Compute hours, minutes, and integer
-      --  seconds from "day_duration" seconds.
-      ---------------------------------------
-      Day_Seconds := time_t (Float'Floor (Float (Dur_Seconds)));
-      --  Seconds     := Day_Seconds mod 60;
-      --  Minutes     := (Day_Seconds / 60) mod 60;
-      --  Hours       := Day_Seconds / 3600;
-
-      Tm :=
-        (tm_sec  => 0,
-         tm_min  => 0,
-         tm_hour => 0,
-         tm_mday => Interfaces.C.int (Day),
-         tm_mon  => Interfaces.C.int (Month) - 1,
-         tm_year => Interfaces.C.int (Year) - 1900,
-         tm_wday => 0,   -- unused
-         tm_yday => 0,   -- unused
-         tm_isdst => 0,
-         tm_gmtoff => 0,
-         tm_zone => System.Null_Address);
-
-      Unix_Time := timegm (Tm'Unrestricted_Access);
-
-      declare
-         Seconds_Since_Epoch : constant String :=
-            time_t'Image (Unix_Time + Day_Seconds);
-      begin
-         --  Do not return the leading space produced by 'Image
-         return Seconds_Since_Epoch (2 .. Seconds_Since_Epoch'Last);
-      end;
-
+      --  Do not return the leading space produced by 'Image
+      return Result (2 .. Result'Last);
    end To_Epoch_Time;
 
    function Get_Access_Time (Name : String) return Ada.Calendar.Time is
