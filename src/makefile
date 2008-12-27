@@ -84,8 +84,7 @@ all::
 	[ -d .build_lib ] || mkdir .build_lib
 	@rm -rf ../lib;  mkdir ../lib
 	@rm -rf ../include;  mkdir ../include
-	gprmake -Pbuild_tash_library
-	gnatmake -Pbuild_tash_library
+	gprbuild -Pbuild_tash_library
 	chmod -w ../lib/*.ali
 	cp -p $(ADA_SRC) ../include/
 
@@ -99,7 +98,7 @@ SUBDIRS = ../apps ../demos ../tests
 src-dist:
 	-rm -rf $(SRC-DIST) $(SRC-DIST).zip
 	mkdir $(SRC-DIST)
-	cp -R ../setup.tcl ../tash.gpr $(SRC-DIST)/
+	cp -R ../COPYING ../README ../setup.tcl ../tash.gpr $(SRC-DIST)/
 	mkdir $(SRC-DIST)/src
 	cp $(ADA_SRC) $(C_SRC) $(SCRIPTS) $(SRC-DIST)/src/ 
 	for s in $(SUBDIRS); do \
@@ -111,8 +110,8 @@ src-dist:
 dist: all
 	-rm -rf $(DIST) $(DIST).zip
 	mkdir $(DIST)
-	cp -R ../makeconf ../tash_options.gpr ../tash.gpr ../lib \
-	  ../include $(DIST)/
+	cp -R ../COPYING ../README ../makeconf ../tash_options.gpr \
+	  ../tash.gpr ../lib ../include $(DIST)/
 	for s in $(SUBDIRS); do \
 	  $(MAKE) -C $$s DIST=../src/$(DIST) dist; \
 	done

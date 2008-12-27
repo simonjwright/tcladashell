@@ -34,7 +34,7 @@ project Tash is
   package IDE is
      for Compiler_Command ("ada") use "gnatmake";
      for Gnatlist use "gnatls";
-     for Vcs_Kind use "CVS";
+     for Vcs_Kind use "SVN";
   end IDE;
 
   --  GNATMAKE configuration options.

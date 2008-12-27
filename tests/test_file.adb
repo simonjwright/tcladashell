@@ -804,21 +804,23 @@ begin --  Test_File
    --  straight ASCII sort, MacOS X is case-independent, Solaris
    --  appears not to sort.
    declare
-      Directories : Tash.Lists.Tash_List
-        := Tash.Lists.Sort (Tash.File.Match ("../bin/*"));
+      Directories : constant Tash.Lists.Tash_List
+        := Tash.Lists.Sort (Tash.File.Match ("../demos/*.tcl"));
+      Expected : constant String :=
+        "../demos/freq.tcl" &
+        " " &
+        "../demos/futurevalue.tcl" &
+        " " &
+        "../demos/testfreq.tcl" &
+        " " &
+        "../demos/timer.tcl";
    begin
-      case Tash.Lists.Length (Directories) is
-         when 2 => null;
-         when 3 => Directories := Tash.Lists.Slice (Directories, 2, 3);
-         when others => null;  -- will fail
-      end case;
       Tash.Test.Test_Case
         (Description => "simple file name match",
-         Result      => Directories =
-           Tash.Lists.To_Tash_List
-           ("../bin/clean.tcl ../bin/install.tcl"),
-         Failure_Msg =>
-           "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
+         Result      => Directories = Tash.Lists.To_Tash_List (Expected),
+         Failure_Msg => "Expected: """ &
+           Expected &
+           """  Got: """ &
            Tash.Lists.To_String (Directories) &
            """");
    end;
@@ -831,21 +833,24 @@ begin --  Test_File
    --  specify directory in file name match
    ----------------------------------------
    declare
-      Directories : Tash.Lists.Tash_List
-         := Tash.Lists.Sort (Tash.File.Match ("*", Directory => "../bin"));
+      Directories : constant Tash.Lists.Tash_List
+        := Tash.Lists.Sort (Tash.File.Match ("*.tcl",
+                                             Directory => "../demos"));
+      Expected : constant String :=
+        "../demos/freq.tcl" &
+        " " &
+        "../demos/futurevalue.tcl" &
+        " " &
+        "../demos/testfreq.tcl" &
+        " " &
+        "../demos/timer.tcl";
    begin
-      case Tash.Lists.Length (Directories) is
-         when 2 => null;
-         when 3 => Directories := Tash.Lists.Slice (Directories, 2, 3);
-         when others => null;  -- will fail
-      end case;
       Tash.Test.Test_Case
         (Description => "specify directory in file name match",
-         Result      => Directories =
-           Tash.Lists.To_Tash_List
-           ("../bin/clean.tcl ../bin/install.tcl"),
-         Failure_Msg =>
-           "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
+         Result      => Directories = Tash.Lists.To_Tash_List (Expected),
+         Failure_Msg => "Expected: """ &
+           Expected &
+           """  Got: """ &
            Tash.Lists.To_String (Directories) &
            """");
    end;
@@ -853,21 +858,24 @@ begin --  Test_File
    --  specify path prefix in file name match
    ------------------------------------------
    declare
-      Files : Tash.Lists.Tash_List
-        := Tash.Lists.Sort (Tash.File.Match ("*", Path_Prefix => "../bin/"));
+      Files : constant Tash.Lists.Tash_List
+        := Tash.Lists.Sort (Tash.File.Match ("*.tcl",
+                                             Path_Prefix => "../demos/"));
+      Expected : constant String :=
+        "../demos/freq.tcl" &
+        " " &
+        "../demos/futurevalue.tcl" &
+        " " &
+        "../demos/testfreq.tcl" &
+        " " &
+        "../demos/timer.tcl";
    begin
-      case Tash.Lists.Length (Files) is
-         when 2 => null;
-         when 3 => Files := Tash.Lists.Slice (Files, 2, 3);
-         when others => null;  -- will fail
-      end case;
       Tash.Test.Test_Case
         (Description => "specify path prefix in file name match",
-         Result      => Files =
-           Tash.Lists.To_Tash_List
-           ("../bin/clean.tcl ../bin/install.tcl"),
-         Failure_Msg =>
-           "Expected: ""../bin/clean.tcl ../bin/install.tcl""  Got: """ &
+         Result      => Files = Tash.Lists.To_Tash_List (Expected),
+         Failure_Msg => "Expected: """ &
+           Expected &
+           """  Got: """ &
            Tash.Lists.To_String (Files) &
            """");
    end;

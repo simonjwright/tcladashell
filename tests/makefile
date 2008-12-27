@@ -45,7 +45,7 @@ SIMPLE_PROGRAMS = \
 #------------------------------
 all::
 	[ -d .build ] || mkdir .build
-	gnatmake -P tash_tests
+	gnatmake -Ptash_tests
 
 VERBOSE =
 GNATMEM =
@@ -111,12 +111,14 @@ test_system.adb \
 testapp.adb \
 testapp.ads
 
+MATERIEL = Shortcut.txt.lnk
+
 TESTS = $(DIST)/tests
 
 dist:
 	-rm -rf $(TESTS)
 	mkdir $(TESTS)
-	cp $(SRC) $(TESTS)/
+	cp $(SRC) $(MATERIEL) $(TESTS)/
 
 # TBD
 clean:
