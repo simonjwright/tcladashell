@@ -822,6 +822,18 @@ package Tcl.Tk is
    return       C.int;
    pragma Convention (C, Tk_ItemCoordProc);
 
+   type Tk_ItemDeleteProc is access procedure
+     (canvas  : in Tk_Canvas;
+      itemPtr : access Tk_Item;
+      display : in System.Address);  --  @todo should be Display* (Xlib)
+
+   type Tk_ItemDisplayProc is access procedure
+     (canvas  : in Tk_Canvas;
+      itemPtr : access Tk_Item;
+      display : in System.Address;   --  @todo should be Display* (Xlib)
+      dst     : in C.int;            --  @todo should be Drawable (Xlib)
+      x, y, width, height : in C.int);
+
    type Tk_ItemPointProc is access function
      (canvas   : in Tk_Canvas;
       itemPtr  : in Tk_Item;
@@ -845,19 +857,19 @@ package Tcl.Tk is
    pragma Convention (C, Tk_ItemPostscriptProc);
 
    type Tk_ItemScaleProc is access procedure
-  (canvas  : in Tk_Canvas;
-   itemPtr : in Tk_Item;
-   originX : in C.double;
-   originY : in C.double;
-   scaleX  : in C.double;
-   scaleY  : in C.double);
+     (canvas  : in Tk_Canvas;
+      itemPtr : in Tk_Item;
+      originX : in C.double;
+      originY : in C.double;
+      scaleX  : in C.double;
+      scaleY  : in C.double);
    pragma Convention (C, Tk_ItemScaleProc);
 
    type Tk_ItemTranslateProc is access procedure
-  (canvas  : in Tk_Canvas;
-   itemPtr : in Tk_Item;
-   deltaX  : in C.double;
-   deltaY  : in C.double);
+     (canvas  : in Tk_Canvas;
+      itemPtr : in Tk_Item;
+      deltaX  : in C.double;
+      deltaY  : in C.double);
    pragma Convention (C, Tk_ItemTranslateProc);
 
    type Tk_ItemIndexProc is access function
@@ -870,9 +882,9 @@ package Tcl.Tk is
    pragma Convention (C, Tk_ItemIndexProc);
 
    type Tk_ItemCursorProc is access procedure
-  (canvas  : in Tk_Canvas;
-   itemPtr : in Tk_Item;
-   index   : in C.int);
+     (canvas  : in Tk_Canvas;
+      itemPtr : in Tk_Item;
+      index   : in C.int);
    pragma Convention (C, Tk_ItemCursorProc);
 
    type Tk_ItemSelectionProc is access function
@@ -885,17 +897,17 @@ package Tcl.Tk is
    pragma Convention (C, Tk_ItemSelectionProc);
 
    type Tk_ItemInsertProc is access procedure
-  (canvas     : in Tk_Canvas;
-   itemPtr    : in Tk_Item;
-   beforeThis : in C.int;
-   strng      : in C.Strings.chars_ptr);
+     (canvas     : in Tk_Canvas;
+      itemPtr    : in Tk_Item;
+      beforeThis : in C.int;
+      strng      : in C.Strings.chars_ptr);
    pragma Convention (C, Tk_ItemInsertProc);
 
    type Tk_ItemDCharsProc is access procedure
-  (canvas  : in Tk_Canvas;
-   itemPtr : in Tk_Item;
-   first   : in C.int;
-   last    : in C.int);
+     (canvas  : in Tk_Canvas;
+      itemPtr : in Tk_Item;
+      first   : in C.int;
+      last    : in C.int);
    pragma Convention (C, Tk_ItemDCharsProc);
 
    type Tk_ItemType_Rec is private;
@@ -999,13 +1011,13 @@ package Tcl.Tk is
    pragma Convention (C, Tk_ImageDeleteProc);
 
    type Tk_ImageChangedProc is access procedure
-  (data        : in ClientData;
-   x           : in C.int;
-   y           : in C.int;
-   width       : in C.int;
-   height      : in C.int;
-   imageWidth  : in C.int;
-   imageHeight : in C.int);
+     (data        : in ClientData;
+      x           : in C.int;
+      y           : in C.int;
+      width       : in C.int;
+      height      : in C.int;
+      imageWidth  : in C.int;
+      imageHeight : in C.int);
    pragma Convention (C, Tk_ImageChangedProc);
 
    type Tk_ImagePostscriptProc is access function
@@ -2745,13 +2757,51 @@ private
    Null_Tk_Canvas : constant Tk_Canvas := null;
 
    type Tk_CanvasTextInfo_rec is record
+      --  Border and background for selected characters.
+      --  Read-only to items.
       selBorder : Tk_3DBorder;
-      --  Border and background for selected
-      --  characters.  Read-only to items.
-      selBorderWidth : C.int;
       --  Width of border around selection.
       --  Read-only to items.
+      selBorderWidth : C.int;
+      --  Foreground color for selected text.
+      --  Read-only to items.
+      selFgColorPtr : System.Address;   -- @todo should be XColor* (Xlib)
+      --  Pointer to selected item.
+      --  NULL means selection isn't in this canvas.
+      --  Writable by items.
+      selItemPtr : Tk_Item;
+      --  Character index of first selected character.
+      --  Writable by items.
+      selectFirst : C.int;
+      --  Character index of last selected character.
+      --  Writable by items.
+      selectLast : C.int;
+      --  Item corresponding to "selectAnchor": not necessarily selItemPtr.
+      --  Read-only to items.
+      anchorItemPtr : Tk_Item;
+      --  Character index of fixed end of selection (i.e. "select to"
+      --  operation will use this as one end of the selection).
+      --  Writable by items.
+      selectAnchor : C.int;
+      --  Used to draw vertical bar for insertion cursor.
+      --  Read-only to items.
+      insertBorder : Tk_3DBorder;
+      --  Total width of insertion cursor. Read-only to items.
+      insertWidth : C.int;
+      --  Width of 3-D border around insert cursor.
+      --  Read-only to items.
+      insertBorderWidth : C.int;
+      --  Item that currently has the input focus, or NULL if no such item.
+      --  Read-only to items.
+      focusItemPtr : Tk_Item;
+      --  Non-zero means that the canvas widget has the input focus.
+      --  Read-only to items.
+      gotFocus : C.int;
+      --  Non-zero means that an insertion cursor should be displayed in 
+      --  focusItemPtr. Read-only to items.
+      cursorOn : C.int;
    end record;
+   pragma Convention (C, Tk_CanvasTextInfo_rec);
 
    Null_Tk_CanvasTextInfo : constant Tk_CanvasTextInfo := null;
 
@@ -2784,6 +2834,7 @@ private
       --  print the option.  Otherwise it is
       --  irrelevant.
    end record;
+   pragma Convention (C, Tk_ConfigSpec_rec);
 
    Null_Tk_ConfigSpec : constant Tk_ConfigSpec := null;
 
@@ -2804,6 +2855,7 @@ private
       --  option parser:  passed to
       --  parseProc and printProc.
    end record;
+   pragma Convention (C, Tk_CustomOption_rec);
 
    Null_Tk_CustomOption : constant Tk_CustomOption := null;
 
@@ -2811,6 +2863,7 @@ private
       number : C.int;
       key    : C.char_array (0 .. 3);
    end record;
+   pragma Convention (C, Tk_Dash_rec);
 
    Null_Tk_Dash : constant Tk_Dash := null;
 
@@ -2841,6 +2894,7 @@ private
       --  characters in one line overlap any of the
       --  characters in the other line.
    end record;
+   pragma Convention (C, Tk_FontMetrics_rec);
 
    Null_Tk_FontMetrics : constant Tk_FontMetrics := null;
 
@@ -2858,6 +2912,7 @@ private
       --  by another.  NULL means geometry manager
       --  doesn't care when slaves are lost.
    end record;
+   pragma Convention (C, Tk_GeomMgr_rec);
 
    Null_Tk_GeomMgr : constant Tk_GeomMgr := null;
 
@@ -2870,41 +2925,108 @@ private
    type Tk_ImageType_rec is null record;
    Null_Tk_ImageType : constant Tk_ImageType := null;
 
+   --  auxiliary type for Ada
+   type StaticTagSpace_Type is array (0 .. TK_TAG_SPACE-1) of Tk_Uid;
+   pragma Convention (C, StaticTagSpace_Type);
+
    type Tk_Item_rec is record
+      --  Unique identifier for this item (also
+      --  serves as first tag for item).
       id : C.int;
-      --  Unique identifier for this item
-      --  {also serves as first tag for
-      --  item}.
+      --  Next in display list of all items in this
+      --  canvas. Later items in list are drawn on
+      --  top of earlier ones.
       nextPtr : Tk_Item;
-      --  Next in display list of all
-      --  items in this canvas.  Later items
-      --  in list are drawn on top of earlier
-      --  ones.
+      --  Built-in space for limited # of tags.
+      staticTagSpace : StaticTagSpace_Type;
+      --  Pointer to array of tags. Usually points to
+      --  staticTagSpace, but may point to malloc-ed
+      --  space if there are lots of tags.
+      tagPtr : System.Address;  -- @todo should be access Tk_Uid
+      --  Total amount of tag space available at tagPtr.
+      tagSpace : C.int;
+      --  Number of tag slots actually used at *tagPtr.
+      numTags : C.int;
+      --  Table of procedures that implement this type of item.
+      typePtr : Tk_ItemType;
+      --  Bounding box for item, in integer canvas units.
+      --  Set by item-specific code and guaranteed to contain
+      --  every pixel drawn in item.
+      --  Item area includes x1 and y1 but not x2 and y2.
+      x1, y1, x2, y2 : C.int;
+      --  Previous in display list of all items in this canvas.
+      --  Later items in list are drawn just below earlier ones.
+      prevPtr : Tk_Item;
+      --  State of item.
+      state : Tk_State;
+      --  reserved for future use
+      reserved1 : C.Strings.chars_ptr;
+      --  Some flags used in the canvas
+      redraw_flags : C.int;
+
+      ----------------------------------------------------------------------
+      --  Starting here is additional type-specific stuff; see the
+      --  declarations for individual types to see what is part of each type.
+      --  The actual space below is determined by the "itemInfoSize" of the
+      --  type's Tk_ItemType record.
+      ----------------------------------------------------------------------
    end record;
+   pragma Convention (C, Tk_Item_rec);
 
    Null_Tk_Item : constant Tk_Item := null;
 
    type Tk_ItemType_rec is record
+      --  The name of this type of item, such as "line".
       name : C.Strings.chars_ptr;
-      --  The name of this type of item, such
-      --  as "line".
+      --  Total amount of space needed for item's record.
       itemSize : C.int;
-      --  Total amount of space needed for
-      --  item's record.
+      --  Procedure to create a new item of this type.
       createProc : Tk_ItemCreateProc;
-      --  Procedure to create a new item of
-      --  this type.
+      --  Pointer to array of configuration specs for this type.
+      --  Used for returning configuration info.
       configSpecs : Tk_ConfigSpec;
-      --  Pointer to array of configuration
-      --  specs for this type.  Used for
-      --  returning configuration info.
+      --  Procedure to call to change configuration options.
       configProc : Tk_ItemConfigureProc;
-      --  Procedure to call to change
-      --  configuration options.
+      --  Procedure to call to get and set the item's coordinates.
       coordProc : Tk_ItemCoordProc;
-      --  Procedure to call to get and set
-      --  the item's coordinates.
+      --  Procedure to delete existing item of this type.
+      deleteProc : Tk_ItemDeleteProc;
+      --  Procedure to display items of this type.
+      displayProc : Tk_ItemDisplayProc;
+      --  Non-zero means displayProc should be called even when
+      --  the item has been moved off-screen.
+      alwaysRedraw : C.int;
+      --  Computes distance from item to a given point.
+      pointProc : Tk_ItemPointProc;
+      --  Computes whether item is inside, outside, or overlapping
+      --  an area.
+      areaProc : Tk_ItemAreaProc;
+      --  Procedure to write a Postscript description for items of
+      --  this type.
+      postscriptProc : Tk_ItemPostscriptProc;
+      --  Procedure to rescale items of this type.
+      scaleProc : Tk_ItemScaleProc;
+      --  Procedure to translate items of this type.
+      indexProc : Tk_ItemIndexProc;
+      --  Procedure to set insert cursor posn to just before a given
+      --  position.
+      icursorProc : Tk_ItemCursorProc;
+      --  Procedure to return selection (in STRING format) when it is
+      --  in this item.
+      selectionProc : Tk_ItemSelectionProc;
+      --  Procedure to insert something into an item.
+      insertProc : Tk_ItemInsertProc;
+      --  Procedure to delete characters from an item.
+      --  dCharsProc Tk_ItemDCharsProc;
+      --  Used to link types together into a list.
+      nextPtr : Tk_ItemType;
+      --  Reserved for future extension.
+      reserved1 : C.Strings.chars_ptr;
+      reserved2 : C.int;                --  Carefully compatible with
+      reserved3 : C.Strings.chars_ptr;  --  Jan Nijtmans dash patch
+      reserved4 : C.Strings.chars_ptr;
    end record;
+   pragma Convention (C, Tk_ItemType_rec);
 
    Null_Tk_ItemType : constant Tk_ItemType := null;
 
@@ -2956,6 +3078,7 @@ private
       --  OR of the typeMasks of all options that
       --  were changed.
    end record;
+   pragma Convention (C, Tk_OptionSpec_rec);
 
    Null_Tk_OptionSpec : constant Tk_OptionSpec := null;
 
@@ -2986,6 +3109,7 @@ private
       --  blue and alpha components of the pixel and
       --  the pixel as a whole.
    end record;
+   pragma Convention (C, Tk_PhotoImageBlock_rec);
 
    Null_Tk_PhotoImageBlock : constant Tk_PhotoImageBlock := null;
 
@@ -3017,6 +3141,7 @@ private
       --  properly aligned for storing large
       --  values.
    end record;
+   pragma Convention (C, Tk_SavedOption_rec);
 
    Null_Tk_SavedOption : constant Tk_SavedOption := null;
 
@@ -3039,23 +3164,25 @@ private
       --  single structure.  NULL means no
       --  more structures.
    end record;
+   pragma Convention (C, Tk_SavedOptions_rec);
 
    Null_Tk_SavedOptions : constant Tk_SavedOptions := null;
 
    type Tk_SmoothMethod_rec is record
       name : C.Strings.chars_ptr;
+      coordProc : System.Address;       --  @todo make exact type
+      postscriptProc : System.Address;  --  @todo make exact type
    end record;
+   pragma Convention (C, Tk_SmoothMethod_rec);
 
    Null_Tk_SmoothMethod : constant Tk_SmoothMethod := null;
 
    type Tk_TSOffset_rec is record
-      flags : C.int;
-      --  flags; see below for possible values
-      xoffset : C.int;
-      --  x offset
-      yoffset : C.int;
-      --  y offset
+      flags : C.int;     --  flags; see tk.h for possible values
+      xoffset : C.int;   --  x offset
+      yoffset : C.int;   --  y offset
    end record;
+   pragma Convention (C, Tk_TSOffset_rec);
 
    Null_Tk_TSOffset : constant Tk_TSOffset := null;
 
