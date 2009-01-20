@@ -204,6 +204,9 @@ package Tcl is
 
    subtype ClientData is System.Address;
 
+   type Tcl_WideInt  is new Interfaces.Integer_64;
+   type Tcl_WideUInt is new Interfaces.Unsigned_64;
+
    --  __STDC__
 
    --
@@ -428,6 +431,7 @@ package Tcl is
       E_n_d : C.long;      --  character offset of first character after the
                            --  match.
    end record;
+   pragma Convention (C, Tcl_RegExpIndices_Rec);
 
    type Tcl_RegExpIndices_Array is
      array (CArgv.CNatural range <>) of aliased Tcl_RegExpIndices_Rec;
@@ -450,6 +454,7 @@ package Tcl is
                                     --  match might begin.
       reserved : C.long;       --  Reserved for later use.
    end record;
+   pragma Convention (C, Tcl_RegExpInfo_Rec);
 
    type Tcl_RegExpInfo is access all Tcl_RegExpInfo_Rec;
    pragma Convention (C, Tcl_RegExpInfo);
@@ -550,8 +555,8 @@ package Tcl is
    pragma Convention (C, Tcl_AsyncProc);
 
    type Tcl_ChannelProc is access procedure
-  (data : in ClientData;
-   mask : in C.int);
+     (data : in ClientData;
+      mask : in C.int);
    pragma Convention (C, Tcl_ChannelProc);
 
    type Tcl_CloseProc is access procedure (data : in ClientData);
@@ -569,14 +574,14 @@ package Tcl is
    pragma Convention (C, Tcl_CmdProc);
 
    type Tcl_CmdTraceProc is access procedure
-  (data          : in ClientData;
-   interp        : in Tcl_Interp;
-   level         : in C.int;
-   command       : in C.Strings.chars_ptr;
-   proc          : in Tcl_CmdProc;
-   cmdclientdata : in ClientData;
-   argc          : in C.int;
-   argv          : in CArgv.Chars_Ptr_Ptr);
+     (data          : in ClientData;
+      interp        : in Tcl_Interp;
+      level         : in C.int;
+      command       : in C.Strings.chars_ptr;
+      proc          : in Tcl_CmdProc;
+      cmdclientdata : in ClientData;
+      argc          : in C.int;
+      argv          : in CArgv.Chars_Ptr_Ptr);
    pragma Convention (C, Tcl_CmdTraceProc);
 
    type Tcl_DupInternalRepProc is access procedure;
@@ -606,8 +611,8 @@ package Tcl is
    pragma Convention (C, Tcl_EventProc);
 
    type Tcl_EventCheckProc is access procedure
-  (data  : in ClientData;
-   flags : in C.int);
+     (data  : in ClientData;
+      flags : in C.int);
    pragma Convention (C, Tcl_EventCheckProc);
 
    type Tcl_EventDeleteProc is access function
@@ -617,16 +622,16 @@ package Tcl is
    pragma Convention (C, Tcl_EventDeleteProc);
 
    type Tcl_EventSetupProc is access procedure
-  (data  : in ClientData;
-   flags : in C.int);
+     (data  : in ClientData;
+      flags : in C.int);
    pragma Convention (C, Tcl_EventSetupProc);
 
    type Tcl_ExitProc is access procedure (data : in ClientData);
    pragma Convention (C, Tcl_ExitProc);
 
    type Tcl_FileProc is access procedure
-  (data : in ClientData;
-   mask : in C.int);
+     (data : in ClientData;
+      mask : in C.int);
    pragma Convention (C, Tcl_FileProc);
 
    type Tcl_FileFreeProc is access procedure (data : in ClientData);
@@ -636,15 +641,15 @@ package Tcl is
    pragma Convention (C, Tcl_FreeInternalRepProc);
 
    type Tcl_FreeProc is access procedure
-  (blockPtr : in C.Strings.chars_ptr);
+     (blockPtr : in C.Strings.chars_ptr);
    pragma Convention (C, Tcl_FreeProc);
 
    type Tcl_IdleProc is access procedure (data : in ClientData);
    pragma Convention (C, Tcl_IdleProc);
 
    type Tcl_InterpDeleteProc is access procedure
-  (data   : in ClientData;
-   interp : in Tcl_Interp);
+     (data   : in ClientData;
+      interp : in Tcl_Interp);
    pragma Convention (C, Tcl_InterpDeleteProc);
 
    type Tcl_MathProc is access function
@@ -671,23 +676,23 @@ package Tcl is
    pragma Convention (C, Tcl_PackageInitProc);
 
    type Tcl_PanicProc is access procedure
-  (format  : in C.Strings.chars_ptr;
-   String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String4 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String5 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String6 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String7 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String8 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-   String9 : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
+     (format  : in C.Strings.chars_ptr;
+      String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9 : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
    pragma Convention (C, Tcl_PanicProc);
 
    type Tcl_TcpAcceptProc is access procedure
-  (callbackdata : in ClientData;
-   chan         : in Tcl_Channel;
-   address      : in System.Address;
-   port         : in C.int);
+     (callbackdata : in ClientData;
+      chan         : in Tcl_Channel;
+      address      : in System.Address;
+      port         : in C.int);
    pragma Convention (C, Tcl_TcpAcceptProc);
 
    type Tcl_TimerProc is access procedure (data : in ClientData);
@@ -711,14 +716,27 @@ package Tcl is
    pragma Convention (C, Tcl_VarTraceProc);
 
    type Tcl_CreateFileHandlerProc is access procedure
-  (fd   : in C.int;
-   mask : in C.int;
-   proc : in Tcl_FileProc;
-   data : in ClientData);
+     (fd   : in C.int;
+      mask : in C.int;
+      proc : in Tcl_FileProc;
+      data : in ClientData);
    pragma Convention (C, Tcl_CreateFileHandlerProc);
 
    type Tcl_DeleteFileHandlerProc is access procedure (fd : in C.int);
    pragma Convention (C, Tcl_DeleteFileHandlerProc);
+
+   type Tcl_AlertNotifierProc is access procedure (data : in ClientData);
+   pragma Convention (C, Tcl_AlertNotifierProc);
+
+   type Tcl_ServiceModeHookProc is access procedure (mode : in C.int);
+   pragma Convention (C, Tcl_ServiceModeHookProc);
+
+   type Tcl_InitNotifierProc is access function return ClientData;
+   pragma Convention (C, Tcl_InitNotifierProc);
+
+   type Tcl_FinalizeNotifierProc is access procedure (data : in ClientData);
+   pragma Convention (C, Tcl_FinalizeNotifierProc);
+
 
    --
    --  The following structure represents a type of object, which is a
@@ -1222,6 +1240,30 @@ package Tcl is
       handleptr    : in ClientData)
    return            C.int;
    pragma Convention (C, Tcl_DriverGetHandleProc);
+
+   type Tcl_DriverFlushProc is access function
+      (instanceData : in ClientData)
+   return            C.int;
+
+   type Tcl_DriverHandlerProc is access function
+     (instancedata : in ClientData;
+      interestMask : in C.int)
+   return            C.int;
+
+   type Tcl_DriverWideSeekProc is access function
+     (instancedata : in ClientData;
+      offset       : in Tcl_WideInt;
+      mode         : in C.int;
+      errorCodePtr : access C.int)
+   return            Tcl_WideInt;
+
+   type Tcl_DriverThreadActionProc is access procedure
+     (instancedata : in ClientData;
+      action       : in C.int);
+
+   type Tcl_DriverTruncateProc is access procedure
+     (instancedata : in ClientData;
+      length       : in Tcl_WideInt);
 
    --
    --  malloc and free, or they map them to procedures with all sorts
@@ -4674,7 +4716,10 @@ private
       dummy8  : C.Strings.chars_ptr;
       dummy9  : C.int;
       dummy10 : C.Strings.chars_ptr;
+      dummy11 : C.Strings.chars_ptr;
+      dummy12 : C.Strings.chars_ptr;
    end record;
+   pragma Convention (C, Tcl_CallFrame_rec);
 
    Null_Tcl_CallFrame : constant Tcl_CallFrame := null;
 
@@ -4682,43 +4727,62 @@ private
    Null_Tcl_Channel : constant Tcl_Channel := null;
 
    type Tcl_ChannelType_rec is record
-      typeName : C.Strings.chars_ptr;
       --  The name of the channel type in Tcl
       --  commands. This storage is owned by
       --  channel type.
-      blockModeProc : Tcl_DriverBlockModeProc;
-      --  Set blocking mode for the
-      --  raw channel. May be NULL.
-      closeProc : Tcl_DriverCloseProc;
+      typeName : C.Strings.chars_ptr;
+      --  Version of the channel type.
+      version : System.Address;
       --  Procedure to call to close the
       --  channel, or TCL_CLOSE2PROC if the
       --  close2Proc should be used
       --  instead.
-      inputProc : Tcl_DriverInputProc;
+      closeProc : Tcl_DriverCloseProc;
       --  Procedure to call for input
       --  on channel.
-      outputProc : Tcl_DriverOutputProc;
+      inputProc : Tcl_DriverInputProc;
       --  Procedure to call for output
       --  on channel.
-      seekProc : Tcl_DriverSeekProc;
+      outputProc : Tcl_DriverOutputProc;
       --  Procedure to call to seek
       --  on the channel. May be NULL.
-      setOptionProc : Tcl_DriverSetOptionProc;
+      seekProc : Tcl_DriverSeekProc;
       --  Set an option on a channel.
-      getOptionProc : Tcl_DriverGetOptionProc;
+      setOptionProc : Tcl_DriverSetOptionProc;
       --  Get an option from a channel.
-      watchProc : Tcl_DriverWatchProc;
+      getOptionProc : Tcl_DriverGetOptionProc;
       --  Set up the notifier to watch
       --  for events on this channel.
-      getHandleProc : Tcl_DriverGetHandleProc;
+      watchProc : Tcl_DriverWatchProc;
       --  Get an OS handle from the channel
       --  or NULL if not supported.
-      close2Proc : Tcl_DriverClose2Proc;
+      getHandleProc : Tcl_DriverGetHandleProc;
       --  Procedure to call to close the
       --  channel if the device supports
       --  closing the read & write sides
       --  independently.
+      close2Proc : Tcl_DriverClose2Proc;
+      --  Set blocking mode for the
+      --  raw channel. May be NULL.
+      blockModeProc : Tcl_DriverBlockModeProc;
+      --  Only valid in TCL_CHANNEL_VERSION_2 channels or later:
+      --  Function to call to flush a channel. May be NULL.
+      flushProc : Tcl_DriverFlushProc;
+      --  Only valid in TCL_CHANNEL_VERSION_2 channels or later:
+      --  Function to call to handle a channel event.
+      --  This will be passed up the stacked channel chain.
+      handlerProc : Tcl_DriverHandlerProc;
+      --  Only valid in TCL_CHANNEL_VERSION_3 channels or later:
+      --  Function to call to seek on the channel which can handle
+      --  64-bit offsets. May be NULL, and must be NULL if seekProc
+      --  is NULL.
+      wideSeekProc : Tcl_DriverWideSeekProc;
+      --  Only valid in TCL_CHANNEL_VERSION_5 channels or later:
+      --  Function to call to truncate the underlying file to a particular
+      --  length. May be NULL if the channel does not support truncation.
+      truncateProc : Tcl_DriverTruncateProc;
    end record;
+   pragma Convention (C, Tcl_ChannelType_rec);
 
    Null_Tcl_ChannelType : constant Tcl_ChannelType := null;
 
@@ -4748,6 +4812,7 @@ private
       --  will not change a command's namespace;
       --  use Tcl_RenameCommand to do that.
    end record;
+   pragma Convention (C, Tcl_CmdInfo_rec);
 
    Null_Tcl_CmdInfo : constant Tcl_CmdInfo := null;
 
@@ -4771,6 +4836,7 @@ private
       --  Space to use in common case where string
       --  is small.
    end record;
+   pragma Convention (C, Tcl_DString_rec);
 
    Null_Tcl_DString : constant Tcl_DString := null;
 
@@ -4804,28 +4870,38 @@ private
       --  string length when the srcLen argument is
       --  negative.  Must be 1 or 2.
    end record;
+   pragma Convention (C, Tcl_EncodingType_rec);
 
    Null_Tcl_EncodingType : constant Tcl_EncodingType := null;
 
-   type Tcl_Event_rec is null record;
+   type Tcl_Event_rec is record
+      --  Function to call to service this event.
+      proc : Tcl_EventProc;
+      --  Next in list of pending events, or NULL.
+      nextPtr : Tcl_Event;
+   end record;
+   pragma Convention (C, Tcl_Event_rec);
+
    Null_Tcl_Event : constant Tcl_Event := null;
 
    type Tcl_HashEntry_rec is record
+      --  Pointer to next entry in this hash bucket,
+      --  or NULL for end of chain.
       nextPtr : Tcl_HashEntry;
-      --  Pointer to next entry in this
-      --  hash bucket, or NULL for end of
-      --  chain.
       --  Pointer to table containing entry.
+      tablePtr : Tcl_HashTable;
+      --  Pointer to bucket that points to first
+      --  entry in this entry's chain: used for
+      --  deleting the entry.
       bucketPtr : Tcl_HashEntry;
-      --  Pointer to bucket that points to
-      --  first entry in this entry's chain:
-      --  used for deleting the entry.
+      --  Application stores something here with
+      --  Tcl_SetHashValue.
       data : ClientData;
-      --  Application stores something here
-      --  with Tcl_SetHashValue.
+      --  Key is a C union - @todo make exact representation
       key : C.char_array (0 .. 3);
       --  MUST BE LAST FIELD IN RECORD!!
    end record;
+   pragma Convention (C, Tcl_HashEntry_rec);
 
    Null_Tcl_HashEntry : constant Tcl_HashEntry := null;
 
@@ -4839,43 +4915,52 @@ private
       --  Next entry to be enumerated in the
       --  the current bucket.
    end record;
+   pragma Convention (C, Tcl_HashSearch_rec);
 
    Null_Tcl_HashSearch : constant Tcl_HashSearch := null;
 
+   --  @todo make exact mapping for Tcl_HashKeyType
+   subtype Tcl_HashKeyType is System.Address;
+
+   -- Auxiliary type for Ada (corresponds to Tcl_HashEntry**)
+   type Tcl_HashEntry_Ptr is access all Tcl_HashEntry;
+
    type Tcl_HashTable_rec is record
-      buckets : Tcl_HashEntry;
       --  Pointer to bucket array.  Each
       --  element points to first entry in
       --  bucket's hash chain, or NULL.
-      staticBuckets : Tcl_HashEntry_Array (0 .. 3);
+      buckets : Tcl_HashEntry_Ptr;
       --  Bucket array used for small tables
       --  {to avoid mallocs and frees}.
-      numBuckets : C.int;
+      staticBuckets : Tcl_HashEntry_Array (0 .. 3);
       --  Total number of buckets allocated
       --  at **bucketPtr.
-      numEntries : C.int;
+      numBuckets : C.int;
       --  Total number of entries present
       --  in table.
-      rebuildSize : C.int;
+      numEntries : C.int;
       --  Enlarge table when numEntries gets
       --  to be this large.
-      downShift : C.int;
+      rebuildSize : C.int;
       --  Shift count used in hashing
       --  function.  Designed to use high-
       --  order bits of randomized keys.
-      mask : C.int;
+      downShift : C.int;
       --  Mask value used in hashing
       --  function.
-      keyType : C.int;
+      mask : C.int;
       --  Type of keys used in this table.
       --  It's either TCL_STRING_KEYS,
       --  TCL_ONE_WORD_KEYS, or an integer
       --  giving the number of ints that
       --  is the size of the key.
+      keyType : C.int;
       --
       findProc   : Tcl_HashEntry;
       createProc : Tcl_HashEntry;
+      typePtr    : Tcl_HashKeyType;
    end record;
+   pragma Convention (C, Tcl_HashTable_rec);
 
    Null_Tcl_HashTable : constant Tcl_HashTable := null;
 
@@ -4894,6 +4979,7 @@ private
       --  the line number within the command where
       --  the error occurred {1 if first line}.
    end record;
+   pragma Convention (C, Tcl_Interp_rec);
 
    Null_Tcl_Interp : constant Tcl_Interp := null;
 
@@ -4920,6 +5006,7 @@ private
       --  this one. NULL if this is the global
       --  namespace.
    end record;
+   pragma Convention (C, Tcl_Namespace_rec);
 
    Null_Tcl_Namespace : constant Tcl_Namespace := null;
 
@@ -4928,7 +5015,12 @@ private
       waitForEventProc      : Tcl_WaitForEventProc;
       createFileHandlerProc : Tcl_CreateFileHandlerProc;
       deleteFileHandlerProc : Tcl_DeleteFileHandlerProc;
+      initNotifierProc      : Tcl_InitNotifierProc;
+      finalizeNotifierProc  : Tcl_FinalizeNotifierProc;
+      alertNotifierProc     : Tcl_AlertNotifierProc;
+      serviceModeHookProc   : Tcl_ServiceModeHookProc;
    end record;
+   pragma Convention (C, Tcl_NotifierProcs_rec);
 
    Null_Tcl_NotifierProcs : constant Tcl_NotifierProcs := null;
 
@@ -4963,6 +5055,7 @@ private
       --  of the old type. Returns TCL_ERROR on
       --  failure.
    end record;
+   pragma Convention (C, Tcl_ObjType_rec);
 
    Null_Tcl_ObjType : constant Tcl_ObjType := null;
 
@@ -5033,6 +5126,7 @@ private
       --  space is allocated for very large
       --  commands that don't fit here.
    end record;
+   pragma Convention (C, Tcl_Parse_rec);
 
    Null_Tcl_Parse : constant Tcl_Parse := null;
 
@@ -5051,6 +5145,7 @@ private
       appendUsed   : C.int;
       resultSpace  : C.char_array (0 .. 200 + 1 - 1);
    end record;
+   pragma Convention (C, Tcl_SavedResult_rec);
 
    Null_Tcl_SavedResult : constant Tcl_SavedResult := null;
 
@@ -5066,6 +5161,7 @@ private
       usec : C.long;
       --  Microseconds.
    end record;
+   pragma Convention (C, Tcl_Time_rec);
 
    Null_Tcl_Time : constant Tcl_Time := null;
 
@@ -5087,6 +5183,7 @@ private
       --  components, etc.}.  The component tokens
       --  immediately follow this one.
    end record;
+   pragma Convention (C, Tcl_Token_rec);
 
    Null_Tcl_Token : constant Tcl_Token := null;
 
@@ -5102,6 +5199,7 @@ private
       doubleValue : C.double;
       --  Double-precision floating value.
    end record;
+   pragma Convention (C, Tcl_Value_rec);
 
    Null_Tcl_Value : constant Tcl_Value := null;
 
