@@ -47,7 +47,7 @@ package Tcl.Tk.Ada is
    --
    --   It is abstract because it is just a convenience for creating a Widget
    --   class and for creating non-abstract derived widget types.  Since there
-   --   is no such data type in Tk, we make it abstract so that no istance of
+   --   is no such data type in Tk, we make it abstract so that no instance of
    --   type Widget may be created.
    --
    ---------------------------------------------
