@@ -4,14 +4,15 @@
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
 --
---  Tash is free software; you can redistribute it and/or modify it under
---  terms of the GNU General Public License as published by the Free
---  Software Foundation; either version 2, or (at your option) any later
---  version. Tash is distributed in the hope that it will be useful, but
---  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
---  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
---  for more details. You should have received a copy of the GNU General
---  Public License distributed with Tash; see file COPYING. If not, write to
+--  Tash is free software; you can redistribute it and/or modify it
+--  under terms of the GNU General Public License as published by the
+--  Free Software Foundation; either version 2, or (at your option)
+--  any later version. Tash is distributed in the hope that it will be
+--  useful, but WITHOUT ANY WARRANTY; without even the implied
+--  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+--  PURPOSE. See the GNU General Public License for more details. You
+--  should have received a copy of the GNU General Public License
+--  distributed with Tash; see file COPYING. If not, write to
 --
 --          Free Software Foundation
 --          59 Temple Place - Suite 330
@@ -28,9 +29,9 @@
 --
 --------------------------------------------------------------------
 --
---  This package is automatically generated from tcl.h.
---  Note that some of the comments below, preserved from tcl.h,
---  do not apply to the Ada version.  Someday, these comments may be
+--  This package was originally automatically generated from tcl.h.
+--  Note that some of the comments below, preserved from tcl.h, do not
+--  apply to the Ada version.  Someday, these comments may be
 --  customized better.
 --
 --------------------------------------------------------------------
@@ -39,6 +40,7 @@ with CArgv;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 with System;
+with Tcl_Record_Sizes;
 
 package Tcl is
 
@@ -46,6 +48,7 @@ package Tcl is
 
    use type C.int;
    use type C.size_t;
+
    --
    --  tcl.h --
    --
@@ -60,9 +63,7 @@ package Tcl is
    --
    --
 
-   --
-   --  For C++ compilers, use extern
-   --
+   subtype CNatural is CArgv.CNatural;
 
    --
    --  The following defines are used to indicate the various release levels.
@@ -71,132 +72,27 @@ package Tcl is
    TCL_ALPHA_RELEASE : constant := 0;
    TCL_BETA_RELEASE  : constant := 1;
    TCL_FINAL_RELEASE : constant := 2;
-   --
-   --  When version numbers change here, must also go into the following files
-   --  and update the version numbers:
-   --
-   --  library/init.tcl {only if Major.minor changes, not patchlevel} 1 LOC
-   --  unix/configure.in        {2 LOC Major, 2 LOC minor, 1 LOC patch}
-   --  win/configure.in {as above}
-   --  win/tcl.m4               {not patchlevel}
-   --  win/makefile.vc  {not patchlevel} 2 LOC
-   --  win/pkgIndex.tcl {not patchlevel, for tclregNN.dll}
-   --  README           {sections 0 and 2}
-   --  mac/README               {2 LOC, not patchlevel}
-   --  win/README.binary        {sections 0-4}
-   --  win/README               {not patchlevel} {sections 0 and 2}
-   --  unix/README              {not patchlevel} {part {h}}
-   --  tests/basic.test {not patchlevel} {version checks}
-   --  tools/tcl.hpj.in {not patchlevel, for windows installer}
-   --  tools/tcl.wse.in {for windows installer}
-   --  tools/tclSplash.bmp      {not patchlevel}
-   --
 
    TCL_MAJOR_VERSION  : constant := 8;
-   TCL_MINOR_VERSION  : constant := 3;
+   TCL_MINOR_VERSION  : constant := 4;
    TCL_RELEASE_LEVEL  : constant String := "TCL_FINAL_RELEASE";
-   TCL_RELEASE_SERIAL : constant := 0;
-   TCL_VERSION        : constant String := "8.3";
-   TCL_PATCH_LEVEL    : constant String := "8.3.0";
-   --
-   --  The following definitions set up the proper options for Windows
-   --  compilers.  We use this method because there is no autoconf equivalent.
-   --
-
-   --  __WIN32__
-
-   --
-   --  The following definitions set up the proper options for Macintosh
-   --  compilers.  We use this method because there is no autoconf equivalent.
-   --
-
-   --
-   --  Utility macros: STRINGIFY takes an argument and wraps it in "" {double
-   --  quotation marks}, JOIN joins two arguments.
-   --
+   TCL_RELEASE_SERIAL : constant := 7;
+   TCL_VERSION        : constant String := "8.4";
+   TCL_PATCH_LEVEL    : constant String := "8.4.7";
 
    --
    --  Special macro to define mutexes, that doesn't do anything
    --  if we are not using threads.
    --
 
-   TCL_DECLARE_MUTEX : constant String := "name";
+   --  TCL_DECLARE_MUTEX
+
    --
    --  Macros that eliminate the overhead of the thread synchronization
    --  functions when compiling without thread support.
    --
 
    --  TCL_THREADS
-
-   --
-   --  A special definition used to allow this header file to be included
-   --  in resource files so that they can get obtain version information from
-   --  this file.  Resource compilers don't like all the C stuff, like typedefs
-   --  and procedure declarations, that occur below.
-   --
-
-   --
-   --  Definitions that allow Tcl functions with variable numbers of
-   --  arguments to be used with either varargs.h or stdarg.h.  TCL_VARARGS
-   --  is used in procedure prototypes.  TCL_VARARGS_DEF is used to declare
-   --  the arguments in a function definiton: it takes the type and name of
-   --  the first argument and supplies the appropriate argument declaration
-   --  string for use in the function definition.  TCL_VARARGS_START
-   --  initializes the va_list data structure and returns the first argument.
-   --
-
-   --
-   --  Macros used to declare a function to be exported by a DLL.
-   --  Used by Windows, maps to no-op declarations on non-Windows systems.
-   --  The default build on windows is for a DLL, which causes the DLLIMPORT
-   --  and DLLEXPORT macros to be nonempty. To build a static library, the
-   --  macro STATIC_BUILD should be defined.
-   --
-
-   --
-   --  These macros are used to control whether functions are being declared
-   --  for
-   --  import or export.  If a function is being declared while it is being
-   --  built
-   --  to be included in a shared library, then it should have the DLLEXPORT
-   --  storage class.  If is being declared for use by a module that is going
-   --  to
-   --  link against the shared library, then it should have the DLLIMPORT
-   --  storage
-   --  class.  If the symbol is beind declared for a static build or for use
-   --  from a
-   --  stub library, then the storage class should be empty.
-   --
-   --  The convention is that a macro called BUILD_xxxx, where xxxx is the
-   --  name of a library we are building, is set on the compile line for
-   --  sources
-   --  that are to be placed in the library.  When this macro is set, the
-   --  storage class will be set to DLLEXPORT.  At the end of the header file,
-   --  the
-   --  storage class will be reset to DLLIMPORt.
-   --
-
-   TCL_STORAGE_CLASS : constant String := "DLLIMPORT";
-   --
-   --  Definitions that allow this header file to be used either with or
-   --  without ANSI C features like function prototypes.
-   --
-
-   --
-   --  Make sure extern isn't defined elsewhere
-   --
-
-   --  extern
-
-   --
-   --  Macro to use instead of "void" for arguments that must have
-   --  type "void *" in ANSI C;  maps them to type "char *" in
-   --  non-ANSI systems.
-   --
-
-   --  __WIN32__
-
-   --  __WIN32__
 
    --
    --  Miscellaneous declarations.
@@ -207,208 +103,194 @@ package Tcl is
    type Tcl_WideInt  is new Interfaces.Integer_64;
    type Tcl_WideUInt is new Interfaces.Unsigned_64;
 
-   --  __STDC__
-
    --
-   --  Data structures defined opaquely in this module. The definitions below
-   --  just provide dummy types. A few fields are made visible in Tcl_Interp
-   --  structures, namely those used for returning a string result from
-   --  commands. Direct access to the result field is discouraged in Tcl 8.0.
-   --  The interpreter result is either an object or a string, and the two
-   --  values are kept consistent unless some C code sets interp->result
-   --  directly. Programmers should use either the procedure Tcl_GetObjResult
-   --  {}
-   --  or Tcl_GetStringResult {} to read the interpreter's result. See the
-   --  SetResult man page for details.
-   --
-   --  Note: any change to the Tcl_Interp definition below must be mirrored
-   --  in the "real" definition in tclInt.h.
-   --
-   --  Note: Tcl_ObjCmdProc procedures do not directly set result and freeProc.
-   --  Instead, they set a Tcl_Obj member in the "real" structure that can be
-   --  accessed with Tcl_GetObjResult {} and Tcl_SetObjResult {}.
+   --  Data structures defined opaquely in this module. The
+   --  definitions below just provide dummy types. A few fields are
+   --  made visible in Tcl_Interp structures, namely those used for
+   --  returning a string result from commands. Direct access to the
+   --  result field is discouraged in Tcl 8.0.  The interpreter result
+   --  is either an object or a string, and the two values are kept
+   --  consistent unless some C code sets interp->result
+   --  directly. Programmers should use either the procedure
+   --  Tcl_GetObjResult {} or Tcl_GetStringResult {} to read the
+   --  interpreter's result. See the SetResult man page for details.
    --
 
-   type Tcl_Interp_Rec is private;
-   type Tcl_Interp is access all Tcl_Interp_Rec;
+   --  Tcl_Interp is defined in tcl.h but as indicated above direct
+   --  access is deprecated, so not supported here.
+
+   type Tcl_Interp_rec (<>) is private;
+   type Tcl_Interp is access all Tcl_Interp_rec;
    pragma Convention (C, Tcl_Interp);
-
-   Null_Tcl_Interp : constant Tcl_Interp;
-
+   Null_Tcl_Interp : constant Tcl_Interp := null;
    function Is_Null (Ptr : in Tcl_Interp) return Boolean;
 
-   type Tcl_AsyncHandler_Rec is private;
-   type Tcl_AsyncHandler is access all Tcl_AsyncHandler_Rec;
+   type Tcl_AsyncHandler_rec (<>) is private;
+   type Tcl_AsyncHandler is access all Tcl_AsyncHandler_rec;
    pragma Convention (C, Tcl_AsyncHandler);
-
-   Null_Tcl_AsyncHandler : constant Tcl_AsyncHandler;
-
+   Null_Tcl_AsyncHandler : constant Tcl_AsyncHandler := null;
    function Is_Null (Ptr : in Tcl_AsyncHandler) return Boolean;
 
-   type Tcl_Channel_Rec is private;
-   type Tcl_Channel is access all Tcl_Channel_Rec;
+   type Tcl_Channel_rec (<>) is private;
+   type Tcl_Channel is access all Tcl_Channel_rec;
    pragma Convention (C, Tcl_Channel);
-
-   Null_Tcl_Channel : constant Tcl_Channel;
-
+   Null_Tcl_Channel : constant Tcl_Channel := null;
    function Is_Null (Ptr : in Tcl_Channel) return Boolean;
 
-   type Tcl_Command_Rec is private;
-   type Tcl_Command is access all Tcl_Command_Rec;
+   type Tcl_Command_rec (<>) is private;
+   type Tcl_Command is access all Tcl_Command_rec;
    pragma Convention (C, Tcl_Command);
-
-   Null_Tcl_Command : constant Tcl_Command;
-
+   Null_Tcl_Command : constant Tcl_Command := null;
    function Is_Null (Ptr : in Tcl_Command) return Boolean;
 
-   type Tcl_Condition_Rec is private;
-   type Tcl_Condition is access all Tcl_Condition_Rec;
+   type Tcl_Condition_rec (<>) is private;
+   type Tcl_Condition is access all Tcl_Condition_rec;
    pragma Convention (C, Tcl_Condition);
-
-   Null_Tcl_Condition : constant Tcl_Condition;
-
+   Null_Tcl_Condition : constant Tcl_Condition := null;
    function Is_Null (Ptr : in Tcl_Condition) return Boolean;
 
-   type Tcl_EncodingState_Rec is private;
-   type Tcl_EncodingState is access all Tcl_EncodingState_Rec;
+   type Tcl_EncodingState_rec (<>) is private;
+   type Tcl_EncodingState is access all Tcl_EncodingState_rec;
    pragma Convention (C, Tcl_EncodingState);
-
-   Null_Tcl_EncodingState : constant Tcl_EncodingState;
-
+   Null_Tcl_EncodingState : constant Tcl_EncodingState := null;
    function Is_Null (Ptr : in Tcl_EncodingState) return Boolean;
 
-   type Tcl_Encoding_Rec is private;
-   type Tcl_Encoding is access all Tcl_Encoding_Rec;
+   type Tcl_Encoding_rec (<>) is private;
+   type Tcl_Encoding is access all Tcl_Encoding_rec;
    pragma Convention (C, Tcl_Encoding);
-
-   Null_Tcl_Encoding : constant Tcl_Encoding;
-
+   Null_Tcl_Encoding : constant Tcl_Encoding := null;
    function Is_Null (Ptr : in Tcl_Encoding) return Boolean;
 
-   type Tcl_Event_Rec is private;
+   type Tcl_Event_Rec;
    type Tcl_Event is access all Tcl_Event_Rec;
    pragma Convention (C, Tcl_Event);
-
-   Null_Tcl_Event : constant Tcl_Event;
-
+   Null_Tcl_Event : constant Tcl_Event := null;
    function Is_Null (Ptr : in Tcl_Event) return Boolean;
 
-   type Tcl_Mutex_Rec is private;
-   type Tcl_Mutex is access all Tcl_Mutex_Rec;
+   type Tcl_EventProc is access function
+     (evPtr : in Tcl_Event;
+      flags : in C.int)
+   return     C.int;
+   pragma Convention (C, Tcl_EventProc);
+
+   type Tcl_Event_Rec is record
+      --  Function to call to service this event.
+      proc : Tcl_EventProc;
+      --  Next in list of pending events, or NULL.
+      nextPtr : Tcl_Event;
+   end record;
+   pragma Convention (C, Tcl_Event_Rec);
+
+   type Tcl_Mutex_rec (<>) is private;
+   type Tcl_Mutex is access all Tcl_Mutex_rec;
    pragma Convention (C, Tcl_Mutex);
-
-   Null_Tcl_Mutex : constant Tcl_Mutex;
-
+   Null_Tcl_Mutex : constant Tcl_Mutex := null;
    function Is_Null (Ptr : in Tcl_Mutex) return Boolean;
 
-   type Tcl_Pid_Rec is private;
-   type Tcl_Pid is access all Tcl_Pid_Rec;
+   type Tcl_Pid_rec (<>) is private;
+   type Tcl_Pid is access all Tcl_Pid_rec;
    pragma Convention (C, Tcl_Pid);
-
-   Null_Tcl_Pid : constant Tcl_Pid;
-
+   Null_Tcl_Pid : constant Tcl_Pid := null;
    function Is_Null (Ptr : in Tcl_Pid) return Boolean;
 
-   type Tcl_RegExp_Rec is private;
-   type Tcl_RegExp is access all Tcl_RegExp_Rec;
+   type Tcl_RegExp_rec (<>) is private;
+   type Tcl_RegExp is access all Tcl_RegExp_rec;
    pragma Convention (C, Tcl_RegExp);
-
-   Null_Tcl_RegExp : constant Tcl_RegExp;
-
+   Null_Tcl_RegExp : constant Tcl_RegExp := null;
    function Is_Null (Ptr : in Tcl_RegExp) return Boolean;
 
-   type Tcl_ThreadDataKey_Rec is private;
-   type Tcl_ThreadDataKey is access all Tcl_ThreadDataKey_Rec;
+   type Tcl_ThreadDataKey_rec (<>) is private;
+   type Tcl_ThreadDataKey is access all Tcl_ThreadDataKey_rec;
    pragma Convention (C, Tcl_ThreadDataKey);
-
-   Null_Tcl_ThreadDataKey : constant Tcl_ThreadDataKey;
-
+   Null_Tcl_ThreadDataKey : constant Tcl_ThreadDataKey := null;
    function Is_Null (Ptr : in Tcl_ThreadDataKey) return Boolean;
 
-   type Tcl_ThreadId_Rec is private;
-   type Tcl_ThreadId is access all Tcl_ThreadId_Rec;
+   type Tcl_ThreadId_rec (<>) is private;
+   type Tcl_ThreadId is access all Tcl_ThreadId_rec;
    pragma Convention (C, Tcl_ThreadId);
-
-   Null_Tcl_ThreadId : constant Tcl_ThreadId;
-
+   Null_Tcl_ThreadId : constant Tcl_ThreadId := null;
    function Is_Null (Ptr : in Tcl_ThreadId) return Boolean;
 
-   type Tcl_TimerToken_Rec is private;
-   type Tcl_TimerToken is access all Tcl_TimerToken_Rec;
+   type Tcl_TimerToken_rec (<>) is private;
+   type Tcl_TimerToken is access all Tcl_TimerToken_rec;
    pragma Convention (C, Tcl_TimerToken);
-
-   Null_Tcl_TimerToken : constant Tcl_TimerToken;
-
+   Null_Tcl_TimerToken : constant Tcl_TimerToken := null;
    function Is_Null (Ptr : in Tcl_TimerToken) return Boolean;
 
-   type Tcl_Trace_Rec is private;
-   type Tcl_Trace is access all Tcl_Trace_Rec;
+   type Tcl_Trace_rec (<>) is private;
+   type Tcl_Trace is access all Tcl_Trace_rec;
    pragma Convention (C, Tcl_Trace);
-
-   Null_Tcl_Trace : constant Tcl_Trace;
-
+   Null_Tcl_Trace : constant Tcl_Trace := null;
    function Is_Null (Ptr : in Tcl_Trace) return Boolean;
 
-   type Tcl_Var_Rec is private;
-   type Tcl_Var is access all Tcl_Var_Rec;
+   type Tcl_Var_rec (<>) is private;
+   type Tcl_Var is access all Tcl_Var_rec;
    pragma Convention (C, Tcl_Var);
-
-   Null_Tcl_Var : constant Tcl_Var;
-
+   Null_Tcl_Var : constant Tcl_Var := null;
    function Is_Null (Ptr : in Tcl_Var) return Boolean;
+
+   type Tcl_ChannelTypeVersion_rec (<>) is private;
+   type Tcl_ChannelTypeVersion is access all Tcl_ChannelTypeVersion_rec;
+   pragma Convention (C, Tcl_ChannelTypeVersion);
+   Null_Tcl_ChannelTypeVersion : constant Tcl_ChannelTypeVersion := null;
+   function Is_Null (Ptr : in Tcl_ChannelTypeVersion) return Boolean;
+
+   type Tcl_LoadHandle_rec (<>) is private;
+   type Tcl_LoadHandle is access all Tcl_LoadHandle_rec;
+   pragma Convention (C, Tcl_LoadHandle);
+   Null_Tcl_LoadHandle : constant Tcl_LoadHandle := null;
+   function Is_Null (Ptr : in Tcl_LoadHandle) return Boolean;
 
    --
    --  Flag values passed to Tcl_GetRegExpFromObj.
    --
 
-   TCL_REG_BASIC : constant := 0;
+   TCL_REG_BASIC : constant := 8#000000#;
    --  BREs {convenience}
 
-   TCL_REG_EXTENDED : constant := 1;
+   TCL_REG_EXTENDED : constant := 8#000001#;
    --  EREs
 
-   TCL_REG_ADVF : constant := 2;
+   TCL_REG_ADVF : constant := 8#000002#;
    --  advanced features in EREs
 
-   TCL_REG_ADVANCED : constant := 3;
+   TCL_REG_ADVANCED : constant := 8#000003#;
    --  AREs {which are also EREs}
 
-   TCL_REG_QUOTE : constant := 4;
+   TCL_REG_QUOTE : constant := 8#000004#;
    --  no special characters, none
 
-   TCL_REG_NOCASE : constant := 8;
+   TCL_REG_NOCASE : constant := 8#000010#;
    --  ignore case
 
-   TCL_REG_NOSUB : constant := 16;
+   TCL_REG_NOSUB : constant := 8#000020#;
    --  don't care about subexpressions
 
-   TCL_REG_EXPANDED : constant := 32;
+   TCL_REG_EXPANDED : constant := 8#000040#;
    --  expanded format, white space &
    --  comments
 
-   TCL_REG_NLSTOP : constant := 64;
+   TCL_REG_NLSTOP : constant := 8#000100#;
    --  \n doesn't match . or {^ }
 
-   TCL_REG_NLANCH : constant := 128;
+   TCL_REG_NLANCH : constant := 8#000200#;
    --  ^ matches after \n, $ before
 
-   TCL_REG_NEWLINE : constant := 192;
+   TCL_REG_NEWLINE : constant := 8#000300#;
    --  newlines are line terminators
 
-   TCL_REG_CANMATCH : constant := 512;
+   TCL_REG_CANMATCH : constant := 8#001000#;
    --  report details on partial/limited
    --  matches
 
    --
-   --  The following flag is experimental and only intended for use by Expect.
-   --  It
-   --  will probably go away in a later release.
+   --  The following flag is experimental and only intended for use by
+   --  Expect.  It will probably go away in a later release.
    --
 
-   TCL_REG_BOSONLY : constant := 1024;
-   --  prepend \A to pattern so it only
-   --  matches at the beginning of the
-   --  string.
+   TCL_REG_BOSONLY : constant := 8#002000#;
+   --  prepend \A to pattern so it only matches at the beginning of
+   --  the string.
 
    --
    --  Flags values passed to Tcl_RegExpExecObj.
@@ -427,17 +309,16 @@ package Tcl is
    --
 
    type Tcl_RegExpIndices_Rec is record
-      Start : C.long;    --  character offset of first character in match
-      E_n_d : C.long;      --  character offset of first character after the
-                           --  match.
+      Start : C.long;  --  character offset of first character in match
+      E_n_d : C.long;  --  character offset of first character after the match.
    end record;
    pragma Convention (C, Tcl_RegExpIndices_Rec);
 
    type Tcl_RegExpIndices_Array is
-     array (CArgv.CNatural range <>) of aliased Tcl_RegExpIndices_Rec;
+     array (CNatural range <>) of aliased Tcl_RegExpIndices_Rec;
 
-   package Tcl_RegExpIndices_Pointer is new C.Pointers (
-      Index => CArgv.CNatural,
+   package Tcl_RegExpIndices_Pointer is new C.Pointers
+     (Index => CNatural,
       Element => Tcl_RegExpIndices_Rec,
       Element_Array => Tcl_RegExpIndices_Array,
       Default_Terminator => (0, 0));
@@ -445,22 +326,19 @@ package Tcl is
    subtype Tcl_RegExpIndices is Tcl_RegExpIndices_Pointer.Pointer;
 
    type Tcl_RegExpInfo_Rec is record
-      nsubs : C.int;          --  number of subexpressions in the
-                              --  compiled expression
-      matches : Tcl_RegExpIndices;
-      --  array of nsubs match offset
-      --  pairs
+      nsubs : C.int;                --  number of subexpressions in the
+                                    --  compiled expression
+      matches : Tcl_RegExpIndices;  --  array of nsubs match offset
+                                    --  pairs
       extendStart : C.long;         --  The offset at which a subsequent
                                     --  match might begin.
-      reserved : C.long;       --  Reserved for later use.
+      reserved : C.long;            --  Reserved for later use.
    end record;
    pragma Convention (C, Tcl_RegExpInfo_Rec);
 
    type Tcl_RegExpInfo is access all Tcl_RegExpInfo_Rec;
    pragma Convention (C, Tcl_RegExpInfo);
-
    Null_Tcl_RegExpInfo : constant Tcl_RegExpInfo := null;
-
    function Is_Null (Ptr : in Tcl_RegExpInfo) return Boolean;
 
    --
@@ -468,13 +346,17 @@ package Tcl is
    --  struct's reference in tclDecls.h.
    --
 
-   type stat_Rec is private;
-   type stat is access all stat_Rec;
+   type Tcl_OldStat_Rec (<>) is private;
+   type stat is access all Tcl_OldStat_Rec;
    pragma Convention (C, stat);
-
-   Null_stat : constant stat;
-
+   Null_stat : constant stat := null;
    function Is_Null (Ptr : in stat) return Boolean;
+
+   type Tcl_StatBuf_Rec (<>) is private;
+   type Tcl_StatBuf is access all Tcl_StatBuf_Rec;
+   pragma Convention (C, Tcl_StatBuf);
+   Null_Tcl_StatBuf : constant Tcl_StatBuf := null;
+   function Is_Null (Ptr : in Tcl_StatBuf) return Boolean;
 
    --
    --  When a TCL command returns, the interpreter contains a result from the
@@ -486,15 +368,14 @@ package Tcl is
    --
    --  TCL_OK           Command completed normally; the interpreter's
    --                   result contains the command's result.
-   --  TCL_ERROR                The command couldn't be completed successfully;
+   --  TCL_ERROR        The command couldn't be completed successfully;
    --                   the interpreter's result describes what went wrong.
-   --  TCL_RETURN               The command requests that the current procedure
+   --  TCL_RETURN       The command requests that the current procedure
    --                   return; the interpreter's result contains the
    --                   procedure's return value.
-   --  TCL_BREAK                The command requests that the innermost loop
+   --  TCL_BREAK        The command requests that the innermost loop
    --                   be exited; the interpreter's result is meaningless.
-   --  TCL_CONTINUE             Go on to the next iteration of the current
-   --  loop;
+   --  TCL_CONTINUE     Go on to the next iteration of the current loop;
    --                   the interpreter's result is meaningless.
    --
 
@@ -504,54 +385,60 @@ package Tcl is
    TCL_BREAK       : constant := 3;
    TCL_CONTINUE    : constant := 4;
    TCL_RESULT_SIZE : constant := 200;
+
+   --
+   --  Flags to control what substitutions are performed by Tcl_SubstObj():
+   --
+
+   TCL_SUBST_COMMANDS    : constant := 8#001#;
+   TCL_SUBST_VARIABLES   : constant := 8#002#;
+   TCL_SUBST_BACKSLASHES : constant := 8#004#;
+   TCL_SUBST_ALL         : constant := 8#007#;
+
    --
    --  Argument descriptors for math function callbacks in expressions:
    --
 
-   type Tcl_ValueType is (TCL_INT, TCL_DOUBLE, TCL_EITHER);
+   type Tcl_ValueType is (TCL_INT, TCL_DOUBLE, TCL_EITHER, TCL_WIDE_INT);
    for Tcl_ValueType'Size use 32;
 
-   type Tcl_Value_Rec is private;
-   type Tcl_Value is access all Tcl_Value_Rec;
+   type Tcl_Value_rec is record
+      typ : Tcl_ValueType;
+      --  Indicates intValue or doubleValue is valid, or both; or
+      --  wideValue.
+      intValue : C.long;
+      --  Integer value.
+      doubleValue : C.double;
+      --  Double-precision floating value.
+      wideValue : Tcl_WideInt;
+      --  Wide (min. 64-bit) integer value.
+   end record;
+   pragma Convention (C, Tcl_Value_rec);
+   type Tcl_Value is access all Tcl_Value_rec;
    pragma Convention (C, Tcl_Value);
-
-   Null_Tcl_Value : constant Tcl_Value;
-
+   Null_Tcl_Value : constant Tcl_Value := null;
    function Is_Null (Ptr : in Tcl_Value) return Boolean;
 
    --
-   --  Forward declaration of Tcl_Obj to prevent an error when the forward
-   --  reference to Tcl_Obj is encountered in the procedure types declared
-   --  below.
+   --  Tcl_Obj forward declaration (for use by subprogram types)
    --
 
-   type Tcl_Obj_Rec is private;
-   type Tcl_Obj is access all Tcl_Obj_Rec;
-   pragma Convention (C, Tcl_Obj);
-
-   Null_Tcl_Obj : constant Tcl_Obj;
-
-   subtype CNatural is C.int range 0 .. C.int'Last;
-
-   type Tcl_Obj_Array is array (CNatural range <>) of aliased Tcl_Obj;
-   pragma Convention (C, Tcl_Obj_Array);
-
-   function Is_Null (Ptr : in Tcl_Obj) return Boolean;
+   type Tcl_Obj;
 
    --
-   --  Procedure types defined by Tcl:
+   --  Subprogram types defined by Tcl:
    --
 
    type Tcl_AppInitProc is access function
      (interp : in Tcl_Interp)
-   return      C.int;
+     return      C.int;
    pragma Convention (C, Tcl_AppInitProc);
 
    type Tcl_AsyncProc is access function
      (data   : in ClientData;
       interp : in Tcl_Interp;
       code   : in C.int)
-   return      C.int;
+     return      C.int;
    pragma Convention (C, Tcl_AsyncProc);
 
    type Tcl_ChannelProc is access procedure
@@ -603,12 +490,6 @@ package Tcl is
 
    type Tcl_EncodingFreeProc is access procedure (data : in ClientData);
    pragma Convention (C, Tcl_EncodingFreeProc);
-
-   type Tcl_EventProc is access function
-     (evPtr : in Tcl_Event;
-      flags : in C.int)
-   return     C.int;
-   pragma Convention (C, Tcl_EventProc);
 
    type Tcl_EventCheckProc is access procedure
      (data  : in ClientData;
@@ -715,6 +596,8 @@ package Tcl is
    return      C.Strings.chars_ptr;
    pragma Convention (C, Tcl_VarTraceProc);
 
+   --  @todo Tcl_CommandTraceProc
+
    type Tcl_CreateFileHandlerProc is access procedure
      (fd   : in C.int;
       mask : in C.int;
@@ -737,6 +620,9 @@ package Tcl is
    type Tcl_FinalizeNotifierProc is access procedure (data : in ClientData);
    pragma Convention (C, Tcl_FinalizeNotifierProc);
 
+   --
+   --  Tcl_Obj declarations.
+   --
 
    --
    --  The following structure represents a type of object, which is a
@@ -744,12 +630,29 @@ package Tcl is
    --  procedures that provide standard operations on objects of that type.
    --
 
-   type Tcl_ObjType_Rec is private;
-   type Tcl_ObjType is access all Tcl_ObjType_Rec;
+   type Tcl_ObjType_rec is record
+      name : C.Strings.chars_ptr;
+      --  Name of the type, e.g. "int".
+      freeIntRepProc : Tcl_FreeInternalRepProc;
+      --  Called to free any storage for the type's
+      --  internal rep. NULL if the internal rep
+      --  does not need freeing.
+      dupIntRepProc : Tcl_DupInternalRepProc;
+      --  Called to create a new object as a copy
+      --  of an existing object.
+      updateStringProc : Tcl_UpdateStringProc;
+      --  Called to update the string rep from the
+      --  type's internal representation.
+      setFromAnyProc : Tcl_SetFromAnyProc;
+      --  Called to convert the object's internal
+      --  rep to this type. Frees the internal rep
+      --  of the old type. Returns TCL_ERROR on
+      --  failure.
+   end record;
+   pragma Convention (C, Tcl_ObjType_rec);
+   type Tcl_ObjType is access all Tcl_ObjType_rec;
    pragma Convention (C, Tcl_ObjType);
-
-   Null_Tcl_ObjType : constant Tcl_ObjType;
-
+   Null_Tcl_ObjType : constant Tcl_ObjType := null;
    function Is_Null (Ptr : in Tcl_ObjType) return Boolean;
 
    --
@@ -758,18 +661,28 @@ package Tcl is
    --  representation, or both.
    --
 
+   type Tcl_Obj_rec is record
+      refCount : C.int;
+      bytes : C.Strings.chars_ptr;
+      length : C.int;
+      typePtr : Tcl_ObjType;
+      internalRep : C.double;  -- @todo make precise rep for C union
+   end record;
+   pragma Convention (C, Tcl_Obj_rec);
+   type Tcl_Obj is access all Tcl_Obj_rec;
+   pragma Convention (C, Tcl_Obj);
+   Null_Tcl_Obj : constant Tcl_Obj := null;
+   function Is_Null (Ptr : in Tcl_Obj) return Boolean;
+
+   type Tcl_Obj_Array is array (CNatural range <>) of aliased Tcl_Obj;
+   pragma Convention (C, Tcl_Obj_Array);
+
    --
-   --  Macros to increment and decrement a Tcl_Obj's reference count, and to
-   --  test whether an object is shared {i.e. has reference count > 1}.
-   --  Note: clients should use Tcl_DecrRefCount {} when they are finished
-   --  using
-   --  an object, and should never call TclFreeObj {} directly. TclFreeObj {}
-   --  is
-   --  only defined and made public in tcl.h to support Tcl_DecrRefCount's
-   --  macro
-   --  definition. Note also that Tcl_DecrRefCount {} refers to the parameter
-   --  "obj" twice. This means that you should avoid calling it with an
-   --  expression that is expensive to compute or has side effects.
+   --  Subprograms to increment and decrement a Tcl_Obj's reference count,
+   --  and to test whether an object is shared {i.e. has reference
+   --  count > 1}.
+   --
+   --  These subprograms are implemented in TASH's C bindings.
    --
 
    procedure Tcl_IncrRefCount (objPtr : in Tcl_Obj);
@@ -782,25 +695,15 @@ package Tcl is
    pragma Import (C, Tcl_IsShared, "Tcl_CallIsShared");
 
    --
-   --  Macros and definitions that help to debug the use of Tcl objects.
-   --  When TCL_MEM_DEBUG is defined, the Tcl_New declarations are
-   --  overridden to call debugging versions of the object creation procedures.
-   --
-
-   --  TCL_MEM_DEBUG
-
-   --
    --  The following structure contains the state needed by
    --  Tcl_SaveResult.  No-one outside of Tcl should access any of these
    --  fields.  This structure is typically allocated on the stack.
    --
 
-   type Tcl_SavedResult_Rec is private;
-   type Tcl_SavedResult is access all Tcl_SavedResult_Rec;
+   type Tcl_SavedResult_rec is private;
+   type Tcl_SavedResult is access all Tcl_SavedResult_rec;
    pragma Convention (C, Tcl_SavedResult);
-
-   Null_Tcl_SavedResult : constant Tcl_SavedResult;
-
+   Null_Tcl_SavedResult : constant Tcl_SavedResult := null;
    function Is_Null (Ptr : in Tcl_SavedResult) return Boolean;
 
    --
@@ -809,42 +712,59 @@ package Tcl is
    --  Namespace structure {see tclInt.h}.
    --
 
-   type Tcl_Namespace_Rec is private;
-   type Tcl_Namespace is access all Tcl_Namespace_Rec;
+   type Tcl_Namespace_rec;
+   type Tcl_Namespace is access all Tcl_Namespace_rec;
    pragma Convention (C, Tcl_Namespace);
-
-   Null_Tcl_Namespace : constant Tcl_Namespace;
-
+   Null_Tcl_Namespace : constant Tcl_Namespace := null;
    function Is_Null (Ptr : in Tcl_Namespace) return Boolean;
+   type Tcl_Namespace_rec is record
+      name : C.Strings.chars_ptr;
+      --  The namespace's name within its parent namespace. This
+      --  contains no ::'s. The name of the global namespace is ""
+      --  although "::" is an synonym.
+      fullName : C.Strings.chars_ptr;
+      --  The namespace's fully qualified name.  This starts with ::.
+      data : ClientData;
+      --  Arbitrary value associated with this namespace.
+      deleteProc : Tcl_NamespaceDeleteProc;
+      --  Procedure invoked when deleting the namespace to, e.g., free
+      --  clientData.
+      parentPtr : Tcl_Namespace;
+      --  Points to the namespace that contains this one. NULL if this
+      --  is the global namespace.
+   end record;
+   pragma Convention (C, Tcl_Namespace_rec);
 
    --
-   --  The following structure represents a call frame, or activation record.
-   --  A call frame defines a naming context for a procedure call: its local
-   --  scope {for local variables} and its namespace scope {used for non-local
-   --  variables; often the global :: namespace}. A call frame can also define
-   --  the naming context for a namespace eval or namespace inscope command:
-   --  the namespace in which the command's code should execute. The
-   --  Tcl_CallFrame structures exist only while procedures or namespace
-   --  eval/inscope's are being executed, and provide a Tcl call stack.
+   --  The following structure represents a call frame, or activation
+   --  record.  A call frame defines a naming context for a procedure
+   --  call: its local scope {for local variables} and its namespace
+   --  scope {used for non-local variables; often the global ::
+   --  namespace}. A call frame can also define the naming context for
+   --  a namespace eval or namespace inscope command: the namespace in
+   --  which the command's code should execute. The Tcl_CallFrame
+   --  structures exist only while procedures or namespace
+   --  eval/inscope's are being executed, and provide a Tcl call
+   --  stack.
    --
-   --  A call frame is initialized and pushed using Tcl_PushCallFrame and
-   --  popped using Tcl_PopCallFrame. Storage for a Tcl_CallFrame must be
-   --  provided by the Tcl_PushCallFrame caller, and callers typically allocate
-   --  them on the C call stack for efficiency. For this reason, Tcl_CallFrame
-   --  is defined as a structure and not as an opaque token. However, most
-   --  Tcl_CallFrame fields are hidden since applications should not access
-   --  them directly; others are declared as "dummyX".
+   --  A call frame is initialized and pushed using Tcl_PushCallFrame
+   --  and popped using Tcl_PopCallFrame. Storage for a Tcl_CallFrame
+   --  must be provided by the Tcl_PushCallFrame caller, and callers
+   --  typically allocate them on the C call stack for efficiency. For
+   --  this reason, Tcl_CallFrame is defined as a structure and not as
+   --  an opaque token. However, most Tcl_CallFrame fields are hidden
+   --  since applications should not access them directly; others are
+   --  declared as "dummyX".
    --
-   --  WARNING!! The structure definition must be kept consistent with the
-   --  CallFrame structure in tclInt.h. If you change one, change the other.
+   --  WARNING!! The structure definition must be kept consistent with
+   --  the CallFrame structure in tclInt.h. If you change one, change
+   --  the other.
    --
 
-   type Tcl_CallFrame_Rec is private;
-   type Tcl_CallFrame is access all Tcl_CallFrame_Rec;
+   type Tcl_CallFrame_rec is private;
+   type Tcl_CallFrame is access all Tcl_CallFrame_rec;
    pragma Convention (C, Tcl_CallFrame);
-
-   Null_Tcl_CallFrame : constant Tcl_CallFrame;
-
+   Null_Tcl_CallFrame : constant Tcl_CallFrame := null;
    function Is_Null (Ptr : in Tcl_CallFrame) return Boolean;
 
    --
@@ -862,27 +782,49 @@ package Tcl is
    --  calls the other procedure.
    --
 
-   type Tcl_CmdInfo_Rec is private;
-   type Tcl_CmdInfo is access all Tcl_CmdInfo_Rec;
+   type Tcl_CmdInfo_rec is record
+      isNativeObjectProc : C.int;
+      --  1 if objProc was registered by a call to
+      --  Tcl_CreateObjCommand; 0 otherwise.
+      --  Tcl_SetCmdInfo does not modify this
+      --  field.
+      objProc : Tcl_ObjCmdProc;
+      --  Command's object-based procedure.
+      objclientdata : ClientData;
+      --  ClientData for object proc.
+      proc : Tcl_CmdProc;
+      --  Command's string-based procedure.
+      data : ClientData;
+      --  ClientData for string proc.
+      deleteProc : Tcl_CmdDeleteProc;
+      --  Procedure to call when command is
+      --  deleted.
+      deletedata : ClientData;
+      --  Value to pass to deleteProc {usually
+      --  the same as clientData}.
+      namespacePtr : Tcl_Namespace;
+      --  Points to the namespace that contains
+      --  this command. Note that Tcl_SetCmdInfo
+      --  will not change a command's namespace;
+      --  use Tcl_RenameCommand to do that.
+   end record;
+   pragma Convention (C, Tcl_CmdInfo_rec);
+   type Tcl_CmdInfo is access all Tcl_CmdInfo_rec;
    pragma Convention (C, Tcl_CmdInfo);
-
-   Null_Tcl_CmdInfo : constant Tcl_CmdInfo;
-
+   Null_Tcl_CmdInfo : constant Tcl_CmdInfo := null;
    function Is_Null (Ptr : in Tcl_CmdInfo) return Boolean;
 
    --
-   --  The structure defined below is used to hold dynamic strings.  The only
-   --  field that clients should use is the string field, and they should
-   --  never modify it.
+   --  The structure defined below is used to hold dynamic strings.
+   --  The only field that clients should use is the string field, and
+   --  they should never modify it.
    --
+   --  For Tash -- use Tcl_DStringValue
 
-   TCL_DSTRING_STATIC_SIZE : constant := 200;
-   type Tcl_DString_Rec is private;
-   type Tcl_DString is access all Tcl_DString_Rec;
+   type Tcl_DString_rec is private;
+   type Tcl_DString is access all Tcl_DString_rec;
    pragma Convention (C, Tcl_DString);
-
-   Null_Tcl_DString : constant Tcl_DString;
-
+   Null_Tcl_DString : constant Tcl_DString := null;
    function Is_Null (Ptr : in Tcl_DString) return Boolean;
 
    function Tcl_DStringLength (dsPtr : in Tcl_DString) return C.int;
@@ -898,69 +840,89 @@ package Tcl is
       length : in C.int);
    pragma Import (C, Tcl_DStringSetLength, "Tcl_DStringSetLength");
 
-   procedure Tcl_DStringTrunc (dsPtr : in Tcl_DString; length : in C.int);
-   pragma Import (C, Tcl_DStringTrunc, "Tcl_DStringSetLength");
+   procedure Tcl_DStringTrunc (dsPtr : in Tcl_DString; length : in C.int)
+     renames Tcl_DStringSetLength;
 
    --
    --  Definitions for the maximum number of digits of precision that may
    --  be specified in the "tcl_precision" variable, and the number of
    --  bytes of buffer space required by Tcl_PrintDouble.
    --
-
    TCL_MAX_PREC     : constant := 17;
    TCL_DOUBLE_SPACE : constant := TCL_MAX_PREC + 10;
-   --
-   --  Definition for a number of bytes of buffer space sufficient to hold the
-   --  string representation of an integer in base 10 {assuming the existence
-   --  of 64-bit integers}.
-   --
 
+   --
+   --  Definition for a number of bytes of buffer space sufficient to
+   --  hold the string representation of an integer in base 10
+   --  {assuming the existence of 64-bit integers}.
+   --
    TCL_INTEGER_SPACE : constant := 24;
+
    --
    --  Flag that may be passed to Tcl_ConvertElement to force it not to
    --  output braces {careful!  if you change this flag be sure to change
    --  the definitions at the front of tclUtil.c}.
    --
-
    TCL_DONT_USE_BRACES : constant := 1;
+
    --
    --  Flag that may be passed to Tcl_GetIndexFromObj to force it to disallow
    --  abbreviated strings.
    --
-
    TCL_EXACT : constant := 1;
+
    --
    --  Flag values passed to Tcl_RecordAndEval and/or Tcl_EvalObj.
    --  WARNING: these bit choices must not conflict with the bit choices
    --  for evalFlag bits in tclInt.h!!
    --
+   TCL_NO_EVAL     : constant := 16#10000#;
+   TCL_EVAL_GLOBAL : constant := 16#20000#;
+   TCL_EVAL_DIRECT : constant := 16#40000#;
+   TCL_EVAL_INVOKE : constant := 16#80000#;
 
-   TCL_NO_EVAL     : constant := 65536;
-   TCL_EVAL_GLOBAL : constant := 131072;
-   TCL_EVAL_DIRECT : constant := 262144;
    --
    --  Special freeProc values that may be passed to Tcl_SetResult {see
    --  the man page for details}:
    --
-
    TCL_VOLATILE : constant := 1;
    TCL_STATIC   : constant := 0;
    TCL_DYNAMIC  : constant := 3;
+
    --
    --  Flag values passed to variable-related procedures.
    --
+   TCL_GLOBAL_ONLY          : constant := 16#00001#;
+   TCL_NAMESPACE_ONLY       : constant := 16#00002#;
+   TCL_APPEND_VALUE         : constant := 16#00004#;
+   TCL_LIST_ELEMENT         : constant := 16#00008#;
+   TCL_TRACE_READS          : constant := 16#00010#;
+   TCL_TRACE_WRITES         : constant := 16#00020#;
+   TCL_TRACE_UNSETS         : constant := 16#00040#;
+   TCL_TRACE_DESTROYED      : constant := 16#00080#;
+   TCL_INTERP_DESTROYED     : constant := 16#00100#;
+   TCL_LEAVE_ERR_MSG        : constant := 16#00200#;
+   TCL_TRACE_ARRAY          : constant := 16#00800#;
+   TCL_TRACE_OLD_STYLE      : constant := 16#01000#;
+   TCL_TRACE_RESULT_DYNAMIC : constant := 16#08000#;
+   TCL_TRACE_RESULT_OBJECT  : constant := 16#10000#;
 
-   TCL_GLOBAL_ONLY      : constant := 1;
-   TCL_NAMESPACE_ONLY   : constant := 2;
-   TCL_APPEND_VALUE     : constant := 4;
-   TCL_LIST_ELEMENT     : constant := 8;
-   TCL_TRACE_READS      : constant := 16;
-   TCL_TRACE_WRITES     : constant := 32;
-   TCL_TRACE_UNSETS     : constant := 64;
-   TCL_TRACE_DESTROYED  : constant := 128;
-   TCL_INTERP_DESTROYED : constant := 256;
-   TCL_LEAVE_ERR_MSG    : constant := 512;
-   TCL_TRACE_ARRAY      : constant := 2048;
+   --
+   --  Flag values passed to command-related procedures.
+   --
+   TCL_TRACE_RENAME             : constant := 16#02000#;
+   TCL_TRACE_DELETE             : constant := 16#04000#;
+
+   TCL_ALLOW_INLINE_COMPILATION : constant := 16#20000#;
+
+   --
+   --  Flag values passed to Tcl_CreateObjTrace, and used internally by
+   --  command execution traces.  Slots 4,8,16 and 32 are used
+   --  internally by execution traces (see tclCmdMZ.c)
+   --
+   TCL_TRACE_ENTER_EXEC : constant := 1;
+   TCL_TRACE_LEAVE_EXEC : constant := 2;
+
    --
    --  The TCL_PARSE_PART1 flag is deprecated and has no effect.
    --  The part1 is now always parsed whenever the part2 is NULL.
@@ -968,68 +930,54 @@ package Tcl is
    --   use the new object based APIs and forgetting to give the
    --   flag}
    --
+   TCL_PARSE_PART1 : constant := 16#400#;
 
-   TCL_PARSE_PART1 : constant := 1024;
    --
    --  Types for linked variables:
    --
-
    TCL_LINK_INT       : constant := 1;
    TCL_LINK_DOUBLE    : constant := 2;
    TCL_LINK_BOOLEAN   : constant := 3;
    TCL_LINK_STRING    : constant := 4;
-   TCL_LINK_READ_ONLY : constant := 128;
+   TCL_LINK_READ_ONLY : constant := 16#80#;
+
    --
-   --  Forward declaration of Tcl_HashTable.  Needed by some C++ compilers
-   --  to prevent errors when the forward reference to Tcl_HashTable is
-   --  encountered in the Tcl_HashEntry structure.
+   --  Forward declaration of Tcl_HashTable and related types.
    --
 
    --
-   --  Structure definition for an entry in a hash table.  No-one outside
-   --  Tcl should access any of these fields directly;  use the macros
-   --  defined below.
+   --  Structure definition for an entry in a hash table; use the
+   --  subprograms defined below.
    --
 
-   type Tcl_HashEntry_Rec is private;
-   type Tcl_HashEntry is access all Tcl_HashEntry_Rec;
+   type Tcl_HashEntry_rec (<>) is private;
+   type Tcl_HashEntry is access all Tcl_HashEntry_rec;
    pragma Convention (C, Tcl_HashEntry);
-
-   Null_Tcl_HashEntry : constant Tcl_HashEntry;
+   Null_Tcl_HashEntry : constant Tcl_HashEntry := null;
+   function Is_Null (Ptr : in Tcl_HashEntry) return Boolean;
 
    type Tcl_HashEntry_Array is
      array (CNatural range <>) of aliased Tcl_HashEntry;
    pragma Convention (C, Tcl_HashEntry_Array);
 
-   function Is_Null (Ptr : in Tcl_HashEntry) return Boolean;
+   type Tcl_HashEntry_Ptr is access all Tcl_HashEntry;
+   pragma Convention (C, Tcl_HashEntry_Ptr);
 
-   --
-   --  Structure definition for a hash table.  Must be in tcl.h so clients
-   --  can allocate space for these structures, but clients should never
-   --  access any fields in this structure.
-   --
+   type Tcl_HashKeyType_rec (<>) is private;
+   type Tcl_HashKeyType is access all Tcl_HashKeyType_rec;
+   pragma Convention (C, Tcl_HashKeyType);
 
-   TCL_SMALL_HASH_TABLE : constant := 4;
-   type Tcl_HashTable_Rec is private;
-   type Tcl_HashTable is access all Tcl_HashTable_Rec;
-   pragma Convention (C, Tcl_HashTable);
-
-   Null_Tcl_HashTable : constant Tcl_HashTable;
-
-   function Is_Null (Ptr : in Tcl_HashTable) return Boolean;
-
-   --
-   --  Structure definition for information used to keep track of searches
-   --  through hash tables:
-   --
-
-   type Tcl_HashSearch_Rec is private;
-   type Tcl_HashSearch is access all Tcl_HashSearch_Rec;
+   type Tcl_HashSearch_rec is private;
+   type Tcl_HashSearch is access all Tcl_HashSearch_rec;
    pragma Convention (C, Tcl_HashSearch);
-
-   Null_Tcl_HashSearch : constant Tcl_HashSearch;
-
+   Null_Tcl_HashSearch : constant Tcl_HashSearch := null;
    function Is_Null (Ptr : in Tcl_HashSearch) return Boolean;
+
+   type Tcl_HashTable_rec is private;
+   type Tcl_HashTable is access all Tcl_HashTable_rec;
+   pragma Convention (C, Tcl_HashTable);
+   Null_Tcl_HashTable : constant Tcl_HashTable := null;
+   function Is_Null (Ptr : in Tcl_HashTable) return Boolean;
 
    --
    --  Acceptable key types for hash tables:
@@ -1037,6 +985,7 @@ package Tcl is
 
    TCL_STRING_KEYS   : constant := 0;
    TCL_ONE_WORD_KEYS : constant := 1;
+
    --
    --  Macros for clients to use to access fields of hash entries:
    --
@@ -1088,14 +1037,15 @@ package Tcl is
    --  WAS 0x10 ????
 
    TCL_ALL_EVENTS : constant := -3;
+
    --
-   --  The following structure defines a generic event for the Tcl event
-   --  system.  These are the things that are queued in calls to Tcl_QueueEvent
-   --  and serviced later by Tcl_DoOneEvent.  There can be many different
-   --  kinds of events with different fields, corresponding to window events,
-   --  timer events, etc.  The structure for a particular event consists of
-   --  a Tcl_Event header followed by additional information specific to that
-   --  event.
+   --  The following structure defines a generic event for the Tcl
+   --  event system.  These are the things that are queued in calls to
+   --  Tcl_QueueEvent and serviced later by Tcl_DoOneEvent.  There can
+   --  be many different kinds of events with different fields,
+   --  corresponding to window events, timer events, etc.  The
+   --  structure for a particular event consists of a Tcl_Event header
+   --  followed by additional information specific to that event.
    --
 
    --
@@ -1112,19 +1062,25 @@ package Tcl is
 
    TCL_SERVICE_NONE : constant := 0;
    TCL_SERVICE_ALL  : constant := 1;
+
    --
-   --  The following structure keeps is used to hold a time value, either as
-   --  an absolute time {the number of seconds from the epoch} or as an
-   --  elapsed time. On Unix systems the epoch is Midnight Jan 1, 1970 GMT.
-   --  On Macintosh systems the epoch is Midnight Jan 1, 1904 GMT.
+   --  The following structure is used to hold a time value, either as
+   --  an absolute time {the number of seconds from the epoch} or as
+   --  an elapsed time. On Unix systems the epoch is Midnight Jan 1,
+   --  1970 GMT.  On Macintosh OS 9 systems the epoch is Midnight Jan
+   --  1, 1904 GMT.
    --
 
-   type Tcl_Time_Rec is private;
-   type Tcl_Time is access all Tcl_Time_Rec;
+   type Tcl_Time_rec is record
+      sec : C.long;
+      --  Seconds.
+      usec : C.long;
+      --  Microseconds.
+   end record;
+   pragma Convention (C, Tcl_Time_rec);
+   type Tcl_Time is access all Tcl_Time_rec;
    pragma Convention (C, Tcl_Time);
-
-   Null_Tcl_Time : constant Tcl_Time;
-
+   Null_Tcl_Time : constant Tcl_Time := null;
    function Is_Null (Ptr : in Tcl_Time) return Boolean;
 
    type Tcl_SetTimerProc is access procedure (timePtr : in Tcl_Time);
@@ -1139,54 +1095,53 @@ package Tcl is
    --  Bits to pass to Tcl_CreateFileHandler and Tcl_CreateChannelHandler
    --  to indicate what sorts of events are of interest:
    --
-
    TCL_READABLE  : constant := 2;
    TCL_WRITABLE  : constant := 4;
    TCL_EXCEPTION : constant := 8;
+
    --
    --  Flag values to pass to Tcl_OpenCommandChannel to indicate the
-   --  disposition of the stdio handles.  TCL_STDIN, TCL_STDOUT, TCL_STDERR,
-   --  are also used in Tcl_GetStdChannel.
+   --  disposition of the stdio handles.  TCL_STDIN, TCL_STDOUT,
+   --  TCL_STDERR, are also used in Tcl_GetStdChannel.
    --
-
    TCL_STDIN        : constant := 2;
    TCL_STDOUT       : constant := 4;
    TCL_STDERR       : constant := 8;
    TCL_ENFORCE_MODE : constant := 16;
-   --
-   --  Bits passed to Tcl_DriverClose2Proc to indicate which side of a channel
-   --  should be closed.
-   --
 
+   --
+   --  Bits passed to Tcl_DriverClose2Proc to indicate which side of a
+   --  channel should be closed.
+   --
    TCL_CLOSE_READ  : constant := 2;
    TCL_CLOSE_WRITE : constant := 4;
+
    --
    --  Value to use as the closeProc for a channel that supports the
    --  close2Proc interface.
    --
-
    TCL_CLOSE2PROC : constant := 1;
+
    --
    --  Typedefs for the various operations in a channel type:
    --
-
    type Tcl_DriverBlockModeProc is access function
      (instancedata : in ClientData;
       mode         : in C.int)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverBlockModeProc);
 
    type Tcl_DriverCloseProc is access function
      (instancedata : in ClientData;
       interp       : in Tcl_Interp)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverCloseProc);
 
    type Tcl_DriverClose2Proc is access function
      (instancedata : in ClientData;
       interp       : in Tcl_Interp;
       flags        : in C.int)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverClose2Proc);
 
    type Tcl_DriverInputProc is access function
@@ -1194,7 +1149,7 @@ package Tcl is
       buf          : in C.Strings.chars_ptr;
       toRead       : in C.int;
       errorCodePtr : access C.int)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverInputProc);
 
    type Tcl_DriverOutputProc is access function
@@ -1202,7 +1157,7 @@ package Tcl is
       buf          : in C.Strings.chars_ptr;
       toWrite      : in C.int;
       errorCodePtr : access C.int)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverOutputProc);
 
    type Tcl_DriverSeekProc is access function
@@ -1210,7 +1165,7 @@ package Tcl is
       offset       : in C.long;
       mode         : in C.int;
       errorCodePtr : access C.int)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverSeekProc);
 
    type Tcl_DriverSetOptionProc is access function
@@ -1218,7 +1173,7 @@ package Tcl is
       interp       : in Tcl_Interp;
       optionName   : in C.Strings.chars_ptr;
       value        : in C.Strings.chars_ptr)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverSetOptionProc);
 
    type Tcl_DriverGetOptionProc is access function
@@ -1226,12 +1181,12 @@ package Tcl is
       interp       : in Tcl_Interp;
       optionName   : in C.Strings.chars_ptr;
       dsPtr        : in Tcl_DString)
-   return            C.int;
+     return            C.int;
    pragma Convention (C, Tcl_DriverGetOptionProc);
 
    type Tcl_DriverWatchProc is access procedure
-  (instancedata : in ClientData;
-   mask         : in C.int);
+     (instancedata : in ClientData;
+      mask         : in C.int);
    pragma Convention (C, Tcl_DriverWatchProc);
 
    type Tcl_DriverGetHandleProc is access function
@@ -1266,6 +1221,7 @@ package Tcl is
       length       : in Tcl_WideInt);
 
    --
+   --  The following declarations either map ckalloc and ckfree to
    --  malloc and free, or they map them to procedures with all sorts
    --  of debugging hooks defined in tclCkalloc.c.
    --
@@ -1274,65 +1230,112 @@ package Tcl is
 
    --
    --  If we are not using the debugging allocator, we should call the
-   --  is using the same memory allocator both inside and outside of the
-   --  Tcl library.
+   --  Tcl_Alloc, et al. routines in order to guarantee that every
+   --  module is using the same memory allocator both inside and
+   --  outside of the Tcl library.
    --
 
    --  !TCL_MEM_DEBUG
 
    --
-   --  Enum for different end of line translation and recognition modes.
+   --  Enum for different end of line translation and recognition
+   --  modes.
    --
 
    type Tcl_EolTranslation is (
-      TCL_TRANSLATE_AUTO,
-   --  Eol == \r, \n and \r\n.
-      TCL_TRANSLATE_CR,
-   --  Eol == \r.
-      TCL_TRANSLATE_LF,
-   --  Eol == \n.
-      TCL_TRANSLATE_CRLF
-   --  Eol == \r\n.
-     );
+                               TCL_TRANSLATE_AUTO,
+                               --  Eol == \r, \n and \r\n.
+                               TCL_TRANSLATE_CR,
+                               --  Eol == \r.
+                               TCL_TRANSLATE_LF,
+                               --  Eol == \n.
+                               TCL_TRANSLATE_CRLF
+                                 --  Eol == \r\n.
+                              );
    for Tcl_EolTranslation'Size use 32;
 
    --
    --  struct Tcl_ChannelType:
    --
-   --  One such structure exists for each type {kind} of channel.
-   --  It collects together in one place all the functions that are
-   --  part of the specific channel type.
+   --  One such structure exists for each type {kind} of channel.  It
+   --  collects together in one place all the functions that are part
+   --  of the specific channel type.
+   --
+   --  It is recommend that the Tcl_Channel* functions are used to
+   --  access elements of this structure, instead of direct accessing.
    --
 
-   type Tcl_ChannelType_Rec is private;
-   type Tcl_ChannelType is access all Tcl_ChannelType_Rec;
+   type Tcl_ChannelType_rec is record
+      --  The name of the channel type in Tcl commands. This storage
+      --  is owned by channel type.
+      typeName : C.Strings.chars_ptr;
+      --  Version of the channel type.
+      version : System.Address;
+      --  Procedure to call to close the channel, or TCL_CLOSE2PROC if
+      --  the close2Proc should be used instead.
+      closeProc : Tcl_DriverCloseProc;
+      --  Procedure to call for input on channel.
+      inputProc : Tcl_DriverInputProc;
+      --  Procedure to call for output on channel.
+      outputProc : Tcl_DriverOutputProc;
+      --  Procedure to call to seek on the channel. May be NULL.
+      seekProc : Tcl_DriverSeekProc;
+      --  Set an option on a channel.
+      setOptionProc : Tcl_DriverSetOptionProc;
+      --  Get an option from a channel.
+      getOptionProc : Tcl_DriverGetOptionProc;
+      --  Set up the notifier to watch for events on this channel.
+      watchProc : Tcl_DriverWatchProc;
+      --  Get an OS handle from the channel or NULL if not supported.
+      getHandleProc : Tcl_DriverGetHandleProc;
+      --  Procedure to call to close the channel if the device
+      --  supports closing the read & write sides independently.
+      close2Proc : Tcl_DriverClose2Proc;
+      --  Set blocking mode for the raw channel. May be NULL.
+      blockModeProc : Tcl_DriverBlockModeProc;
+      --  Only valid in TCL_CHANNEL_VERSION_2 channels or later:
+      --  Function to call to flush a channel. May be NULL.
+      flushProc : Tcl_DriverFlushProc;
+      --  Only valid in TCL_CHANNEL_VERSION_2 channels or later:
+      --  Function to call to handle a channel event.  This will be
+      --  passed up the stacked channel chain.
+      handlerProc : Tcl_DriverHandlerProc;
+      --  Only valid in TCL_CHANNEL_VERSION_3 channels or later:
+      --  Function to call to seek on the channel which can handle
+      --  64-bit offsets. May be NULL, and must be NULL if seekProc is
+      --  NULL.
+      wideSeekProc : Tcl_DriverWideSeekProc;
+      --  Only valid in TCL_CHANNEL_VERSION_5 channels or later:
+      --  Function to call to truncate the underlying file to a
+      --  particular length. May be NULL if the channel does not
+      --  support truncation.
+      truncateProc : Tcl_DriverTruncateProc;
+   end record;
+   pragma Convention (C, Tcl_ChannelType_rec);
+   type Tcl_ChannelType is access all Tcl_ChannelType_rec;
    pragma Convention (C, Tcl_ChannelType);
-
-   Null_Tcl_ChannelType : constant Tcl_ChannelType;
-
+   Null_Tcl_ChannelType : constant Tcl_ChannelType := null;
    function Is_Null (Ptr : in Tcl_ChannelType) return Boolean;
 
    --
-   --  The following flags determine whether the blockModeProc above should
-   --  set the channel into blocking or nonblocking mode. They are passed
-   --  as arguments to the blockModeProc procedure in the above structure.
+   --  The following flags determine whether the blockModeProc above
+   --  should set the channel into blocking or nonblocking mode. They
+   --  are passed as arguments to the blockModeProc procedure in the
+   --  above structure.
    --
 
    TCL_MODE_BLOCKING : constant := 0;
    --  Put channel into blocking mode.
 
    TCL_MODE_NONBLOCKING : constant := 1;
-   --  Put channel into nonblocking
-   --  mode.
+   --  Put channel into nonblocking mode.
 
    --
    --  Enum for different types of file paths.
    --
-
-   type Tcl_PathType is (
-      TCL_PATH_ABSOLUTE,
-      TCL_PATH_RELATIVE,
-      TCL_PATH_VOLUME_RELATIVE);
+   type Tcl_PathType is (TCL_PATH_ABSOLUTE,
+                         TCL_PATH_RELATIVE,
+                         TCL_PATH_VOLUME_RELATIVE);
    for Tcl_PathType'Size use 32;
 
    --
@@ -1340,33 +1343,63 @@ package Tcl is
    --  you can override with the Tcl_SetNotifier call.
    --
 
-   type Tcl_NotifierProcs_Rec is private;
-   type Tcl_NotifierProcs is access all Tcl_NotifierProcs_Rec;
+   type Tcl_NotifierProcs_rec is record
+      setTimerProc          : Tcl_SetTimerProc;
+      waitForEventProc      : Tcl_WaitForEventProc;
+      createFileHandlerProc : Tcl_CreateFileHandlerProc;
+      deleteFileHandlerProc : Tcl_DeleteFileHandlerProc;
+      initNotifierProc      : Tcl_InitNotifierProc;
+      finalizeNotifierProc  : Tcl_FinalizeNotifierProc;
+      alertNotifierProc     : Tcl_AlertNotifierProc;
+      serviceModeHookProc   : Tcl_ServiceModeHookProc;
+   end record;
+   pragma Convention (C, Tcl_NotifierProcs_rec);
+   type Tcl_NotifierProcs is access all Tcl_NotifierProcs_rec;
    pragma Convention (C, Tcl_NotifierProcs);
-
-   Null_Tcl_NotifierProcs : constant Tcl_NotifierProcs;
-
+   Null_Tcl_NotifierProcs : constant Tcl_NotifierProcs := null;
    function Is_Null (Ptr : in Tcl_NotifierProcs) return Boolean;
 
    --
-   --  The following structure represents a user-defined encoding.  It collects
-   --  together all the functions that are used by the specific encoding.
+   --  The following structure represents a user-defined encoding.  It
+   --  collects together all the functions that are used by the
+   --  specific encoding.
    --
 
-   type Tcl_EncodingType_Rec is private;
-   type Tcl_EncodingType is access all Tcl_EncodingType_Rec;
+   type Tcl_EncodingType_rec is record
+      encodingName : C.Strings.chars_ptr;
+      --  The name of the encoding, e.g.  "euc-jp".
+      --  This name is the unique key for this
+      --  encoding type.
+      toUtfProc : Tcl_EncodingConvertProc;
+      --  Procedure to convert from external
+      --  encoding into UTF-8.
+      fromUtfProc : Tcl_EncodingConvertProc;
+      --  Procedure to convert from UTF-8 into
+      --  external encoding.
+      freeProc : Tcl_EncodingFreeProc;
+      --  If non-NULL, procedure to call when this
+      --  encoding is deleted.
+      data : ClientData;
+      --  Arbitrary value associated with encoding
+      --  type.  Passed to conversion procedures.
+      nullSize : C.int;
+      --  Number of zero bytes that signify
+      --  end-of-string in this encoding.  This
+      --  number is used to determine the source
+      --  string length when the srcLen argument is
+      --  negative.  Must be 1 or 2.
+   end record;
+   pragma Convention (C, Tcl_EncodingType_rec);
+   type Tcl_EncodingType is access all Tcl_EncodingType_rec;
    pragma Convention (C, Tcl_EncodingType);
-
-   Null_Tcl_EncodingType : constant Tcl_EncodingType;
-
+   Null_Tcl_EncodingType : constant Tcl_EncodingType := null;
    function Is_Null (Ptr : in Tcl_EncodingType) return Boolean;
 
    --
    --  The following definitions are used as values for the conversion control
    --  flags argument when converting text from one character set to another:
    --
-   --  TCL_ENCODING_START:              Signifies that the source buffer is
-   --  the first
+   --  TCL_ENCODING_START:      Signifies that the source buffer is the first
    --                           block in a {potentially multi-block} input
    --                           stream.  Tells the conversion procedure to
    --                           reset to an initial state and perform any
@@ -1375,8 +1408,7 @@ package Tcl is
    --                           buffer contains the entire input stream to be
    --                           converted, this flag should be set.
    --
-   --  TCL_ENCODING_END:                Signifies that the source buffer is
-   --  the last
+   --  TCL_ENCODING_END:        Signifies that the source buffer is the last
    --                           block in a {potentially multi-block} input
    --                           stream.  Tells the conversion routine to
    --                           perform any finalization that needs to occur
@@ -1385,7 +1417,7 @@ package Tcl is
    --                           buffer contains the entire input stream to be
    --                           converted, this flag should be set.
    --
-   --  TCL_ENCODING_STOPONERROR:        If set, then the converter will return
+   --  TCL_ENCODING_STOPONERROR: If set, then the converter will return
    --                           immediately upon encountering an invalid
    --                           byte sequence or a source character that has
    --                           no mapping in the target encoding.  If clear,
@@ -1398,6 +1430,7 @@ package Tcl is
    TCL_ENCODING_START       : constant := 1;
    TCL_ENCODING_END         : constant := 2;
    TCL_ENCODING_STOPONERROR : constant := 4;
+
    --
    -- ----------------------------------------------------------------
    --  The following data structures and declarations are for the new
@@ -1405,22 +1438,15 @@ package Tcl is
    -- ----------------------------------------------------------------
    --
 
-   --
-   --  For each word of a command, and for each piece of a word such as a
-   --  variable reference, one of the following structures is created to
-   --  describe the token.
-   --
-
-   type Tcl_Token_Rec is private;
-   type Tcl_Token is access all Tcl_Token_Rec;
+   type Tcl_Token_rec is private;  -- @todo work out just what this does!
+   type Tcl_Token is access all Tcl_Token_rec;
    pragma Convention (C, Tcl_Token);
-
-   Null_Tcl_Token : constant Tcl_Token;
-
-   type Tcl_Token_Array is array (CNatural range <>) of aliased Tcl_Token;
-   pragma Convention (C, Tcl_Token_Array);
-
+   Null_Tcl_Token : constant Tcl_Token := null;
    function Is_Null (Ptr : in Tcl_Token) return Boolean;
+
+   type Tcl_Token_Array is array
+     (CNatural range <>) of aliased Tcl_Token_rec;
+   pragma Convention (C, Tcl_Token_Array);
 
    --
    --  Type values defined for Tcl_Token structures.  These values are
@@ -1446,12 +1472,11 @@ package Tcl is
    --  TCL_TOKEN_BS -           The token describes a backslash sequence
    --                           that must be collapsed.  NumComponents
    --                           is always 0.
-   --  TCL_TOKEN_COMMAND -              The token describes a command whose
-   --  result
+   --  TCL_TOKEN_COMMAND -      The token describes a command whose result
    --                           must be substituted into the word.  The
    --                           token includes the enclosing brackets.
    --                           NumComponents is always 0.
-   --  TCL_TOKEN_VARIABLE -             The token describes a variable
+   --  TCL_TOKEN_VARIABLE -     The token describes a variable
    --                           substitution, including the dollar sign,
    --                           variable name, and array index {if there
    --                           is one} up through the right
@@ -1469,8 +1494,7 @@ package Tcl is
    --                           total number of nested tokens that make
    --                           up the variable reference, including
    --                           sub-tokens of TCL_TOKEN_VARIABLE tokens.
-   --  TCL_TOKEN_SUB_EXPR -             The token describes one subexpression
-   --  of a
+   --  TCL_TOKEN_SUB_EXPR -     The token describes one subexpression of a
    --                           expression, from the first non-blank
    --                           character of the subexpression up to but not
    --                           including the space, brace, or bracket
@@ -1487,8 +1511,7 @@ package Tcl is
    --                           followed by the TCL_TOKEN_OPERATOR token
    --                           for the operator, then TCL_TOKEN_SUB_EXPR
    --                           tokens for the left then the right operands.
-   --  TCL_TOKEN_OPERATOR -             The token describes one expression
-   --  operator.
+   --  TCL_TOKEN_OPERATOR -     The token describes one expression operator.
    --                           An operator might be the name of a math
    --                           function such as "abs". A TCL_TOKEN_OPERATOR
    --                           token is always preceeded by one
@@ -1498,7 +1521,6 @@ package Tcl is
    --                           operator's operands. NumComponents is
    --                           always 0.
    --
-
    TCL_TOKEN_WORD        : constant := 1;
    TCL_TOKEN_SIMPLE_WORD : constant := 2;
    TCL_TOKEN_TEXT        : constant := 4;
@@ -1507,12 +1529,12 @@ package Tcl is
    TCL_TOKEN_VARIABLE    : constant := 32;
    TCL_TOKEN_SUB_EXPR    : constant := 64;
    TCL_TOKEN_OPERATOR    : constant := 128;
+
    --
    --  Parsing error types.  On any parsing error, one of these values
    --  will be stored in the error field of the Tcl_Parse structure
    --  defined below.
    --
-
    TCL_PARSE_SUCCESS           : constant := 0;
    TCL_PARSE_QUOTE_EXTRA       : constant := 1;
    TCL_PARSE_BRACE_EXTRA       : constant := 2;
@@ -1523,28 +1545,25 @@ package Tcl is
    TCL_PARSE_MISSING_VAR_BRACE : constant := 7;
    TCL_PARSE_SYNTAX            : constant := 8;
    TCL_PARSE_BAD_NUMBER        : constant := 9;
+
    --
    --  A structure of the following type is filled in by Tcl_ParseCommand.
    --  It describes a single command parsed from an input string.
    --
 
-   NUM_STATIC_TOKENS : constant := 20;
-   type Tcl_Parse_Rec is private;
-   type Tcl_Parse is access all Tcl_Parse_Rec;
+   type Tcl_Parse_rec is private;       -- @todo understand this!
+   type Tcl_Parse is access all Tcl_Parse_rec;
    pragma Convention (C, Tcl_Parse);
-
-   Null_Tcl_Parse : constant Tcl_Parse;
-
+   Null_Tcl_Parse : constant Tcl_Parse := null;
    function Is_Null (Ptr : in Tcl_Parse) return Boolean;
 
    --
-   --  The following definitions are the error codes returned by the conversion
-   --  routines:
+   --  The following definitions are the error codes returned by the
+   --  conversion routines:
    --
    --  TCL_OK:                  All characters were converted.
    --
-   --  TCL_CONVERT_NOSPACE:             The output buffer would not have been
-   --  large
+   --  TCL_CONVERT_NOSPACE:     The output buffer would not have been large
    --                           enough for all of the converted data; as many
    --                           characters as could fit were converted though.
    --
@@ -1557,14 +1576,14 @@ package Tcl is
    --                           from the source stream to properly convert
    --                           the formerly split-up multibyte sequence.
    --
-   --  TCL_CONVERT_SYNTAX:              The source stream contained an invalid
+   --  TCL_CONVERT_SYNTAX:      The source stream contained an invalid
    --                           character sequence.  This may occur if the
    --                           input stream has been damaged or if the input
    --                           encoding method was misidentified.  This error
    --                           is reported only if TCL_ENCODING_STOPONERROR
    --                           was specified.
    --
-   --  TCL_CONVERT_UNKNOWN:             The source string contained a character
+   --  TCL_CONVERT_UNKNOWN:     The source string contained a character
    --                           that could not be represented in the target
    --                           encoding.  This error is reported only if
    --                           TCL_ENCODING_STOPONERROR was specified.
@@ -1574,16 +1593,16 @@ package Tcl is
    TCL_CONVERT_SYNTAX    : constant := -2;
    TCL_CONVERT_UNKNOWN   : constant := -3;
    TCL_CONVERT_NOSPACE   : constant := -4;
+
    --
    --  The maximum number of bytes that are necessary to represent a single
    --  Unicode character in UTF-8.
    --
-
    TCL_UTF_MAX : constant := 3;
+
    --
    --  This represents a Unicode character.
    --
-
    subtype Tcl_UniChar is C.unsigned_short;
 
    --
@@ -1602,14 +1621,14 @@ package Tcl is
      (interp    : in Tcl_Interp;
       name      : in C.Strings.chars_ptr;
       bufferPtr : in Tcl_DString)
-      return      C.Strings.chars_ptr;
+     return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_TranslateFileName, "Tcl_TranslateFileName");
 
    function Tcl_TildeSubst
      (interp    : in Tcl_Interp;
       name      : in C.Strings.chars_ptr;
       bufferPtr : in Tcl_DString)
-      return      C.Strings.chars_ptr;
+     return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_TildeSubst, "Tcl_TranslateFileName");
 
    procedure Tcl_Panic
@@ -1647,6 +1666,7 @@ package Tcl is
    --
 
    TCL_STUB_MAGIC : constant := -56378673;
+
    --
    --  The following function is required to be defined in all stubs aware
    --  extensions.  The function is actually implemented in the stub
@@ -1924,8 +1944,12 @@ package Tcl is
 
    --  30
 
-   procedure TclFreeObj (objPtr : in Tcl_Obj);
-   pragma Import (C, TclFreeObj, "TclFreeObj");
+   --  TclFreeObj is only in tcl.h to support the reference counting
+   --  macros, which in TASH are implemented as C functions; so it's
+   --  omitted here.
+
+--     procedure TclFreeObj (objPtr : in Tcl_Obj);
+--     pragma Import (C, TclFreeObj, "TclFreeObj");
 
    --  31
 
@@ -4701,512 +4725,186 @@ package Tcl is
    --
 
 private
+
    type Tcl_AsyncHandler_rec is null record;
-   Null_Tcl_AsyncHandler : constant Tcl_AsyncHandler := null;
 
-   type Tcl_CallFrame_rec is record
-      nsPtr   : Tcl_Namespace;
-      dummy1  : C.int;
-      dummy2  : C.int;
-      dummy3  : C.Strings.chars_ptr;
-      dummy4  : C.Strings.chars_ptr;
-      dummy5  : C.Strings.chars_ptr;
-      dummy6  : C.int;
-      dummy7  : C.Strings.chars_ptr;
-      dummy8  : C.Strings.chars_ptr;
-      dummy9  : C.int;
-      dummy10 : C.Strings.chars_ptr;
-      dummy11 : C.Strings.chars_ptr;
-      dummy12 : C.Strings.chars_ptr;
-   end record;
-   pragma Convention (C, Tcl_CallFrame_rec);
-
-   Null_Tcl_CallFrame : constant Tcl_CallFrame := null;
+   type Tcl_CallFrame_rec is new Interfaces.C.char_array
+     (0 .. Tcl_Record_Sizes.Tcl_CallFrame_Size - 1);
+   for Tcl_CallFrame_rec'Alignment use Standard'Maximum_Alignment;
 
    type Tcl_Channel_rec is null record;
-   Null_Tcl_Channel : constant Tcl_Channel := null;
 
-   type Tcl_ChannelType_rec is record
-      --  The name of the channel type in Tcl
-      --  commands. This storage is owned by
-      --  channel type.
-      typeName : C.Strings.chars_ptr;
-      --  Version of the channel type.
-      version : System.Address;
-      --  Procedure to call to close the
-      --  channel, or TCL_CLOSE2PROC if the
-      --  close2Proc should be used
-      --  instead.
-      closeProc : Tcl_DriverCloseProc;
-      --  Procedure to call for input
-      --  on channel.
-      inputProc : Tcl_DriverInputProc;
-      --  Procedure to call for output
-      --  on channel.
-      outputProc : Tcl_DriverOutputProc;
-      --  Procedure to call to seek
-      --  on the channel. May be NULL.
-      seekProc : Tcl_DriverSeekProc;
-      --  Set an option on a channel.
-      setOptionProc : Tcl_DriverSetOptionProc;
-      --  Get an option from a channel.
-      getOptionProc : Tcl_DriverGetOptionProc;
-      --  Set up the notifier to watch
-      --  for events on this channel.
-      watchProc : Tcl_DriverWatchProc;
-      --  Get an OS handle from the channel
-      --  or NULL if not supported.
-      getHandleProc : Tcl_DriverGetHandleProc;
-      --  Procedure to call to close the
-      --  channel if the device supports
-      --  closing the read & write sides
-      --  independently.
-      close2Proc : Tcl_DriverClose2Proc;
-      --  Set blocking mode for the
-      --  raw channel. May be NULL.
-      blockModeProc : Tcl_DriverBlockModeProc;
-      --  Only valid in TCL_CHANNEL_VERSION_2 channels or later:
-      --  Function to call to flush a channel. May be NULL.
-      flushProc : Tcl_DriverFlushProc;
-      --  Only valid in TCL_CHANNEL_VERSION_2 channels or later:
-      --  Function to call to handle a channel event.
-      --  This will be passed up the stacked channel chain.
-      handlerProc : Tcl_DriverHandlerProc;
-      --  Only valid in TCL_CHANNEL_VERSION_3 channels or later:
-      --  Function to call to seek on the channel which can handle
-      --  64-bit offsets. May be NULL, and must be NULL if seekProc
-      --  is NULL.
-      wideSeekProc : Tcl_DriverWideSeekProc;
-      --  Only valid in TCL_CHANNEL_VERSION_5 channels or later:
-      --  Function to call to truncate the underlying file to a particular
-      --  length. May be NULL if the channel does not support truncation.
-      truncateProc : Tcl_DriverTruncateProc;
-   end record;
-   pragma Convention (C, Tcl_ChannelType_rec);
-
-   Null_Tcl_ChannelType : constant Tcl_ChannelType := null;
-
-   type Tcl_CmdInfo_rec is record
-      isNativeObjectProc : C.int;
-      --  1 if objProc was registered by a call to
-      --  Tcl_CreateObjCommand; 0 otherwise.
-      --  Tcl_SetCmdInfo does not modify this
-      --  field.
-      objProc : Tcl_ObjCmdProc;
-      --  Command's object-based procedure.
-      objclientdata : ClientData;
-      --  ClientData for object proc.
-      proc : Tcl_CmdProc;
-      --  Command's string-based procedure.
-      data : ClientData;
-      --  ClientData for string proc.
-      deleteProc : Tcl_CmdDeleteProc;
-      --  Procedure to call when command is
-      --  deleted.
-      deletedata : ClientData;
-      --  Value to pass to deleteProc {usually
-      --  the same as clientData}.
-      namespacePtr : Tcl_Namespace;
-      --  Points to the namespace that contains
-      --  this command. Note that Tcl_SetCmdInfo
-      --  will not change a command's namespace;
-      --  use Tcl_RenameCommand to do that.
-   end record;
-   pragma Convention (C, Tcl_CmdInfo_rec);
-
-   Null_Tcl_CmdInfo : constant Tcl_CmdInfo := null;
+   type Tcl_ChannelTypeVersion_rec is null record;
 
    type Tcl_Command_rec is null record;
-   Null_Tcl_Command : constant Tcl_Command := null;
 
    type Tcl_Condition_rec is null record;
-   Null_Tcl_Condition : constant Tcl_Condition := null;
 
    type Tcl_DString_rec is record
       strng : C.Strings.chars_ptr;
-      --  Points to beginning of string:  either
-      --  staticSpace below or a malloced array.
+      --  Points to beginning of string: either staticSpace below or a
+      --  malloced array.
       length : C.int;
-      --  Number of non-NULL characters in the
-      --  string.
+      --  Number of non-NULL characters in the string.
       spaceAvl : C.int;
-      --  Total number of bytes available for the
-      --  string and its terminating NULL char.
-      staticSpace : C.char_array (0 .. 199);
-      --  Space to use in common case where string
-      --  is small.
+      --  Total number of bytes available for the string and its
+      --  terminating NULL char.
+      staticSpace : C.char_array
+        (0 .. (Tcl_Record_Sizes.TCL_DSTRING_STATIC_SIZE - 1));
+      --  Space to use in common case where string is small.
    end record;
    pragma Convention (C, Tcl_DString_rec);
 
-   Null_Tcl_DString : constant Tcl_DString := null;
+   type Tcl_EncodingState_rec is null record;
 
    type Tcl_Encoding_rec is null record;
-   Null_Tcl_Encoding : constant Tcl_Encoding := null;
 
-   type Tcl_EncodingState_rec is null record;
-   Null_Tcl_EncodingState : constant Tcl_EncodingState := null;
-
-   type Tcl_EncodingType_rec is record
-      encodingName : C.Strings.chars_ptr;
-      --  The name of the encoding, e.g.  "euc-jp".
-      --  This name is the unique key for this
-      --  encoding type.
-      toUtfProc : Tcl_EncodingConvertProc;
-      --  Procedure to convert from external
-      --  encoding into UTF-8.
-      fromUtfProc : Tcl_EncodingConvertProc;
-      --  Procedure to convert from UTF-8 into
-      --  external encoding.
-      freeProc : Tcl_EncodingFreeProc;
-      --  If non-NULL, procedure to call when this
-      --  encoding is deleted.
-      data : ClientData;
-      --  Arbitrary value associated with encoding
-      --  type.  Passed to conversion procedures.
-      nullSize : C.int;
-      --  Number of zero bytes that signify
-      --  end-of-string in this encoding.  This
-      --  number is used to determine the source
-      --  string length when the srcLen argument is
-      --  negative.  Must be 1 or 2.
-   end record;
-   pragma Convention (C, Tcl_EncodingType_rec);
-
-   Null_Tcl_EncodingType : constant Tcl_EncodingType := null;
-
-   type Tcl_Event_rec is record
-      --  Function to call to service this event.
-      proc : Tcl_EventProc;
-      --  Next in list of pending events, or NULL.
-      nextPtr : Tcl_Event;
-   end record;
-   pragma Convention (C, Tcl_Event_rec);
-
-   Null_Tcl_Event : constant Tcl_Event := null;
+   --
+   --  Structure definition for an entry in a hash table.  No-one outside
+   --  Tcl should access any of these fields directly.
+   --
 
    type Tcl_HashEntry_rec is record
-      --  Pointer to next entry in this hash bucket,
-      --  or NULL for end of chain.
+      --  Pointer to next entry in this hash bucket, or NULL for end
+      --  of chain.
       nextPtr : Tcl_HashEntry;
       --  Pointer to table containing entry.
       tablePtr : Tcl_HashTable;
-      --  Pointer to bucket that points to first
-      --  entry in this entry's chain: used for
-      --  deleting the entry.
+      --  Pointer to bucket that points to first entry in this entry's
+      --  chain: used for deleting the entry.
       bucketPtr : Tcl_HashEntry;
-      --  Application stores something here with
-      --  Tcl_SetHashValue.
+      --  Application stores something here with Tcl_SetHashValue.
       data : ClientData;
-      --  Key is a C union - @todo make exact representation
+      --  Key is a C union - @todo make exact representation (but note
+      --  that the actual size will be as large as necessary for this
+      --  table's key).
       key : C.char_array (0 .. 3);
       --  MUST BE LAST FIELD IN RECORD!!
    end record;
    pragma Convention (C, Tcl_HashEntry_rec);
 
-   Null_Tcl_HashEntry : constant Tcl_HashEntry := null;
+   --
+   --  @todo make exact mapping for Tcl_HashKeyType (may need to be
+   --  visible)
+   --
+   type Tcl_HashKeyType_rec is null record;
+   pragma Convention (C, Tcl_HashKeyType_rec);
 
-   type Tcl_HashSearch_rec is record
-      tablePtr : Tcl_HashTable;
-      --  Table being searched.
-      nextIndex : C.int;
-      --  Index of next bucket to be
-      --  enumerated after present one.
-      nextEntryPtr : Tcl_HashEntry;
-      --  Next entry to be enumerated in the
-      --  the current bucket.
-   end record;
-   pragma Convention (C, Tcl_HashSearch_rec);
+   type Tcl_HashTable_rec is new Interfaces.C.char_array
+     (0 .. Tcl_Record_Sizes.Tcl_HashTable_Size - 1);
+   for Tcl_HashTable_rec'Alignment use Standard'Maximum_Alignment;
 
-   Null_Tcl_HashSearch : constant Tcl_HashSearch := null;
+   type Tcl_HashSearch_rec is new Interfaces.C.char_array
+     (0 .. Tcl_Record_Sizes.Tcl_HashSearch_Size - 1);
+   for Tcl_HashSearch_rec'Alignment use Standard'Maximum_Alignment;
 
-   --  @todo make exact mapping for Tcl_HashKeyType
-   subtype Tcl_HashKeyType is System.Address;
+   type Tcl_Interp_rec is new Interfaces.C.char_array
+     (0 .. Tcl_Record_Sizes.Tcl_Interp_Size - 1);
+   for Tcl_Interp_rec'Alignment use Standard'Maximum_Alignment;
 
-   -- Auxiliary type for Ada (corresponds to Tcl_HashEntry**)
-   type Tcl_HashEntry_Ptr is access all Tcl_HashEntry;
-
-   type Tcl_HashTable_rec is record
-      --  Pointer to bucket array.  Each
-      --  element points to first entry in
-      --  bucket's hash chain, or NULL.
-      buckets : Tcl_HashEntry_Ptr;
-      --  Bucket array used for small tables
-      --  {to avoid mallocs and frees}.
-      staticBuckets : Tcl_HashEntry_Array (0 .. 3);
-      --  Total number of buckets allocated
-      --  at **bucketPtr.
-      numBuckets : C.int;
-      --  Total number of entries present
-      --  in table.
-      numEntries : C.int;
-      --  Enlarge table when numEntries gets
-      --  to be this large.
-      rebuildSize : C.int;
-      --  Shift count used in hashing
-      --  function.  Designed to use high-
-      --  order bits of randomized keys.
-      downShift : C.int;
-      --  Mask value used in hashing
-      --  function.
-      mask : C.int;
-      --  Type of keys used in this table.
-      --  It's either TCL_STRING_KEYS,
-      --  TCL_ONE_WORD_KEYS, or an integer
-      --  giving the number of ints that
-      --  is the size of the key.
-      keyType : C.int;
-      --
-      findProc   : Tcl_HashEntry;
-      createProc : Tcl_HashEntry;
-      typePtr    : Tcl_HashKeyType;
-   end record;
-   pragma Convention (C, Tcl_HashTable_rec);
-
-   Null_Tcl_HashTable : constant Tcl_HashTable := null;
-
-   type Tcl_Interp_rec is record
-      result : C.Strings.chars_ptr;
-      --  If the last command returned a string
-      --  result, this points to it.
-      freeProc : Tcl_FreeProc;
-      --  Zero means the string result is
-      --  statically allocated. TCL_DYNAMIC means
-      --  the address of procedure to invoke to
-      --  free the result. Tcl_Eval must free it
-      --  before executing next command.
-      errorLine : C.int;
-      --  When TCL_ERROR is returned, this gives
-      --  the line number within the command where
-      --  the error occurred {1 if first line}.
-   end record;
-   pragma Convention (C, Tcl_Interp_rec);
-
-   Null_Tcl_Interp : constant Tcl_Interp := null;
+   type Tcl_LoadHandle_rec is null record;
 
    type Tcl_Mutex_rec is null record;
-   Null_Tcl_Mutex : constant Tcl_Mutex := null;
-
-   type Tcl_Namespace_rec is record
-      name : C.Strings.chars_ptr;
-      --  The namespace's name within its parent
-      --  namespace. This contains no ::'s. The
-      --  name of the global namespace is ""
-      --  although "::" is an synonym.
-      fullName : C.Strings.chars_ptr;
-      --  The namespace's fully qualified name.
-      --  This starts with ::.
-      data : ClientData;
-      --  Arbitrary value associated with this
-      --  namespace.
-      deleteProc : Tcl_NamespaceDeleteProc;
-      --  Procedure invoked when deleting the
-      --  namespace to, e.g., free clientData.
-      parentPtr : Tcl_Namespace;
-      --  Points to the namespace that contains
-      --  this one. NULL if this is the global
-      --  namespace.
-   end record;
-   pragma Convention (C, Tcl_Namespace_rec);
-
-   Null_Tcl_Namespace : constant Tcl_Namespace := null;
-
-   type Tcl_NotifierProcs_rec is record
-      setTimerProc          : Tcl_SetTimerProc;
-      waitForEventProc      : Tcl_WaitForEventProc;
-      createFileHandlerProc : Tcl_CreateFileHandlerProc;
-      deleteFileHandlerProc : Tcl_DeleteFileHandlerProc;
-      initNotifierProc      : Tcl_InitNotifierProc;
-      finalizeNotifierProc  : Tcl_FinalizeNotifierProc;
-      alertNotifierProc     : Tcl_AlertNotifierProc;
-      serviceModeHookProc   : Tcl_ServiceModeHookProc;
-   end record;
-   pragma Convention (C, Tcl_NotifierProcs_rec);
-
-   Null_Tcl_NotifierProcs : constant Tcl_NotifierProcs := null;
-
-   type Tcl_Obj_rec is
-      record
-         refCount : C.int;
-         bytes : C.Strings.chars_ptr;
-         length : C.int;
-         typePtr : Tcl_ObjType;
-         internalRep : C.double;  -- @todo make precise rep for C union
-      end record;
-   pragma Convention (C, Tcl_Obj_rec);
-
-   Null_Tcl_Obj : constant Tcl_Obj := null;
-
-   type Tcl_ObjType_rec is record
-      name : C.Strings.chars_ptr;
-      --  Name of the type, e.g. "int".
-      freeIntRepProc : Tcl_FreeInternalRepProc;
-      --  Called to free any storage for the type's
-      --  internal rep. NULL if the internal rep
-      --  does not need freeing.
-      dupIntRepProc : Tcl_DupInternalRepProc;
-      --  Called to create a new object as a copy
-      --  of an existing object.
-      updateStringProc : Tcl_UpdateStringProc;
-      --  Called to update the string rep from the
-      --  type's internal representation.
-      setFromAnyProc : Tcl_SetFromAnyProc;
-      --  Called to convert the object's internal
-      --  rep to this type. Frees the internal rep
-      --  of the old type. Returns TCL_ERROR on
-      --  failure.
-   end record;
-   pragma Convention (C, Tcl_ObjType_rec);
-
-   Null_Tcl_ObjType : constant Tcl_ObjType := null;
 
    type Tcl_Parse_rec is record
       commentStart : C.Strings.chars_ptr;
-      --  Pointer to # that begins the first of
-      --  one or more comments preceding the
-      --  command.
+      --  Pointer to # that begins the first of one or more comments
+      --  preceding the command.
       commentSize : C.int;
-      --  Number of bytes in comments {up through
-      --  newline character that terminates the
-      --  last comment}.  If there were no
+      --  Number of bytes in comments {up through newline character
+      --  that terminates the last comment}.  If there were no
       --  comments, this field is 0.
       commandStart : C.Strings.chars_ptr;
       --  First character in first word of command.
       commandSize : C.int;
-      --  Number of bytes in command, including
-      --  first character of first word, up
-      --  through the terminating newline,
-      --  close bracket, or semicolon.
+      --  Number of bytes in command, including first character of
+      --  first word, up through the terminating newline, close
+      --  bracket, or semicolon.
       numWords : C.int;
-      --  Total number of words in command.  May
-      --  be 0.
+      --  Total number of words in command.  May be 0.
       tokenPtr : Tcl_Token;
-      --  Pointer to first token representing
-      --  the words of the command.  Initially
-      --  points to staticTokens, but may change
-      --  to point to malloc-ed space if command
-      --  exceeds space in staticTokens.
+      --  Pointer to first token representing the words of the
+      --  command.  Initially points to staticTokens, but may change
+      --  to point to malloc-ed space if command exceeds space in
+      --  staticTokens.
       numTokens : C.int;
       --  Total number of tokens in command.
       tokensAvailable : C.int;
       --  Total number of tokens available at
       --  *tokenPtr.
       errorType : C.int;
-      --  One of the parsing error types defined
-      --  above.
+      --  One of the parsing error types defined above.
       --
-      --  The fields below are intended only for the private use of the
-      --  parser.     They should not be used by procedures that invoke
-      --  Tcl_ParseCommand.
+      --  The fields below are intended only for the private use of
+      --  the parser.  They should not be used by procedures that
+      --  invoke Tcl_ParseCommand.
       --
       strng : C.Strings.chars_ptr;
-      --  The original command string passed to
-      --  Tcl_ParseCommand.
+      --  The original command string passed to Tcl_ParseCommand.
       e_n_d : C.Strings.chars_ptr;
-      --  Points to the character just after the
-      --  last one in the command string.
+      --  Points to the character just after the last one in the
+      --  command string.
       interp : Tcl_Interp;
-      --  Interpreter to use for error reporting,
-      --  or NULL.
+      --  Interpreter to use for error reporting, or NULL.
       term : C.Strings.chars_ptr;
-      --  Points to character in string that
-      --  terminated most recent token.  Filled in
-      --  by ParseTokens.  If an error occurs,
-      --  points to beginning of region where the
-      --  error occurred {e.g. the open brace if
-      --  the close brace is missing}.
+      --  Points to character in string that terminated most recent
+      --  token.  Filled in by ParseTokens.  If an error occurs,
+      --  points to beginning of region where the error occurred
+      --  {e.g. the open brace if the close brace is missing}.
       incomplete : C.int;
-      --  This field is set to 1 by Tcl_ParseCommand
-      --  if the command appears to be incomplete.
-      --  This information is used by
+      --  This field is set to 1 by Tcl_ParseCommand if the command
+      --  appears to be incomplete.  This information is used by
       --  Tcl_CommandComplete.
-      staticTokens : Tcl_Token_Array (0 .. 19);
-      --  Initial space for tokens for command.
-      --  This space should be large enough to
-      --  accommodate most commands; dynamic
-      --  space is allocated for very large
-      --  commands that don't fit here.
+      staticTokens : Tcl_Token_Array
+        (0 .. Tcl_Record_Sizes.NUM_STATIC_TOKENS - 1);
+      --  Initial space for tokens for command.  This space should be
+      --  large enough to accommodate most commands; dynamic space is
+      --  allocated for very large commands that don't fit here.
    end record;
    pragma Convention (C, Tcl_Parse_rec);
 
-   Null_Tcl_Parse : constant Tcl_Parse := null;
-
    type Tcl_Pid_rec is null record;
-   Null_Tcl_Pid : constant Tcl_Pid := null;
 
    type Tcl_RegExp_rec is null record;
-   Null_Tcl_RegExp : constant Tcl_RegExp := null;
 
-   type Tcl_SavedResult_rec is record
-      result       : C.Strings.chars_ptr;
-      freeProc     : Tcl_FreeProc;
-      objResultPtr : Tcl_Obj;
-      appendResult : C.Strings.chars_ptr;
-      appendAvl    : C.int;
-      appendUsed   : C.int;
-      resultSpace  : C.char_array (0 .. 200 + 1 - 1);
-   end record;
-   pragma Convention (C, Tcl_SavedResult_rec);
+   type Tcl_SavedResult_rec is new Interfaces.C.char_array
+     (0 .. Tcl_Record_Sizes.Tcl_SavedResult_Size - 1);
+   for Tcl_SavedResult_rec'Alignment use Standard'Maximum_Alignment;
 
-   Null_Tcl_SavedResult : constant Tcl_SavedResult := null;
+   type Tcl_OldStat_Rec is null record;  -- stat
+
+   type Tcl_StatBuf_Rec is null record;
 
    type Tcl_ThreadDataKey_rec is null record;
-   Null_Tcl_ThreadDataKey : constant Tcl_ThreadDataKey := null;
 
    type Tcl_ThreadId_rec is null record;
-   Null_Tcl_ThreadId : constant Tcl_ThreadId := null;
-
-   type Tcl_Time_rec is record
-      sec : C.long;
-      --  Seconds.
-      usec : C.long;
-      --  Microseconds.
-   end record;
-   pragma Convention (C, Tcl_Time_rec);
-
-   Null_Tcl_Time : constant Tcl_Time := null;
 
    type Tcl_TimerToken_rec is null record;
-   Null_Tcl_TimerToken : constant Tcl_TimerToken := null;
+
+   --
+   --  For each word of a command, and for each piece of a word such as a
+   --  variable reference, one of the following structures is created to
+   --  describe the token.
+   --
 
    type Tcl_Token_rec is record
       typ : C.int;
-      --  Type of token, such as TCL_TOKEN_WORD;
-      --  see below for valid types.
+      --  Type of token, such as TCL_TOKEN_WORD; see below for valid
+      --  types.
       start : C.Strings.chars_ptr;
       --  First character in token.
       size : C.int;
       --  Number of bytes in token.
       numComponents : C.int;
-      --  If this token is composed of other
-      --  tokens, this field tells how many of
-      --  them there are {including components of
-      --  components, etc.}.  The component tokens
-      --  immediately follow this one.
+      --  If this token is composed of other tokens, this field tells
+      --  how many of them there are {including components of
+      --  components, etc.}.  The component tokens immediately follow
+      --  this one.
    end record;
    pragma Convention (C, Tcl_Token_rec);
 
-   Null_Tcl_Token : constant Tcl_Token := null;
-
    type Tcl_Trace_rec is null record;
-   Null_Tcl_Trace : constant Tcl_Trace := null;
-
-   type Tcl_Value_rec is record
-      typ : Tcl_ValueType;
-      --  Indicates intValue or doubleValue is
-      --  valid, or both.
-      intValue : C.long;
-      --  Integer value.
-      doubleValue : C.double;
-      --  Double-precision floating value.
-   end record;
-   pragma Convention (C, Tcl_Value_rec);
-
-   Null_Tcl_Value : constant Tcl_Value := null;
 
    type Tcl_Var_rec is null record;
-   Null_Tcl_Var : constant Tcl_Var := null;
-
-   type stat_rec is null record;
-   Null_stat : constant stat := null;
 
 end Tcl;

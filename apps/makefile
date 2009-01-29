@@ -23,7 +23,7 @@ PROGRAMS = plang
 
 all::
 	[ -d .build ] || mkdir .build
-	gnatmake -P tash_apps
+	gnatmake -Ptash_apps
 
 test::
 	./plang ../demos/*

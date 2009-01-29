@@ -32,6 +32,7 @@ with Unchecked_Conversion;
 with Ada.Text_IO;
 
 package body Tcl is
+
    function Is_Null (Ptr : in Tcl_Interp) return Boolean is
    begin --  Is_Null
       return Ptr = null;
@@ -187,6 +188,16 @@ package body Tcl is
       return Ptr = null;
    end Is_Null;
 
+   function Is_Null (Ptr : in Tcl_ChannelTypeVersion) return Boolean is
+   begin --  Is_Null
+      return Ptr = null;
+   end Is_Null;
+
+   function Is_Null (Ptr : in Tcl_LoadHandle) return Boolean is
+   begin --  Is_Null
+      return Ptr = null;
+   end Is_Null;
+
    function Is_Null (Ptr : in Tcl_NotifierProcs) return Boolean is
    begin --  Is_Null
       return Ptr = null;
@@ -203,6 +214,11 @@ package body Tcl is
    end Is_Null;
 
    function Is_Null (Ptr : in Tcl_Parse) return Boolean is
+   begin --  Is_Null
+      return Ptr = null;
+   end Is_Null;
+
+   function Is_Null (Ptr : in Tcl_StatBuf) return Boolean is
    begin --  Is_Null
       return Ptr = null;
    end Is_Null;

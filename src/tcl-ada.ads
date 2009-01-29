@@ -27,28 +27,27 @@
 --  Tash is maintained at http://tcladashell.sourceforge.net/.
 --
 --------------------------------------------------------------------
-
+--
 --  This package is made up primarily of
 --
 --  1) extra overloaded subprograms which use the Ada String type in
---    place of the C string type (Interfaces.C.Strings.Chars_Ptr).
+--     place of the C string type (Interfaces.C.Strings.Chars_Ptr).
 --
 --  2) extra overloaded procedures for tcl.h functions which return
---    TCL_OK or TCL_ERROR so that Ada programmers can call them as
---    procedures rather than functions.  The exception Tcl_Error_Exception
---    is raised when the Tcl function returns TCL_ERROR.
+--     TCL_OK or TCL_ERROR so that Ada programmers can call them as
+--     procedures rather than functions. The exception Tcl_Error_Exception
+--     is raised when the Tcl function returns TCL_ERROR.
 --
 --  3) generic packages that allow use of a data type for ClientData
---    rather than a reference to a void or int type as C does.
+--     rather than a reference to a void or int type as C does.
 --
-
 --------------------------------------------------------------------
 
 with CArgv;
 
 package Tcl.Ada is
 
-   Version : constant String := "8.1.1a";
+   Version : constant String := "8.4.7";
 
    package C renames Interfaces.C;
 

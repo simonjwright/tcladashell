@@ -26,15 +26,29 @@ project Build_Tash_Library is
 
   for Library_Name use "tash";
   for Languages use ("ada", "c");
-  for Source_Files use
+
+  Basic_Source_Files :=
     (
      "tclmacro.c",
-     "tcl_backward_compatibility_glue.c",
      "tkmacro.c",
      "cargv.adb",
      "cargv.ads",
      "chelper.adb",
      "chelper.ads",
+     "tcl-ada.adb",
+     "tcl-ada.ads",
+     "tcl-tk-ada.adb",
+     "tcl-tk-ada.ads",
+     "tcl-tk.adb",
+     "tcl-tk.ads",
+     "tcl.adb",
+     "tcl.ads",
+     "tcl_record_sizes.ads"
+     );
+
+  Extended_Source_Files :=
+    (
+     "tcl_backward_compatibility_glue.c",
      "tash-arrays.adb",
      "tash-arrays.ads",
      "tash-file.adb",
@@ -60,16 +74,10 @@ project Build_Tash_Library is
      "tash-system.adb",
      "tash-system.ads",
      "tash.adb",
-     "tash.ads",
-     "tcl-ada.adb",
-     "tcl-ada.ads",
-     "tcl-tk-ada.adb",
-     "tcl-tk-ada.ads",
-     "tcl-tk.adb",
-     "tcl-tk.ads",
-     "tcl.adb",
-     "tcl.ads"
+     "tash.ads"
     );
+
+  for Source_Files use Basic_Source_Files & Extended_Source_Files;
   for Object_Dir use ".build_lib";
   for Library_Kind use "static";
   for Library_Dir use "../lib";

@@ -2797,7 +2797,7 @@ private
       --  Non-zero means that the canvas widget has the input focus.
       --  Read-only to items.
       gotFocus : C.int;
-      --  Non-zero means that an insertion cursor should be displayed in 
+      --  Non-zero means that an insertion cursor should be displayed in
       --  focusItemPtr. Read-only to items.
       cursorOn : C.int;
    end record;
@@ -2926,7 +2926,7 @@ private
    Null_Tk_ImageType : constant Tk_ImageType := null;
 
    --  auxiliary type for Ada
-   type StaticTagSpace_Type is array (0 .. TK_TAG_SPACE-1) of Tk_Uid;
+   type StaticTagSpace_Type is array (0 .. TK_TAG_SPACE - 1) of Tk_Uid;
    pragma Convention (C, StaticTagSpace_Type);
 
    type Tk_Item_rec is record

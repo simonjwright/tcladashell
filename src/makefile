@@ -41,6 +41,19 @@ cargv.adb \
 cargv.ads \
 chelper.adb \
 chelper.ads \
+tcl-ada.adb \
+tcl-ada.ads \
+tcl-tk-ada.adb \
+tcl-tk-ada.ads \
+tcl-tk.adb \
+tcl-tk.ads \
+tcl.adb \
+tcl.ads
+
+ADA_SRC += tcl_record_sizes.ads
+
+ifeq (1,1)
+ADA_SRC += \
 tash-arrays.adb \
 tash-arrays.ads \
 tash-file.adb \
@@ -66,27 +79,39 @@ tash-strings.ads \
 tash-system.adb \
 tash-system.ads \
 tash.adb \
-tash.ads \
-tcl-ada.adb \
-tcl-ada.ads \
-tcl-tk-ada.adb \
-tcl-tk-ada.ads \
-tcl-tk.adb \
-tcl-tk.ads \
-tcl.adb \
-tcl.ads
+tash.ads
+endif
 
-C_SRC = tclmacro.c tcl_backward_compatibility_glue.c tkmacro.c
+C_SRC = tclmacro.c tkmacro.c
+
+ifeq (1,1)
+C_SRC += \
+tcl_backward_compatibility_glue.c
+endif
 
 SCRIPTS = makefile build_tash_library.gpr
 
-all::
-	[ -d .build_lib ] || mkdir .build_lib
+all:: build
+.PHONY: build
+
+build: .build_lib tcl_record_sizes.ads
 	@rm -rf ../lib;  mkdir ../lib
 	@rm -rf ../include;  mkdir ../include
 	gprbuild -Pbuild_tash_library
 	chmod -w ../lib/*.ali
 	cp -p $(ADA_SRC) ../include/
+
+.build_lib:
+	mkdir $@
+
+tcl_record_sizes.ads: tcl_record_sizes$(EXE)
+	./$< >$@
+
+tcl_record_sizes$(EXE): tcl_record_sizes.c
+	$(CC) $(TCL_INCLUDE) -o $@ $<
+
+tcl_record_sizes.c: tcl_record_sizes.tcl
+	tclsh $< >$@
 
 DATE = $(shell date +%Y%m%d)
 DIST = tash-$(TASH_VERSION)-$(OS)-$(DATE)
