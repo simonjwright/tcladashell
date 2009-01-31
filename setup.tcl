@@ -48,7 +48,7 @@ proc supportsTash {} {
     set majmin [split $tcl_version .]
     set maj [lindex $majmin 0]
     set min [lindex $majmin 1]
-    if {$maj == 8 || $min <= 4} {
+    if {$maj == 8 && $min <= 4} {
 	return  "yes"
     } else {
 	return  "no"
