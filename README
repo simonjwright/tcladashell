@@ -1,9 +1,14 @@
 This is TASH version 8.6-0, intended for use with Tcl/Tk versions 8.4
 through 8.6.
 
-In order to use this version of TASH with Tcl >= 8.5 and GCC >= 4.1,
-you need to build Tcl and Tk from source and edit the following entry
-from the unix/Makefiles:
+The 'thick binding' (packages Tash.*) depends on several symbols that
+are hidden in Tcl later than 8.4 if compiled with GCC later than
+4.0. For this reason, the thick binding is, by default, not built if
+setup.tcl finds that Tcl is later than 8.4.
+
+In order to use the thick binding with Tcl later than 8.4 and GCC
+later than 4.0, you need to build Tcl and Tk from source and edit the
+following entry from the unix/Makefiles:
 
 AC_FLAGS   = ... lots of flags ... and:
    -DMODULE_SCOPE=extern\ __attribute__\(\(__visibility__\(\"hidden\"\)\)\)
@@ -13,12 +18,10 @@ should be removed from the AC_FLAGS of both Tcl and Tk.
 
 Then do "make clean && make" and then "make install".
 
-This change is required because TASH depends on several symbols that
-are still present in Tcl/Tk but that have been hidden.
+You can then edit the value of SUPPORTS_TASH in the setup.tcl dialog
+and build TASH.
 
 We would like to remove the dependency on Tcl private symbols in a
-future version of TASH. An alternative proposal is to remove the
-'thick' binding (packages Tash and children), at any rate when the
-Tcl/Tk version is later than 8.4. We suspect that the actual use of
+future version of TASH. However, we suspect that the actual use of
 these facilities is limited "in the field".
 
