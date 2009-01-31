@@ -52,41 +52,45 @@ tcl.ads
 
 ADA_SRC += tcl_record_sizes.ads
 
-ifeq (1,1)
-ADA_SRC += \
-tash-arrays.adb \
-tash-arrays.ads \
-tash-file.adb \
-tash-file.ads \
-tash-file_io.adb \
-tash-file_io.ads \
-tash-float_arrays.ads \
-tash-float_lists.ads \
-tash-floats.adb \
-tash-floats.ads \
-tash-integer_arrays.ads \
-tash-integer_lists.ads \
-tash-integers.adb \
-tash-integers.ads \
-tash-lists.adb \
-tash-lists.ads \
-tash-platform.adb \
-tash-platform.ads \
-tash-regexp.adb \
-tash-regexp.ads \
-tash-strings.adb \
-tash-strings.ads \
-tash-system.adb \
-tash-system.ads \
-tash.adb \
-tash.ads
-endif
-
 C_SRC = tclmacro.c tkmacro.c
 
-ifeq (1,1)
+# Tcl/Tk versions later than 8.4 don't provide the interfaces relied
+# on by the Tash.* package hierarchy, so (by default) they won't be
+# built.
+
+ifeq ($(SUPPORTS_TASH),yes)
+
+ADA_SRC += \
+  tash-arrays.adb \
+  tash-arrays.ads \
+  tash-file.adb \
+  tash-file.ads \
+  tash-file_io.adb \
+  tash-file_io.ads \
+  tash-float_arrays.ads \
+  tash-float_lists.ads \
+  tash-floats.adb \
+  tash-floats.ads \
+  tash-integer_arrays.ads \
+  tash-integer_lists.ads \
+  tash-integers.adb \
+  tash-integers.ads \
+  tash-lists.adb \
+  tash-lists.ads \
+  tash-platform.adb \
+  tash-platform.ads \
+  tash-regexp.adb \
+  tash-regexp.ads \
+  tash-strings.adb \
+  tash-strings.ads \
+  tash-system.adb \
+  tash-system.ads \
+  tash.adb \
+  tash.ads
+
 C_SRC += \
-tcl_backward_compatibility_glue.c
+  tcl_backward_compatibility_glue.c
+
 endif
 
 SCRIPTS = makefile build_tash_library.gpr

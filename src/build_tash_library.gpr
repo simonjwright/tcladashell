@@ -27,6 +27,13 @@ project Build_Tash_Library is
   for Library_Name use "tash";
   for Languages use ("ada", "c");
 
+  --  Tcl/Tk versions later than 8.4 don't provide the interfaces
+  --  relied on by the Tash.* package hierarchy, so (by default) they
+  --  won't be built if the Tcl/Tk version is later.
+
+  type Answer is ("no", "yes");
+  Are_Tash_Packages_Supported : Answer := Tash_Options.Supports_Tash;
+
   Basic_Source_Files :=
     (
      "tclmacro.c",
@@ -77,7 +84,13 @@ project Build_Tash_Library is
      "tash.ads"
     );
 
-  for Source_Files use Basic_Source_Files & Extended_Source_Files;
+  case Are_Tash_Packages_Supported is
+     when "no" =>
+        for Source_Files use Basic_Source_Files;
+     when "yes" =>
+        for Source_Files use Basic_Source_Files & Extended_Source_Files;
+  end case;
+
   for Object_Dir use ".build_lib";
   for Library_Kind use "static";
   for Library_Dir use "../lib";

@@ -26,20 +26,30 @@
 #
 #    make test GNATMEM=gnatmem
 
+include ../makeconf
+
 all::
 
-SIMPLE_PROGRAMS = \
-        test_arrays \
-        test_file \
-        test_file_io \
-	test_floats \
-        test_format \
-	test_integers \
-        test_lists \
-        test_platform \
-        test_regexp \
-	test_strings \
-        test_system
+# Tcl/Tk versions later than 8.4 don't provide the interfaces relied
+# on by the Tash.* package hierarchy, so (by default) they won't be
+# built.
+
+TCL_PROGRAMS = \
+  compare$(EXE) \
+  tashtest$(EXE)
+
+TASH_PROGRAMS = \
+  test_arrays$(EXE) \
+  test_file$(EXE) \
+  test_file_io$(EXE) \
+  test_floats$(EXE) \
+  test_format$(EXE) \
+  test_integers$(EXE) \
+  test_lists$(EXE) \
+  test_platform$(EXE) \
+  test_regexp$(EXE) \
+  test_strings$(EXE) \
+  test_system$(EXE)
 
 # Compile and link all programs
 #------------------------------
@@ -54,24 +64,20 @@ test::
 	cp compare.adb test_compare.ada
 	$(GNATMEM) ./compare compare.adb test_compare.ada
 	@echo "./compare compare.adb tash-arrays-test.adb"
-	@($(GNATMEM) ./compare compare.adb tash-arrays-test.adb && \
+	@($(GNATMEM) ./compare compare.adb tashtest.adb && \
 	  echo "FAILED: comparison didn't fail!"; \
 	  true)
 
 test::
 	$(GNATMEM) ./tashtest tashtest.tcl
 
+ifeq ($(SUPPORTS_TASH),yes)
 test::
-	for p in $(SIMPLE_PROGRAMS); do \
+	for p in $(TASH_PROGRAMS); do \
 	  echo ./$$p; \
 	  $(GNATMEM) ./$$p $(VERBOSE); \
 	done
-
-# Don't understand this
-old-arrays:
-	$(GNATMEM) ./test_arrays $(VERBOSE) > test_arrays.out
-	./compare test_arrays.out test_arrays.expected-output
-	type test_arrays.out
+endif
 
 lib:
 	@ make -C ../src
@@ -80,36 +86,40 @@ lib:
 # the tests directory is to appear
 
 SRC = \
-makefile \
-tash_tests.gpr \
-tashtest.tcl \
-compare.adb \
-tash-arrays-test.adb \
-tash-arrays-test.ads \
-tash-floats-test.adb \
-tash-floats-test.ads \
-tash-integers-test.adb \
-tash-integers-test.ads \
-tash-lists-test.adb \
-tash-lists-test.ads \
-tash-strings-test.adb \
-tash-strings-test.ads \
-tash-test.adb \
-tash-test.ads \
-tashtest.adb \
-test_arrays.adb \
-test_file.adb \
-test_file_io.adb \
-test_floats.adb \
-test_format.adb \
-test_integers.adb \
-test_lists.adb \
-test_platform.adb \
-test_regexp.adb \
-test_strings.adb \
-test_system.adb \
-testapp.adb \
-testapp.ads
+  makefile \
+  tash_tests.gpr \
+  tashtest.tcl \
+  compare.adb \
+  tashtest.adb \
+  testapp.adb \
+  testapp.ads
+
+ifeq ($(SUPPORTS_TASH),yes)
+SRC += \
+  tash-arrays-test.adb \
+  tash-arrays-test.ads \
+  tash-floats-test.adb \
+  tash-floats-test.ads \
+  tash-integers-test.adb \
+  tash-integers-test.ads \
+  tash-lists-test.adb \
+  tash-lists-test.ads \
+  tash-strings-test.adb \
+  tash-strings-test.ads \
+  tash-test.adb \
+  tash-test.ads \
+  test_arrays.adb \
+  test_file.adb \
+  test_file_io.adb \
+  test_floats.adb \
+  test_format.adb \
+  test_integers.adb \
+  test_lists.adb \
+  test_platform.adb \
+  test_regexp.adb \
+  test_strings.adb \
+  test_system.adb
+endif
 
 MATERIEL = Shortcut.txt.lnk
 
@@ -120,5 +130,5 @@ dist:
 	mkdir $(TESTS)
 	cp $(SRC) $(MATERIEL) $(TESTS)/
 
-# TBD
 clean:
+	-rm -rf .build_lib *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS) 

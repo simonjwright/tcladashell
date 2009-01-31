@@ -42,11 +42,25 @@ proc setvar {name value comments} {
     lappend tashorder $name
 }
 
+# The Tash.* packages of TASH are not supported under Tcl > 8.4.
+proc supportsTash {} {
+    global tcl_version
+    set majmin [split $tcl_version .]
+    set maj [lindex $majmin 0]
+    set min [lindex $majmin 1]
+    if {$maj == 8 || $min <= 4} {
+	return  "yes"
+    } else {
+	return  "no"
+    }
+}
+
 # Write makefile macro
 #---------------------
 proc WriteOneMacro {f name value comments} {
+    puts $f ""
     foreach line [split $comments "\n"] {
-	puts $f [string trimleft $line]
+	puts $f "# [string trimleft $line]"
     }
     puts $f [format "%-18s = %s" $name $value]
 }
@@ -158,8 +172,8 @@ proc Createmakefile {makefile} {
 	exit
     }
     puts $makefid "#$makefile"
-    puts $makefid \
-{#####################################################
+    puts -nonewline $makefid {
+#####################################################
 #
 # This file, makeconf, contains macros used to
 # customize makefiles in various TASH directories.
@@ -168,31 +182,27 @@ proc Createmakefile {makefile} {
 # To change them, you may either edit them directly
 # with a text editor or run setup.tcl again.
 #
-#####################################################}
+#####################################################
+}
 
     foreach name $tashorder {
 	WriteOneMacro $makefid $name $tashvar($name) $tashcomments($name)
     }
 
-    WriteOneMacro $makefid USE_LINKER_OPTIONS $useLinkerOptions {
-	# Specifies whether to use pragma Linker_Options build method}
+    WriteOneMacro $makefid USE_LINKER_OPTIONS $useLinkerOptions \
+	{Specifies whether to use pragma Linker_Options build method}
 
     if $useLinkerOptions {
-	WriteOneMacro $makefid TASH_LINKER_OPTIONS tash_linker_options.ads {
-	  # Source file containing TASH linker options
-	}
-        WriteOneMacro $makefid LARGS "" {
-	  # All link switches macro is empty because we are
-	  # using pragma Linker_Options method
-	}
-	  
+	WriteOneMacro $makefid TASH_LINKER_OPTIONS tash_linker_options.ads \
+	    {Source file containing TASH linker options}
+        WriteOneMacro $makefid LARGS "" \
+	    {All link switches macro is empty because we are
+		using pragma Linker_Options method}
     } else {
-	WriteOneMacro $makefid TASH_LINKER_OPTIONS "" {
-	    # There is no source file containing TASH linker options
-	}
-	WriteOneMacro $makefid LARGS [join "-ltash" $library_switches] {
-	    # All link switches for TASH, Tcl, and Tk
-	}
+	WriteOneMacro $makefid TASH_LINKER_OPTIONS "" \
+	    {There is no source file containing TASH linker options}
+	WriteOneMacro $makefid LARGS [join "-ltash" $library_switches] \
+	    {All link switches for TASH, Tcl, and Tk}
     }
 
     catch {close $makefid}
@@ -206,9 +216,8 @@ proc CreateGprFile {} {
 	puts stderr $gprfid
 	exit
     }
-    puts $gprfid "--  $gpr"
-    puts $gprfid \
-{----------------------------------------------------------
+    puts $gprfid "--  $gpr
+----------------------------------------------------------
 --
 --  This file, tash_options.gpr, contains global options
 --  used for building and using Tash.
@@ -221,31 +230,26 @@ project Tash_Options is
 
    for Source_Dirs use ();
 
+   Supports_Tash := external (\"SUPPORTS_TASH\", \"$tashvar(SUPPORTS_TASH)\");
+
    Compiler_Options :=
-     (}
-
-    puts $gprfid "\      \"[join [concat $tashvar(CARGS) $tashvar(AARGS)] "\",\n      \""]\"\n    );"
-
-    puts $gprfid {\
+     (
+      \"[join [concat $tashvar(CARGS) $tashvar(AARGS)] "\",\n      \""]\"
+     );
 
    C_Compiler_Options :=
-     (}
-
-    puts $gprfid "\      \"[join [concat $tashvar(CARGS) $tashvar(TCL_INCLUDE)] "\",\n      \""]\"\n    );"
-
-    puts $gprfid {\
+     (
+      \"[join [concat $tashvar(CARGS) $tashvar(TCL_INCLUDE)] "\",\n      \""]\"
+     );
 
    Library_Options :=
-     (}
+     (
+      \"[join $library_switches "\",\n      \""]\"
+     );
 
-    puts $gprfid "\      \"[join $library_switches "\",\n      \""]\"\n    );"
+    Linker_Options := (\"-ltash\") & Library_Options;
 
-    puts $gprfid {\
-
-    Linker_Options := ("-ltash") & Library_Options;
-
-end Tash_Options;
-}
+end Tash_Options;"
     catch {close $gprfid}
 }
 
@@ -382,64 +386,42 @@ proc Set_Macros {platform os osVersion} {
 	    }
 	}
     }
-    
-    setvar PLATFORM          $platform {
-	# OS platform}
-    setvar OS                $os {
-        # Operating system}
-    setvar OSVERSION         $osVersion {
-      	# Operating system version}
-    setvar TASH_VERSION      "$tash_version" {
-        # TASH version}
-    setvar TASH_DIRECTORY    [file tail $pwd] {
-        # Main TASH directory}
+
+    setvar PLATFORM          $platform            {OS platform}
+    setvar OS                $os                  {Operating system}
+    setvar OSVERSION         $osVersion           {Operating system version}
+    setvar TASH_VERSION      "$tash_version"      {TASH version}
+    setvar TASH_DIRECTORY    [file tail $pwd]     {Main TASH directory}
     if [lempty $x11home] {
-	setvar X11HOME        "" {
-	    # X11 library directory}
+	setvar X11HOME        ""                  {X11 home directory}
     } else {
-	setvar X11HOME        "$x11home" {
-	    # X11 home directory}
+	setvar X11HOME        "$x11home"          {X11 home directory}
     }
     if [lempty $x11_lib] {
-	setvar X11_LIB        "" {
-	    # X11 library directory}
+	setvar X11_LIB        ""                  {X11 library directory}
     } else {
-	setvar X11_LIB        "$x11_lib" {
-	    # X11 library directory}
+	setvar X11_LIB        "$x11_lib"          {X11 library directory}
     }
     if [lempty $x11_include] {
-	setvar X11_INCLUDE   "" {
-	    # X11 include directory}
+	setvar X11_INCLUDE   ""                   {X11 include directory}
     } else {
-	setvar X11_INCLUDE   "-I$x11_include" {
-	    # X11 include directory}
+	setvar X11_INCLUDE   "-I$x11_include"     {X11 include directory}
     }
-    setvar TCLSH             $tclsh {
-	# Tclsh executable}
-    setvar TCLHOME           "$tclhome" {
-	# Tcl Home directory}
-    setvar TCL_INCLUDE      "-I$tcl_include" {
-	# TCL include directory}
-    setvar TCL_VERSION       "$tcl_version" {
-	# Tcl version}
-    setvar TCL_LIBRARY       "$libtcl" {
-	# Tcl library}
-    setvar TK_VERSION        "$tk_version" {
-	# Tk version}
-    setvar TK_LIBRARY        "$libtk" {
-	# Tk library}
-    setvar CC                "gcc" {
-	# This is gcc compiler for the C files, uses gnatmake for Ada files.}
-	setvar GARGS             "-i -k -I[file join $pwd src]" {
-	# gnatmake switches}
-    setvar CARGS             "-g -O2" {
-	# C compiler switches}
-    setvar AARGS             "-gnatqQafoy -gnatwaL" {
-	# Ada compiler switches}
-    setvar BARGS             "" {
-	# gnatbind switches}
-    setvar EXE               "$exec_suffix" {
-	# suffix for executable files}
+    setvar TCLSH             $tclsh               {Tclsh executable}
+    setvar TCLHOME           "$tclhome"           {Tcl Home directory}
+    setvar TCL_INCLUDE      "-I$tcl_include"      {TCL include directory}
+    setvar TCL_VERSION       "$tcl_version"       {Tcl version}
+    setvar TCL_LIBRARY       "$libtcl"            {Tcl library}
+    setvar TK_VERSION        "$tk_version"        {Tk version}
+    setvar TK_LIBRARY        "$libtk"             {Tk library}
+    setvar SUPPORTS_TASH     "[supportsTash]"     {Are Tash.* supported?}
+    setvar CC                "gcc"                \
+	{The gcc compiler for the C files; uses gprbuild for Ada files.}
+    setvar GARGS             "-i -k -I[file join $pwd src]" {gnatmake switches}
+    setvar CARGS             "-g -O2"             {C compiler switches}
+    setvar AARGS             "-gnatqQafoy -gnatwaL" {Ada compiler switches}
+    setvar BARGS             ""                   {gnatbind switches}
+    setvar EXE               "$exec_suffix"       {suffix for executable files}
 }
 
 set useLinkerOptions 0
