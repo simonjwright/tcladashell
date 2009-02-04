@@ -2958,8 +2958,6 @@ package Tcl is
    function Tcl_GetHostName return C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetHostName, "Tcl_GetHostName");
 
-   function Tcl_GetObjId (objPtr : in Tcl_Obj) return C.int;
-
    --  163
 
    function Tcl_GetInterpPath

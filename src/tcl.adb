@@ -385,12 +385,6 @@ package body Tcl is
                 String9);
    end Tcl_VarEval;
 
-   function Tcl_GetObjId (objPtr : in Tcl_Obj) return C.int is
-      function To_Int is new Unchecked_Conversion (Tcl_Obj, C.int);
-   begin
-      return To_Int (objPtr);
-   end Tcl_GetObjId;
-
    function Tcl_GetObjTypeName
      (objPtr : in Tcl_Obj) return C.Strings.chars_ptr is
    begin
