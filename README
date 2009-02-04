@@ -25,3 +25,18 @@ We would like to remove the dependency on Tcl private symbols in a
 future version of TASH. However, we suspect that the actual use of
 these facilities is limited "in the field".
 
+API changes since previous release:
+
+* Updated the Tcl Ada API to native Tcl 8.[4-6]
+
+* Removed function Tcl.Tcl_GetObjId as it is not part of native Tcl and it
+  gave trouble on 64-bit systems.
+
+* Many of the record types in package Tcl were declared private although
+  their native Tcl counterpart is public. Certain functions could not even
+  be used without public access to the record type's contents. These types
+  are now public.
+
+* Removed type Tcl.Tcl_Obj_Ptr as it is not part of native Tcl, and its use
+  was prone to introduce memory leaks.
+
