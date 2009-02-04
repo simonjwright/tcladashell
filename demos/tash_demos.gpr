@@ -24,7 +24,7 @@ project Tash_Demos is
   for Main use
     (
      "freq",
-     "freq2",
+     -- "freq2",
      "futurevalue",
      "hello_world",
      "tashell",
