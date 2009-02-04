@@ -27,28 +27,45 @@
 # If you want to install the TASH library elsewhere, copy the contents
 # of ../lib directory to the install directory.
 
-all::
-
 include makeconf
 
-all::
-	make -C src   $@
-	make -C tests $@
-	make -C demos $@
-	make -C apps  $@
+SUBDIRS := src demos
+ifeq ($(SUPPORTS_TASH),yes)
+SUBDIRS += tests apps
+endif
 
-test::
-	make -C src   $@
-	make -C tests $@
-	make -C demos $@
-	make -C apps  $@
+FOR_ALL_SUBUNITS = +for i in ${SUBDIRS}; do ${MAKE} -C $${i} $@ || exit 1; done
 
-clean:: 
+all:
+	$(FOR_ALL_SUBUNITS)
+
+test:
+	$(FOR_ALL_SUBUNITS)
+
+clean:
 	@ $(TCLSH) bin/clean.tcl . src tests demos apps
-	make -C src   $@
-	make -C tests $@
-	make -C demos $@
-	make -C apps  $@
+	$(FOR_ALL_SUBUNITS)
+
+# RPM related variables/rules :
+
+INSTALLROOT     := opt/tash
+ARCHITECTURE     = $(shell uname -m)
+
+rpm: all
+	rm -rf ./rpm_build && mkdir -p ./rpm_build
+	rpmbuild --buildroot "`pwd`/rpm_build" \
+                 --define "InstallPath $(INSTALLROOT)" \
+                 --define "ChangeDefault YES" \
+                 --define "TashVersion $(TASH_VERSION)" \
+                 --define "TashRelease $(TASH_RELEASE)" \
+                 --define "_topdir `pwd`" \
+                 --define "_builddir `pwd`" \
+                 --define "_rpmdir %{_topdir}" \
+                 --define "_sourcedir %{_topdir}" \
+                 --define "_specdir %{_topdir}" \
+                 --define "_srcrpmdir %{_topdir}" \
+                 --define "_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.$(ARCHITECTURE).rpm" \
+                 -bb tash.spec
 
 # Rules for maintaining the SourceForge web pages (will disappear when
 # it's all under the Wiki).

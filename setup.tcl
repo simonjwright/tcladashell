@@ -25,7 +25,8 @@ exec wish $0 $@
 # which is included in makefiles to customize to the local
 # environment.
 
-set tash_version "8.6-0"
+set tash_version "8.6"
+set tash_release "0"
 
 proc cequal {left right} {
     return [expr [string compare $left $right] == 0]
@@ -260,8 +261,8 @@ proc Save {g} {
     global tashorder tashvar useLinkerOptions makefile tcl_platform
     set row 0
     foreach name $tashorder {
-	set w [string tolower $name]
-	set tashvar($name) [$g.$w-entry get]
+        set w [string tolower $name]
+        set tashvar($name) [$g.$w-entry get]
 	incr row
     }
     Createmakefile $makefile
@@ -297,7 +298,7 @@ proc fileDialog {w ent title initial} {
 #------------------------------------------------------
 proc Set_Macros {platform os osVersion} {
     global tcl_version tk_version tcl_interactive tcl_library tk_library env
-    global tash_version library_switches gpr_switches
+    global tash_version tash_release library_switches gpr_switches
 
     set x11home           ""
     set x11_lib           ""
@@ -391,6 +392,7 @@ proc Set_Macros {platform os osVersion} {
     setvar OS                $os                  {Operating system}
     setvar OSVERSION         $osVersion           {Operating system version}
     setvar TASH_VERSION      "$tash_version"      {TASH version}
+    setvar TASH_RELEASE      "$tash_release"      {TASH release}
     setvar TASH_DIRECTORY    [file tail $pwd]     {Main TASH directory}
     if [lempty $x11home] {
 	setvar X11HOME        ""                  {X11 home directory}
@@ -434,7 +436,7 @@ Set_Macros $tcl_platform(platform) $tcl_platform(os) $tcl_platform(osVersion)
 #------------------------------------------------------------
 set makefile [file join [pwd] makeconf]
 set gpr [file join [pwd] tash_options.gpr]
-wm title    . "TASH $tashvar(TASH_VERSION) Setup -- $makefile"
+wm title    . "TASH $tashvar(TASH_VERSION)-$tashvar(TASH_RELEASE) Setup -- $makefile"
 wm iconname . "TASH Setup"
 
 message .instructions -justify left -aspect 500 -pady 10 -padx 20 -text \
@@ -480,7 +482,7 @@ foreach name $tashorder {
     entry $g.$w-entry -width 40
     $g.$w-entry insert end $tashvar($name)
     switch -regexp $name {
-	"(TK|TCL|TASH)_VERSION" {
+	"(TK|TCL|TASH)_(VERSION|RELEASE)" {
 	    $g.$w-entry configure -state disabled
 	}
 	"EXE" {
