@@ -17,17 +17,20 @@
 
 # This makefile builds and runs the demo programs.
 
-all::
+include ../makeconf
 
 PROGRAMS = \
 freq \
-freq2 \
 futurevalue \
 hello_world \
 tashell \
 timer \
 twashell \
 wordify
+
+ifeq ($(SUPPORTS_TASH),yes)
+PROGRAMS += freq2
+endif
 
 all::
 	[ -d .build ] || mkdir .build
