@@ -1242,16 +1242,11 @@ package Tcl is
    --  modes.
    --
 
-   type Tcl_EolTranslation is (
-                               TCL_TRANSLATE_AUTO,
-                               --  Eol == \r, \n and \r\n.
-                               TCL_TRANSLATE_CR,
-                               --  Eol == \r.
-                               TCL_TRANSLATE_LF,
-                               --  Eol == \n.
-                               TCL_TRANSLATE_CRLF
-                                 --  Eol == \r\n.
-                              );
+   type Tcl_EolTranslation is
+     (TCL_TRANSLATE_AUTO,      --  Eol == \r, \n and \r\n.
+      TCL_TRANSLATE_CR,        --  Eol == \r.
+      TCL_TRANSLATE_LF,        --  Eol == \n.
+      TCL_TRANSLATE_CRLF);     --  Eol == \r\n.
    for Tcl_EolTranslation'Size use 32;
 
    --
