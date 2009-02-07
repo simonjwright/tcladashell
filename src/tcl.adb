@@ -28,7 +28,6 @@
 --
 --------------------------------------------------------------------
 
-with Unchecked_Conversion;
 with Ada.Text_IO;
 
 package body Tcl is

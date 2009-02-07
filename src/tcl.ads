@@ -4728,7 +4728,8 @@ private
 
    type Tcl_CallFrame_Rec is new Interfaces.C.char_array
      (0 .. Tcl_Record_Sizes.Tcl_CallFrame_Size - 1);
-   for Tcl_CallFrame_Rec'Alignment use Standard'Maximum_Alignment;
+   for Tcl_CallFrame_Rec'Alignment
+     use Tcl_Record_Sizes.Tcl_CallFrame_Alignment;
 
    type Tcl_Channel_Rec is null record;
 
@@ -4790,15 +4791,18 @@ private
 
    type Tcl_HashTable_Rec is new Interfaces.C.char_array
      (0 .. Tcl_Record_Sizes.Tcl_HashTable_Size - 1);
-   for Tcl_HashTable_Rec'Alignment use Standard'Maximum_Alignment;
+   for Tcl_HashTable_Rec'Alignment
+     use Tcl_Record_Sizes.Tcl_HashTable_Alignment;
 
    type Tcl_HashSearch_Rec is new Interfaces.C.char_array
      (0 .. Tcl_Record_Sizes.Tcl_HashSearch_Size - 1);
-   for Tcl_HashSearch_Rec'Alignment use Standard'Maximum_Alignment;
+   for Tcl_HashSearch_Rec'Alignment
+     use Tcl_Record_Sizes.Tcl_HashSearch_Alignment;
 
    type Tcl_Interp_Rec is new Interfaces.C.char_array
      (0 .. Tcl_Record_Sizes.Tcl_Interp_Size - 1);
-   for Tcl_Interp_Rec'Alignment use Standard'Maximum_Alignment;
+   for Tcl_Interp_Rec'Alignment
+     use Tcl_Record_Sizes.Tcl_Interp_Alignment;
 
    type Tcl_LoadHandle_Rec is null record;
 
@@ -4867,7 +4871,8 @@ private
 
    type Tcl_SavedResult_Rec is new Interfaces.C.char_array
      (0 .. Tcl_Record_Sizes.Tcl_SavedResult_Size - 1);
-   for Tcl_SavedResult_Rec'Alignment use Standard'Maximum_Alignment;
+   for Tcl_SavedResult_Rec'Alignment
+     use Tcl_Record_Sizes.Tcl_SavedResult_Alignment;
 
    type Tcl_OldStat_Rec is null record;  -- stat
 

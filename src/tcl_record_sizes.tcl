@@ -44,8 +44,11 @@ puts -nonewline {/*
  * contents are "private" (or would be, if C supported it!)
  */
 
+#include <stddef.h>
 #include <stdio.h>
 #include <tcl.h>
+
+#define TYPE_ALIGNMENT(t) offsetof(struct { char x; t test; }, test) 
 
 int main()
 }
@@ -83,23 +86,23 @@ puts -nonewline {
 puts -nonewline {
   printf("\n");
   printf("   --  Size macros defined in tcl.h.\n");
-  printf("\n");
 }
 
 foreach {m} {
     NUM_STATIC_TOKENS
     TCL_DSTRING_STATIC_SIZE
 } {
-    puts "  printf(\"   ${m} : constant := %d;\\n\","
-    puts "         ${m});"
+    puts -nonewline "
+  printf(\"\\n\");
+  printf(\"   ${m} : constant := %d;\\n\",
+         ${m});"
 }
 
-# Sizes of structs
+# Sizes, alignments of structs
 
 puts -nonewline {
   printf("\n");
   printf("   --  Sizes of structs defined in tcl.h.\n");
-  printf("\n");
 }
 
 foreach {s} {
@@ -109,8 +112,13 @@ foreach {s} {
     Tcl_Interp
     Tcl_SavedResult
 } {
-    puts "  printf(\"   ${s}_Size : constant := %d;\\n\","
-    puts "         sizeof (struct ${s}));"
+    puts -nonewline "
+  printf(\"\\n\");
+  printf(\"   ${s}_Size : constant := %d;\\n\",
+           sizeof(struct ${s}));
+  printf(\"   ${s}_Alignment : constant := %d;\\n\",
+         TYPE_ALIGNMENT(struct ${s}));
+"
 }
 
 # Closing
