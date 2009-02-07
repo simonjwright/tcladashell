@@ -83,7 +83,7 @@ lib:
 	@ make -C ../src
 
 # Distribution: expect DIST to be defined as the place beneath which
-# the tests directory is to appear
+# the tests directory is to appear.
 
 SRC = \
   makefile \
@@ -94,7 +94,6 @@ SRC = \
   testapp.adb \
   testapp.ads
 
-ifeq ($(SUPPORTS_TASH),yes)
 SRC += \
   tash-arrays-test.adb \
   tash-arrays-test.ads \
@@ -119,7 +118,6 @@ SRC += \
   test_regexp.adb \
   test_strings.adb \
   test_system.adb
-endif
 
 MATERIEL = Shortcut.txt.lnk
 
@@ -131,4 +129,4 @@ dist:
 	cp $(SRC) $(MATERIEL) $(TESTS)/
 
 clean:
-	-rm -rf .build_lib *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS) 
+	-rm -rf .build *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS) 

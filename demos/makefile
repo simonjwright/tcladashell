@@ -19,18 +19,17 @@
 
 include ../makeconf
 
-PROGRAMS = \
-freq \
-futurevalue \
-hello_world \
-tashell \
-timer \
-twashell \
-wordify
+TCL_PROGRAMS = \
+freq$(EXE) \
+futurevalue$(EXE) \
+hello_world$(EXE) \
+tashell$(EXE) \
+timer$(EXE) \
+twashell$(EXE) \
+wordify$(EXE)
 
-ifeq ($(SUPPORTS_TASH),yes)
-PROGRAMS += freq2
-endif
+TASH_PROGRAMS = \
+freq2$(EXE)
 
 all::
 	[ -d .build ] || mkdir .build
@@ -89,6 +88,6 @@ dist:
 	mkdir $(DEMOS)
 	cp $(SRC) $(DEMOS)/
 
-# TBD
 clean:
+	-rm -rf .build *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS) 
 

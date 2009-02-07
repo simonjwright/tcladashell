@@ -146,6 +146,9 @@ dist: all
 	done
 	zip -r $(DIST).zip $(DIST)
 
+test:
+	# no action
+
 clean:
 	-rm -rf .build_lib *~
 

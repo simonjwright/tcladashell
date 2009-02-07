@@ -29,12 +29,12 @@
 
 include makeconf
 
-SUBDIRS := src demos
-ifeq ($(SUPPORTS_TASH),yes)
+SUBDIRS = src demos
+#ifeq ($(SUPPORTS_TASH),yes)
 SUBDIRS += tests apps
-endif
+#endif
 
-FOR_ALL_SUBUNITS = +for i in ${SUBDIRS}; do ${MAKE} -C $${i} $@ || exit 1; done
+FOR_ALL_SUBUNITS = +for i in ${SUBDIRS}; do ${MAKE} -w -C $${i} $@ || exit 1; done
 
 all:
 	$(FOR_ALL_SUBUNITS)
@@ -43,7 +43,6 @@ test:
 	$(FOR_ALL_SUBUNITS)
 
 clean:
-	@ $(TCLSH) bin/clean.tcl . src tests demos apps
 	$(FOR_ALL_SUBUNITS)
 
 # RPM related variables/rules :

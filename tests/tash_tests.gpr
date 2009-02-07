@@ -21,13 +21,13 @@ with "../tash";
 
 project Tash_Tests is
 
-  Basic_Mains :=
+  Tcl_Mains :=
     (
      "compare",
      "tashtest"
     );
 
-  Extended_Mains :=
+  Tash_Mains :=
     (
      "test_arrays",
      "test_file",
@@ -44,9 +44,9 @@ project Tash_Tests is
 
   case Tash.Supports_Tash is
      when "no" =>
-        for Main use Basic_Mains;
+        for Main use Tcl_Mains;
      when "yes" =>
-        for Main use Basic_Mains & Extended_Mains;
+        for Main use Tcl_Mains & Tash_Mains;
   end case;
 
   for Exec_Dir use ".";

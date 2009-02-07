@@ -21,10 +21,22 @@ with "../tash";
 
 project Tash_Apps is
 
-  for Main use
+   Tcl_Mains :=
+    (
+    );
+
+  Tash_Mains :=
     (
      "plang"
     );
+
+  case Tash.Supports_Tash is
+     when "no" =>
+        for Main use Tcl_Mains;
+     when "yes" =>
+        for Main use Tcl_Mains & Tash_Mains;
+  end case;
+
   for Exec_Dir use ".";
 
   --  The source locations for the project.
