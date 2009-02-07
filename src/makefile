@@ -36,7 +36,9 @@ all::
 
 include ../makeconf
 
-ADA_SRC = \
+GEN_SRC = tcl_record_sizes.ads
+
+TCL_ADA_SRC = \
 cargv.adb \
 cargv.ads \
 chelper.adb \
@@ -50,17 +52,9 @@ tcl-tk.ads \
 tcl.adb \
 tcl.ads
 
-ADA_SRC += tcl_record_sizes.ads
+TCL_C_SRC = tclmacro.c tkmacro.c
 
-C_SRC = tclmacro.c tkmacro.c
-
-# Tcl/Tk versions later than 8.4 don't provide the interfaces relied
-# on by the Tash.* package hierarchy, so (by default) they won't be
-# built.
-
-ifeq ($(SUPPORTS_TASH),yes)
-
-ADA_SRC += \
+TASH_ADA_SRC = \
   tash-arrays.adb \
   tash-arrays.ads \
   tash-file.adb \
@@ -88,12 +82,27 @@ ADA_SRC += \
   tash.adb \
   tash.ads
 
-C_SRC += \
+TASH_C_SRC = \
   tcl_backward_compatibility_glue.c
+
+ADA_SRC = $(TCL_ADA_SRC) $(GEN_SRC)
+C_SRC = $(TCL_C_SRC)
+
+# Tcl/Tk versions later than 8.4 don't provide the interfaces relied
+# on by the Tash.* package hierarchy, so (by default) they won't be
+# built.
+
+ifeq ($(SUPPORTS_TASH),yes)
+
+ADA_SRC += $(TASH_ADA_SRC)
+C_SRC += $(TASH_C_SRC)
 
 endif
 
-SCRIPTS = makefile build_tash_library.gpr
+SCRIPTS = \
+  build_tash_library.gpr \
+  makefile \
+  tcl_record_sizes.tcl
 
 all:: build
 .PHONY: build
@@ -118,18 +127,22 @@ tcl_record_sizes.c: tcl_record_sizes.tcl
 	tclsh $< >$@
 
 DATE = $(shell date +%Y%m%d)
-DIST = tash-$(TASH_VERSION)-$(OS)-$(DATE)
-SRC-DIST = tash-$(TASH_VERSION)-src-$(DATE)
+DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-$(OS)-$(DATE)
+SRC-DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-src-$(DATE)
 
 SUBDIRS = ../apps ../demos ../tests
+
+PARENT_SRC = ../COPYING ../README ../makefile ../setup.tcl ../tash.gpr
+PARENT_GEN = ../makeconf ../tash_options.gpr
 
 # To distribute source ...
 src-dist:
 	-rm -rf $(SRC-DIST) $(SRC-DIST).zip
 	mkdir $(SRC-DIST)
-	cp -R ../COPYING ../README ../setup.tcl ../tash.gpr $(SRC-DIST)/
+	cp -R $(PARENT_SRC) $(SRC-DIST)/
 	mkdir $(SRC-DIST)/src
-	cp $(ADA_SRC) $(C_SRC) $(SCRIPTS) $(SRC-DIST)/src/ 
+	cp $(TCL_ADA_SRC) $(TASH_ADA_SRC) \
+	  $(TCL_C_SRC) $(TASH_C_SRC) $(SCRIPTS) $(SRC-DIST)/src/ 
 	for s in $(SUBDIRS); do \
 	  $(MAKE) -C $$s DIST=../src/$(SRC-DIST) dist; \
 	done
@@ -139,8 +152,7 @@ src-dist:
 dist: all
 	-rm -rf $(DIST) $(DIST).zip
 	mkdir $(DIST)
-	cp -R ../COPYING ../README ../makeconf ../tash_options.gpr \
-	  ../tash.gpr ../lib ../include $(DIST)/
+	cp -R $(PARENT_SRC) $(PARENT_GEN) ../lib ../include $(DIST)/
 	for s in $(SUBDIRS); do \
 	  $(MAKE) -C $$s DIST=../src/$(DIST) dist; \
 	done

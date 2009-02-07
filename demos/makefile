@@ -42,18 +42,22 @@ test::
 	./futurevalue
 
 test::
-	./tashell testfreq.tcl ../include words
+	./tashell testfreq.tcl ../include words $(SUPPORTS_TASH)
 
+ifeq ($(SUPPORTS_TASH),yes)
 test::
 	./freq2 < words > freq2.unsorted
+endif
 
 profile:
 	./freq < words > freq.unsorted
 	gprof freq gmon.out > freq.gprof
 
+ifeq ($(SUPPORTS_TASH),yes)
 profile2:
 	./freq2 < words > freq2.unsorted
 	gprof freq2 gmon.out > freq2.gprof
+endif
 
 lib:
 	@ make -C ../src
@@ -62,16 +66,11 @@ lib:
 # the demos directory is to appear
 
 SRC = \
-makefile \
-tash_demos.gpr \
-freq.tcl \
-futurevalue.tcl \
-testfreq.tcl \
-timer.tcl \
 freq.adb \
 freq2.adb \
 futurevalue.adb \
 hello_world.adb \
+tash_demos.gpr \
 tashapp.adb \
 tashapp.ads \
 tashell.adb \
@@ -81,6 +80,14 @@ twashapp.ads \
 twashell.adb \
 wordify.adb
 
+SRC += \
+freq.pl \
+freq.tcl \
+futurevalue.tcl \
+makefile \
+testfreq.tcl \
+timer.tcl
+
 DEMOS = $(DIST)/demos
 
 dist:
@@ -89,5 +96,5 @@ dist:
 	cp $(SRC) $(DEMOS)/
 
 clean:
-	-rm -rf .build *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS) 
+	-rm -rf .build *~ *.out $.unsorted $(TCL_PROGRAMS) $(TASH_PROGRAMS) 
 

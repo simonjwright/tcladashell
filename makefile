@@ -29,10 +29,7 @@
 
 include makeconf
 
-SUBDIRS = src demos
-#ifeq ($(SUPPORTS_TASH),yes)
-SUBDIRS += tests apps
-#endif
+SUBDIRS = src tests demos apps
 
 FOR_ALL_SUBUNITS = +for i in ${SUBDIRS}; do ${MAKE} -w -C $${i} $@ || exit 1; done
 

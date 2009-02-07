@@ -15,9 +15,10 @@ proc lempty {string} {
 
 # Get command line arguments
 #---------------------------
-set source_dir [lindex $argv 0]
-set words      [lindex $argv 1]
-set head       [lindex $argv 2]
+set source_dir    [lindex $argv 0]
+set words         [lindex $argv 1]
+set supports_tash [lindex $argv 2]
+set head          [lindex $argv 3]
 
 set pwd        [pwd]
 set wordify    [file join $pwd        wordify]
@@ -58,9 +59,11 @@ exec sort freq.unsorted > freq.ada.out
 
 # Execute Ada version 2
 #----------------------
-puts stdout "   Executing Ada version 2..."
-set ada_time2 [time "exec $freq2 < $words > freq2.unsorted" 1]
-exec sort freq.unsorted > freq2.ada.out
+if {$supports_tash == yes} {
+    puts stdout "   Executing Ada version 2..."
+    set ada_time2 [time "exec $freq2 < $words > freq2.unsorted" 1]
+    exec sort freq.unsorted > freq2.ada.out
+}
 
 # Execute Perl version
 #---------------------
@@ -73,11 +76,15 @@ if [catch {
     set perl_time 0
 }
 
-# Compare outputs of both versions
-#---------------------------------
+# Compare outputs of all versions
+#--------------------------------
 puts stdout "   Comparing outputs..."
 catch {exec $compare freq.tcl.out freq.ada.out} diff
-catch {exec $compare freq.tcl.out freq2.ada.out} diff2
+if {$supports_tash == yes} {
+    catch {exec $compare freq.tcl.out freq2.ada.out} diff2
+} else {
+    set diff2 ""
+}
 catch {exec $compare freq.tcl.out freq.perl.out} perldiff
 if {[lempty $diff] && [lempty $diff2] && [lempty $perldiff]} {
    puts stdout "Freq test PASSED"
@@ -103,9 +110,11 @@ set ada_time [expr [lindex $ada_time 0] / 1000000.0]
 puts stdout [format "   Elapsed time for executing Ada version:     \
    %6.2f seconds" $ada_time]
 
-set ada_time2 [expr [lindex $ada_time2 0] / 1000000.0]
-puts stdout [format "   Elapsed time for executing Ada version 2:   \
+if {$supports_tash == yes} {
+    set ada_time2 [expr [lindex $ada_time2 0] / 1000000.0]
+    puts stdout [format "   Elapsed time for executing Ada version 2:   \
    %6.2f seconds" $ada_time2]
+}
 
 set perl_time [expr [lindex $perl_time 0] / 1000000.0]
 puts stdout [format "   Elapsed time for executing Perl version:    \
