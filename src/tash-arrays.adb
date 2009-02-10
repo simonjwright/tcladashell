@@ -139,10 +139,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tcl.Tcl_DecrRefCount (Objv (4));
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
@@ -195,10 +195,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
 
@@ -241,10 +241,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
       Result := Tcl.Tcl_GetLongFromObj (
@@ -286,10 +286,10 @@ package body Tash.Arrays is
       --------------------------------------------------
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tcl.Tcl_DecrRefCount (Objv (4));
       if Result = Tcl.TCL_ERROR then
          Tash_Interp.Raise_Exception (
@@ -384,10 +384,10 @@ package body Tash.Arrays is
       ---------------------------
       Tash_Interp.Get (Interp);
       Result := TclInfoExistsCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       InterpObj := Tcl.Tcl_GetObjResult (Interp);
       Tash_Interp.Release (Interp);
@@ -484,10 +484,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       if Objc = 4 then
          Tcl.Tcl_DecrRefCount (Objv (4));
       end if;
@@ -579,10 +579,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       if Objc = 4 then
          Tcl.Tcl_DecrRefCount (Objv (4));
       end if;
@@ -644,7 +644,7 @@ package body Tash.Arrays is
       ------------------------------------------------
       Listv (1) := Tash.To_Tcl_Obj (Index);
       Listv (2) := Tash.To_Tcl_Obj (Value);
-      ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
+      ListObj  := Tcl.Tcl_NewListObj (objc => Listc, objv => Listv);
       Tcl.Tcl_IncrRefCount (ListObj);
       Tcl.Tcl_DecrRefCount (Listv (1));
 
@@ -660,10 +660,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tcl.Tcl_DecrRefCount (ListObj);
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
@@ -704,7 +704,7 @@ package body Tash.Arrays is
       ------------------------------------------------
       Listv (1) := Tash.To_Tcl_Obj (Index);
       Listv (2) := Tash.Tash_Object (Value).Obj;
-      ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
+      ListObj  := Tcl.Tcl_NewListObj (objc => Listc, objv => Listv);
       Tcl.Tcl_IncrRefCount (ListObj);
       Tcl.Tcl_DecrRefCount (Listv (1));
 
@@ -720,10 +720,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tcl.Tcl_DecrRefCount (ListObj);
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
@@ -768,10 +768,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
       Tash_Interp.Release (Interp);
@@ -806,10 +806,10 @@ package body Tash.Arrays is
       Tash_Interp.Get (Interp);
       Tcl.Tcl_ResetResult (Interp);
       Result  := Tcl_ArrayObjCmd (
-         Dummy  => System.Null_Address,
-         Interp => Interp,
-         Objc   => Objc,
-         Objv   => Objv);
+         dummy  => System.Null_Address,
+         interp => Interp,
+         objc   => Objc,
+         objv   => Objv);
       Tcl.Tcl_DecrRefCount (Objv (4));
       Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
       Tcl.Tcl_ResetResult (Interp);
@@ -860,7 +860,7 @@ package body Tash.Arrays is
          ------------------------------------------------
          Listv (1) := Tash.To_Tcl_Obj (Index);
          Listv (2) := To_Tcl_Obj (Num);
-         ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
+         ListObj  := Tcl.Tcl_NewListObj (objc => Listc, objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
          Tcl.Tcl_DecrRefCount (Listv (1));
 
@@ -876,10 +876,10 @@ package body Tash.Arrays is
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
          Result  := Tcl_ArrayObjCmd (
-            Dummy  => System.Null_Address,
-            Interp => Interp,
-            Objc   => Objc,
-            Objv   => Objv);
+            dummy  => System.Null_Address,
+            interp => Interp,
+            objc   => Objc,
+            objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
          Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
@@ -909,9 +909,9 @@ package body Tash.Arrays is
                   Message => "Element is not an integer");
             end if;
             Result := Tcl.Tcl_GetIntFromObj (
-               Interp => Interp,
-               ObjPtr => Obj,
-               IntPtr => Value'Access);
+               interp => Interp,
+               objPtr => Obj,
+               intPtr => Value'Access);
             Tash_Interp.Release (Interp);
             return Item (Value);
          end;
@@ -968,7 +968,7 @@ package body Tash.Arrays is
          ------------------------------------------------
          Listv (1) := Tash.To_Tcl_Obj (Index);
          Listv (2) := To_Tcl_Obj (Value);
-         ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
+         ListObj  := Tcl.Tcl_NewListObj (objc => Listc, objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
          Tcl.Tcl_DecrRefCount (Listv (1));
 
@@ -984,10 +984,10 @@ package body Tash.Arrays is
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
          Result  := Tcl_ArrayObjCmd (
-            Dummy  => System.Null_Address,
-            Interp => Interp,
-            Objc   => Objc,
-            Objv   => Objv);
+            dummy  => System.Null_Address,
+            interp => Interp,
+            objc   => Objc,
+            objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
          Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
@@ -1039,7 +1039,7 @@ package body Tash.Arrays is
          ------------------------------------------------
          Listv (1) := Tash.To_Tcl_Obj (Index);
          Listv (2) := To_Tcl_Obj (Num);
-         ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
+         ListObj  := Tcl.Tcl_NewListObj (objc => Listc, objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
          Tcl.Tcl_DecrRefCount (Listv (1));
 
@@ -1055,10 +1055,10 @@ package body Tash.Arrays is
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
          Result  := Tcl_ArrayObjCmd (
-            Dummy  => System.Null_Address,
-            Interp => Interp,
-            Objc   => Objc,
-            Objv   => Objv);
+            dummy  => System.Null_Address,
+            interp => Interp,
+            objc   => Objc,
+            objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
          Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
@@ -1088,9 +1088,9 @@ package body Tash.Arrays is
                   Message => "Element is not an float");
             end if;
             Result := Tcl.Tcl_GetDoubleFromObj (
-               Interp    => Interp,
-               ObjPtr    => Obj,
-               DoublePtr => Value'Access);
+               interp    => Interp,
+               objPtr    => Obj,
+               doublePtr => Value'Access);
             Tash_Interp.Release (Interp);
             return Item (Value);
          end;
@@ -1147,7 +1147,7 @@ package body Tash.Arrays is
          ------------------------------------------------
          Listv (1) := Tash.To_Tcl_Obj (Index);
          Listv (2) := To_Tcl_Obj (Value);
-         ListObj  := Tcl.Tcl_NewListObj (Objc => Listc, Objv => Listv);
+         ListObj  := Tcl.Tcl_NewListObj (objc => Listc, objv => Listv);
          Tcl.Tcl_IncrRefCount (ListObj);
          Tcl.Tcl_DecrRefCount (Listv (1));
 
@@ -1163,10 +1163,10 @@ package body Tash.Arrays is
          Tash_Interp.Get (Interp);
          Tcl.Tcl_ResetResult (Interp);
          Result  := Tcl_ArrayObjCmd (
-            Dummy  => System.Null_Address,
-            Interp => Interp,
-            Objc   => Objc,
-            Objv   => Objv);
+            dummy  => System.Null_Address,
+            interp => Interp,
+            objc   => Objc,
+            objv   => Objv);
          Tcl.Tcl_DecrRefCount (ListObj);
          Tash_Interp.Assert (Interp, Result, Array_Error'Identity);
          Tcl.Tcl_ResetResult (Interp);
