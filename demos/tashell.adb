@@ -22,7 +22,7 @@ procedure Tashell is --  Tcl Ada SHell
 
 begin --  Tashell
 
-   --  Get command-line arguments and put them into C-style "argv,"
+   --  Get command-line arguments and put them into C-style "argv",
    --  as required by Tcl_Main.
    CArgv.Create (Argc, Argv);
 

@@ -29,6 +29,7 @@
 --------------------------------------------------------------------
 
 package body Tcl.Tk is
+
    function Is_Null (Ptr : in Tk_BindingTable) return Boolean is
    begin --  Is_Null
       return Ptr = null;

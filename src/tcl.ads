@@ -99,6 +99,7 @@ package Tcl is
    --
 
    subtype ClientData is System.Address;
+   Null_ClientData : constant ClientData := System.Null_Address;
 
    type Tcl_WideInt  is new Interfaces.Integer_64;
    type Tcl_WideUInt is new Interfaces.Unsigned_64;
@@ -317,13 +318,13 @@ package Tcl is
    type Tcl_RegExpIndices_Array is
      array (CNatural range <>) of aliased Tcl_RegExpIndices_Rec;
 
-   package Tcl_RegExpIndices_Pointer is new C.Pointers
+   package Tcl_RegExpIndices_Pointers is new C.Pointers
      (Index => CNatural,
       Element => Tcl_RegExpIndices_Rec,
       Element_Array => Tcl_RegExpIndices_Array,
       Default_Terminator => (0, 0));
 
-   subtype Tcl_RegExpIndices is Tcl_RegExpIndices_Pointer.Pointer;
+   subtype Tcl_RegExpIndices is Tcl_RegExpIndices_Pointers.Pointer;
 
    type Tcl_RegExpInfo_Rec is record
       nsubs : C.int;                --  number of subexpressions in the
@@ -1429,19 +1430,47 @@ package Tcl is
    --
    -- ----------------------------------------------------------------
    --  The following data structures and declarations are for the new
-   --  Tcl parser.      This stuff should all move to tcl.h eventually.
+   --  Tcl parser.
    -- ----------------------------------------------------------------
    --
 
-   type Tcl_Token_Rec is private;  -- @todo work out just what this does!
-   type Tcl_Token is access all Tcl_Token_Rec;
-   pragma Convention (C, Tcl_Token);
-   Null_Tcl_Token : constant Tcl_Token := null;
-   function Is_Null (Ptr : in Tcl_Token) return Boolean;
+   --
+   --  For each word of a command, and for each piece of a word such as a
+   --  variable reference, one of the following structures is created to
+   --  describe the token.
+   --
+   --  The tokens in a parse result are always presented in an array.
+   --
+   type Tcl_Token_Rec is record
+      typ : C.int;
+      --  Type of token, such as TCL_TOKEN_WORD; see below for valid
+      --  types.
+      start : C.Strings.chars_ptr;
+      --  First character in token.
+      size : C.int;
+      --  Number of bytes in token.
+      numComponents : C.int;
+      --  If this token is composed of other tokens, this field tells
+      --  how many of them there are {including components of
+      --  components, etc.}. The component tokens immediately follow
+      --  this one in the array of tokens of which this token is part.
+   end record;
+   pragma Convention (C, Tcl_Token_Rec);
 
    type Tcl_Token_Array is array
      (CNatural range <>) of aliased Tcl_Token_Rec;
    pragma Convention (C, Tcl_Token_Array);
+
+   package Tcl_Token_Pointers is new C.Pointers
+     (Index => CNatural,
+      Element => Tcl_Token_Rec,
+      Element_Array => Tcl_Token_Array,
+      Default_Terminator => (0, C.Strings.Null_Ptr, 0, 0));
+   --  Note, the Default_Terminator is required by
+   --  Interfaces.C.Pointers but isn't significant in a
+   --  Tcl_Token_Array, so don't use any of the subprograms that
+   --  depend on the terminator.
+   subtype Tcl_Token is Tcl_Token_Pointers.Pointer;
 
    --
    --  Type values defined for Tcl_Token structures.  These values are
@@ -1542,11 +1571,72 @@ package Tcl is
    TCL_PARSE_BAD_NUMBER        : constant := 9;
 
    --
-   --  A structure of the following type is filled in by Tcl_ParseCommand.
-   --  It describes a single command parsed from an input string.
+   --  A structure of the following type is filled in by
+   --  Tcl_ParseCommand, Tcl_ParseExpr, Tcl_ParseBraces,
+   --  Tcl_ParseQuotedString, and Tcl_ParseVarName.
    --
-
-   type Tcl_Parse_Rec is private;       -- @todo understand this!
+   --  It describes a single command (or other construct, as
+   --  appropriate) parsed from an input string.
+   --
+   --  The first five fields (commentStart through numWords) are only
+   --  filled in by Tcl_ParseCommand.
+   --
+   type Tcl_Parse_Rec is record
+      commentStart : C.Strings.chars_ptr;
+      --  Pointer to # that begins the first of one or more comments
+      --  preceding the command.
+      commentSize : C.int;
+      --  Number of bytes in comments {up through newline character
+      --  that terminates the last comment}.  If there were no
+      --  comments, this field is 0.
+      commandStart : C.Strings.chars_ptr;
+      --  First character in first word of command.
+      commandSize : C.int;
+      --  Number of bytes in command, including first character of
+      --  first word, up through the terminating newline, close
+      --  bracket, or semicolon.
+      numWords : C.int;
+      --  Total number of words in command.  May be 0.
+      tokenPtr : Tcl_Token;
+      --  Pointer to first token representing the words of the
+      --  command.  Initially points to staticTokens, but may change
+      --  to point to malloc-ed space if command exceeds space in
+      --  staticTokens.
+      numTokens : C.int;
+      --  Total number of tokens in command.
+      tokensAvailable : C.int;
+      --  Total number of tokens available at
+      --  *tokenPtr.
+      errorType : C.int;
+      --  One of the parsing error types defined above.
+      --
+      --  The fields below are intended only for the private use of
+      --  the parser.  They should not be used by procedures that
+      --  invoke Tcl_ParseCommand.
+      --
+      strng : C.Strings.chars_ptr;
+      --  The original command string passed to Tcl_ParseCommand.
+      e_n_d : C.Strings.chars_ptr;
+      --  Points to the character just after the last one in the
+      --  command string.
+      interp : Tcl_Interp;
+      --  Interpreter to use for error reporting, or NULL.
+      term : C.Strings.chars_ptr;
+      --  Points to character in string that terminated most recent
+      --  token.  Filled in by ParseTokens.  If an error occurs,
+      --  points to beginning of region where the error occurred
+      --  {e.g. the open brace if the close brace is missing}.
+      incomplete : C.int;
+      --  This field is set to 1 by Tcl_ParseCommand if the command
+      --  appears to be incomplete.  This information is used by
+      --  Tcl_CommandComplete.
+      staticTokens : Tcl_Token_Array
+        (0 .. Tcl_Record_Sizes.NUM_STATIC_TOKENS - 1);
+      --  Initial space for tokens for command.  This space should be
+      --  large enough to accommodate most commands; dynamic space is
+      --  allocated for very large commands that don't fit here.
+   end record;
+   pragma Convention (C, Tcl_Parse_Rec);
    type Tcl_Parse is access all Tcl_Parse_Rec;
    pragma Convention (C, Tcl_Parse);
    Null_Tcl_Parse : constant Tcl_Parse := null;
@@ -4803,63 +4893,6 @@ private
 
    type Tcl_Mutex_Rec is null record;
 
-   type Tcl_Parse_Rec is record
-      commentStart : C.Strings.chars_ptr;
-      --  Pointer to # that begins the first of one or more comments
-      --  preceding the command.
-      commentSize : C.int;
-      --  Number of bytes in comments {up through newline character
-      --  that terminates the last comment}.  If there were no
-      --  comments, this field is 0.
-      commandStart : C.Strings.chars_ptr;
-      --  First character in first word of command.
-      commandSize : C.int;
-      --  Number of bytes in command, including first character of
-      --  first word, up through the terminating newline, close
-      --  bracket, or semicolon.
-      numWords : C.int;
-      --  Total number of words in command.  May be 0.
-      tokenPtr : Tcl_Token;
-      --  Pointer to first token representing the words of the
-      --  command.  Initially points to staticTokens, but may change
-      --  to point to malloc-ed space if command exceeds space in
-      --  staticTokens.
-      numTokens : C.int;
-      --  Total number of tokens in command.
-      tokensAvailable : C.int;
-      --  Total number of tokens available at
-      --  *tokenPtr.
-      errorType : C.int;
-      --  One of the parsing error types defined above.
-      --
-      --  The fields below are intended only for the private use of
-      --  the parser.  They should not be used by procedures that
-      --  invoke Tcl_ParseCommand.
-      --
-      strng : C.Strings.chars_ptr;
-      --  The original command string passed to Tcl_ParseCommand.
-      e_n_d : C.Strings.chars_ptr;
-      --  Points to the character just after the last one in the
-      --  command string.
-      interp : Tcl_Interp;
-      --  Interpreter to use for error reporting, or NULL.
-      term : C.Strings.chars_ptr;
-      --  Points to character in string that terminated most recent
-      --  token.  Filled in by ParseTokens.  If an error occurs,
-      --  points to beginning of region where the error occurred
-      --  {e.g. the open brace if the close brace is missing}.
-      incomplete : C.int;
-      --  This field is set to 1 by Tcl_ParseCommand if the command
-      --  appears to be incomplete.  This information is used by
-      --  Tcl_CommandComplete.
-      staticTokens : Tcl_Token_Array
-        (0 .. Tcl_Record_Sizes.NUM_STATIC_TOKENS - 1);
-      --  Initial space for tokens for command.  This space should be
-      --  large enough to accommodate most commands; dynamic space is
-      --  allocated for very large commands that don't fit here.
-   end record;
-   pragma Convention (C, Tcl_Parse_Rec);
-
    type Tcl_Pid_Rec is null record;
 
    type Tcl_RegExp_Rec is null record;
@@ -4878,28 +4911,6 @@ private
    type Tcl_ThreadId_Rec is null record;
 
    type Tcl_TimerToken_Rec is null record;
-
-   --
-   --  For each word of a command, and for each piece of a word such as a
-   --  variable reference, one of the following structures is created to
-   --  describe the token.
-   --
-
-   type Tcl_Token_Rec is record
-      typ : C.int;
-      --  Type of token, such as TCL_TOKEN_WORD; see below for valid
-      --  types.
-      start : C.Strings.chars_ptr;
-      --  First character in token.
-      size : C.int;
-      --  Number of bytes in token.
-      numComponents : C.int;
-      --  If this token is composed of other tokens, this field tells
-      --  how many of them there are {including components of
-      --  components, etc.}.  The component tokens immediately follow
-      --  this one.
-   end record;
-   pragma Convention (C, Tcl_Token_Rec);
 
    type Tcl_Trace_Rec is null record;
 

@@ -34,10 +34,8 @@ project Build_Tash_Library is
   type Answer is ("no", "yes");
   Are_Tash_Packages_Supported : Answer := Tash_Options.Supports_Tash;
 
-  Basic_Source_Files :=
+  Basic_Ada_Source_Files :=
     (
-     "tclmacro.c",
-     "tkmacro.c",
      "cargv.adb",
      "cargv.ads",
      "chelper.adb",
@@ -53,9 +51,25 @@ project Build_Tash_Library is
      "tcl_record_sizes.ads"
      );
 
-  Extended_Source_Files :=
+  Basic_Ada_Units :=
     (
-     "tcl_backward_compatibility_glue.c",
+     "cargv",
+     "chelper",
+     "tcl.ada",
+     "tcl.tk.ada",
+     "tcl.tk",
+     "tcl",
+     "tcl_record_sizes"
+     );
+
+  Basic_C_Source_Files :=
+    (
+     "tclmacro.c",
+     "tkmacro.c"
+     );
+
+  Extended_Ada_Source_Files :=
+    (
      "tash-arrays.adb",
      "tash-arrays.ads",
      "tash-file.adb",
@@ -84,21 +98,52 @@ project Build_Tash_Library is
      "tash.ads"
     );
 
-  case Are_Tash_Packages_Supported is
-     when "no" =>
-        for Source_Files use Basic_Source_Files;
-     when "yes" =>
-        for Source_Files use Basic_Source_Files & Extended_Source_Files;
-  end case;
+  Extended_Ada_Units :=
+    (
+     "tash.arrays",
+     "tash.file",
+     "tash.file_io",
+     "tash.float_arrays",
+     "tash.float_lists",
+     "tash.floats",
+     "tash.integer_arrays",
+     "tash.integer_lists",
+     "tash.integers",
+     "tash.lists",
+     "tash.platform",
+     "tash.regexp",
+     "tash.strings",
+     "tash.system",
+     "tash"
+    );
+
+  Extended_C_Source_Files :=
+    (
+     "tcl_backward_compatibility_glue.c"
+    );
 
   for Object_Dir use ".build_lib";
   for Library_Kind use "static";
   for Library_Dir use "../lib";
+  for Library_Src_Dir use "../include";
+  for Library_Options use Tash_Options.Library_Options;
+
+  case Are_Tash_Packages_Supported is
+     when "no" =>
+        for Source_Files use
+          Basic_Ada_Source_Files & Basic_C_Source_Files;
+        for Library_Interface use Basic_Ada_Units;
+     when "yes" =>
+        for Source_Files use
+          Basic_Ada_Source_Files & Basic_C_Source_Files
+          & Extended_Ada_Source_Files & Extended_C_Source_Files;
+        for Library_Interface use Basic_Ada_Units & Extended_Ada_Units;
+  end case;
 
   package IDE is
      for Compiler_Command ("ada") use "gnatmake";
      for Gnatlist use "gnatls";
-     for VCS_Kind use "CVS";
+     for VCS_Kind use "SVN";
   end IDE;
 
   package Builder is

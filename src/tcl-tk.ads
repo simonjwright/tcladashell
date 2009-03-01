@@ -35,14 +35,11 @@
 --
 --------------------------------------------------------------------
 
-with CArgv;
 with CHelper;
-with Interfaces.C.Strings;
-with Tcl;
 
 package Tcl.Tk is
 
-   package C renames Interfaces.C;
+--     package C renames Interfaces.C;
 
    --
    --  tk.h --
@@ -87,6 +84,7 @@ package Tcl.Tk is
    TK_RELEASE_SERIAL : constant := 0;
    TK_VERSION        : constant String := "8.3";
    TK_PATCH_LEVEL    : constant String := "8.3.0";
+
    --
    --  The following definitions set up the proper options for Macintosh
    --  compilers.  We use this method because there is no autoconf equivalent.
@@ -105,100 +103,76 @@ package Tcl.Tk is
    --  Dummy types that are used by clients:
    --
 
-   type Tk_BindingTable_Rec is private;
+   type Tk_BindingTable_Rec (<>) is private;
    type Tk_BindingTable is access all Tk_BindingTable_Rec;
    pragma Convention (C, Tk_BindingTable);
-
-   Null_Tk_BindingTable : constant Tk_BindingTable;
-
+   Null_Tk_BindingTable : constant Tk_BindingTable := null;
    function Is_Null (Ptr : in Tk_BindingTable) return Boolean;
 
-   type Tk_Canvas_Rec is private;
+   type Tk_Canvas_Rec (<>) is private;
    type Tk_Canvas is access all Tk_Canvas_Rec;
    pragma Convention (C, Tk_Canvas);
-
-   Null_Tk_Canvas : constant Tk_Canvas;
-
+   Null_Tk_Canvas : constant Tk_Canvas := null;
    function Is_Null (Ptr : in Tk_Canvas) return Boolean;
 
-   type Tk_Cursor_Rec is private;
+   type Tk_Cursor_Rec (<>) is private;
    type Tk_Cursor is access all Tk_Cursor_Rec;
    pragma Convention (C, Tk_Cursor);
-
-   Null_Tk_Cursor : constant Tk_Cursor;
-
+   Null_Tk_Cursor : constant Tk_Cursor := null;
    function Is_Null (Ptr : in Tk_Cursor) return Boolean;
 
-   type Tk_ErrorHandler_Rec is private;
+   type Tk_ErrorHandler_Rec (<>) is private;
    type Tk_ErrorHandler is access all Tk_ErrorHandler_Rec;
    pragma Convention (C, Tk_ErrorHandler);
-
-   Null_Tk_ErrorHandler : constant Tk_ErrorHandler;
-
+   Null_Tk_ErrorHandler : constant Tk_ErrorHandler := null;
    function Is_Null (Ptr : in Tk_ErrorHandler) return Boolean;
 
-   type Tk_Font_Rec is private;
+   type Tk_Font_Rec (<>) is private;
    type Tk_Font is access all Tk_Font_Rec;
    pragma Convention (C, Tk_Font);
-
-   Null_Tk_Font : constant Tk_Font;
-
+   Null_Tk_Font : constant Tk_Font := null;
    function Is_Null (Ptr : in Tk_Font) return Boolean;
 
-   type Tk_Image_Rec is private;
+   type Tk_Image_Rec (<>) is private;
    type Tk_Image is access all Tk_Image_Rec;
    pragma Convention (C, Tk_Image);
-
-   Null_Tk_Image : constant Tk_Image;
-
+   Null_Tk_Image : constant Tk_Image := null;
    function Is_Null (Ptr : in Tk_Image) return Boolean;
 
-   type Tk_ImageMaster_Rec is private;
+   type Tk_ImageMaster_Rec (<>) is private;
    type Tk_ImageMaster is access all Tk_ImageMaster_Rec;
    pragma Convention (C, Tk_ImageMaster);
-
-   Null_Tk_ImageMaster : constant Tk_ImageMaster;
-
+   Null_Tk_ImageMaster : constant Tk_ImageMaster := null;
    function Is_Null (Ptr : in Tk_ImageMaster) return Boolean;
 
-   type Tk_OptionTable_Rec is private;
+   type Tk_OptionTable_Rec (<>) is private;
    type Tk_OptionTable is access all Tk_OptionTable_Rec;
    pragma Convention (C, Tk_OptionTable);
-
-   Null_Tk_OptionTable : constant Tk_OptionTable;
-
+   Null_Tk_OptionTable : constant Tk_OptionTable := null;
    function Is_Null (Ptr : in Tk_OptionTable) return Boolean;
 
-   type Tk_PostscriptInfo_Rec is private;
+   type Tk_PostscriptInfo_Rec (<>) is private;
    type Tk_PostscriptInfo is access all Tk_PostscriptInfo_Rec;
    pragma Convention (C, Tk_PostscriptInfo);
-
-   Null_Tk_PostscriptInfo : constant Tk_PostscriptInfo;
-
+   Null_Tk_PostscriptInfo : constant Tk_PostscriptInfo := null;
    function Is_Null (Ptr : in Tk_PostscriptInfo) return Boolean;
 
-   type Tk_TextLayout_Rec is private;
+   type Tk_TextLayout_Rec (<>) is private;
    type Tk_TextLayout is access all Tk_TextLayout_Rec;
    pragma Convention (C, Tk_TextLayout);
-
-   Null_Tk_TextLayout : constant Tk_TextLayout;
-
+   Null_Tk_TextLayout : constant Tk_TextLayout := null;
    function Is_Null (Ptr : in Tk_TextLayout) return Boolean;
 
-   type Tk_Window_Rec is private;
+   type Tk_Window_Rec (<>) is private;
    type Tk_Window is access all Tk_Window_Rec;
    pragma Convention (C, Tk_Window);
-
-   Null_Tk_Window : constant Tk_Window;
-
+   Null_Tk_Window : constant Tk_Window := null;
    function Is_Null (Ptr : in Tk_Window) return Boolean;
 
-   type Tk_3DBorder_Rec is private;
+   type Tk_3DBorder_Rec (<>) is private;
    type Tk_3DBorder is access all Tk_3DBorder_Rec;
    pragma Convention (C, Tk_3DBorder);
-
-   Null_Tk_3DBorder : constant Tk_3DBorder;
-
+   Null_Tk_3DBorder : constant Tk_3DBorder := null;
    function Is_Null (Ptr : in Tk_3DBorder) return Boolean;
 
    --
@@ -212,8 +186,8 @@ package Tcl.Tk is
    --  as implemented by Tk_InitOptions, Tk_SetOptions, etc.
    --
 
-   type Tk_OptionType is (
-      TK_OPTION_BOOLEAN,
+   type Tk_OptionType is
+     (TK_OPTION_BOOLEAN,
       TK_OPTION_INT,
       TK_OPTION_DOUBLE,
       TK_OPTION_STRING,
@@ -240,12 +214,47 @@ package Tcl.Tk is
    --  Tk_CreateOptionTable.
    --
 
-   type Tk_OptionSpec_Rec is private;
+   type Tk_OptionSpec_Rec is record
+      typ : Tk_OptionType;
+      --  Type of option, such as TK_OPTION_COLOR; see definitions
+      --  above. Last option in table must have type TK_OPTION_END.
+      optionName : C.Strings.chars_ptr;
+      --  Name used to specify option in Tcl commands.
+      dbName : C.Strings.chars_ptr;
+      --  Name for option in option database.
+      dbClass : C.Strings.chars_ptr;
+      --  Class for option in database.
+      defValue : C.Strings.chars_ptr;
+      --  Default value for option if not specified in command line,
+      --  the option database, or the system.
+      objOffset : C.int;
+      --  Where in record to store a Tcl_Obj * that holds the value of
+      --  this option, specified as an offset in bytes from the start
+      --  of the record. Use the Tk_Offset macro to generate values
+      --  for this.  -1 means don't store the Tcl_Obj in the record.
+      internalOffset : C.int;
+      --  Where in record to store the internal representation of the
+      --  value of this option, such as an int or XColor *.  This
+      --  field is specified as an offset in bytes from the start of
+      --  the record. Use the Tk_Offset macro to generate values for
+      --  it.  -1 means don't store the internal representation in the
+      --  record.
+      flags : C.int;
+      --  Any combination of the values defined below.
+      data : ClientData;
+      --  An alternate place to put option-specific data. Used for the
+      --  monochrome default value for colors, etc.
+      typeMask : C.int;
+      --  An arbitrary bit mask defined by the class manager;
+      --  typically bits correspond to certain kinds of options such
+      --  as all those that require a redisplay when they change.
+      --  Tk_SetOptions returns the bit-wise OR of the typeMasks of
+      --  all options that were changed.
+   end record;
+   pragma Convention (C, Tk_OptionSpec_Rec);
    type Tk_OptionSpec is access all Tk_OptionSpec_Rec;
    pragma Convention (C, Tk_OptionSpec);
-
-   Null_Tk_OptionSpec : constant Tk_OptionSpec;
-
+   Null_Tk_OptionSpec : constant Tk_OptionSpec := null;
    function Is_Null (Ptr : in Tk_OptionSpec) return Boolean;
 
    --
@@ -256,13 +265,14 @@ package Tcl.Tk is
 
    TK_OPTION_NULL_OK          : constant := 1;
    TK_OPTION_DONT_SET_DEFAULT : constant := 8;
+
    --
    --  Macro to use to fill in "offset" fields of the Tk_OptionSpec.
    --  struct.  Computes number of bytes from beginning of structure
    --  to a given field.
    --
 
-   --  Tcl_Offset is not implemented because it's implementation
+   --  Tcl_Offset is not implemented because its implementation
    --  depends on some C tricks to get offset of a data field.
 
    --
@@ -274,28 +284,18 @@ package Tcl.Tk is
    --  Tk.  No-one outside Tk should ever read or write any of the fields
    --  of these structures.
    --
+   --  So TASH doesn't make them visible.
 
-   type Tk_SavedOption_Rec is private;
+   type Tk_SavedOption_Rec (<>) is private;
    type Tk_SavedOption is access all Tk_SavedOption_Rec;
    pragma Convention (C, Tk_SavedOption);
-
-   Null_Tk_SavedOption : constant Tk_SavedOption;
-
-   subtype CNatural is C.int range 0 .. C.int'Last;
-
-   type Tk_SavedOption_Array is
-     array (CNatural range <>) of aliased Tk_SavedOption;
-   pragma Convention (C, Tk_SavedOption_Array);
-
+   Null_Tk_SavedOption : constant Tk_SavedOption := null;
    function Is_Null (Ptr : in Tk_SavedOption) return Boolean;
 
-   TK_NUM_SAVED_OPTIONS : constant := 20;
-   type Tk_SavedOptions_Rec is private;
+   type Tk_SavedOptions_Rec (<>) is private;
    type Tk_SavedOptions is access all Tk_SavedOptions_Rec;
    pragma Convention (C, Tk_SavedOptions);
-
-   Null_Tk_SavedOptions : constant Tk_SavedOptions;
-
+   Null_Tk_SavedOptions : constant Tk_SavedOptions := null;
    function Is_Null (Ptr : in Tk_SavedOptions) return Boolean;
 
    --
@@ -306,8 +306,8 @@ package Tcl.Tk is
    --
 
    --
-   --  This is a temporary flag used while tkObjConfig and new widgets
-   --  are in development.
+   --  This is a temporary flag used while tkObjConfig and new
+   --  widgets are in development.
    --
 
    type Tk_OptionParseProc is access function
@@ -329,12 +329,21 @@ package Tcl.Tk is
    return           C.Strings.chars_ptr;
    pragma Convention (C, Tk_OptionPrintProc);
 
-   type Tk_CustomOption_Rec is private;
+   type Tk_CustomOption_Rec is record
+      parseProc : Tk_OptionParseProc;
+      --  Procedure to call to parse an option and store it in
+      --  converted form.
+      printProc : Tk_OptionPrintProc;
+      --  Procedure to return a printable string describing an
+      --  existing option.
+      data : ClientData;
+      --  Arbitrary one-word value used by option parser: passed to
+      --  parseProc and printProc.
+   end record;
+   pragma Convention (C, Tk_CustomOption_Rec);
    type Tk_CustomOption is access all Tk_CustomOption_Rec;
    pragma Convention (C, Tk_CustomOption);
-
-   Null_Tk_CustomOption : constant Tk_CustomOption;
-
+   Null_Tk_CustomOption : constant Tk_CustomOption := null;
    function Is_Null (Ptr : in Tk_CustomOption) return Boolean;
 
    --
@@ -344,21 +353,15 @@ package Tcl.Tk is
    --  in the option database, etc.
    --
 
-   type Tk_ConfigSpec_Rec is private;
-   type Tk_ConfigSpec is access all Tk_ConfigSpec_Rec;
-   pragma Convention (C, Tk_ConfigSpec);
-
-   Null_Tk_ConfigSpec : constant Tk_ConfigSpec;
-
-   function Is_Null (Ptr : in Tk_ConfigSpec) return Boolean;
-
    --
    --  Type values for Tk_ConfigSpec structures.  See the user
    --  documentation for details.
    --
+   --  Last option in table must have type TK_CONFIG_END.
+   --
 
-   type Tk_ConfigTypes is (
-      TK_CONFIG_BOOLEAN,
+   type Tk_ConfigTypes is
+     (TK_CONFIG_BOOLEAN,
       TK_CONFIG_INT,
       TK_CONFIG_DOUBLE,
       TK_CONFIG_STRING,
@@ -382,12 +385,62 @@ package Tcl.Tk is
       TK_CONFIG_END);
    for Tk_ConfigTypes'Size use 32;
 
+   type Tk_ConfigSpec_Rec is record
+      typ : Tk_ConfigTypes;
+      --  Type of option, such as TK_CONFIG_COLOR; see definitions
+      --  above.
+      argvName : C.Strings.chars_ptr;
+      --  Switch used to specify option in argv.  NULL means this spec
+      --  is part of a group.
+      dbName : C.Strings.chars_ptr;
+      --  Name for option in option database.
+      dbClass : C.Strings.chars_ptr;
+      --  Class for option in database.
+      defValue : C.Strings.chars_ptr;
+      --  Default value for option if not specified in command line or
+      --  database.
+      offset : C.int;
+      --  Where in widget record to store value; use Tk_Offset macro
+      --  to generate values for this.
+      specFlags : C.int;
+      --  Any combination of the values defined below; other bits are
+      --  used internally by tkConfig.c.
+      customPtr : Tk_CustomOption;
+      --  If type is TK_CONFIG_CUSTOM then this is a pointer to info
+      --  about how to parse and print the option.  Otherwise it is
+      --  irrelevant.
+   end record;
+   pragma Convention (C, Tk_ConfigSpec_Rec);
+   type Tk_ConfigSpec is access all Tk_ConfigSpec_Rec;
+   pragma Convention (C, Tk_ConfigSpec);
+   Null_Tk_ConfigSpec : constant Tk_ConfigSpec := null;
+   function Is_Null (Ptr : in Tk_ConfigSpec) return Boolean;
+
+   type Tk_ConfigSpec_Array is
+     array (CNatural range <>) of aliased Tk_ConfigSpec_Rec;
+
+   package Tk_ConfigSpec_Pointers is new C.Pointers
+     (Index => CNatural,
+      Element => Tk_ConfigSpec_Rec,
+      Element_Array => Tk_ConfigSpec_Array,
+      Default_Terminator => (Tk_ConfigTypes'First,
+                             C.Strings.Null_Ptr,
+                             C.Strings.Null_Ptr,
+                             C.Strings.Null_Ptr,
+                             C.Strings.Null_Ptr,
+                             0,
+                             0,
+                             null));
+
+   subtype Tk_ConfigSpecs is Tk_ConfigSpec_Pointers.Pointer;
+
    --
    --  Possible values for flags argument to Tk_ConfigureWidget:
    --
 
    TK_CONFIG_ARGV_ONLY : constant := 1;
    TK_CONFIG_OBJS      : constant := 128;
+
    --
    --  Possible flag values for Tk_ConfigSpec structures.  Any bits at
    --  or above TK_CONFIG_USER_BIT may be used by clients for selecting
@@ -407,18 +460,18 @@ package Tcl.Tk is
    --  Structure used to specify how to handle argv options.
    --
 
-   type Tk_ArgvInfo_Rec is private;
+   type Tk_ArgvInfo_Rec (<>) is private;                       -- @todo
    type Tk_ArgvInfo is access all Tk_ArgvInfo_Rec;
    pragma Convention (C, Tk_ArgvInfo);
-
-   Null_Tk_ArgvInfo : constant Tk_ArgvInfo;
-
+   Null_Tk_ArgvInfo : constant Tk_ArgvInfo := null;
    function Is_Null (Ptr : in Tk_ArgvInfo) return Boolean;
 
    --
    --  Legal values for the type field of a Tk_ArgvInfo: see the user
    --  documentation for details.
    --
+   --  @todo: these are useless without a visible definition of the
+   --  structure!
 
    TK_ARGV_CONSTANT          : constant := 15;
    TK_ARGV_INT               : constant := 16;
@@ -433,6 +486,7 @@ package Tcl.Tk is
    TK_ARGV_OPTION_VALUE      : constant := 25;
    TK_ARGV_OPTION_NAME_VALUE : constant := 26;
    TK_ARGV_END               : constant := 27;
+
    --
    --  Flag bits for passing to Tk_ParseArgv:
    --
@@ -441,13 +495,14 @@ package Tcl.Tk is
    TK_ARGV_NO_LEFTOVERS        : constant := 2;
    TK_ARGV_NO_ABBREV           : constant := 4;
    TK_ARGV_DONT_SKIP_FIRST_ARG : constant := 8;
+
    --
    --  Enumerated type for describing actions to be taken in response
    --  to a restrictProc established by Tk_RestrictEvents.
    --
 
-   type Tk_RestrictAction is (
-      TK_DEFER_EVENT,
+   type Tk_RestrictAction is
+     (TK_DEFER_EVENT,
       TK_PROCESS_EVENT,
       TK_DISCARD_EVENT);
    for Tk_RestrictAction'Size use 32;
@@ -461,6 +516,7 @@ package Tcl.Tk is
    TK_USER_DEFAULT_PRIO   : constant := 60;
    TK_INTERACTIVE_PRIO    : constant := 80;
    TK_MAX_PRIO            : constant := 100;
+
    --
    --  Relief values returned by Tk_GetRelief:
    --
@@ -471,6 +527,7 @@ package Tcl.Tk is
    TK_RELIEF_RIDGE  : constant := 3;
    TK_RELIEF_SOLID  : constant := 4;
    TK_RELIEF_SUNKEN : constant := 5;
+
    --
    --  "Which" argument values for Tk_3DBorderGC:
    --
@@ -478,6 +535,7 @@ package Tcl.Tk is
    TK_3D_FLAT_GC  : constant := 1;
    TK_3D_LIGHT_GC : constant := 2;
    TK_3D_DARK_GC  : constant := 3;
+
    --
    --  Special EnterNotify/LeaveNotify "mode" for use in events
    --  generated by tkShare.c.  Pick a high enough value that it's
@@ -486,12 +544,13 @@ package Tcl.Tk is
    --
 
    TK_NOTIFY_SHARE : constant := 20;
+
    --
    --  Enumerated type for describing a point by which to anchor something:
    --
 
-   type Tk_Anchor is (
-      TK_ANCHOR_N,
+   type Tk_Anchor is
+     (TK_ANCHOR_N,
       TK_ANCHOR_NE,
       TK_ANCHOR_E,
       TK_ANCHOR_SE,
@@ -514,12 +573,25 @@ package Tcl.Tk is
    --  information about the properties of a Tk_Font.
    --
 
-   type Tk_FontMetrics_Rec is private;
+   type Tk_FontMetrics_Rec is record
+      ascent : C.int;
+      --  The amount in pixels that the tallest letter sticks up above
+      --  the baseline, plus any extra blank space added by the
+      --  designer of the font.
+      descent : C.int;
+      --  The largest amount in pixels that any letter sticks below
+      --  the baseline, plus any extra blank space added by the
+      --  designer of the font.
+      linespace : C.int;
+      --  The sum of the ascent and descent.  How far apart two lines
+      --  of text in the same font should be placed so that none of
+      --  the characters in one line overlap any of the characters in
+      --  the other line.
+   end record;
+   pragma Convention (C, Tk_FontMetrics_Rec);
    type Tk_FontMetrics is access all Tk_FontMetrics_Rec;
    pragma Convention (C, Tk_FontMetrics);
-
-   Null_Tk_FontMetrics : constant Tk_FontMetrics;
-
+   Null_Tk_FontMetrics : constant Tk_FontMetrics := null;
    function Is_Null (Ptr : in Tk_FontMetrics) return Boolean;
 
    --
@@ -529,12 +601,14 @@ package Tcl.Tk is
    TK_WHOLE_WORDS  : constant := 1;
    TK_AT_LEAST_ONE : constant := 2;
    TK_PARTIAL_OK   : constant := 4;
+
    --
    --  Flags passed to Tk_ComputeTextLayout:
    --
 
    TK_IGNORE_TABS     : constant := 8;
    TK_IGNORE_NEWLINES : constant := 16;
+
    --
    --  Each geometry manager {the packer, the placer, etc.} is represented
    --  by a structure of the following form, which indicates procedures
@@ -542,21 +616,31 @@ package Tcl.Tk is
    --
 
    type Tk_GeomRequestProc is access procedure
-  (data  : in ClientData;
-   tkwin : in Tk_Window);
+     (data  : in ClientData;
+      tkwin : in Tk_Window);
    pragma Convention (C, Tk_GeomRequestProc);
 
    type Tk_GeomLostSlaveProc is access procedure
-  (data  : in ClientData;
-   tkwin : in Tk_Window);
+     (data  : in ClientData;
+      tkwin : in Tk_Window);
    pragma Convention (C, Tk_GeomLostSlaveProc);
 
-   type Tk_GeomMgr_Rec is private;
+   type Tk_GeomMgr_Rec is record
+      name : C.Strings.chars_ptr;
+      --  Name of the geometry manager {command used to invoke it, or
+      --  name of widget class that allows embedded widgets}.
+      requestProc : Tk_GeomRequestProc;
+      --  Procedure to invoke when a slave's requested geometry
+      --  changes.
+      lostSlaveProc : Tk_GeomLostSlaveProc;
+      --  Procedure to invoke when a slave is taken away from one
+      --  geometry manager by another.  NULL means geometry manager
+      --  doesn't care when slaves are lost.
+   end record;
+   pragma Convention (C, Tk_GeomMgr_Rec);
    type Tk_GeomMgr is access all Tk_GeomMgr_Rec;
    pragma Convention (C, Tk_GeomMgr);
-
-   Null_Tk_GeomMgr : constant Tk_GeomMgr;
-
+   Null_Tk_GeomMgr : constant Tk_GeomMgr := null;
    function Is_Null (Ptr : in Tk_GeomMgr) return Boolean;
 
    --
@@ -567,42 +651,39 @@ package Tcl.Tk is
    TK_SCROLL_PAGES  : constant := 2;
    TK_SCROLL_UNITS  : constant := 3;
    TK_SCROLL_ERROR  : constant := 4;
+
    --
-   -- -------------------------------------------------------------------------
-   ----
+   -------------------------------------
    --
    --  Extensions to the X event set
    --
-   -- -------------------------------------------------------------------------
-   ----
+   -------------------------------------
    --
 
-   MouseWheelMask   : constant := 268435456;
-   ActivateMask     : constant := 536870912;
-   VirtualEventMask : constant := 1073741824;
+   MouseWheelMask   : constant := 16#10000000#;
+   ActivateMask     : constant := 16#20000000#;
+   VirtualEventMask : constant := 16#40000000#;
+
    --
-   --  A virtual event shares most of its fields with the XKeyEvent and
-   --  XButtonEvent structures.  99% of the time a virtual event will be
-   --  an abstraction of a key or button event, so this structure provides
-   --  the most information to the user.  The only difference is the changing
-   --  of the detail field for a virtual event so that it holds the name of the
-   --  virtual event being triggered.
+   --  A virtual event shares most of its fields with the XKeyEvent
+   --  and XButtonEvent structures.  99% of the time a virtual event
+   --  will be an abstraction of a key or button event, so this
+   --  structure provides the most information to the user.  The only
+   --  difference is the changing of the detail field for a virtual
+   --  event so that it holds the name of the virtual event being
+   --  triggered.
    --
 
-   type XVirtualEvent_Rec is private;
+   type XVirtualEvent_Rec (<>) is private;
    type XVirtualEvent is access all XVirtualEvent_Rec;
    pragma Convention (C, XVirtualEvent);
-
-   Null_XVirtualEvent : constant XVirtualEvent;
-
+   Null_XVirtualEvent : constant XVirtualEvent := null;
    function Is_Null (Ptr : in XVirtualEvent) return Boolean;
 
-   type XActivateDeactivateEvent_Rec is private;
+   type XActivateDeactivateEvent_Rec (<>) is private;
    type XActivateDeactivateEvent is access all XActivateDeactivateEvent_Rec;
    pragma Convention (C, XActivateDeactivateEvent);
-
-   Null_XActivateDeactivateEvent : constant XActivateDeactivateEvent;
-
+   Null_XActivateDeactivateEvent : constant XActivateDeactivateEvent := null;
    function Is_Null (Ptr : in XActivateDeactivateEvent) return Boolean;
 
    subtype XActivateEvent is XActivateDeactivateEvent;
@@ -637,28 +718,28 @@ package Tcl.Tk is
    pragma Import (C, Tk_Parent, "Tk_CallParent");
 
    --
-   --  The structure below is needed by the macros above so that they can
-   --  access the fields of a Tk_Window.  The fields not needed by the macros
-   --  are declared as "dummyX".  The structure has its own type in order to
-   --  prevent applications from accessing Tk_Window fields except using
-   --  official macros.  WARNING!! The structure definition must be kept
-   --  consistent with the TkWindow structure in tkInt.h.  If you change one,
-   --  then change the other.  See the declaration in tkInt.h for
-   --  documentation on what the fields are used for internally.
+   --  The structure below is needed by the macros above so that they
+   --  can access the fields of a Tk_Window.  The fields not needed by
+   --  the macros are declared as "dummyX".  The structure has its own
+   --  type in order to prevent applications from accessing Tk_Window
+   --  fields except using official macros.  WARNING!! The structure
+   --  definition must be kept consistent with the TkWindow structure
+   --  in tkInt.h.  If you change one, then change the other.  See the
+   --  declaration in tkInt.h for documentation on what the fields are
+   --  used for internally.
    --
+   --  TASH: this is retained but probably useless.
 
-   type Tk_FakeWin_Rec is private;
+   type Tk_FakeWin_Rec (<>) is private;
    type Tk_FakeWin is access all Tk_FakeWin_Rec;
    pragma Convention (C, Tk_FakeWin);
-
-   Null_Tk_FakeWin : constant Tk_FakeWin;
-
+   Null_Tk_FakeWin : constant Tk_FakeWin := null;
    function Is_Null (Ptr : in Tk_FakeWin) return Boolean;
 
    --
    --  Flag values for TkWindow {and Tk_FakeWin} structures are:
    --
-   --  TK_MAPPED:                       1 means window is currently mapped,
+   --  TK_MAPPED:               1 means window is currently mapped,
    --                           0 means unmapped.
    --  TK_TOP_LEVEL:            1 means this is a top-level window {it
    --                           was or will be created as a child of
@@ -687,8 +768,7 @@ package Tcl.Tk is
    --                           for its toplevel, so we have to remove it
    --                           from that property if the window is
    --                           deleted and the toplevel isn't.
-   --  TK_EMBEDDED:                     1 means that this window {which must
-   --  be a
+   --  TK_EMBEDDED:             1 means that this window {which must be a
    --                           toplevel} is not a free-standing window but
    --                           rather is embedded in some other application.
    --  TK_CONTAINER:            1 means that this window is a container, and
@@ -704,7 +784,7 @@ package Tcl.Tk is
    --  TK_DEFER_MODAL:          1 means that this window has deferred a modal
    --                           loop until all of the bindings for the current
    --                           event have been invoked.
-   --  TK_WRAPPER:                      1 means that this window is the extra
+   --  TK_WRAPPER:              1 means that this window is the extra
    --                           wrapper window created around a toplevel
    --                           to hold the menubar under Unix.  See
    --                           tkUnixWm.c for more information.
@@ -729,6 +809,7 @@ package Tcl.Tk is
    TK_DEFER_MODAL         : constant := 2048;
    TK_WRAPPER             : constant := 4096;
    TK_REPARENTED          : constant := 8192;
+
    --
    -- --------------------------------------------------------------
    --
@@ -738,8 +819,8 @@ package Tcl.Tk is
    -- --------------------------------------------------------------
    --
 
-   type Tk_State is (
-      TK_STATE_NULL,
+   type Tk_State is
+     (TK_STATE_NULL,
       TK_STATE_ACTIVE,
       TK_STATE_DISABLED,
       TK_STATE_NORMAL,
@@ -752,12 +833,15 @@ package Tcl.Tk is
       TK_STATE_HIDDEN   => 3);
    for Tk_State'Size use 32;
 
-   type Tk_SmoothMethod_Rec is private;
+   type Tk_SmoothMethod_Rec is record
+      name : C.Strings.chars_ptr;
+      coordProc : System.Address;       --  @todo make exact type
+      postscriptProc : System.Address;  --  @todo make exact type
+   end record;
+   pragma Convention (C, Tk_SmoothMethod_Rec);
    type Tk_SmoothMethod is access all Tk_SmoothMethod_Rec;
    pragma Convention (C, Tk_SmoothMethod);
-
-   Null_Tk_SmoothMethod : constant Tk_SmoothMethod;
-
+   Null_Tk_SmoothMethod : constant Tk_SmoothMethod := null;
    function Is_Null (Ptr : in Tk_SmoothMethod) return Boolean;
 
    --
@@ -768,31 +852,62 @@ package Tcl.Tk is
    --
 
    TK_TAG_SPACE : constant := 3;
-   type Tk_Item_Rec is private;
+   --  auxiliary type for Ada
+   type StaticTagSpace_Type is array (0 .. TK_TAG_SPACE - 1) of Tk_Uid;
+   pragma Convention (C, StaticTagSpace_Type);
+
+   type Tk_Item_Rec;
    type Tk_Item is access all Tk_Item_Rec;
    pragma Convention (C, Tk_Item);
 
-   Null_Tk_Item : constant Tk_Item;
+   type Tk_ItemType_Rec;
+   type Tk_ItemType is access all Tk_ItemType_Rec;
+   pragma Convention (C, Tk_ItemType);
 
+   type Tk_Item_Rec is record
+      id : C.int;
+      --  Unique identifier for this item (also serves as first tag
+      --  for item).
+      nextPtr : Tk_Item;
+      --  Next in display list of all items in this canvas. Later
+      --  items in list are drawn on top of earlier ones.
+      staticTagSpace : StaticTagSpace_Type;
+      --  Built-in space for limited # of tags.
+      tagPtr : System.Address;  -- @todo should be access Tk_Uid
+      --  Pointer to array of tags. Usually points to staticTagSpace,
+      --  but may point to malloc-ed space if there are lots of tags.
+      tagSpace : C.int;
+      --  Total amount of tag space available at tagPtr.
+      numTags : C.int;
+      --  Number of tag slots actually used at *tagPtr.
+      typePtr : Tk_ItemType;
+      --  Table of procedures that implement this type of item.
+      x1, y1, x2, y2 : C.int;
+      --  Bounding box for item, in integer canvas units.  Set by
+      --  item-specific code and guaranteed to contain every pixel
+      --  drawn in item.
+      --  Item area includes x1 and y1 but not x2 and y2.
+      prevPtr : Tk_Item;
+      --  Previous in display list of all items in this canvas.  Later
+      --  items in list are drawn just below earlier ones.
+      state : Tk_State;
+      --  State of item.
+      reserved1 : C.Strings.chars_ptr;
+      --  reserved for future use
+      redraw_flags : C.int;
+      --  Some flags used in the canvas
+
+      ----------------------------------------------------------------------
+      --  Starting here is additional type-specific stuff; see the
+      --  declarations for individual types to see what is part of each type.
+      --  The actual space below is determined by the "itemInfoSize" of the
+      --  type's Tk_ItemType record.
+      ----------------------------------------------------------------------
+
+   end record;
+   pragma Convention (C, Tk_Item_Rec);
+   Null_Tk_Item : constant Tk_Item := null;
    function Is_Null (Ptr : in Tk_Item) return Boolean;
-
-   --
-   --  Flag bits for canvases {redraw_flags}:
-   --
-   --  TK_ITEM_STATE_DEPENDANT -        1 means that object needs to be
-   --                           redrawn if the canvas state changes.
-   --  TK_ITEM_DONT_REDRAW -    1 means that the object redraw is already
-   --                           been prepared, so the general canvas code
-   --                           doesn't need to do that any more.
-   --
-
-   TK_ITEM_STATE_DEPENDANT : constant := 1;
-   TK_ITEM_DONT_REDRAW     : constant := 2;
-   --
-   --  Records of the following type are used to describe a type of
-   --  item {e.g.  lines, circles, etc.} that can form part of a
-   --  canvas widget.
-   --
 
    type Tk_ItemCreateProc is access function
      (interp  : in Tcl_Interp;
@@ -826,6 +941,7 @@ package Tcl.Tk is
      (canvas  : in Tk_Canvas;
       itemPtr : access Tk_Item;
       display : in System.Address);  --  @todo should be Display* (Xlib)
+   pragma Convention (C, Tk_ItemDeleteProc);
 
    type Tk_ItemDisplayProc is access procedure
      (canvas  : in Tk_Canvas;
@@ -833,6 +949,7 @@ package Tcl.Tk is
       display : in System.Address;   --  @todo should be Display* (Xlib)
       dst     : in C.int;            --  @todo should be Drawable (Xlib)
       x, y, width, height : in C.int);
+   pragma Convention (C, Tk_ItemDisplayProc);
 
    type Tk_ItemPointProc is access function
      (canvas   : in Tk_Canvas;
@@ -910,13 +1027,79 @@ package Tcl.Tk is
       last    : in C.int);
    pragma Convention (C, Tk_ItemDCharsProc);
 
-   type Tk_ItemType_Rec is private;
-   type Tk_ItemType is access all Tk_ItemType_Rec;
-   pragma Convention (C, Tk_ItemType);
-
-   Null_Tk_ItemType : constant Tk_ItemType;
-
+   type Tk_ItemType_Rec is record
+      name : C.Strings.chars_ptr;
+      --  The name of this type of item, such as "line".
+      itemSize : C.int;
+      --  Total amount of space needed for item's record.
+      createProc : Tk_ItemCreateProc;
+      --  Procedure to create a new item of this type.
+      configSpecs : Tk_ConfigSpecs;
+      --  Pointer to array of configuration specs for this type.
+      --  Used for returning configuration info.
+      configProc : Tk_ItemConfigureProc;
+      --  Procedure to call to change configuration options.
+      coordProc : Tk_ItemCoordProc;
+      --  Procedure to call to get and set the item's coordinates.
+      deleteProc : Tk_ItemDeleteProc;
+      --  Procedure to delete existing item of this type.
+      displayProc : Tk_ItemDisplayProc;
+      --  Procedure to display items of this type.
+      alwaysRedraw : C.int;
+      --  Non-zero means displayProc should be called even when the
+      --  item has been moved off-screen.
+      pointProc : Tk_ItemPointProc;
+      --  Computes distance from item to a given point.
+      areaProc : Tk_ItemAreaProc;
+      --  Computes whether item is inside, outside, or overlapping an
+      --  area.
+      postscriptProc : Tk_ItemPostscriptProc;
+      --  Procedure to write a Postscript description for items of
+      --  this type.
+      scaleProc : Tk_ItemScaleProc;
+      --  Procedure to rescale items of this type.
+      indexProc : Tk_ItemIndexProc;
+      --  Procedure to translate items of this type.
+      icursorProc : Tk_ItemCursorProc;
+      --  Procedure to set insert cursor posn to just before a given
+      --  position.
+      selectionProc : Tk_ItemSelectionProc;
+      --  Procedure to return selection (in STRING format) when it is
+      --  in this item.
+      insertProc : Tk_ItemInsertProc;
+      --  Procedure to insert something into an item.
+      dCharsProc : Tk_ItemDCharsProc;
+      --  Procedure to delete characters from an item.
+      nextPtr : Tk_ItemType;
+      --  Used to link types together into a list.
+      reserved1 : C.Strings.chars_ptr;
+      --  Reserved for future extension.
+      reserved2 : C.int;                --  Carefully compatible with
+      reserved3 : C.Strings.chars_ptr;  --  Jan Nijtmans dash patch
+      reserved4 : C.Strings.chars_ptr;
+   end record;
+   pragma Convention (C, Tk_ItemType_Rec);
+   Null_Tk_ItemType : constant Tk_ItemType := null;
    function Is_Null (Ptr : in Tk_ItemType) return Boolean;
+
+   --
+   --  Flag bits for canvases {redraw_flags}:
+   --
+   --  TK_ITEM_STATE_DEPENDANT - 1 means that object needs to be
+   --                            redrawn if the canvas state changes.
+   --  TK_ITEM_DONT_REDRAW -     1 means that the object redraw is already
+   --                            been prepared, so the general canvas code
+   --                            doesn't need to do that any more.
+   --
+
+   TK_ITEM_STATE_DEPENDANT : constant := 1;
+   TK_ITEM_DONT_REDRAW     : constant := 2;
+
+   --
+   --  Records of the following type (XXX) are used to describe a type of
+   --  item {e.g.  lines, circles, etc.} that can form part of a
+   --  canvas widget.
+   --
 
    --
    --  The following structure provides information about the selection and
@@ -926,32 +1109,83 @@ package Tcl.Tk is
    --  only by the canvas generic code.
    --
 
-   type Tk_CanvasTextInfo_Rec is private;
+   type Tk_CanvasTextInfo_Rec is record
+      selBorder : Tk_3DBorder;
+      --  Border and background for selected characters.
+      --  Read-only to items.
+      selBorderWidth : C.int;
+      --  Width of border around selection.
+      --  Read-only to items.
+      selFgColorPtr : System.Address;   -- @todo should be XColor* (Xlib)
+      --  Foreground color for selected text.
+      --  Read-only to items.
+      selItemPtr : Tk_Item;
+      --  Pointer to selected item.
+      --  NULL means selection isn't in this canvas.
+      --  Writable by items.
+      selectFirst : C.int;
+      --  Character index of first selected character.
+      --  Writable by items.
+      selectLast : C.int;
+      --  Character index of last selected character.
+      --  Writable by items.
+      anchorItemPtr : Tk_Item;
+      --  Item corresponding to "selectAnchor": not necessarily selItemPtr.
+      --  Read-only to items.
+      selectAnchor : C.int;
+      --  Character index of fixed end of selection (i.e. "select to"
+      --  operation will use this as one end of the selection).
+      --  Writable by items.
+      insertBorder : Tk_3DBorder;
+      --  Used to draw vertical bar for insertion cursor.
+      --  Read-only to items.
+      insertWidth : C.int;
+      --  Total width of insertion cursor. Read-only to items.
+      insertBorderWidth : C.int;
+      --  Width of 3-D border around insert cursor.
+      --  Read-only to items.
+      focusItemPtr : Tk_Item;
+      --  Item that currently has the input focus, or NULL if no such item.
+      --  Read-only to items.
+      gotFocus : C.int;
+      --  Non-zero means that the canvas widget has the input focus.
+      --  Read-only to items.
+      cursorOn : C.int;
+      --  Non-zero means that an insertion cursor should be displayed in
+      --  focusItemPtr. Read-only to items.
+   end record;
+   pragma Convention (C, Tk_CanvasTextInfo_Rec);
    type Tk_CanvasTextInfo is access all Tk_CanvasTextInfo_Rec;
    pragma Convention (C, Tk_CanvasTextInfo);
-
-   Null_Tk_CanvasTextInfo : constant Tk_CanvasTextInfo;
-
+   Null_Tk_CanvasTextInfo : constant Tk_CanvasTextInfo := null;
    function Is_Null (Ptr : in Tk_CanvasTextInfo) return Boolean;
 
    --
    --  Structures used for Dashing and Outline.
    --
 
-   type Tk_Dash_Rec is private;
+   Sizeof_Char_Star : constant C.size_t
+     := C.Strings.chars_ptr'Size / C.char'Size;
+
+   type Tk_Dash_Rec is record
+      number : C.int;
+      key    : C.char_array (0 .. Sizeof_Char_Star - 1);
+   end record;
+   pragma Convention (C, Tk_Dash_Rec);
    type Tk_Dash is access all Tk_Dash_Rec;
    pragma Convention (C, Tk_Dash);
-
-   Null_Tk_Dash : constant Tk_Dash;
-
+   Null_Tk_Dash : constant Tk_Dash := null;
    function Is_Null (Ptr : in Tk_Dash) return Boolean;
 
-   type Tk_TSOffset_Rec is private;
+   type Tk_TSOffset_Rec is record
+      flags : C.int;     --  flags; see tk.h for possible values
+      xoffset : C.int;   --  x offset
+      yoffset : C.int;   --  y offset
+   end record;
+   pragma Convention (C, Tk_TSOffset_Rec);
    type Tk_TSOffset is access all Tk_TSOffset_Rec;
    pragma Convention (C, Tk_TSOffset);
-
-   Null_Tk_TSOffset : constant Tk_TSOffset;
-
+   Null_Tk_TSOffset : constant Tk_TSOffset := null;
    function Is_Null (Ptr : in Tk_TSOffset) return Boolean;
 
    --
@@ -966,12 +1200,11 @@ package Tcl.Tk is
    TK_OFFSET_TOP      : constant := 32;
    TK_OFFSET_MIDDLE   : constant := 64;
    TK_OFFSET_BOTTOM   : constant := 128;
-   type Tk_Outline_Rec is private;
+
+   type Tk_Outline_Rec (<>) is private;
    type Tk_Outline is access all Tk_Outline_Rec;
    pragma Convention (C, Tk_Outline);
-
-   Null_Tk_Outline : constant Tk_Outline;
-
+   Null_Tk_Outline : constant Tk_Outline := null;
    function Is_Null (Ptr : in Tk_Outline) return Boolean;
 
    --
@@ -982,13 +1215,7 @@ package Tcl.Tk is
    -- --------------------------------------------------------------
    --
 
-   type Tk_ImageType_Rec is private;
-   type Tk_ImageType is access all Tk_ImageType_Rec;
-   pragma Convention (C, Tk_ImageType);
-
-   Null_Tk_ImageType : constant Tk_ImageType;
-
-   function Is_Null (Ptr : in Tk_ImageType) return Boolean;
+   type Tk_ImageType;
 
    type Tk_ImageCreateProc is access function
      (interp        : in Tcl_Interp;
@@ -1042,6 +1269,12 @@ package Tcl.Tk is
    --  structures.
    --
 
+   type Tk_ImageType_Rec (<>) is private;                  -- @todo
+   type Tk_ImageType is access all Tk_ImageType_Rec;
+   pragma Convention (C, Tk_ImageType);
+   Null_Tk_ImageType : constant Tk_ImageType := null;
+   function Is_Null (Ptr : in Tk_ImageType) return Boolean;
+
    --
    -- --------------------------------------------------------------
    --
@@ -1055,24 +1288,37 @@ package Tcl.Tk is
    --  to be manipulated:
    --
 
-   type Tk_PhotoHandle_Rec is private;
+   type Tk_PhotoHandle_Rec (<>) is private;                  -- @todo
    type Tk_PhotoHandle is access all Tk_PhotoHandle_Rec;
    pragma Convention (C, Tk_PhotoHandle);
-
-   Null_Tk_PhotoHandle : constant Tk_PhotoHandle;
-
+   Null_Tk_PhotoHandle : constant Tk_PhotoHandle := null;
    function Is_Null (Ptr : in Tk_PhotoHandle) return Boolean;
 
    --
    --  The following structure describes a block of pixels in memory:
    --
 
-   type Tk_PhotoImageBlock_Rec is private;
+   type Tk_PhotoImageBlock_Rec is record
+      pixelPtr : C.Strings.chars_ptr;
+      --  Pointer to the first pixel.
+      width : C.int;
+      --  Width of block, in pixels.
+      height : C.int;
+      --  Height of block, in pixels.
+      pitch : C.int;
+      --  Address difference between corresponding pixels in
+      --  successive lines.
+      pixelSize : C.int;
+      --  Address difference between successive pixels in the same
+      --  line.
+      offset : CHelper.Int_Array (0 .. 3);
+      --  Address differences between the red, green, blue and alpha
+      --  components of the pixel and the pixel as a whole.
+   end record;
+   pragma Convention (C, Tk_PhotoImageBlock_Rec);
    type Tk_PhotoImageBlock is access all Tk_PhotoImageBlock_Rec;
    pragma Convention (C, Tk_PhotoImageBlock);
-
-   Null_Tk_PhotoImageBlock : constant Tk_PhotoImageBlock;
-
+   Null_Tk_PhotoImageBlock : constant Tk_PhotoImageBlock := null;
    function Is_Null (Ptr : in Tk_PhotoImageBlock) return Boolean;
 
    --
@@ -1080,12 +1326,13 @@ package Tcl.Tk is
    --  writing photo images:
    --
 
-   type Tk_PhotoImageFormat_Rec is private;
+   --  @todo -- I'm not convinced that anyone actually needs PhotoImage
+   --  features!
+
+   type Tk_PhotoImageFormat_Rec (<>) is private;               -- @todo
    type Tk_PhotoImageFormat is access all Tk_PhotoImageFormat_Rec;
    pragma Convention (C, Tk_PhotoImageFormat);
-
-   Null_Tk_PhotoImageFormat : constant Tk_PhotoImageFormat;
-
+   Null_Tk_PhotoImageFormat : constant Tk_PhotoImageFormat := null;
    function Is_Null (Ptr : in Tk_PhotoImageFormat) return Boolean;
 
    type Tk_ImageFileMatchProc is access function
@@ -1164,9 +1411,7 @@ package Tcl.Tk is
    procedure Tk_CreateOldPhotoImageFormat
      (formatPtr : in Tk_PhotoImageFormat);
    pragma Import
-     (C,
-      Tk_CreateOldPhotoImageFormat,
-      "Tk_CreateOldPhotoImageFormat");
+     (C, Tk_CreateOldPhotoImageFormat, "Tk_CreateOldPhotoImageFormat");
 
    --
    -- --------------------------------------------------------------
@@ -1188,6 +1433,7 @@ package Tcl.Tk is
    TK_TIMER_EVENTS  : constant := TCL_TIMER_EVENTS;
    TK_IDLE_EVENTS   : constant := TCL_IDLE_EVENTS;
    TK_ALL_EVENTS    : constant := TCL_ALL_EVENTS;
+
    --  Additional stuff that has moved to Tcl:
 
    procedure Tk_Main
@@ -2744,458 +2990,84 @@ package Tcl.Tk is
    --
 
 private
-   type Tk_3DBorder_rec is null record;
-   Null_Tk_3DBorder : constant Tk_3DBorder := null;
 
-   type Tk_ArgvInfo_rec is null record;
-   Null_Tk_ArgvInfo : constant Tk_ArgvInfo := null;
+   type Tk_3DBorder_Rec is null record;
+
+   type Tk_ArgvInfo_rec is null record;                         -- @todo
 
    type Tk_BindingTable_rec is null record;
-   Null_Tk_BindingTable : constant Tk_BindingTable := null;
 
    type Tk_Canvas_rec is null record;
-   Null_Tk_Canvas : constant Tk_Canvas := null;
-
-   type Tk_CanvasTextInfo_rec is record
-      --  Border and background for selected characters.
-      --  Read-only to items.
-      selBorder : Tk_3DBorder;
-      --  Width of border around selection.
-      --  Read-only to items.
-      selBorderWidth : C.int;
-      --  Foreground color for selected text.
-      --  Read-only to items.
-      selFgColorPtr : System.Address;   -- @todo should be XColor* (Xlib)
-      --  Pointer to selected item.
-      --  NULL means selection isn't in this canvas.
-      --  Writable by items.
-      selItemPtr : Tk_Item;
-      --  Character index of first selected character.
-      --  Writable by items.
-      selectFirst : C.int;
-      --  Character index of last selected character.
-      --  Writable by items.
-      selectLast : C.int;
-      --  Item corresponding to "selectAnchor": not necessarily selItemPtr.
-      --  Read-only to items.
-      anchorItemPtr : Tk_Item;
-      --  Character index of fixed end of selection (i.e. "select to"
-      --  operation will use this as one end of the selection).
-      --  Writable by items.
-      selectAnchor : C.int;
-      --  Used to draw vertical bar for insertion cursor.
-      --  Read-only to items.
-      insertBorder : Tk_3DBorder;
-      --  Total width of insertion cursor. Read-only to items.
-      insertWidth : C.int;
-      --  Width of 3-D border around insert cursor.
-      --  Read-only to items.
-      insertBorderWidth : C.int;
-      --  Item that currently has the input focus, or NULL if no such item.
-      --  Read-only to items.
-      focusItemPtr : Tk_Item;
-      --  Non-zero means that the canvas widget has the input focus.
-      --  Read-only to items.
-      gotFocus : C.int;
-      --  Non-zero means that an insertion cursor should be displayed in
-      --  focusItemPtr. Read-only to items.
-      cursorOn : C.int;
-   end record;
-   pragma Convention (C, Tk_CanvasTextInfo_rec);
-
-   Null_Tk_CanvasTextInfo : constant Tk_CanvasTextInfo := null;
-
-   type Tk_ConfigSpec_rec is record
-      typ : C.int;
-      --  Type of option, such as TK_CONFIG_COLOR;
-      --  see definitions below.  Last option in
-      --  table must have type TK_CONFIG_END.
-      argvName : C.Strings.chars_ptr;
-      --  Switch used to specify option in argv.
-      --  NULL means this spec is part of a group.
-      dbName : C.Strings.chars_ptr;
-      --  Name for option in option database.
-      dbClass : C.Strings.chars_ptr;
-      --  Class for option in database.
-      defValue : C.Strings.chars_ptr;
-      --  Default value for option if not
-      --  specified in command line or database.
-      offset : C.int;
-      --  Where in widget record to store value;
-      --  use Tk_Offset macro to generate values
-      --  for this.
-      specFlags : C.int;
-      --  Any combination of the values defined
-      --  below;  other bits are used internally
-      --  by tkConfig.c.
-      customPtr : Tk_CustomOption;
-      --  If type is TK_CONFIG_CUSTOM then this is
-      --  a pointer to info about how to parse and
-      --  print the option.  Otherwise it is
-      --  irrelevant.
-   end record;
-   pragma Convention (C, Tk_ConfigSpec_rec);
-
-   Null_Tk_ConfigSpec : constant Tk_ConfigSpec := null;
 
    type Tk_Cursor_rec is null record;
-   Null_Tk_Cursor : constant Tk_Cursor := null;
 
-   type Tk_CustomOption_rec is record
-      parseProc : Tk_OptionParseProc;
-      --  Procedure to call to parse an
-      --  option and store it in converted
-      --  form.
-      printProc : Tk_OptionPrintProc;
-      --  Procedure to return a printable
-      --  string describing an existing
-      --  option.
-      data : ClientData;
-      --  Arbitrary one-word value used by
-      --  option parser:  passed to
-      --  parseProc and printProc.
-   end record;
-   pragma Convention (C, Tk_CustomOption_rec);
+   type Tk_ErrorHandler_Rec is null record;
 
-   Null_Tk_CustomOption : constant Tk_CustomOption := null;
+   type Tk_FakeWin_Rec is null record;
 
-   type Tk_Dash_rec is record
-      number : C.int;
-      key    : C.char_array (0 .. 3);
-   end record;
-   pragma Convention (C, Tk_Dash_rec);
+   type Tk_Font_Rec is null record;
 
-   Null_Tk_Dash : constant Tk_Dash := null;
+   type Tk_Image_Rec is null record;
 
-   type Tk_ErrorHandler_rec is null record;
-   Null_Tk_ErrorHandler : constant Tk_ErrorHandler := null;
+   type Tk_ImageMaster_Rec is null record;
 
-   type Tk_FakeWin_rec is null record;
-   Null_Tk_FakeWin : constant Tk_FakeWin := null;
+   type Tk_ImageType_Rec is null record;
 
-   type Tk_Font_rec is null record;
-   Null_Tk_Font : constant Tk_Font := null;
+   type Tk_OptionTable_Rec is null record;
 
-   type Tk_FontMetrics_rec is record
-      ascent : C.int;
-      --  The amount in pixels that the tallest
-      --  letter sticks up above the baseline, plus
-      --  any extra blank space added by the designer
-      --  of the font.
-      descent : C.int;
-      --  The largest amount in pixels that any
-      --  letter sticks below the baseline, plus any
-      --  extra blank space added by the designer of
-      --  the font.
-      linespace : C.int;
-      --  The sum of the ascent and descent.  How
-      --  far apart two lines of text in the same
-      --  font should be placed so that none of the
-      --  characters in one line overlap any of the
-      --  characters in the other line.
-   end record;
-   pragma Convention (C, Tk_FontMetrics_rec);
+   type Tk_Outline_Rec is null record;
 
-   Null_Tk_FontMetrics : constant Tk_FontMetrics := null;
-
-   type Tk_GeomMgr_rec is record
-      name : C.Strings.chars_ptr;
-      --  Name of the geometry manager {command
-      --  used to invoke it, or name of widget
-      --  class that allows embedded widgets}.
-      requestProc : Tk_GeomRequestProc;
-      --  Procedure to invoke when a slave's
-      --  requested geometry changes.
-      lostSlaveProc : Tk_GeomLostSlaveProc;
-      --  Procedure to invoke when a slave is
-      --  taken away from one geometry manager
-      --  by another.  NULL means geometry manager
-      --  doesn't care when slaves are lost.
-   end record;
-   pragma Convention (C, Tk_GeomMgr_rec);
-
-   Null_Tk_GeomMgr : constant Tk_GeomMgr := null;
-
-   type Tk_Image_rec is null record;
-   Null_Tk_Image : constant Tk_Image := null;
-
-   type Tk_ImageMaster_rec is null record;
-   Null_Tk_ImageMaster : constant Tk_ImageMaster := null;
-
-   type Tk_ImageType_rec is null record;
-   Null_Tk_ImageType : constant Tk_ImageType := null;
-
-   --  auxiliary type for Ada
-   type StaticTagSpace_Type is array (0 .. TK_TAG_SPACE - 1) of Tk_Uid;
-   pragma Convention (C, StaticTagSpace_Type);
-
-   type Tk_Item_rec is record
-      --  Unique identifier for this item (also
-      --  serves as first tag for item).
-      id : C.int;
-      --  Next in display list of all items in this
-      --  canvas. Later items in list are drawn on
-      --  top of earlier ones.
-      nextPtr : Tk_Item;
-      --  Built-in space for limited # of tags.
-      staticTagSpace : StaticTagSpace_Type;
-      --  Pointer to array of tags. Usually points to
-      --  staticTagSpace, but may point to malloc-ed
-      --  space if there are lots of tags.
-      tagPtr : System.Address;  -- @todo should be access Tk_Uid
-      --  Total amount of tag space available at tagPtr.
-      tagSpace : C.int;
-      --  Number of tag slots actually used at *tagPtr.
-      numTags : C.int;
-      --  Table of procedures that implement this type of item.
-      typePtr : Tk_ItemType;
-      --  Bounding box for item, in integer canvas units.
-      --  Set by item-specific code and guaranteed to contain
-      --  every pixel drawn in item.
-      --  Item area includes x1 and y1 but not x2 and y2.
-      x1, y1, x2, y2 : C.int;
-      --  Previous in display list of all items in this canvas.
-      --  Later items in list are drawn just below earlier ones.
-      prevPtr : Tk_Item;
-      --  State of item.
-      state : Tk_State;
-      --  reserved for future use
-      reserved1 : C.Strings.chars_ptr;
-      --  Some flags used in the canvas
-      redraw_flags : C.int;
-
-      ----------------------------------------------------------------------
-      --  Starting here is additional type-specific stuff; see the
-      --  declarations for individual types to see what is part of each type.
-      --  The actual space below is determined by the "itemInfoSize" of the
-      --  type's Tk_ItemType record.
-      ----------------------------------------------------------------------
-   end record;
-   pragma Convention (C, Tk_Item_rec);
-
-   Null_Tk_Item : constant Tk_Item := null;
-
-   type Tk_ItemType_rec is record
-      --  The name of this type of item, such as "line".
-      name : C.Strings.chars_ptr;
-      --  Total amount of space needed for item's record.
-      itemSize : C.int;
-      --  Procedure to create a new item of this type.
-      createProc : Tk_ItemCreateProc;
-      --  Pointer to array of configuration specs for this type.
-      --  Used for returning configuration info.
-      configSpecs : Tk_ConfigSpec;
-      --  Procedure to call to change configuration options.
-      configProc : Tk_ItemConfigureProc;
-      --  Procedure to call to get and set the item's coordinates.
-      coordProc : Tk_ItemCoordProc;
-      --  Procedure to delete existing item of this type.
-      deleteProc : Tk_ItemDeleteProc;
-      --  Procedure to display items of this type.
-      displayProc : Tk_ItemDisplayProc;
-      --  Non-zero means displayProc should be called even when
-      --  the item has been moved off-screen.
-      alwaysRedraw : C.int;
-      --  Computes distance from item to a given point.
-      pointProc : Tk_ItemPointProc;
-      --  Computes whether item is inside, outside, or overlapping
-      --  an area.
-      areaProc : Tk_ItemAreaProc;
-      --  Procedure to write a Postscript description for items of
-      --  this type.
-      postscriptProc : Tk_ItemPostscriptProc;
-      --  Procedure to rescale items of this type.
-      scaleProc : Tk_ItemScaleProc;
-      --  Procedure to translate items of this type.
-      indexProc : Tk_ItemIndexProc;
-      --  Procedure to set insert cursor posn to just before a given
-      --  position.
-      icursorProc : Tk_ItemCursorProc;
-      --  Procedure to return selection (in STRING format) when it is
-      --  in this item.
-      selectionProc : Tk_ItemSelectionProc;
-      --  Procedure to insert something into an item.
-      insertProc : Tk_ItemInsertProc;
-      --  Procedure to delete characters from an item.
-      --  dCharsProc Tk_ItemDCharsProc;
-      --  Used to link types together into a list.
-      nextPtr : Tk_ItemType;
-      --  Reserved for future extension.
-      reserved1 : C.Strings.chars_ptr;
-      reserved2 : C.int;                --  Carefully compatible with
-      reserved3 : C.Strings.chars_ptr;  --  Jan Nijtmans dash patch
-      reserved4 : C.Strings.chars_ptr;
-   end record;
-   pragma Convention (C, Tk_ItemType_rec);
-
-   Null_Tk_ItemType : constant Tk_ItemType := null;
-
-   type Tk_OptionSpec_rec is record
-      typ : Tk_OptionType;
-      --  Type of option, such as TK_OPTION_COLOR;
-      --  see definitions above. Last option in
-      --  table must have type TK_OPTION_END.
-      optionName : C.Strings.chars_ptr;
-      --  Name used to specify option in Tcl
-      --  commands.
-      dbName : C.Strings.chars_ptr;
-      --  Name for option in option database.
-      dbClass : C.Strings.chars_ptr;
-      --  Class for option in database.
-      defValue : C.Strings.chars_ptr;
-      --  Default value for option if not specified
-      --  in command line, the option database,
-      --  or the system.
-      objOffset : C.int;
-      --  Where in record to store a Tcl_Obj * that
-      --  holds the value of this option, specified
-      --  as an offset in bytes from the start of
-      --  the record. Use the Tk_Offset macro to
-      --  generate values for this.  -1 means don't
-      --  store the Tcl_Obj in the record.
-      internalOffset : C.int;
-      --  Where in record to store the internal
-      --  representation of the value of this option,
-      --  such as an int or XColor *.  This field
-      --  is specified as an offset in bytes
-      --  from the start of the record. Use the
-      --  Tk_Offset macro to generate values for it.
-      --  -1 means don't store the internal
-      --  representation in the record.
-      flags : C.int;
-      --  Any combination of the values defined
-      --  below.
-      data : ClientData;
-      --  An alternate place to put option-specific
-      --  data. Used for the monochrome default value
-      --  for colors, etc.
-      typeMask : C.int;
-      --  An arbitrary bit mask defined by the
-      --  class manager; typically bits correspond
-      --  to certain kinds of options such as all
-      --  those that require a redisplay when they
-      --  change.  Tk_SetOptions returns the bit-wise
-      --  OR of the typeMasks of all options that
-      --  were changed.
-   end record;
-   pragma Convention (C, Tk_OptionSpec_rec);
-
-   Null_Tk_OptionSpec : constant Tk_OptionSpec := null;
-
-   type Tk_OptionTable_rec is null record;
-   Null_Tk_OptionTable : constant Tk_OptionTable := null;
-
-   type Tk_Outline_rec is null record;
-   Null_Tk_Outline : constant Tk_Outline := null;
-
-   type Tk_PhotoHandle_rec is null record;
-   Null_Tk_PhotoHandle : constant Tk_PhotoHandle := null;
-
-   type Tk_PhotoImageBlock_rec is record
-      pixelPtr : C.Strings.chars_ptr;
-      --  Pointer to the first pixel.
-      width : C.int;
-      --  Width of block, in pixels.
-      height : C.int;
-      --  Height of block, in pixels.
-      pitch : C.int;
-      --  Address difference between corresponding
-      --  pixels in successive lines.
-      pixelSize : C.int;
-      --  Address difference between successive
-      --  pixels in the same line.
-      offset : CHelper.Int_Array (0 .. 3);
-      --  Address differences between the red, green,
-      --  blue and alpha components of the pixel and
-      --  the pixel as a whole.
-   end record;
-   pragma Convention (C, Tk_PhotoImageBlock_rec);
-
-   Null_Tk_PhotoImageBlock : constant Tk_PhotoImageBlock := null;
+   type Tk_PhotoHandle_Rec is null record;
 
    type Tk_PhotoImageFormat_rec is null record;
-   Null_Tk_PhotoImageFormat : constant Tk_PhotoImageFormat := null;
 
-   type Tk_PostscriptInfo_rec is null record;
-   Null_Tk_PostscriptInfo : constant Tk_PostscriptInfo := null;
+   type Tk_PostscriptInfo_Rec is null record;
 
    type Tk_SavedOption_rec is record
-   --  Points to information that describes
-   --  the option.
+      --  Points to information that describes the option.
       valuePtr : Tcl_Obj;
-      --  The old value of the option, in
-      --  the form of a Tcl object; may be
-      --  NULL if the value wasn't saved as
-      --  an object.
+      --  The old value of the option, in the form of a Tcl object;
+      --  may be NULL if the value wasn't saved as an object.
       internalForm : C.double;
-      --  The old value of the option, in
-      --  some internal representation such
-      --  as an int or {XColor *}.  Valid
-      --  only if optionPtr->specPtr->objOffset
-      --  is < 0.  The space must be large
-      --  enough to accommodate a double, a
-      --  long, or a pointer; right now it
-      --  looks like a double is big
-      --  enough.  Also, using a double
-      --  guarantees that the field is
-      --  properly aligned for storing large
-      --  values.
+      --  The old value of the option, in some internal representation
+      --  such as an int or {XColor *}.  Valid only if
+      --  optionPtr->specPtr->objOffset is < 0.  The space must be
+      --  large enough to accommodate a double, a long, or a pointer;
+      --  right now it looks like a double is big enough.  Also, using
+      --  a double guarantees that the field is properly aligned for
+      --  storing large values.
    end record;
    pragma Convention (C, Tk_SavedOption_rec);
 
-   Null_Tk_SavedOption : constant Tk_SavedOption := null;
+   type Tk_SavedOption_Array is
+     array (CNatural range <>) of aliased Tk_SavedOption;
+   pragma Convention (C, Tk_SavedOption_Array);
 
-   type Tk_SavedOptions_rec is record
+   TK_NUM_SAVED_OPTIONS : constant := 20;
+   type Tk_SavedOptions_Rec is record
       recordPtr : C.Strings.chars_ptr;
-      --  The data structure in which to
-      --  restore configuration options.
+      --  The data structure in which to restore configuration
+      --  options.
       tkwin : Tk_Window;
-      --  Window associated with recordPtr;
-      --  needed to restore certain options.
+      --  Window associated with recordPtr; needed to restore certain
+      --  options.
       numItems : C.int;
-      --  The number of valid items in
-      --  items field.
+      --  The number of valid items in items field.
       items : Tk_SavedOption_Array (0 .. 19);
       --  Items used to hold old values.
       nextPtr : Tk_SavedOptions;
-      --  Points to next structure in list;
-      --  needed if too many options changed
-      --  to hold all the old values in a
-      --  single structure.  NULL means no
-      --  more structures.
+      --  Points to next structure in list; needed if too many options
+      --  changed to hold all the old values in a single structure.
+      --  NULL means no more structures.
    end record;
-   pragma Convention (C, Tk_SavedOptions_rec);
+   pragma Convention (C, Tk_SavedOptions_Rec);
 
-   Null_Tk_SavedOptions : constant Tk_SavedOptions := null;
+   type Tk_TextLayout_Rec is null record;
 
-   type Tk_SmoothMethod_rec is record
-      name : C.Strings.chars_ptr;
-      coordProc : System.Address;       --  @todo make exact type
-      postscriptProc : System.Address;  --  @todo make exact type
-   end record;
-   pragma Convention (C, Tk_SmoothMethod_rec);
-
-   Null_Tk_SmoothMethod : constant Tk_SmoothMethod := null;
-
-   type Tk_TSOffset_rec is record
-      flags : C.int;     --  flags; see tk.h for possible values
-      xoffset : C.int;   --  x offset
-      yoffset : C.int;   --  y offset
-   end record;
-   pragma Convention (C, Tk_TSOffset_rec);
-
-   Null_Tk_TSOffset : constant Tk_TSOffset := null;
-
-   type Tk_TextLayout_rec is null record;
-   Null_Tk_TextLayout : constant Tk_TextLayout := null;
-
-   type Tk_Window_rec is null record;
-   Null_Tk_Window : constant Tk_Window := null;
+   type Tk_Window_Rec is null record;
 
    type XActivateDeactivateEvent_rec is null record;
-   Null_XActivateDeactivateEvent : constant XActivateDeactivateEvent := null;
 
    type XVirtualEvent_rec is null record;
-   Null_XVirtualEvent : constant XVirtualEvent := null;
 
 end Tcl.Tk;

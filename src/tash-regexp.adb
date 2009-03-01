@@ -388,7 +388,7 @@ package body Tash.Regexp is
          begin
             Tash.Lists.Append (Substrings, Substring);
          end;
-         Tcl.Tcl_RegExpIndices_Pointer.Increment (Matches);
+         Tcl.Tcl_RegExpIndices_Pointers.Increment (Matches);
       end loop;
 
       return Substrings;

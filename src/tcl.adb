@@ -207,11 +207,6 @@ package body Tcl is
       return Ptr = null;
    end Is_Null;
 
-   function Is_Null (Ptr : in Tcl_Token) return Boolean is
-   begin --  Is_Null
-      return Ptr = null;
-   end Is_Null;
-
    function Is_Null (Ptr : in Tcl_Parse) return Boolean is
    begin --  Is_Null
       return Ptr = null;
