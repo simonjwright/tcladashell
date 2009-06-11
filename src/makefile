@@ -20,9 +20,7 @@
 # setup.tcl, in the main TASH directory.  This will create the makeconf
 # file included below.
 
-# Build TASH by simply executing "make" in this directory.  Then, you
-# can execute "make test" to run a simple "hello world" program to
-# verify that everything built correcly.
+# Build TASH by simply executing "make" in this directory.
 
 # Next, cd to ../tests and run "make all test" to build and run more
 # comprehensive TASH tests.
@@ -110,7 +108,10 @@ all:: build
 build: .build_lib tcl_record_sizes.ads
 	@rm -rf ../lib;  mkdir ../lib
 	@rm -rf ../include;  mkdir ../include
-	gprbuild -Pbuild_tash_library
+	cd .build_lib; \
+	  $(CC) -c $(TCL_INCLUDE) $(addprefix ../,$(C_SRC)); \
+	  ar cr ../../lib/libtash.a $(patsubst %.c,%.o,$(C_SRC))
+	gnatmake -Pbuild_tash_library
 	chmod -w ../lib/*.ali
 	cp -p $(ADA_SRC) ../include/
 
@@ -162,6 +163,7 @@ test:
 	# no action
 
 clean:
-	-rm -rf .build_lib *~
+	-rm -rf .build_lib *~ \
+	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads
 
 .PHONY: src-dist dist

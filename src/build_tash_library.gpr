@@ -125,19 +125,16 @@ project Build_Tash_Library is
   for Object_Dir use ".build_lib";
   for Library_Kind use "static";
   for Library_Dir use "../lib";
-  for Library_Src_Dir use "../include";
   for Library_Options use Tash_Options.Library_Options;
 
   case Are_Tash_Packages_Supported is
      when "no" =>
         for Source_Files use
           Basic_Ada_Source_Files & Basic_C_Source_Files;
-        for Library_Interface use Basic_Ada_Units;
      when "yes" =>
         for Source_Files use
           Basic_Ada_Source_Files & Basic_C_Source_Files
           & Extended_Ada_Source_Files & Extended_C_Source_Files;
-        for Library_Interface use Basic_Ada_Units & Extended_Ada_Units;
   end case;
 
   package IDE is

@@ -1,6 +1,10 @@
 This is TASH version 8.6-0, intended for use with Tcl/Tk versions 8.4
 through 8.6.
 
+
+Thick Binding
+=============
+
 The 'thick binding' (packages Tash.*) depends on several symbols that
 are hidden in Tcl later than 8.4 if compiled with GCC later than
 4.0. For this reason, the thick binding is, by default, not built if
@@ -25,7 +29,17 @@ We would like to remove the dependency on Tcl private symbols in a
 future version of TASH. However, we suspect that the actual use of
 these facilities is limited "in the field".
 
-API changes since previous release:
+
+API changes since previous release
+==================================
+
+Changes in 20090611
+-------------------
+
+None.
+
+Changes in 20090207
+-------------------
 
 * Updated the Tcl Ada API to native Tcl 8.[4-6]
 
@@ -40,3 +54,11 @@ API changes since previous release:
 * Removed type Tcl.Tcl_Obj_Ptr as it is not part of native Tcl, and its use
   was prone to introduce memory leaks.
 
+
+Other changes since previous release
+====================================
+
+Changes in 20090611
+-------------------
+
+No longer requires gprbuild.
