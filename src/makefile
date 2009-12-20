@@ -133,7 +133,7 @@ SRC-DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-src-$(DATE)
 
 SUBDIRS = ../apps ../demos ../tests
 
-PARENT_SRC = ../COPYING ../README ../makefile ../setup.tcl ../tash.gpr
+PARENT_SRC = ../COPYING ../INSTALL ../README ../makefile ../setup.tcl ../tash.gpr
 PARENT_GEN = ../makeconf ../tash_options.gpr
 
 # To distribute source ...
@@ -164,6 +164,7 @@ test:
 
 clean:
 	-rm -rf .build_lib *~ \
-	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads
+	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads \
+	  ../include ../lib
 
 .PHONY: src-dist dist

@@ -1,0 +1,176 @@
+<html>
+<head>
+<title>TASH</title>
+</head>
+<body>
+<h1>TASH</h1>
+
+<p><b>T</b>cl<b>A</b>da<b>SH</b>ell is an Ada binding to Tcl/Tk.
+
+<p>This is a temporary description; the previous description (from the
+original developer's hosting site, no longer extant)
+is <a href="index.htm">here</a>.
+
+<h2>Skinny Tcl Binding</h2>
+
+<p>TASH includes both <i>skinny</i> and <i>medium</i> bindings to
+Tcl. The skinny binding is a direct translation of the public Tcl
+interface, <tt>tcl.h</tt>.  It is implemented in the Ada
+package <tt>Tcl</tt>. It includes all the definitions
+in <tt>tcl.h</tt>, both functions and data types.  All data types are
+implemented with Ada equivalents from <tt>Interfaces.C</tt>.  All
+functions take C data types and use return codes for status
+information.
+
+<h2>Medium Tcl Binding</h2>
+
+<p>In addition to the skinny binding, TASH provides a medium binding
+to Tcl.  This binding replaces C data types with Ada types
+(e.g. <tt>String</tt> is used in place
+of <tt>Interfaces.C.Strings.chars_ptr</tt>), uses exceptions in place
+of return codes and uses generic packages to implement
+Tcl <i>clientdata</i> types.
+          
+<h2>The TASHELL Interpreter</h2>
+
+<p>The Tcl distribution includes a Tcl shell interpreter,
+named <tt>tclsh</tt>.  The TASH binding derives its name from the Ada
+version of the Tcl shell
+interpreter: <b>T</b>cl <b>A</b>da <b>SH</b>ell.  Just
+like <tt>tclsh</tt>, <tt>tashell</tt> reads and interprets a Tcl
+script.  It is also a good starting point for building a custom Tcl
+interpreter in which new Tcl commands are implemented in Ada rather
+than C.
+
+<p>An early paper describing the rationale of the design of TASH is
+available in several different formats in
+the <a href="http://tcladashell.sourceforge.net/docs.htm#intro">docs</a>
+directory.
+
+<h2>Skinny Tk Binding</h2>
+
+<p>TASH includes both <i>skinny</i> and <i>medium</i> bindings to
+Tk. The skinny binding is a direct translation of the public Tk
+interface, <tt>tk.h</tt>, and is implemented in the Ada
+package, <tt>Tcl.Tk</tt>.
+
+<h2>Medium Tk Binding</h2>
+
+<p>An early, experimental medium binding to Tk is provided in the Ada
+package, <tt>Tcl.Tk.Ada</tt>.  This binding does not support all Tk
+widgets and has not yet been upgraded to take advantage of the new
+TASH thick binding or the Tcl object system.
+
+<h2>The TWASHELL Interpreter</h2>
+
+<p>TWASHELL is
+the <b>T</b>cl <b>W</b>indowing <b>A</b>da <b>SH</b>ell. It is the Ada
+version of the Tcl/Tk <tt>wish</tt> program. Just like <tt>wish</tt>,
+it reads and interprets a Tcl/Tk script. It is also a starting point
+for building a custom Tcl/Tk interpreter in which new Tcl/Tk commands
+are implemented in Ada rather than C.
+
+<p>An early paper describing how TWASHELL is a Platform-Independent
+toolkit for development of Graphical User Interfaces is available in
+several different formats in
+the <a href="http://tcladashell.sourceforge.net/docs.htm#pigui">docs</a>
+directory.
+
+<h2>Unsupported features</h2>
+
+<p>The original TASH included a <a href="tash.htm">'new thick
+binding'</a>. Unfortunately, this is not supportable in Tcl/Tk 8.5 and
+later, because it relies on what is now the private implementation of
+commands such as <tt>file</tt>, <tt>list</tt>.
+
+<p>The thick binding will be built if TASH is installed over Tcl/Tk
+8.4 or earlier. However, it will be as well not to rely on its
+continued availability (for example, Mac OS X Leopard had Tcl/Tk 8.4,
+but Snow Leopard has 8.5).
+
+<p>The GUI
+developer <a href="https://savannah.nongnu.org/projects/rapid/">RAPID</a>
+does <i>not</i> depend on these unsupported features.
+
+<h2>Installation</h2>
+
+<h3>Extract TASH</h3>
+
+<p>TASH doesn't include any special 'install' targets in its makefiles,
+so the easiest place to install is in the place where you intend to
+use it from.
+
+<p>Assuming this is your home directory, go to your home directory and
+extract TASH by
+<pre>
+  $ unzip tash-8.6-0-src-20090611.zip
+</pre>
+
+<p>and then enter the source directory:
+<pre>
+  $ cd tash-8.6-0-src-20090611
+</pre>
+
+<h3>Configure</h3>
+
+Configure for your system:
+<pre>
+  $ ./setup.tcl
+</pre>
+
+<p>If Tcl/Tk was installed correctly, and <tt>wish</tt> is in your
+path, a <tt>wish</tt> script will run which sets values for several
+makefile macros used to customize your TASH build. In most cases, the
+default values will be OK. If not, type in the correct values. It's
+important that the C compiler used to compile glue files is compatible
+with your Ada compiler; one way of achieving this (if you're using
+GNAT; note, these instructions assume that's the case) is to make sure
+that GNAT is first on your path.
+
+<p>Press the Save button to create the <tt>tash_options.gpr</tt>
+and <tt>makeconf</tt> files.
+
+<h3>Build</h3>
+
+<p>Run
+<pre>
+  $ make all
+</pre>
+
+<p>This will build the TASH library as a static library (<tt>libtash.a</tt>) with
+<tt>.ali</tt> files in <tt>lib/</tt>, and the corresponding source
+files in <tt>include/</tt>.
+
+<h3>Run tests</h3>
+
+<p>Run
+<pre>
+  $ make test
+</pre>
+
+<p>This runs several test programs in
+the <tt>test/</tt>, <tt>demos/</tt> and, with Tcl/Tk
+8.4, <tt>apps/</tt> directories.
+
+<h3>Using TASH</h3>
+
+<p>Make sure that the TASH distribution directory is on your
+<tt>ADA_PROJECT_PATH</tt>, by eg
+<pre>
+  $ export ADA_PROJECT_PATH=~/tash-8.6-0-src-20090611:$ADA_PROJECT_PATH
+</pre>
+
+<p>Your GPR should include TASH:
+<pre>
+  with "tash";
+</pre>
+
+<p>The Linker package in your GPR should call up the TASH library:
+<pre>
+  package Linker is
+     for Default_Switches ("Ada") use Tash.Linker_Options;
+  end Linker;
+</pre>
+
+</body>
+</html>

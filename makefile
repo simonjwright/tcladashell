@@ -41,6 +41,7 @@ test:
 
 clean:
 	$(FOR_ALL_SUBUNITS)
+	rm -f makeconf tash_options.gpr
 
 # RPM related variables/rules :
 
@@ -82,6 +83,6 @@ upload-docs: force
 	  --update \
 	  --verbose \
 	  web/* \
-	  $(SFUSER)@shell.sourceforge.net:/home/groups/t/tc/tcladashell/htdocs/
+	  $(SFUSER),tcladashell@web.sourceforge.net:htdocs/
 
 .PHONY: force
