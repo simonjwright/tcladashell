@@ -24,11 +24,14 @@ This package provides TASH, the Ada binding to Tcl/Tk.
 
 %install
 # Create directory structure and copy files.
-mkdir -p %buildroot%installdir/{include,lib}
-cp -p include/*.ad? %buildroot%installdir/include
-cp -p lib/*.* %buildroot%installdir/lib
+install -d %buildroot%installdir/{include,lib}
+install -m 644 include/*.ad? %buildroot%installdir/include
+install -m 644 lib/*.* %buildroot%installdir/lib
 
 %post
+echo "export TASH_ROOT=%installdir" > /etc/profile.d/tash.sh
+echo "setenv TASH_ROOT %installdir" > /etc/profile.d/tash.csh
+chmod a+r /etc/profile.d/tash.sh /etc/profile.d/tash.csh
 
 %clean
 
