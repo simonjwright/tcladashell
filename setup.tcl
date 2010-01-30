@@ -393,7 +393,7 @@ proc Set_Macros {platform os osVersion} {
     setvar OSVERSION         $osVersion           {Operating system version}
     setvar TASH_VERSION      "$tash_version"      {TASH version}
     setvar TASH_RELEASE      "$tash_release"      {TASH release}
-    setvar TASH_DIRECTORY    [file tail $pwd]     {Main TASH directory}
+    setvar INSTALLROOT       "/opt/tash"          {TASH installation directory}
     if [lempty $x11home] {
 	setvar X11HOME        ""                  {X11 home directory}
     } else {

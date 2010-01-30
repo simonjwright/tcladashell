@@ -45,14 +45,22 @@ clean:
 
 # RPM related variables/rules :
 
-INSTALLROOT     := opt/tash
+INSTALLROOT     := $(shell echo -n $(INSTALLROOT) | sed 's@^/@@')
 ARCHITECTURE     = $(shell uname -m)
 
-rpm: all
+# Rule "install" does not depend on rule "all":
+# "make install" should be executed as root but not necessarily "make all".
+install:
+	install -d /$(INSTALLROOT)/{include,lib}
+	install -m 644 include/*.ad? /$(INSTALLROOT)/include
+	install -m 644 lib/*.* /$(INSTALLROOT)/lib
+
+# Rule "rpm" should depend on rule "all" but that does not work reliably yet
+# (i.e. does work on first build but does not work on repeated builds)
+rpm: # all
 	rm -rf ./rpm_build && mkdir -p ./rpm_build
 	rpmbuild --buildroot "`pwd`/rpm_build" \
                  --define "InstallPath $(INSTALLROOT)" \
-                 --define "ChangeDefault YES" \
                  --define "TashVersion $(TASH_VERSION)" \
                  --define "TashRelease $(TASH_RELEASE)" \
                  --define "_topdir `pwd`" \
