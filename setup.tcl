@@ -496,8 +496,12 @@ foreach name $tashorder {
     incr row
 }
 
-frame .buttons
-pack .buttons -side bottom -fill x -pady 2m
-button .buttons.save   -text Save   -command "Save $g;exit"
-button .buttons.cancel -text Cancel -command exit
-pack .buttons.save .buttons.cancel -side left -expand 1
+if {[lindex $argv 0] == "--nogui"} {
+    Save $g;exit
+} else {
+    frame .buttons
+    pack .buttons -side bottom -fill x -pady 2m
+    button .buttons.save   -text Save   -command "Save $g;exit"
+    button .buttons.cancel -text Cancel -command exit
+    pack .buttons.save .buttons.cancel -side left -expand 1
+}
