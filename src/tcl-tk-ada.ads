@@ -412,6 +412,49 @@ is abstract;
 
    ---------------------------------------------
    --
+   --   CheckButton widget
+   --
+   ---------------------------------------------
+
+   type CheckButton is new Button with private;
+
+   function Create
+     (pathName : in String;
+      options  : in String := "")
+      return     CheckButton;
+   procedure Create
+     (Widgt    : out CheckButton;
+      pathName : in String;
+      options  : in String := "");
+   --  Creates a new widget in the "contextual" interpreter and makes it
+   --  into a checkbutton widget.  Options may be specified via the "options"
+   --  parameter or the option database to configure the widget.
+
+   function Create
+     (Interp   : in Tcl_Interp;
+      pathName : in String;
+      options  : in String := "")
+      return     CheckButton;
+   procedure Create
+     (Widgt    : out CheckButton;
+      Interp   : in Tcl_Interp;
+      pathName : in String;
+      options  : in String := "");
+   --  Creates a new widget in the specified interpreter and makes it
+   --  into a checkbutton widget.  Options may be specified via the "options"
+   --  parameter or the option database to configure the widget.
+
+   procedure Deselect (Buttn : in CheckButton);
+   --  Deselect the button.
+
+   procedure Tk_Select (Buttn : in CheckButton);
+   --  Select the button.
+
+   procedure Toggle (Buttn : in CheckButton);
+   --  Toggle the button.
+
+   ---------------------------------------------
+   --
    --   Entry widget
    --
    ---------------------------------------------
@@ -862,6 +905,7 @@ private
    type Message is new Frame with null record;
    type Button is new Frame with null record;
    type RadioButton is new Button with null record;
+   type CheckButton is new Button with null record;
    type EntryWidget is new Frame with null record;
 
 end Tcl.Tk.Ada;
