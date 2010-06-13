@@ -1,10 +1,10 @@
 -------------------------------------------------------------------
 --
---  Unit Name:   Tash.Arrays spec
+--  Unit Name:   Tash.Float_Arrays spec
 --
---  File Name:   tash-arrays.ads
+--  File Name:   tash-float_arrays.ads
 --
---  Purpose:     Defines the Tash array type and operations on it.
+--  Purpose:     Instantiates the Tash array type for Floats..
 --
 --  Copyright (c) 1999-2000 Terry J. Westley
 --

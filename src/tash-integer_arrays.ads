@@ -1,10 +1,10 @@
 -------------------------------------------------------------------
 --
---  Unit Name:   Tash.Arrays spec
+--  Unit Name:   Tash.Integer_Arrays spec
 --
---  File Name:   tash-arrays.ads
+--  File Name:   tash-integer_arrays.ads
 --
---  Purpose:     Defines the Tash array type and operations on it.
+--  Purpose:     Instantiates the Tash array type for Integers.
 --
 --  Copyright (c) 1999-2000 Terry J. Westley
 --

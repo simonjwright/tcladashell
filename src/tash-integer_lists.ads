@@ -1,10 +1,10 @@
 -------------------------------------------------------------------
 --
---  Unit Name:   Tash.Lists spec
+--  Unit Name:   Tash.Integer_Lists spec
 --
---  File Name:   tash-lists.ads
+--  File Name:   tash-integer_lists.ads
 --
---  Purpose:     Defines the Tash list type and operations on it.
+--  Purpose:     Instantiates the Tash list type for Integers.
 --
 --  Copyright (c) 1999-2000 Terry J. Westley
 --
