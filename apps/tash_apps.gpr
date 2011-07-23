@@ -46,13 +46,26 @@ project Tash_Apps is
   --  directory.
   for Object_Dir use ".build";
 
-  package IDE renames Tash.IDE;
-  package Builder renames Tash.Builder;
-  package Compiler renames Tash.Compiler;
-  package Binder renames Tash.Binder;
-  package Linker is
-     for Default_Switches ("ada") use Tash.Linker_Options;
-  end Linker;
-  package Pretty_Printer renames Tash.Pretty_Printer;
+  --  GLIDE/GPS configuration.
+  package IDE is
+     for Compiler_Command ("ada") use "gnatmake";
+     for Gnatlist use "gnatls";
+     for Vcs_Kind use "SVN";
+  end IDE;
+
+  --  GNATMAKE configuration options.
+  package Builder is
+     for Default_Switches ("ada") use ("-m", "-g");
+  end Builder;
+
+  --  GCC configuration options.
+  package Compiler is
+     for Default_Switches ("ada") use Tash.Compiler_Options;
+  end Compiler;
+
+  -- GNATBIND configuration options.
+  package Binder is
+     for Default_Switches ("ada") use ("-E");
+  end Binder;
 
 end Tash_Apps;
