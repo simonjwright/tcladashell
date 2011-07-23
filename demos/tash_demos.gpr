@@ -53,10 +53,26 @@ project Tash_Demos is
   --  directory.
   for Object_Dir use ".build";
 
-  package IDE renames Tash.IDE;
-  package Builder renames Tash.Builder;
-  package Compiler renames Tash.Compiler;
-  package Binder renames Tash.Binder;
-  package Linker renames Tash.Linker;
+  --  GLIDE/GPS configuration.
+  package IDE is
+     for Compiler_Command ("ada") use "gnatmake";
+     for Gnatlist use "gnatls";
+     for Vcs_Kind use "SVN";
+  end IDE;
+
+  --  GNATMAKE configuration options.
+  package Builder is
+     for Default_Switches ("ada") use ("-m", "-g");
+  end Builder;
+
+  --  GCC configuration options.
+  package Compiler is
+     for Default_Switches ("ada") use Tash.Compiler_Options;
+  end Compiler;
+
+  -- GNATBIND configuration options.
+  package Binder is
+     for Default_Switches ("ada") use ("-E");
+  end Binder;
 
 end Tash_Demos;

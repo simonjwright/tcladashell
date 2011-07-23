@@ -24,9 +24,6 @@ with "tash_options";
 
 project Tash is
 
-  for Source_Dirs use ("include");
-  for Object_Dir use "lib";
-
   --  Tcl/Tk versions later than 8.4 don't provide the interfaces
   --  relied on by the Tash.* package hierarchy, so (by default) they
   --  won't be built if the Tcl/Tk version is later.
@@ -35,39 +32,15 @@ project Tash is
   Supports_Tash : Answer := Tash_Options.Supports_Tash;
 
   Compiler_Options := Tash_Options.Compiler_Options;
-  Linker_Options   := Tash_Options.Linker_Options;
 
-  --  GLIDE/GPS configuration.
-  package IDE is
-     for Compiler_Command ("ada") use "gnatmake";
-     for Gnatlist use "gnatls";
-     for Vcs_Kind use "SVN";
-  end IDE;
+  for Library_Name use "tash";
+  for Library_Kind use "static";
+  for Library_Dir use "lib";
+  for Source_Dirs use ("include");
+  for Externally_Built use "true";
 
-  --  GNATMAKE configuration options.
-  package Builder is
-     for Default_Switches ("ada") use ("-m", "-g");
-  end Builder;
-
-  --  GCC configuration options.
-  package Compiler is
-     for Default_Switches ("ada") use Compiler_Options;
-  end Compiler;
-
-  -- GNATBIND configuration options.
-  package Binder is
-     for Default_Switches ("ada") use ("-E");
-  end Binder;
-
-  --  GNATLINK configuration options.
   package Linker is
-     for Default_Switches ("ada") use Linker_Options;
+     for Linker_Options use Tash_Options.Linker_Options;
   end Linker;
-
-  --  Pretty printer (useful with GPS while reformatting the code to
-  --  avoid style & other warnings).
-  package Pretty_Printer is
-     for Default_Switches ("ada") use ("-l2", "-c3");
-  end Pretty_Printer;
 
 end Tash;

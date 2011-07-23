@@ -70,16 +70,16 @@ proc WriteOneMacro {f name value comments} {
 #------------------------------
 proc CreateLinkerOptions {} {
     global tashvar
-    
+
     set filename [file join src tash_linker_options.ads]
-    
+
     if [catch {open $filename w} f] {
 	set text "Couldn't create linker options package because $f"
 	tk_messageBox -icon error -message $text \
 	    -parent . -title Error -type ok
 	return
     }
-    
+
     puts $f "package TASH_Linker_Options is"
     foreach macro [list LARGS] {
 	foreach option $tashvar($macro) {
@@ -99,21 +99,21 @@ proc CreateLinkerOptions {} {
 #--------------------------------------------------
 proc EditSourceFile {} {
     global tashvar
-    
+
     set pwd [pwd]
     cd src
-    
+
     set errorPrefix "Couldn't edit tcl.adb to with linker options\
       package because"
-    
+
     if [catch {
-	
+
 	if { ! [file exists tcl.adb.orig] } {
 	    file copy -force tcl.adb tcl.adb.orig
 	}
 	set inputFileName  tcl.adb.orig
 	set outputFileName tcl.adb
-	
+
 	# open input file
 	#-----------------
 	if [catch {open $inputFileName r} ifid] {
@@ -121,7 +121,7 @@ proc EditSourceFile {} {
 		-parent . -title Error -type ok
 	    return
 	}
-	
+
 	# open output file
 	#-----------------
 	if [catch {open $outputFileName w} ofid] {
@@ -129,7 +129,7 @@ proc EditSourceFile {} {
 		-parent . -title Error -type ok
 	    return
 	}
-	
+
 	# Read input file and copy to output file 'til we find line
 	# that contains start of the package body.  Insert "with" for
 	# tash linker options package, then break out.
@@ -141,24 +141,24 @@ proc EditSourceFile {} {
 		puts $ofid ""
 		puts $ofid $line
 		break
-	    } 
+	    }
 	    puts $ofid $line
 	}
-	
+
 	# Finish copying input to output
 	#-------------------------------
 	while {[gets $ifid line] >= 0} {
 	    puts $ofid $line
 	}
-	
+
 	close $ifid
 	close $ofid
-	
+
     } error] {
 	tk_messageBox -icon error -message "$errorPrefix $error" \
 	    -parent . -title Error -type ok
     }
-    
+
     # We're done so return to the original working directory
     #-------------------------------------------------------
     cd $pwd
@@ -231,24 +231,29 @@ project Tash_Options is
 
    for Source_Dirs use ();
 
+   --  Tcl/Tk versions later than 8.4 don't provide the interfaces
+   --  relied on by the Tash.* package hierarchy, so (by default) they
+   --  won't be built if the Tcl/Tk version is later.
    Supports_Tash := external (\"SUPPORTS_TASH\", \"$tashvar(SUPPORTS_TASH)\");
 
+   --  These are the Ada compiler options used to build Tash.
    Compiler_Options :=
      (
       \"[join [concat $tashvar(CARGS) $tashvar(AARGS)] "\",\n      \""]\"
      );
 
+   --  These are the C compiler options used to build Tash.
    C_Compiler_Options :=
      (
       \"[join [concat $tashvar(CARGS) $tashvar(TCL_INCLUDE)] "\",\n      \""]\"
      );
 
-   Library_Options :=
+   --  These options determine the location of the system's Tcl, Tk
+   --  libraries.
+   Linker_Options :=
      (
       \"[join $library_switches "\",\n      \""]\"
      );
-
-    Linker_Options := (\"-ltash\") & Library_Options;
 
 end Tash_Options;"
     catch {close $gprfid}
@@ -306,7 +311,7 @@ proc Set_Macros {platform os osVersion} {
     set exec_suffix       ""
 
     regsub -all {[ \t]+} $os "_" os
-    
+
     if [cequal $os "Darwin"] {
 	set tclhome "/usr"
 	set tcl_include "/usr/include"
@@ -318,9 +323,9 @@ proc Set_Macros {platform os osVersion} {
 	}
     }
     set library_switches  ""
-    
+
     set pwd               [pwd]
-    
+
     switch $platform {
 	"windows" {
 	    # This assumes ActiveTcl. Cygwin Tcl/Tk (at 30 Oct 2006)
@@ -417,9 +422,13 @@ proc Set_Macros {platform os osVersion} {
     setvar TK_VERSION        "$tk_version"        {Tk version}
     setvar TK_LIBRARY        "$libtk"             {Tk library}
     setvar SUPPORTS_TASH     "[supportsTash]"     {Are Tash.* supported?}
-    setvar CC                "gcc"                \
-	{The gcc compiler for the C files; uses gprbuild for Ada files.}
-    setvar GARGS             "-i -k -I[file join $pwd src]" {gnatmake switches}
+    if [catch {exec gnatgcc -v >/dev/null 2>/dev/null}] {
+        setvar CC            "gcc"                \
+            {The gcc compiler for the C files; uses gnatmake for Ada files.}
+    } else {
+        setvar CC            "gnatgcc"                \
+            {The gcc compiler for the C files; uses gnatmake for Ada files.}
+    }
     setvar CARGS             "-g -O2"             {C compiler switches}
     setvar AARGS             "-gnatqQafoy -gnatwaL" {Ada compiler switches}
     setvar BARGS             ""                   {gnatbind switches}
@@ -452,22 +461,22 @@ pack .instructions -side top -fill x -expand yes
 set f [frame .link]
 pack $f -side top
 
-checkbutton .link.useLinkerOptions -text "Use pragma Linker_Options" \
-    -variable useLinkerOptions -pady 10
+#checkbutton .link.useLinkerOptions -text "Use pragma Linker_Options" \
+#    -variable useLinkerOptions -pady 10
 #pack .link.useLinkerOptions -side left
 
-button .link.help -text "Explain..." -command {
-    set text "When you check the \"Use pragma Linker_Options\" checkbox,\
-      and press the \"Save\" button, this is what happens:\n\n\
-      1) An Ada package containing Linker_Options\
-      pragmas will be created for TASH in the file\
-      tash_linker_options.ads, and\n\n\
-      2) Tcl.adb file will be edited to \"with\" the\
-      TASH_Linker_Options package."
-    tk_messageBox -icon info -message $text -parent . \
-	-title "Explain \"Use pragma Linker_Options\"" \
-	-type ok 
-}
+#button .link.help -text "Explain..." -command {
+#    set text "When you check the \"Use pragma Linker_Options\" checkbox,\
+#      and press the \"Save\" button, this is what happens:\n\n\
+#      1) An Ada package containing Linker_Options\
+#      pragmas will be created for TASH in the file\
+#      tash_linker_options.ads, and\n\n\
+#      2) Tcl.adb file will be edited to \"with\" the\
+#      TASH_Linker_Options package."
+#    tk_messageBox -icon info -message $text -parent . \
+#	-title "Explain \"Use pragma Linker_Options\"" \
+#	-type ok
+#}
 #pack .link.help -side left
 
 set g [frame .grid]
@@ -501,7 +510,7 @@ if {[lindex $argv 0] == "--nogui"} {
 } else {
     frame .buttons
     pack .buttons -side bottom -fill x -pady 2m
-    button .buttons.save   -text Save   -command "Save $g;exit"
+    button .buttons.save   -text Save   -command "Save $g; exit"
     button .buttons.cancel -text Cancel -command exit
     pack .buttons.save .buttons.cancel -side left -expand 1
 }

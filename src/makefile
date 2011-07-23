@@ -30,6 +30,10 @@
 # To build and run the sample application programs, cd to ../apps and
 # run "make all test" again.
 
+# At least for Mac OS X, gnatmake doesn't build shared libraries
+# correctly (at GNAT GPL 2011); use gprbuild.
+GNATMAKE ?= gnatmake
+
 all::
 
 include ../makeconf
@@ -106,12 +110,12 @@ all:: build
 .PHONY: build
 
 build: .build_lib tcl_record_sizes.ads
-	@rm -rf ../lib;  mkdir ../lib
-	@rm -rf ../include;  mkdir ../include
+	@[ -d ../lib ]  || mkdir ../lib
+	@[ -d ../include ] || mkdir ../include
 	cd .build_lib; \
 	  $(CC) -c $(TCL_INCLUDE) $(addprefix ../,$(C_SRC)); \
 	  ar cr ../../lib/libtash.a $(patsubst %.c,%.o,$(C_SRC))
-	gnatmake -Pbuild_tash_library
+	$(GNATMAKE) -Pbuild_tash_library
 	chmod -w ../lib/*.ali
 	cp -p $(ADA_SRC) ../include/
 
@@ -143,7 +147,7 @@ src-dist:
 	cp -R $(PARENT_SRC) $(SRC-DIST)/
 	mkdir $(SRC-DIST)/src
 	cp $(TCL_ADA_SRC) $(TASH_ADA_SRC) \
-	  $(TCL_C_SRC) $(TASH_C_SRC) $(SCRIPTS) $(SRC-DIST)/src/ 
+	  $(TCL_C_SRC) $(TASH_C_SRC) $(SCRIPTS) $(SRC-DIST)/src/
 	for s in $(SUBDIRS); do \
 	  $(MAKE) -C $$s DIST=../src/$(SRC-DIST) dist; \
 	done

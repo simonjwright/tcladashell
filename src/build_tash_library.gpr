@@ -125,7 +125,7 @@ project Build_Tash_Library is
   for Object_Dir use ".build_lib";
   for Library_Kind use "static";
   for Library_Dir use "../lib";
-  for Library_Options use Tash_Options.Library_Options;
+  for Library_Options use Tash_Options.Linker_Options;
 
   case Are_Tash_Packages_Supported is
      when "no" =>
@@ -151,5 +151,11 @@ project Build_Tash_Library is
      for Default_Switches ("ada") use Tash_Options.Compiler_Options;
      for Default_Switches ("c") use Tash_Options.C_Compiler_Options;
   end Compiler;
+
+  --  Pretty printer (useful with GPS while reformatting the code to
+  --  avoid style & other warnings).
+  package Pretty_Printer is
+     for Default_Switches ("ada") use ("-l2", "-c3");
+  end Pretty_Printer;
 
 end Build_Tash_Library;
