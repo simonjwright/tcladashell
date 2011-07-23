@@ -33,6 +33,11 @@ these facilities is limited "in the field".
 API changes since previous release
 ==================================
 
+Changes in 20110723
+-------------------
+
+None.
+
 Changes in 20090611
 -------------------
 
@@ -57,6 +62,18 @@ Changes in 20090207
 
 Other changes since previous release
 ====================================
+
+Changes in 20110723
+-------------------
+
+The setup.tcl script recognises gnatgcc, if present, as the compiler
+to use for the C compilations required to build the library.
+
+The setup.tcl script supports the flag "--nogui", meaning "perform the
+setup immediately".
+
+The GPR files have been improved; the result is that the Tcl and Tk
+libraries will be linked automatically.
 
 Changes in 20090611
 -------------------

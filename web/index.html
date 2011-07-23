@@ -30,7 +30,7 @@ to Tcl.  This binding replaces C data types with Ada types
 of <tt>Interfaces.C.Strings.chars_ptr</tt>), uses exceptions in place
 of return codes and uses generic packages to implement
 Tcl <i>clientdata</i> types.
-          
+
 <h2>The TASHELL Interpreter</h2>
 
 <p>The Tcl distribution includes a Tcl shell interpreter,
@@ -125,10 +125,17 @@ default values will be OK. If not, type in the correct values. It's
 important that the C compiler used to compile glue files is compatible
 with your Ada compiler; one way of achieving this (if you're using
 GNAT; note, these instructions assume that's the case) is to make sure
-that GNAT is first on your path.
+that GNAT is first on your path. In any case, setup.tcl will use
+'gnatgcc' if found.
 
 <p>Press the Save button to create the <tt>tash_options.gpr</tt>
 and <tt>makeconf</tt> files.
+
+<p>You can say
+<pre>
+  $ ./setup.tcl --nogui
+</pre>
+if you're prepared to accept the defaults.
 
 <h3>Build</h3>
 
@@ -163,13 +170,6 @@ the <tt>test/</tt>, <tt>demos/</tt> and, with Tcl/Tk
 <p>Your GPR should include TASH:
 <pre>
   with "tash";
-</pre>
-
-<p>The Linker package in your GPR should call up the TASH library:
-<pre>
-  package Linker is
-     for Default_Switches ("Ada") use Tash.Linker_Options;
-  end Linker;
 </pre>
 
 </body>
