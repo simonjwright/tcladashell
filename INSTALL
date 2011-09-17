@@ -1,12 +1,11 @@
 Extract TASH
 ============
 
-TASH doesn't include any special 'install' targets in its makefiles,
-so the easiest place to install is in the place where you intend to
-use it from.
+Choose a place to build TASH. If you're not using GNAT GPL or FSF GCC,
+this should be the place you intend to use it from, perhaps your HOME
+directory.
 
-Assuming this is your home directory, go to your home directory and
-extract TASH by
+Assuming this is your home directory, go there and extract TASH by
 
   $ unzip tash-8.6-0-src-20110723.zip
 
@@ -42,8 +41,9 @@ Build
 Run
   $ make all
 
-This will build the TASH library as a static library (libtash.a) with
-.ali files in lib/, and the corresponding source files in include/.
+This will compile the necessary C glue files and build the TASH
+library as a static library (libtash.a) with .ali files in lib/, and
+the corresponding source files in include/.
 
 Run tests
 =========
@@ -57,9 +57,37 @@ This runs several test programs in the test/, demos/ and, with Tcl/Tk
 Using TASH
 ==========
 
+If you're using a GNAT-based compiler, it's strongly recommended that
+you use the GNAT Project feature.
+
+Using in-place
+---------------
+
+After the ;make all' stage, you can use TASH where it was built with
+any GNAT-based compiler.
+
 Make sure that the TASH distribution directory is on your
 ADA_PROJECT_PATH, by eg
-  $ export ADA_PROJECT_PATH=~/tash-8.6-0-src-20110723:$ADA_PROJECT_PATH
+
+  $ export ADA_PROJECT_PATH=~/tash-8.6-0-src-20110917:$ADA_PROJECT_PATH
 
 Your GPR should include TASH:
+
   with "tash";
+
+Installing with the compiler
+-----------------------------
+
+If you're using FSF GCC or GNAT GPL, the best way is to install TASH
+alongside your compiler. Note, THIS DOES NOT WORK WITH DEBIAN (yet),
+because of its different approach to file system layout for the Ada
+subsystem.
+
+The remaining instructions assume use on a Unix machine, or Cygwin if
+on Windows.
+
+Having run 'make all' as above,
+
+   $ make install
+
+(you may need to do this as root on Unix systems).

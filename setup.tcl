@@ -25,6 +25,8 @@ exec wish $0 $@
 # which is included in makefiles to customize to the local
 # environment.
 
+# The option --nogui takes the defaults.
+
 set tash_version "8.6"
 set tash_release "0"
 
@@ -164,6 +166,55 @@ proc EditSourceFile {} {
     cd $pwd
 }
 
+# Where does GNAT install GPSs?
+proc FindInstallationPrefix {} {
+    # This proc runs "gnatls -v". It ignores all lines up to the
+    # 'Project Search Path" section, and then finds the shortest line
+    # ending in /lib/gnat/; this is the directory where GNAT looks for
+    # installed GPR files.
+
+    # The prefix (as typically set by configure, ie the top level
+    # directory for the package installation) is then set two levels
+    # up from the discovered path.
+
+    # NB, this approach works for GNAT GPL and FSF GCC; it does not
+    # work for Debian, which uses a different directory structure.
+
+    set gnatls [open {|gnatls -v}]
+
+    set search_path_found 0
+    set project_dir ""
+
+    while {[gets $gnatls line] >= 0} {
+        if {$search_path_found} {
+            # Backslash separators => forward slashes, in case we're
+            # on Windows.
+            regsub -all {\\} $line {/} line
+            set line [string trim $line]
+            # On Windows, don't get the trailing '/'.
+            if [regexp {/lib/gnat/?$} $line] {
+                set pdl [string length $project_dir]
+                if {$pdl == 0 || [string length $line] < $pdl} {
+                    set project_dir $line
+                }
+            }
+        } elseif {[regexp {^Project} $line]} {
+            set search_path_found 1
+        }
+    }
+    catch {close $gnatls}
+
+    set cwd [pwd]
+    set prefix ""
+    catch {
+        cd $project_dir/../..
+        set prefix [pwd]
+    }
+    cd $cwd
+
+    return $prefix
+}
+
 # Create the makeconf file
 #--------------------------------
 proc Createmakefile {makefile} {
@@ -206,6 +257,9 @@ proc Createmakefile {makefile} {
 	    {All link switches for TASH, Tcl, and Tk}
     }
 
+    WriteOneMacro $makefid prefix [FindInstallationPrefix] \
+        {Installation location}
+
     catch {close $makefid}
 }
 
@@ -239,7 +293,7 @@ project Tash_Options is
    --  These are the Ada compiler options used to build Tash.
    Compiler_Options :=
      (
-      \"[join [concat $tashvar(CARGS) $tashvar(AARGS)] "\",\n      \""]\"
+      \"[join $tashvar(AARGS) "\",\n      \""]\"
      );
 
    --  These are the C compiler options used to build Tash.
@@ -426,12 +480,13 @@ proc Set_Macros {platform os osVersion} {
         setvar CC            "gcc"                \
             {The gcc compiler for the C files; uses gnatmake for Ada files.}
     } else {
-        setvar CC            "gnatgcc"                \
+        setvar CC            "gnatgcc"            \
             {The gcc compiler for the C files; uses gnatmake for Ada files.}
     }
     setvar CARGS             "-g -O2"             {C compiler switches}
-    setvar AARGS             "-gnatqQafoy -gnatwaL" {Ada compiler switches}
-    setvar BARGS             ""                   {gnatbind switches}
+    setvar AARGS             "-g -O2 -gnatqQafoy -gnatwaL" \
+        {Ada compiler switches}
+    setvar BARGS             "-E"                 {gnatbind switches}
     setvar EXE               "$exec_suffix"       {suffix for executable files}
 }
 
@@ -460,24 +515,6 @@ pack .instructions -side top -fill x -expand yes
 
 set f [frame .link]
 pack $f -side top
-
-#checkbutton .link.useLinkerOptions -text "Use pragma Linker_Options" \
-#    -variable useLinkerOptions -pady 10
-#pack .link.useLinkerOptions -side left
-
-#button .link.help -text "Explain..." -command {
-#    set text "When you check the \"Use pragma Linker_Options\" checkbox,\
-#      and press the \"Save\" button, this is what happens:\n\n\
-#      1) An Ada package containing Linker_Options\
-#      pragmas will be created for TASH in the file\
-#      tash_linker_options.ads, and\n\n\
-#      2) Tcl.adb file will be edited to \"with\" the\
-#      TASH_Linker_Options package."
-#    tk_messageBox -icon info -message $text -parent . \
-#	-title "Explain \"Use pragma Linker_Options\"" \
-#	-type ok
-#}
-#pack .link.help -side left
 
 set g [frame .grid]
 pack $g -side top

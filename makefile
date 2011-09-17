@@ -25,7 +25,7 @@
 # and apps, and execute "make all test" in each one in turn.
 
 # If you want to install the TASH library elsewhere, copy the contents
-# of ../lib directory to the install directory.
+# of ../lib and ../include directory to the install directory.
 
 include makeconf
 
@@ -43,20 +43,32 @@ clean:
 	$(FOR_ALL_SUBUNITS)
 	rm -f makeconf tash_options.gpr
 
+# Rule "install" does not depend on rule "all":
+# "make install" should be executed as root but not necessarily "make all".
+#
+# These rules are for installation with an FSF/GPL GNAT.
+install:
+	-mkdir -p $(prefix)/lib/gnat/
+	cp tash.gpr-for-installation $(prefix)/lib/gnat/tash.gpr
+	cp tash_options.gpr $(prefix)/lib/gnat/tash_options.gpr
+	-mkdir -p $(prefix)/include/tash
+	tar -c -f- -C include . | tar -x -f- -C $(prefix)/include/tash/
+	-mkdir -p $(prefix)/lib/tash/lib-static
+	tar -c -f- -C lib . | tar -x -f- -C $(prefix)/lib/tash/lib-static
+	chmod -w $(prefix)/lib/tash/lib-static/*.ali
+
 # RPM related variables/rules :
 
 INSTALLROOT     := $(shell echo -n $(INSTALLROOT) | sed 's@^/@@')
 ARCHITECTURE     = $(shell uname -m)
 
-# Rule "install" does not depend on rule "all":
-# "make install" should be executed as root but not necessarily "make all".
-install:
-	install -d /$(INSTALLROOT)/{include,lib}
-	install -m 644 include/*.ad? /$(INSTALLROOT)/include
-	install -m 644 lib/*.* /$(INSTALLROOT)/lib
-
 # Rule "rpm" should depend on rule "all" but that does not work reliably yet
 # (i.e. does work on first build but does not work on repeated builds)
+#
+# NB! the RPM should contain the .gpr files, but I (sjw) don't use
+# RPMs and in any case suspect that they're mainly used in Debian,
+# which uses a different file system layout and library naming
+# convention from the FSF/GPL ones.
 rpm: # all
 	rm -rf ./rpm_build && mkdir -p ./rpm_build
 	rpmbuild --buildroot "`pwd`/rpm_build" \
@@ -72,8 +84,7 @@ rpm: # all
                  --define "_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.$(ARCHITECTURE).rpm" \
                  -bb tash.spec
 
-# Rules for maintaining the SourceForge web pages (will disappear when
-# it's all under the Wiki).
+# Rules for maintaining the SourceForge web pages.
 
 RSYNC ?= rsync
 
@@ -93,4 +104,4 @@ upload-docs: force
 	  web/* \
 	  $(SFUSER),tcladashell@web.sourceforge.net:htdocs/
 
-.PHONY: force
+.PHONY: clean force install rpm test upload-docs

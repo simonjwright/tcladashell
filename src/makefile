@@ -113,7 +113,7 @@ build: .build_lib tcl_record_sizes.ads
 	@[ -d ../lib ]  || mkdir ../lib
 	@[ -d ../include ] || mkdir ../include
 	cd .build_lib; \
-	  $(CC) -c $(TCL_INCLUDE) $(addprefix ../,$(C_SRC)); \
+	  $(CC) -c $(CARGS) $(TCL_INCLUDE) $(addprefix ../,$(C_SRC)); \
 	  ar cr ../../lib/libtash.a $(patsubst %.c,%.o,$(C_SRC))
 	$(GNATMAKE) -Pbuild_tash_library
 	chmod -w ../lib/*.ali
@@ -137,8 +137,17 @@ SRC-DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-src-$(DATE)
 
 SUBDIRS = ../apps ../demos ../tests
 
-PARENT_SRC = ../COPYING ../INSTALL ../README ../makefile ../setup.tcl ../tash.gpr
-PARENT_GEN = ../makeconf ../tash_options.gpr
+PARENT_SRC =					\
+  ../COPYING					\
+  ../INSTALL					\
+  ../README					\
+  ../makefile					\
+  ../setup.tcl					\
+  ../tash.gpr-for-installation			\
+  ../tash.gpr
+PARENT_GEN = 					\
+  ../makeconf 					\
+  ../tash_options.gpr
 
 # To distribute source ...
 src-dist:

@@ -96,19 +96,18 @@ does <i>not</i> depend on these unsupported features.
 
 <h3>Extract TASH</h3>
 
-<p>TASH doesn't include any special 'install' targets in its makefiles,
-so the easiest place to install is in the place where you intend to
-use it from.
+<p>Choose a place to build TASH. If you're not using GNAT GPL or
+FSF GCC, this should be the place you intend to use it from, perhaps
+your HOME directory.
 
-<p>Assuming this is your home directory, go to your home directory and
-extract TASH by
+<p>Assuming this is your home directory, go there and extract TASH by
 <pre>
-  $ unzip tash-8.6-0-src-20090611.zip
+  $ unzip tash-8.6-0-src-20110917.zip
 </pre>
 
 <p>and then enter the source directory:
 <pre>
-  $ cd tash-8.6-0-src-20090611
+  $ cd tash-8.6-0-src-20110917
 </pre>
 
 <h3>Configure</h3>
@@ -144,8 +143,9 @@ if you're prepared to accept the defaults.
   $ make all
 </pre>
 
-<p>This will build the TASH library as a static library (<tt>libtash.a</tt>) with
-<tt>.ali</tt> files in <tt>lib/</tt>, and the corresponding source
+<p>This will compile the necessary C glue files and build the TASH
+library as a static library (<tt>libtash.a</tt>) with
+<tt>.ali</tt> files in <tt>lib/</tt>, and the corresponding Ada source
 files in <tt>include/</tt>.
 
 <h3>Run tests</h3>
@@ -161,16 +161,42 @@ the <tt>test/</tt>, <tt>demos/</tt> and, with Tcl/Tk
 
 <h3>Using TASH</h3>
 
+<p>If you're using a GNAT-based compiler, it's <em>strongly</em> recommended
+that you use
+the <a href="http://gcc.gnu.org/onlinedocs/gcc-4.6.0/gnat_ugn_unw/GNAT-Project-Manager.html">GNAT
+Project</a> feature.
+
+<h4>Using in-place</h4>
+
+<p>After the <tt>make all</tt> stage, you can use TASH where it was
+built with any GNAT-based compiler.
+
 <p>Make sure that the TASH distribution directory is on your
 <tt>ADA_PROJECT_PATH</tt>, by eg
 <pre>
-  $ export ADA_PROJECT_PATH=~/tash-8.6-0-src-20090611:$ADA_PROJECT_PATH
+  $ export ADA_PROJECT_PATH=~/tash-8.6-0-src-20110917:$ADA_PROJECT_PATH
 </pre>
 
 <p>Your GPR should include TASH:
 <pre>
   with "tash";
 </pre>
+
+<h4>Installing with the compiler</h4>
+
+<p>If you're using FSF GCC or GNAT GPL, the best way is to install
+TASH alongside your compiler. <em>Note, this does not work with
+Debian</em> (yet), because of its different approach to file system
+layout for the Ada subsystem.
+
+<p>The remaining instructions assume use on a Unix machine, or Cygwin
+if on Windows.
+
+<p>Having run <tt>make all</tt> as above,
+<pre>
+   $ make install
+</pre>
+(you may need to do this as root on Unix systems).
 
 </body>
 </html>

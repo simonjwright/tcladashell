@@ -33,6 +33,11 @@ these facilities is limited "in the field".
 API changes since previous release
 ==================================
 
+Changes in 20110917
+-------------------
+
+None.
+
 Changes in 20110723
 -------------------
 
@@ -62,6 +67,13 @@ Changes in 20090207
 
 Other changes since previous release
 ====================================
+
+Changes in 20110917
+-------------------
+
+The top-level makefile now supports an 'install' target which on
+GNAT-based systems other than Debian installs TASH alongside your
+compiler (so you don't need to set ADA_PROJECT_PATH).
 
 Changes in 20110723
 -------------------
