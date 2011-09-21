@@ -34,8 +34,6 @@ with CArgv;
 
 package Tcl.Tk.Ada is
 
-   Version : constant String := "8.1.1a";
-
    package C renames Interfaces.C;
 
    procedure Set_Trace (State : in Boolean);

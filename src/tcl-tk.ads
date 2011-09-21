@@ -28,8 +28,8 @@
 --
 --------------------------------------------------------------------
 --
---  This package was automatically generated from tk.h.
---  Note that some of the comments below, preserved from tk.h,
+--  This package was automatically generated from tk.h at patchlevel
+--  8.3.0.  Note that some of the comments below, preserved from tk.h,
 --  do not apply to the Ada version.  Someday, these comments may be
 --  customized better.
 --
@@ -38,66 +38,6 @@
 with CHelper;
 
 package Tcl.Tk is
-
---     package C renames Interfaces.C;
-
-   --
-   --  tk.h --
-   --
-   --   Declarations for Tk-related things that are visible
-   --   outside of the Tk module itself.
-   --
-   --  Copyright {c} 1989-1994 The Regents of the University of California.
-   --  Copyright {c} 1994 The Australian National University.
-   --  Copyright {c} 1994-1998 Sun Microsystems, Inc.
-   --  Copyright {c} 1998-1999 Scriptics Corporation.
-   --
-   --
-   --
-
-   --
-   --  For C++ compilers, use extern
-   --
-
-   --
-   --  When version numbers change here, you must also go into the following
-   --  files
-   --  and update the version numbers:
-   --
-   --  library/tk.tcl   {only if Major.minor changes, not patchlevel}
-   --  unix/configure.in
-   --  win/configure.in
-   --  win/makefile.vc  {not patchlevel}
-   --  README
-   --  mac/README               {not patchlevel}
-   --  win/README               {not patchlevel}
-   --  unix/README              {not patchlevel}
-   --  win/aclocal.m4   {not patchlevel}
-   --
-   --  You may also need to update some of these files when the numbers change
-   --  for the version of Tcl that this release of Tk is compiled against.
-   --
-
-   TK_MAJOR_VERSION  : constant := 8;
-   TK_MINOR_VERSION  : constant := 3;
-   TK_RELEASE_LEVEL  : constant String := "TCL_FINAL_RELEASE";
-   TK_RELEASE_SERIAL : constant := 0;
-   TK_VERSION        : constant String := "8.3";
-   TK_PATCH_LEVEL    : constant String := "8.3.0";
-
-   --
-   --  The following definitions set up the proper options for Macintosh
-   --  compilers.  We use this method because there is no autoconf equivalent.
-   --
-
-   --
-   --  A special definition used to allow this header file to be included
-   --  in resource files.
-   --
-
-   --
-   --  Decide whether or not to use input methods.
-   --
 
    --
    --  Dummy types that are used by clients:

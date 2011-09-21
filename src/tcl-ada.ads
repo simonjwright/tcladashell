@@ -47,8 +47,6 @@ with CArgv;
 
 package Tcl.Ada is
 
-   Version : constant String := "8.4.7";
-
    package C renames Interfaces.C;
 
    Tcl_Error_Exception : exception;

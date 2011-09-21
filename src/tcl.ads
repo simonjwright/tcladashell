@@ -29,10 +29,10 @@
 --
 --------------------------------------------------------------------
 --
---  This package was originally automatically generated from tcl.h.
---  Note that some of the comments below, preserved from tcl.h, do not
---  apply to the Ada version.  Someday, these comments may be
---  customized better.
+--  This package was originally automatically generated from tcl.h at
+--  patchlevel 8.4.7.  Note that some of the comments below, preserved
+--  from tcl.h, do not apply to the Ada version.  Someday, these
+--  comments may be customized better.
 --
 --------------------------------------------------------------------
 
@@ -49,36 +49,7 @@ package Tcl is
    use type C.int;
    use type C.size_t;
 
-   --
-   --  tcl.h --
-   --
-   --   This header file describes the externally-visible facilities
-   --   of the Tcl interpreter.
-   --
-   --  Copyright {c} 1987-1994 The Regents of the University of California.
-   --  Copyright {c} 1993-1996 Lucent Technologies.
-   --  Copyright {c} 1994-1998 Sun Microsystems, Inc.
-   --  Copyright {c} 1998-1999 by Scriptics Corporation.
-   --
-   --
-   --
-
    subtype CNatural is CArgv.CNatural;
-
-   --
-   --  The following defines are used to indicate the various release levels.
-   --
-
-   TCL_ALPHA_RELEASE : constant := 0;
-   TCL_BETA_RELEASE  : constant := 1;
-   TCL_FINAL_RELEASE : constant := 2;
-
-   TCL_MAJOR_VERSION  : constant := 8;
-   TCL_MINOR_VERSION  : constant := 4;
-   TCL_RELEASE_LEVEL  : constant String := "TCL_FINAL_RELEASE";
-   TCL_RELEASE_SERIAL : constant := 7;
-   TCL_VERSION        : constant String := "8.4";
-   TCL_PATCH_LEVEL    : constant String := "8.4.7";
 
    --
    --  Special macro to define mutexes, that doesn't do anything
