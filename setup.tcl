@@ -257,8 +257,8 @@ proc Createmakefile {makefile} {
 	    {All link switches for TASH, Tcl, and Tk}
     }
 
-    WriteOneMacro $makefid prefix [FindInstallationPrefix] \
-        {Installation location}
+    #WriteOneMacro $makefid prefix [FindInstallationPrefix] \
+    #    {Installation location}
 
     catch {close $makefid}
 }
@@ -453,24 +453,26 @@ proc Set_Macros {platform os osVersion} {
     setvar TASH_VERSION      "$tash_version"      {TASH version}
     setvar TASH_RELEASE      "$tash_release"      {TASH release}
     setvar INSTALLROOT       "/opt/tash"          {TASH installation directory}
+    setvar prefix            "[FindInstallationPrefix]" \
+                                          {GNAT Project installation directory}
     if [lempty $x11home] {
-	setvar X11HOME        ""                  {X11 home directory}
+	setvar X11HOME       ""                   {X11 home directory}
     } else {
-	setvar X11HOME        "$x11home"          {X11 home directory}
+	setvar X11HOME       "$x11home"           {X11 home directory}
     }
     if [lempty $x11_lib] {
-	setvar X11_LIB        ""                  {X11 library directory}
+	setvar X11_LIB       ""                   {X11 library directory}
     } else {
-	setvar X11_LIB        "$x11_lib"          {X11 library directory}
+	setvar X11_LIB       "$x11_lib"           {X11 library directory}
     }
     if [lempty $x11_include] {
 	setvar X11_INCLUDE   ""                   {X11 include directory}
     } else {
 	setvar X11_INCLUDE   "-I$x11_include"     {X11 include directory}
     }
-    setvar TCLSH             $tclsh               {Tclsh executable}
+    setvar TCLSH             "$tclsh"             {Tclsh executable}
     setvar TCLHOME           "$tclhome"           {Tcl Home directory}
-    setvar TCL_INCLUDE      "-I$tcl_include"      {TCL include directory}
+    setvar TCL_INCLUDE       "-I$tcl_include"     {TCL include directory}
     setvar TCL_VERSION       "$tcl_version"       {Tcl version}
     setvar TCL_LIBRARY       "$libtcl"            {Tcl library}
     setvar TK_VERSION        "$tk_version"        {Tk version}

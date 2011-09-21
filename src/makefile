@@ -40,51 +40,51 @@ include ../makeconf
 
 GEN_SRC = tcl_record_sizes.ads
 
-TCL_ADA_SRC = \
-cargv.adb \
-cargv.ads \
-chelper.adb \
-chelper.ads \
-tcl-ada.adb \
-tcl-ada.ads \
-tcl-tk-ada.adb \
-tcl-tk-ada.ads \
-tcl-tk.adb \
-tcl-tk.ads \
-tcl.adb \
-tcl.ads
+TCL_ADA_SRC =					\
+  cargv.adb					\
+  cargv.ads					\
+  chelper.adb					\
+  chelper.ads					\
+  tcl-ada.adb					\
+  tcl-ada.ads					\
+  tcl-tk-ada.adb				\
+  tcl-tk-ada.ads				\
+  tcl-tk.adb					\
+  tcl-tk.ads					\
+  tcl.adb					\
+  tcl.ads
 
 TCL_C_SRC = tclmacro.c tkmacro.c
 
-TASH_ADA_SRC = \
-  tash-arrays.adb \
-  tash-arrays.ads \
-  tash-file.adb \
-  tash-file.ads \
-  tash-file_io.adb \
-  tash-file_io.ads \
-  tash-float_arrays.ads \
-  tash-float_lists.ads \
-  tash-floats.adb \
-  tash-floats.ads \
-  tash-integer_arrays.ads \
-  tash-integer_lists.ads \
-  tash-integers.adb \
-  tash-integers.ads \
-  tash-lists.adb \
-  tash-lists.ads \
-  tash-platform.adb \
-  tash-platform.ads \
-  tash-regexp.adb \
-  tash-regexp.ads \
-  tash-strings.adb \
-  tash-strings.ads \
-  tash-system.adb \
-  tash-system.ads \
-  tash.adb \
+TASH_ADA_SRC =					\
+  tash-arrays.adb				\
+  tash-arrays.ads				\
+  tash-file.adb					\
+  tash-file.ads					\
+  tash-file_io.adb				\
+  tash-file_io.ads				\
+  tash-float_arrays.ads				\
+  tash-float_lists.ads				\
+  tash-floats.adb				\
+  tash-floats.ads				\
+  tash-integer_arrays.ads			\
+  tash-integer_lists.ads			\
+  tash-integers.adb				\
+  tash-integers.ads				\
+  tash-lists.adb				\
+  tash-lists.ads				\
+  tash-platform.adb				\
+  tash-platform.ads				\
+  tash-regexp.adb				\
+  tash-regexp.ads				\
+  tash-strings.adb				\
+  tash-strings.ads				\
+  tash-system.adb				\
+  tash-system.ads				\
+  tash.adb					\
   tash.ads
 
-TASH_C_SRC = \
+TASH_C_SRC =					\
   tcl_backward_compatibility_glue.c
 
 ADA_SRC = $(TCL_ADA_SRC) $(GEN_SRC)
@@ -95,19 +95,16 @@ C_SRC = $(TCL_C_SRC)
 # built.
 
 ifeq ($(SUPPORTS_TASH),yes)
-
-ADA_SRC += $(TASH_ADA_SRC)
-C_SRC += $(TASH_C_SRC)
-
+  ADA_SRC += $(TASH_ADA_SRC)
+  C_SRC += $(TASH_C_SRC)
 endif
 
-SCRIPTS = \
-  build_tash_library.gpr \
-  makefile \
+SCRIPTS =					\
+  build_tash_library.gpr			\
+  makefile					\
   tcl_record_sizes.tcl
 
 all:: build
-.PHONY: build
 
 build: .build_lib tcl_record_sizes.ads
 	@[ -d ../lib ]  || mkdir ../lib
@@ -131,46 +128,11 @@ tcl_record_sizes$(EXE): tcl_record_sizes.c
 tcl_record_sizes.c: tcl_record_sizes.tcl
 	tclsh $< >$@
 
-DATE = $(shell date +%Y%m%d)
-DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-$(OS)-$(DATE)
-SRC-DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-src-$(DATE)
-
-SUBDIRS = ../apps ../demos ../tests
-
-PARENT_SRC =					\
-  ../COPYING					\
-  ../INSTALL					\
-  ../README					\
-  ../makefile					\
-  ../setup.tcl					\
-  ../tash.gpr-for-installation			\
-  ../tash.gpr
-PARENT_GEN = 					\
-  ../makeconf 					\
-  ../tash_options.gpr
-
 # To distribute source ...
-src-dist:
-	-rm -rf $(SRC-DIST) $(SRC-DIST).zip
-	mkdir $(SRC-DIST)
-	cp -R $(PARENT_SRC) $(SRC-DIST)/
-	mkdir $(SRC-DIST)/src
+dist:
+	mkdir $(DIST)/src
 	cp $(TCL_ADA_SRC) $(TASH_ADA_SRC) \
-	  $(TCL_C_SRC) $(TASH_C_SRC) $(SCRIPTS) $(SRC-DIST)/src/
-	for s in $(SUBDIRS); do \
-	  $(MAKE) -C $$s DIST=../src/$(SRC-DIST) dist; \
-	done
-	zip -r $(SRC-DIST).zip $(SRC-DIST)
-
-# To distribute binary ...
-dist: all
-	-rm -rf $(DIST) $(DIST).zip
-	mkdir $(DIST)
-	cp -R $(PARENT_SRC) $(PARENT_GEN) ../lib ../include $(DIST)/
-	for s in $(SUBDIRS); do \
-	  $(MAKE) -C $$s DIST=../src/$(DIST) dist; \
-	done
-	zip -r $(DIST).zip $(DIST)
+	  $(TCL_C_SRC) $(TASH_C_SRC) $(SCRIPTS) $(DIST)/src/
 
 test:
 	# no action
@@ -180,4 +142,4 @@ clean:
 	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads \
 	  ../include ../lib
 
-.PHONY: src-dist dist
+.PHONY: all build clean dist test

@@ -84,24 +84,47 @@ rpm: # all
                  --define "_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.$(ARCHITECTURE).rpm" \
                  -bb tash.spec
 
+# Rules for constructing a distribution.
+
+DATE = $(shell date +%Y%m%d)
+DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-$(DATE)
+
+SRC = 						\
+  COPYING					\
+  INSTALL					\
+  README					\
+  makefile					\
+  setup.tcl					\
+  tash.gpr-for-installation			\
+  tash.gpr
+
+dist:
+	-rm -rf $(DIST) $(DIST).zip
+	mkdir $(DIST)
+	cp $(SRC) $(DIST)/
+	for s in $(SUBDIRS); do \
+	  $(MAKE) -C $$s DIST=../$(DIST) dist; \
+	done
+	zip -r $(DIST).zip $(DIST)
+
 # Rules for maintaining the SourceForge web pages.
 
 RSYNC ?= rsync
 
 SFUSER ?= simonjwright
 
-upload-docs: force
-	$(RSYNC) \
-	  --compress \
-	  --copy-unsafe-links \
-	  --cvs-exclude \
-	  --perms \
-	  --recursive \
-	  --rsh=ssh \
-	  --times \
-	  --update \
-	  --verbose \
-	  web/* \
+upload-docs:
+	$(RSYNC)						\
+	  --compress						\
+	  --copy-unsafe-links					\
+	  --cvs-exclude						\
+	  --perms						\
+	  --recursive						\
+	  --rsh=ssh						\
+	  --times						\
+	  --update						\
+	  --verbose						\
+	  web/*							\
 	  $(SFUSER),tcladashell@web.sourceforge.net:htdocs/
 
-.PHONY: clean force install rpm test upload-docs
+.PHONY: clean dist force install rpm test upload-docs
