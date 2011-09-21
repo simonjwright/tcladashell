@@ -61,11 +61,13 @@ package Tcl.Ada is
    --   Generics for all subprograms which require Client Data
    --
    --------------------------------------------------------------------
+
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_AssocData is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_InterpDeleteProc is access procedure (Data   : in ClientData;
                                                      Interp : in Tcl_Interp);
@@ -75,14 +77,14 @@ package Tcl.Ada is
         (interp  : in Tcl_Interp;
          name    : in C.Strings.chars_ptr;
          procPtr : in Tcl_InterpDeleteProc)
-         return    ClientData;
+        return    ClientData;
       pragma Import (C, Tcl_GetAssocData, "Tcl_GetAssocData");
 
       function Tcl_GetAssocData
         (interp  : in Tcl_Interp;
          name    : in String;
          procPtr : in Tcl_InterpDeleteProc)
-         return    ClientData;
+        return    ClientData;
 
       procedure Tcl_SetAssocData
         (interp : in Tcl_Interp;
@@ -101,34 +103,36 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_AsyncEvents is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_AsyncProc is access function
         (data   : in ClientData;
          interp : in Tcl_Interp;
          code   : in C.int)
-      return      C.int;
+        return      C.int;
       pragma Convention (C, Tcl_AsyncProc);
 
       function Tcl_AsyncCreate
         (proc : in Tcl_AsyncProc;
          data : in ClientData)
-         return Tcl_AsyncHandler;
+        return Tcl_AsyncHandler;
       pragma Import (C, Tcl_AsyncCreate, "Tcl_AsyncCreate");
 
    end Generic_AsyncEvents;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_CallWhenDeleted is
 
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
+
       type Tcl_InterpDeleteProc is access procedure
-     (data   : in ClientData;
-      interp : in Tcl_Interp);
+        (data   : in ClientData;
+         interp : in Tcl_Interp);
       pragma Convention (C, Tcl_InterpDeleteProc);
 
       procedure Tcl_CallWhenDeleted
@@ -147,30 +151,32 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_Channel is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       function Tcl_MakeFileChannel
         (handle : in ClientData;
          mode   : in C.int)
-         return   Tcl_Channel;
+        return   Tcl_Channel;
       pragma Import (C, Tcl_MakeFileChannel, "Tcl_MakeFileChannel");
 
    end Generic_Channel;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_ChannelDriver is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       function Tcl_CreateChannel
         (typePtr      : in Tcl_ChannelType;
          chanName     : in C.Strings.chars_ptr;
          instancedata : in ClientData;
          mask         : in C.int)
-         return         Tcl_Channel;
+        return         Tcl_Channel;
       pragma Import (C, Tcl_CreateChannel, "Tcl_CreateChannel");
 
       function Tcl_CreateChannel
@@ -178,18 +184,18 @@ package Tcl.Ada is
          chanName     : in String;
          instancedata : in ClientData;
          mask         : in C.int)
-         return         Tcl_Channel;
+        return         Tcl_Channel;
 
       function Tcl_GetChannelHandle
         (chan      : in Tcl_Channel;
          direction : in C.int;
          handleptr : in ClientData)
-         return      C.int;
+        return      C.int;
       pragma Import (C, Tcl_GetChannelHandle, "Tcl_GetChannelHandle");
 
       function Tcl_GetChannelInstanceData
         (chan : in Tcl_Channel)
-         return ClientData;
+        return ClientData;
       pragma Import
         (C,
          Tcl_GetChannelInstanceData,
@@ -199,13 +205,14 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_ChannelHandler is
 
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
+
       type Tcl_ChannelProc is access procedure
-     (data : in ClientData;
-      mask : in C.int);
+        (data : in ClientData;
+         mask : in C.int);
       pragma Convention (C, Tcl_ChannelProc);
 
       procedure Tcl_CreateChannelHandler
@@ -225,9 +232,10 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_CloseHandler is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_CloseProc is access procedure (data : in ClientData);
       pragma Convention (C, Tcl_CloseProc);
@@ -248,16 +256,17 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_Command is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_CmdProc is access function
         (data   : in ClientData;
          interp : in Tcl_Interp;
          argc   : in C.int;
          argv   : in CArgv.Chars_Ptr_Ptr)
-      return      C.int;
+        return      C.int;
       pragma Convention (C, Tcl_CmdProc);
 
       type Tcl_CmdDeleteProc is access procedure (data : in ClientData);
@@ -269,7 +278,7 @@ package Tcl.Ada is
          proc       : in Tcl_CmdProc;
          data       : in ClientData;
          deleteProc : in Tcl_CmdDeleteProc)
-         return       Tcl_Command;
+        return       Tcl_Command;
       pragma Import (C, Tcl_CreateCommand, "Tcl_CreateCommand");
 
       function Tcl_CreateCommand
@@ -278,35 +287,36 @@ package Tcl.Ada is
          proc       : in Tcl_CmdProc;
          data       : in ClientData;
          deleteProc : in Tcl_CmdDeleteProc)
-         return       Tcl_Command;
+        return       Tcl_Command;
 
    end Generic_Command;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_EventQueueAndNotifier is
 
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
+
       type Tcl_EventSetupProc is access procedure
-     (data  : in ClientData;
-      flags : in C.int);
+        (data  : in ClientData;
+         flags : in C.int);
       pragma Convention (C, Tcl_EventSetupProc);
 
       type Tcl_EventCheckProc is access procedure
-     (data  : in ClientData;
-      flags : in C.int);
+        (data  : in ClientData;
+         flags : in C.int);
       pragma Convention (C, Tcl_EventCheckProc);
 
       type Tcl_FileProc is access procedure
-     (data : in ClientData;
-      mask : in C.int);
+        (data : in ClientData;
+         mask : in C.int);
       pragma Convention (C, Tcl_FileProc);
 
       type Tcl_EventDeleteProc is access function
         (evPtr : in Tcl_Event;
          data  : in ClientData)
-      return     C.int;
+        return     C.int;
       pragma Convention (C, Tcl_EventDeleteProc);
 
       procedure Tcl_AlertNotifier (data : in ClientData);
@@ -346,9 +356,10 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_ExitHandler is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_ExitProc is access procedure (data : in ClientData);
       pragma Convention (C, Tcl_ExitProc);
@@ -383,13 +394,14 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_FileHandler is
 
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
+
       type Tcl_FileProc is access procedure
-     (data : in ClientData;
-      mask : in C.int);
+        (data : in ClientData;
+         mask : in C.int);
       pragma Convention (C, Tcl_FileProc);
 
       procedure Tcl_CreateFileHandler
@@ -403,9 +415,10 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_GetOpenFile is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       function Tcl_GetOpenFile
         (interp     : in Tcl_Interp;
@@ -413,7 +426,7 @@ package Tcl.Ada is
          forWriting : in C.int;
          checkUsage : in C.int;
          fileptr    : in ClientData)
-         return       C.int;
+        return       C.int;
       pragma Import (C, Tcl_GetOpenFile, "Tcl_GetOpenFile");
 
       function Tcl_GetOpenFile
@@ -422,7 +435,7 @@ package Tcl.Ada is
          forWriting : in C.int;
          checkUsage : in C.int;
          fileptr    : in ClientData)
-         return       C.int;
+        return       C.int;
 
       procedure Tcl_GetOpenFile
         (interp     : in Tcl_Interp;
@@ -435,13 +448,14 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_Hash is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       function Tcl_GetHashValue
         (HashEntry : in Tcl_HashEntry)
-         return      ClientData;
+        return      ClientData;
       pragma Import (C, Tcl_GetHashValue, "Tcl_CallGetHashValue");
 
       procedure Tcl_SetHashValue
@@ -453,9 +467,10 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_Idle is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_IdleProc is access procedure (data : in ClientData);
       pragma Convention (C, Tcl_IdleProc);
@@ -474,12 +489,13 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_ManageStorage is
 
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
+
       type Tcl_FreeProc is access procedure
-     (blockPtr : in C.Strings.chars_ptr);
+        (blockPtr : in C.Strings.chars_ptr);
       pragma Convention (C, Tcl_FreeProc);
 
       procedure Tcl_EventuallyFree
@@ -497,16 +513,17 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_MathFunc is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_MathProc is access function
         (data      : in ClientData;
          interp    : in Tcl_Interp;
          args      : in Tcl_Value;
          resultPtr : in Tcl_Value)
-      return         C.int;
+        return         C.int;
       pragma Convention (C, Tcl_MathProc);
 
       procedure Tcl_CreateMathFunc
@@ -530,15 +547,16 @@ package Tcl.Ada is
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_ObjCommand is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_ObjCmdProc is access function
         (data   : in ClientData;
          interp : in Tcl_Interp;
          objc   : in C.int)
-      return      C.int;
+        return      C.int;
       pragma Convention (C, Tcl_ObjCmdProc);
 
       type Tcl_CmdDeleteProc is access procedure (data : in ClientData);
@@ -550,7 +568,7 @@ package Tcl.Ada is
          proc       : in Tcl_ObjCmdProc;
          data       : in ClientData;
          deleteProc : in Tcl_CmdDeleteProc)
-         return       Tcl_Command;
+        return       Tcl_Command;
       pragma Import (C, Tcl_CreateObjCommand, "Tcl_CreateObjCommand");
 
       function Tcl_CreateObjCommand
@@ -559,15 +577,16 @@ package Tcl.Ada is
          proc       : in Tcl_ObjCmdProc;
          data       : in ClientData;
          deleteProc : in Tcl_CmdDeleteProc)
-         return       Tcl_Command;
+        return       Tcl_Command;
 
    end Generic_ObjCommand;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_PkgRequire is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       function Tcl_PkgPresentEx
         (interp        : in Tcl_Interp;
@@ -575,7 +594,7 @@ package Tcl.Ada is
          version       : in C.Strings.chars_ptr;
          exact         : in C.int;
          clientdataptr : in ClientData)
-         return          C.Strings.chars_ptr;
+        return          C.Strings.chars_ptr;
       pragma Import (C, Tcl_PkgPresentEx, "Tcl_PkgPresentEx");
 
       function Tcl_PkgPresentEx
@@ -584,14 +603,14 @@ package Tcl.Ada is
          version       : in String;
          exact         : in C.int;
          clientdataptr : in ClientData)
-         return          String;
+        return          String;
 
       function Tcl_PkgProvideEx
         (interp  : in Tcl_Interp;
          name    : in C.Strings.chars_ptr;
          version : in C.Strings.chars_ptr;
          data    : in ClientData)
-         return    C.int;
+        return    C.int;
       pragma Import (C, Tcl_PkgProvideEx, "Tcl_PkgProvideEx");
 
       function Tcl_PkgProvideEx
@@ -599,7 +618,7 @@ package Tcl.Ada is
          name    : in String;
          version : in String;
          data    : in ClientData)
-         return    C.int;
+        return    C.int;
 
       procedure Tcl_PkgProvideEx
         (interp  : in Tcl_Interp;
@@ -613,7 +632,7 @@ package Tcl.Ada is
          version       : in C.Strings.chars_ptr;
          exact         : in C.int;
          clientdataptr : in ClientData)
-         return          C.Strings.chars_ptr;
+        return          C.Strings.chars_ptr;
       pragma Import (C, Tcl_PkgRequireEx, "Tcl_PkgRequireEx");
 
       function Tcl_PkgRequireEx
@@ -622,15 +641,16 @@ package Tcl.Ada is
          version       : in String;
          exact         : in C.int;
          clientdataptr : in ClientData)
-         return          String;
+        return          String;
 
    end Generic_PkgRequire;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_StackChannel is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       function Tcl_StackChannel
         (interp       : in Tcl_Interp;
@@ -638,27 +658,28 @@ package Tcl.Ada is
          instancedata : in ClientData;
          mask         : in C.int;
          prevChan     : in Tcl_Channel)
-         return         Tcl_Channel;
+        return         Tcl_Channel;
       pragma Import (C, Tcl_StackChannel, "Tcl_StackChannel");
 
    end Generic_StackChannel;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_TcpChannel is
 
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
+
       type Tcl_TcpAcceptProc is access procedure
-     (callbackdata : in ClientData;
-      chan         : in Tcl_Channel;
-      address      : in System.Address;
-      port         : in C.int);
+        (callbackdata : in ClientData;
+         chan         : in Tcl_Channel;
+         address      : in System.Address;
+         port         : in C.int);
       pragma Convention (C, Tcl_TcpAcceptProc);
 
       function Tcl_MakeTcpClientChannel
         (tcpsocket : in ClientData)
-         return      Tcl_Channel;
+        return      Tcl_Channel;
       pragma Import (C, Tcl_MakeTcpClientChannel, "Tcl_MakeTcpClientChannel");
 
       function Tcl_OpenTcpServer
@@ -667,7 +688,7 @@ package Tcl.Ada is
          host         : in C.Strings.chars_ptr;
          acceptProc   : in Tcl_TcpAcceptProc;
          callbackdata : in ClientData)
-         return         Tcl_Channel;
+        return         Tcl_Channel;
       pragma Import (C, Tcl_OpenTcpServer, "Tcl_OpenTcpServer");
 
       function Tcl_OpenTcpServer
@@ -676,15 +697,16 @@ package Tcl.Ada is
          host         : in String;
          acceptProc   : in Tcl_TcpAcceptProc;
          callbackdata : in ClientData)
-         return         Tcl_Channel;
+        return         Tcl_Channel;
 
    end Generic_TcpChannel;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_TimerHandler is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_TimerProc is access procedure (data : in ClientData);
       pragma Convention (C, Tcl_TimerProc);
@@ -693,26 +715,27 @@ package Tcl.Ada is
         (milliseconds : in C.int;
          proc         : in Tcl_TimerProc;
          data         : in ClientData)
-         return         Tcl_TimerToken;
+        return         Tcl_TimerToken;
       pragma Import (C, Tcl_CreateTimerHandler, "Tcl_CreateTimerHandler");
 
    end Generic_TimerHandler;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_Trace is
 
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
+
       type Tcl_CmdTraceProc is access procedure
-     (data          : in ClientData;
-      interp        : in Tcl_Interp;
-      level         : in C.int;
-      command       : in C.Strings.chars_ptr;
-      proc          : in Tcl_CmdProc;
-      cmdclientdata : in ClientData;
-      argc          : in C.int;
-      argv          : in CArgv.Chars_Ptr_Ptr);
+        (data          : in ClientData;
+         interp        : in Tcl_Interp;
+         level         : in C.int;
+         command       : in C.Strings.chars_ptr;
+         proc          : in Tcl_CmdProc;
+         cmdclientdata : in ClientData;
+         argc          : in C.int;
+         argv          : in CArgv.Chars_Ptr_Ptr);
       pragma Convention (C, Tcl_CmdTraceProc);
 
       function Tcl_CreateTrace
@@ -720,16 +743,17 @@ package Tcl.Ada is
          level  : in C.int;
          proc   : in Tcl_CmdTraceProc;
          data   : in ClientData)
-         return   Tcl_Trace;
+        return   Tcl_Trace;
       pragma Import (C, Tcl_CreateTrace, "Tcl_CreateTrace");
 
    end Generic_Trace;
 
    generic
       type ClientData is private;
-      --  Objects of this type must be the same size as a C pointer.
-      --  Typically, it is either a scalar or access type.
    package Generic_TraceVar is
+
+      pragma Assert (ClientData'Size <= System.Address'Size,
+                     "ClientData too big");
 
       type Tcl_VarTraceProc is access function
         (data   : in ClientData;
@@ -737,7 +761,7 @@ package Tcl.Ada is
          part1  : in C.Strings.chars_ptr;
          part2  : in C.Strings.chars_ptr;
          flags  : in C.int)
-      return      C.Strings.chars_ptr;
+        return      C.Strings.chars_ptr;
       pragma Convention (C, Tcl_VarTraceProc);
 
       function Tcl_TraceVar
@@ -746,7 +770,7 @@ package Tcl.Ada is
          flags   : in C.int;
          proc    : in Tcl_VarTraceProc;
          data    : in ClientData)
-         return    C.int;
+        return    C.int;
       pragma Import (C, Tcl_TraceVar, "Tcl_TraceVar");
 
       function Tcl_TraceVar
@@ -755,7 +779,7 @@ package Tcl.Ada is
          flags   : in C.int;
          proc    : in Tcl_VarTraceProc;
          data    : in ClientData)
-         return    C.int;
+        return    C.int;
 
       procedure Tcl_TraceVar
         (interp  : in Tcl_Interp;
@@ -771,7 +795,7 @@ package Tcl.Ada is
          flags  : in C.int;
          proc   : in Tcl_VarTraceProc;
          data   : in ClientData)
-         return   C.int;
+        return   C.int;
       pragma Import (C, Tcl_TraceVar2, "Tcl_TraceVar2");
 
       function Tcl_TraceVar2
@@ -781,7 +805,7 @@ package Tcl.Ada is
          flags  : in C.int;
          proc   : in Tcl_VarTraceProc;
          data   : in ClientData)
-         return   C.int;
+        return   C.int;
 
       procedure Tcl_TraceVar2
         (interp : in Tcl_Interp;
@@ -829,7 +853,7 @@ package Tcl.Ada is
          flags          : in C.int;
          procPtr        : in Tcl_VarTraceProc;
          prevclientdata : in ClientData)
-         return           ClientData;
+        return           ClientData;
       pragma Import (C, Tcl_VarTraceInfo, "Tcl_VarTraceInfo");
 
       function Tcl_VarTraceInfo
@@ -838,7 +862,7 @@ package Tcl.Ada is
          flags          : in C.int;
          procPtr        : in Tcl_VarTraceProc;
          prevclientdata : in ClientData)
-         return           ClientData;
+        return           ClientData;
 
       function Tcl_VarTraceInfo2
         (interp         : in Tcl_Interp;
@@ -847,7 +871,7 @@ package Tcl.Ada is
          flags          : in C.int;
          procPtr        : in Tcl_VarTraceProc;
          prevclientdata : in ClientData)
-         return           ClientData;
+        return           ClientData;
       pragma Import (C, Tcl_VarTraceInfo2, "Tcl_VarTraceInfo2");
 
       function Tcl_VarTraceInfo2
@@ -857,7 +881,7 @@ package Tcl.Ada is
          flags          : in C.int;
          procPtr        : in Tcl_VarTraceProc;
          prevclientdata : in ClientData)
-         return           ClientData;
+        return           ClientData;
 
    end Generic_TraceVar;
 
@@ -867,20 +891,20 @@ package Tcl.Ada is
      (size : in C.unsigned;
       file : in String;
       line : in C.int)
-      return String;
+     return String;
 
    function Tcl_DbCkfree
      (ptr  : in String;
       file : in String;
       line : in C.int)
-      return C.int;
+     return C.int;
 
    function Tcl_DbCkrealloc
      (ptr  : in String;
       size : in C.unsigned;
       file : in String;
       line : in C.int)
-      return String;
+     return String;
 
    procedure Tcl_AppendStringsToObj
      (objPtr  : in Tcl_Obj;
@@ -913,39 +937,39 @@ package Tcl.Ada is
      (objPtr : in Tcl_Obj;
       file   : in String;
       line   : in C.int)
-      return   C.int;
+     return   C.int;
 
    function Tcl_DbNewBooleanObj
      (boolValue : in C.int;
       file      : in String;
       line      : in C.int)
-      return      Tcl_Obj;
+     return      Tcl_Obj;
 
    function Tcl_DbNewByteArrayObj
      (bytes  : in String;
       length : in C.int;
       file   : in String;
       line   : in C.int)
-      return   Tcl_Obj;
+     return   Tcl_Obj;
 
    function Tcl_DbNewDoubleObj
      (doubleValue : in C.double;
       file        : in String;
       line        : in C.int)
-      return        Tcl_Obj;
+     return        Tcl_Obj;
 
    function Tcl_DbNewListObj
      (objc : in C.int;
       objv : in Tcl_Obj_Array;
       file : in String;
       line : in C.int)
-      return Tcl_Obj;
+     return Tcl_Obj;
 
    function Tcl_DbNewLongObj
      (longValue : in C.long;
       file      : in String;
       line      : in C.int)
-      return      Tcl_Obj;
+     return      Tcl_Obj;
 
    function Tcl_DbNewObj (file : in String; line : in C.int) return Tcl_Obj;
 
@@ -954,13 +978,13 @@ package Tcl.Ada is
       length : in C.int;
       file   : in String;
       line   : in C.int)
-      return   Tcl_Obj;
+     return   Tcl_Obj;
 
    function Tcl_GetBoolean
      (interp  : in Tcl_Interp;
       str     : in String;
       boolPtr : access C.int)
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_GetBoolean
      (interp  : in Tcl_Interp;
@@ -970,13 +994,13 @@ package Tcl.Ada is
    function Tcl_GetByteArrayFromObj
      (objPtr    : in Tcl_Obj;
       lengthPtr : access C.int)
-      return      String;
+     return      String;
 
    function Tcl_GetDouble
      (interp    : in Tcl_Interp;
       str       : in String;
       doublePtr : access C.double)
-      return      C.int;
+     return      C.int;
 
    procedure Tcl_GetDouble
      (interp    : in Tcl_Interp;
@@ -990,7 +1014,7 @@ package Tcl.Ada is
       msg      : in String;
       flags    : in C.int;
       indexPtr : access C.int)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_GetIndexFromObj
      (interp   : in Tcl_Interp;
@@ -1004,7 +1028,7 @@ package Tcl.Ada is
      (interp : in Tcl_Interp;
       str    : in String;
       intPtr : access C.int)
-      return   C.int;
+     return   C.int;
 
    procedure Tcl_GetInt
      (interp : in Tcl_Interp;
@@ -1018,22 +1042,22 @@ package Tcl.Ada is
    function Tcl_GetStringFromObj
      (objPtr    : in Tcl_Obj;
       lengthPtr : access C.int)
-      return      String;
+     return      String;
 
    function Tcl_NewByteArrayObj
      (bytes  : in String;
       length : in C.int)
-      return   Tcl_Obj;
+     return   Tcl_Obj;
 
    function Tcl_NewStringObj
      (bytes  : in String;
       length : in C.int)
-      return   Tcl_Obj;
+     return   Tcl_Obj;
 
    function Tcl_SetByteArrayLength
      (objPtr : in Tcl_Obj;
       length : in C.int)
-      return   String;
+     return   String;
 
    procedure Tcl_SetByteArrayObj
      (objPtr : in Tcl_Obj;
@@ -1069,27 +1093,27 @@ package Tcl.Ada is
    function Tcl_Backslash
      (src     : in String;
       readPtr : access C.int)
-      return    C.char;
+     return    C.char;
 
    function Tcl_CommandComplete (cmd : in String) return C.int;
 
    function Tcl_Concat
      (argc : in C.int;
       argv : in CArgv.Chars_Ptr_Ptr)
-      return String;
+     return String;
 
    function Tcl_ConvertElement
      (src   : in String;
       dst   : in String;
       flags : in C.int)
-      return  C.int;
+     return  C.int;
 
    function Tcl_ConvertCountedElement
      (src    : in String;
       length : in C.int;
       dst    : in String;
       flags  : in C.int)
-      return   C.int;
+     return   C.int;
 
    function Tcl_CreateAlias
      (slave     : in Tcl_Interp;
@@ -1098,7 +1122,7 @@ package Tcl.Ada is
       targetCmd : in String;
       argc      : in C.int;
       argv      : in CArgv.Chars_Ptr_Ptr)
-      return      C.int;
+     return      C.int;
 
    function Tcl_CreateAliasObj
      (slave     : in Tcl_Interp;
@@ -1107,24 +1131,24 @@ package Tcl.Ada is
       targetCmd : in String;
       objc      : in C.int;
       objv      : in Tcl_Obj_Array)
-      return      C.int;
+     return      C.int;
 
    function Tcl_CreateSlave
      (interp    : in Tcl_Interp;
       slaveName : in String;
       isSafe    : in C.int)
-      return      Tcl_Interp;
+     return      Tcl_Interp;
 
    function Tcl_DStringAppend
      (dsPtr  : in Tcl_DString;
       str    : in String;
       length : in C.int)
-      return   String;
+     return   String;
 
    function Tcl_DStringAppendElement
      (dsPtr : in Tcl_DString;
       strng : in String)
-      return  String;
+     return  String;
 
    function Tcl_ErrnoId return C.Strings.chars_ptr;
 
@@ -1133,14 +1157,14 @@ package Tcl.Ada is
    function Tcl_Eval
      (interp : in Tcl_Interp;
       strng  : in String)
-      return   C.int;
+     return   C.int;
 
    procedure Tcl_Eval (interp : in Tcl_Interp; strng : in String);
 
    function Tcl_EvalFile
      (interp   : in Tcl_Interp;
       fileName : in String)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_EvalFile (interp : in Tcl_Interp; fileName : in String);
 
@@ -1148,7 +1172,7 @@ package Tcl.Ada is
      (interp         : in Tcl_Interp;
       hiddenCmdToken : in String;
       cmdName        : in String)
-      return           C.int;
+     return           C.int;
 
    procedure Tcl_ExposeCommand
      (interp         : in Tcl_Interp;
@@ -1158,22 +1182,22 @@ package Tcl.Ada is
    function Tcl_ExprBoolean
      (interp : in Tcl_Interp;
       str    : in String)
-      return   Boolean;
+     return   Boolean;
 
    function Tcl_ExprDouble
      (interp : in Tcl_Interp;
       str    : in String)
-      return   C.double;
+     return   C.double;
 
    function Tcl_ExprLong
      (interp : in Tcl_Interp;
       str    : in String)
-      return   C.long;
+     return   C.long;
 
    function Tcl_ExprString
      (interp : in Tcl_Interp;
       strng  : in String)
-      return   String;
+     return   String;
 
    procedure Tcl_FindExecutable (argv0 : in String);
 
@@ -1184,7 +1208,7 @@ package Tcl.Ada is
       targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
       argcPtr         : access C.int;
       argvPtr         : access CArgv.Chars_Ptr_Ptr)
-      return            C.int;
+     return            C.int;
 
    procedure Tcl_GetAlias
      (interp          : in Tcl_Interp;
@@ -1201,7 +1225,7 @@ package Tcl.Ada is
       targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
       objcPtr         : access C.int;
       objv            : in Tcl_Obj_Array)
-      return            C.int;
+     return            C.int;
 
    procedure Tcl_GetAliasObj
      (interp          : in Tcl_Interp;
@@ -1222,7 +1246,7 @@ package Tcl.Ada is
    function Tcl_GetSlave
      (interp    : in Tcl_Interp;
       slaveName : in String)
-      return      Tcl_Interp;
+     return      Tcl_Interp;
 
    function Tcl_GetStringResult (interp : in Tcl_Interp) return String;
 
@@ -1230,19 +1254,19 @@ package Tcl.Ada is
      (interp  : in Tcl_Interp;
       varName : in String;
       flags   : in C.int := TCL_GLOBAL_ONLY)
-      return    String;
+     return    String;
 
    function Tcl_GetVar2
      (interp : in Tcl_Interp;
       part1  : in String;
       part2  : in String;
       flags  : in C.int := TCL_GLOBAL_ONLY)
-      return   String;
+     return   String;
 
    function Tcl_GlobalEval
      (interp  : in Tcl_Interp;
       command : in String)
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_GlobalEval (interp : in Tcl_Interp; command : in String);
 
@@ -1250,7 +1274,7 @@ package Tcl.Ada is
      (interp         : in Tcl_Interp;
       cmdName        : in String;
       hiddenCmdToken : in String)
-      return           C.int;
+     return           C.int;
 
    procedure Tcl_HideCommand
      (interp         : in Tcl_Interp;
@@ -1261,14 +1285,14 @@ package Tcl.Ada is
      (argc      : in C.int;
       argv      : in CArgv.Chars_Ptr_Ptr;
       resultPtr : in Tcl_DString)
-      return      String;
+     return      String;
 
    function Tcl_LinkVar
      (interp  : in Tcl_Interp;
       varName : in String;
       addr    : in System.Address;
       typ     : in C.int)
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_LinkVar
      (interp  : in Tcl_Interp;
@@ -1279,7 +1303,7 @@ package Tcl.Ada is
    function Tcl_Merge
      (argc : in C.int;
       argv : in CArgv.Chars_Ptr_Ptr)
-      return String;
+     return String;
 
    procedure Tcl_PrintDouble
      (interp : in Tcl_Interp;
@@ -1294,7 +1318,7 @@ package Tcl.Ada is
      (interp : in Tcl_Interp;
       cmd    : in String;
       flags  : in C.int)
-      return   C.int;
+     return   C.int;
 
    procedure Tcl_RecordAndEval
      (interp : in Tcl_Interp;
@@ -1304,14 +1328,14 @@ package Tcl.Ada is
    function Tcl_RegExpCompile
      (interp : in Tcl_Interp;
       strng  : in String)
-      return   Tcl_RegExp;
+     return   Tcl_RegExp;
 
    function Tcl_RegExpExec
      (interp : in Tcl_Interp;
       regexp : in Tcl_RegExp;
       str    : in String;
       start  : in String)
-      return   C.int;
+     return   C.int;
 
    procedure Tcl_RegExpExec
      (interp : in Tcl_Interp;
@@ -1323,7 +1347,7 @@ package Tcl.Ada is
      (interp  : in Tcl_Interp;
       str     : in String;
       pattern : in String)
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_RegExpMatch
      (interp  : in Tcl_Interp;
@@ -1333,13 +1357,13 @@ package Tcl.Ada is
    function Tcl_ScanElement
      (str     : in String;
       flagPtr : access C.int)
-      return    C.int;
+     return    C.int;
 
    function Tcl_ScanCountedElement
      (str     : in String;
       length  : in C.int;
       flagPtr : access C.int)
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_SetErrorCode
      (interp  : in Tcl_Interp;
@@ -1360,7 +1384,7 @@ package Tcl.Ada is
       varName  : in String;
       newValue : in String;
       flags    : in C.int := TCL_GLOBAL_ONLY)
-      return     String;
+     return     String;
 
    procedure Tcl_SetVar
      (interp   : in Tcl_Interp;
@@ -1374,7 +1398,7 @@ package Tcl.Ada is
       part2    : in String;
       newValue : in String;
       flags    : in C.int := TCL_GLOBAL_ONLY)
-      return     String;
+     return     String;
 
    procedure Tcl_SetVar2
      (interp   : in Tcl_Interp;
@@ -1392,7 +1416,7 @@ package Tcl.Ada is
       listStr : in String;
       argcPtr : access C.int;
       argvPtr : access CArgv.Chars_Ptr_Ptr)
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_SplitList
      (interp  : in Tcl_Interp;
@@ -1414,14 +1438,14 @@ package Tcl.Ada is
    function Tcl_StringMatch
      (str     : in String;
       pattern : in String)
-      return    C.int;
+     return    C.int;
 
    function Tcl_Ungets
      (chan   : in Tcl_Channel;
       str    : in String;
       len    : in C.int;
       atHead : in C.int)
-      return   C.int;
+     return   C.int;
 
    procedure Tcl_UnlinkVar (interp : in Tcl_Interp; varName : in String);
 
@@ -1429,7 +1453,7 @@ package Tcl.Ada is
      (interp  : in Tcl_Interp;
       varName : in String;
       flags   : in C.int := TCL_GLOBAL_ONLY)
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_UnsetVar
      (interp  : in Tcl_Interp;
@@ -1441,7 +1465,7 @@ package Tcl.Ada is
       part1  : in String;
       part2  : in String;
       flags  : in C.int := TCL_GLOBAL_ONLY)
-      return   C.int;
+     return   C.int;
 
    procedure Tcl_UnsetVar2
      (interp : in Tcl_Interp;
@@ -1459,7 +1483,7 @@ package Tcl.Ada is
       varName   : in String;
       localName : in String;
       flags     : in C.int)
-      return      C.int;
+     return      C.int;
 
    procedure Tcl_UpVar
      (interp    : in Tcl_Interp;
@@ -1475,7 +1499,7 @@ package Tcl.Ada is
       part2     : in String;
       localName : in String;
       flags     : in C.int)
-      return      C.int;
+     return      C.int;
 
    procedure Tcl_UpVar2
      (interp    : in Tcl_Interp;
@@ -1496,7 +1520,7 @@ package Tcl.Ada is
       String7 : in String := "";
       String8 : in String := "";
       String9 : in String := "")
-      return    C.int;
+     return    C.int;
 
    procedure Tcl_VarEval
      (interp  : in Tcl_Interp;
@@ -1524,14 +1548,14 @@ package Tcl.Ada is
      (interp  : in Tcl_Interp;
       str     : in String;
       termPtr : in CArgv.Chars_Ptr_Ptr)
-      return    String;
+     return    String;
 
    function Tcl_EvalEx
      (interp   : in Tcl_Interp;
       script   : in String;
       numBytes : in C.int;
       flags    : in C.int)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_EvalEx
      (interp   : in Tcl_Interp;
@@ -1551,7 +1575,7 @@ package Tcl.Ada is
       srcReadPtr  : access C.int;
       dstWrotePtr : access C.int;
       dstCharsPtr : access C.int)
-      return        C.int;
+     return        C.int;
 
    procedure Tcl_ExternalToUtf
      (interp      : in Tcl_Interp;
@@ -1571,12 +1595,12 @@ package Tcl.Ada is
       src      : in String;
       srcLen   : in C.int;
       dsPtr    : in Tcl_DString)
-      return     String;
+     return     String;
 
    function Tcl_GetEncoding
      (interp : in Tcl_Interp;
       name   : in String)
-      return   Tcl_Encoding;
+     return   Tcl_Encoding;
 
    function Tcl_GetEncodingName (encoding : in Tcl_Encoding) return String;
 
@@ -1588,7 +1612,7 @@ package Tcl.Ada is
       msg      : in String;
       flags    : in C.int;
       indexPtr : access C.int)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_GetIndexFromObjStruct
      (interp   : in Tcl_Interp;
@@ -1604,14 +1628,14 @@ package Tcl.Ada is
       part1  : in String;
       part2  : in String;
       flags  : in C.int := TCL_GLOBAL_ONLY)
-      return   Tcl_Obj;
+     return   Tcl_Obj;
 
    function Tcl_NumUtfChars (src : in String; len : in C.int) return C.int;
 
    function Tcl_SetSystemEncoding
      (interp : in Tcl_Interp;
       name   : in String)
-      return   C.int;
+     return   C.int;
 
    procedure Tcl_SetSystemEncoding
      (interp : in Tcl_Interp;
@@ -1623,30 +1647,30 @@ package Tcl.Ada is
       part2       : in String;
       newValuePtr : in Tcl_Obj;
       flags       : in C.int := TCL_GLOBAL_ONLY)
-      return        Tcl_Obj;
+     return        Tcl_Obj;
 
    function Tcl_UniCharAtIndex
      (src   : in String;
       index : in C.int)
-      return  Tcl_UniChar;
+     return  Tcl_UniChar;
 
    function Tcl_UniCharToUtf (ch : in C.int; buf : in String) return C.int;
 
    function Tcl_UtfAtIndex
      (src   : in String;
       index : in C.int)
-      return  String;
+     return  String;
 
    function Tcl_UtfCharComplete
      (src  : in String;
       len  : in C.int)
-      return C.int;
+     return C.int;
 
    function Tcl_UtfBackslash
      (src     : in String;
       readPtr : access C.int;
       dst     : in String)
-      return    C.int;
+     return    C.int;
 
    function Tcl_UtfFindFirst (src : in String; ch : in C.int) return String;
 
@@ -1668,7 +1692,7 @@ package Tcl.Ada is
       srcReadPtr  : access C.int;
       dstWrotePtr : access C.int;
       dstCharsPtr : access C.int)
-      return        C.int;
+     return        C.int;
 
    procedure Tcl_UtfToExternal
      (interp      : in Tcl_Interp;
@@ -1688,7 +1712,7 @@ package Tcl.Ada is
       src      : in String;
       srcLen   : in C.int;
       dsPtr    : in Tcl_DString)
-      return     String;
+     return     String;
 
    function Tcl_UtfToLower (src : in String) return C.int;
 
@@ -1697,7 +1721,7 @@ package Tcl.Ada is
    function Tcl_UtfToUniChar
      (src   : in String;
       chPtr : in Tcl_UniChar)
-      return  C.int;
+     return  C.int;
 
    function Tcl_UtfToUpper (src : in String) return C.int;
 
@@ -1711,13 +1735,13 @@ package Tcl.Ada is
      (strng    : in Tcl_UniChar;
       numChars : in C.int;
       dsPtr    : in Tcl_DString)
-      return     String;
+     return     String;
 
    function Tcl_UtfToUniCharDString
      (strng  : in String;
       length : in C.int;
       dsPtr  : in Tcl_DString)
-      return   Tcl_UniChar;
+     return   Tcl_UniChar;
 
    procedure Tcl_LogCommandInfo
      (interp  : in Tcl_Interp;
@@ -1732,7 +1756,7 @@ package Tcl.Ada is
       parsePtr : in Tcl_Parse;
       append   : in C.int;
       termPtr  : in CArgv.Chars_Ptr_Ptr)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_ParseBraces
      (interp   : in Tcl_Interp;
@@ -1748,7 +1772,7 @@ package Tcl.Ada is
       numBytes : in C.int;
       nested   : in C.int;
       parsePtr : in Tcl_Parse)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_ParseCommand
      (interp   : in Tcl_Interp;
@@ -1762,7 +1786,7 @@ package Tcl.Ada is
       strng    : in String;
       numBytes : in C.int;
       parsePtr : in Tcl_Parse)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_ParseExpr
      (interp   : in Tcl_Interp;
@@ -1777,7 +1801,7 @@ package Tcl.Ada is
       parsePtr : in Tcl_Parse;
       append   : in C.int;
       termPtr  : in CArgv.Chars_Ptr_Ptr)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_ParseQuotedString
      (interp   : in Tcl_Interp;
@@ -1793,7 +1817,7 @@ package Tcl.Ada is
       numBytes : in C.int;
       parsePtr : in Tcl_Parse;
       append   : in C.int)
-      return     C.int;
+     return     C.int;
 
    procedure Tcl_ParseVarName
      (interp   : in Tcl_Interp;
@@ -1812,18 +1836,18 @@ package Tcl.Ada is
      (s1   : in String;
       s2   : in String;
       n    : in C.unsigned_long)
-      return C.int;
+     return C.int;
 
    function Tcl_UtfNcasecmp
      (s1   : in String;
       s2   : in String;
       n    : in C.unsigned_long)
-      return C.int;
+     return C.int;
 
    function Tcl_StringCaseMatch
      (str     : in String;
       pattern : in String;
       nocase  : in C.int)
-      return    C.int;
+     return    C.int;
 
 end Tcl.Ada;

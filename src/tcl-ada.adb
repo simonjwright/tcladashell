@@ -76,18 +76,6 @@ package body Tcl.Ada is
 
    end Generic_AssocData;
 
-   package body Generic_AsyncEvents is
-
-   end Generic_AsyncEvents;
-
-   package body Generic_CallWhenDeleted is
-
-   end Generic_CallWhenDeleted;
-
-   package body Generic_Channel is
-
-   end Generic_Channel;
-
    package body Generic_ChannelDriver is
 
       function Tcl_CreateChannel
@@ -107,14 +95,6 @@ package body Tcl.Ada is
       end Tcl_CreateChannel;
 
    end Generic_ChannelDriver;
-
-   package body Generic_ChannelHandler is
-
-   end Generic_ChannelHandler;
-
-   package body Generic_CloseHandler is
-
-   end Generic_CloseHandler;
 
    package body Generic_Command is
 
@@ -137,18 +117,6 @@ package body Tcl.Ada is
       end Tcl_CreateCommand;
 
    end Generic_Command;
-
-   package body Generic_EventQueueAndNotifier is
-
-   end Generic_EventQueueAndNotifier;
-
-   package body Generic_ExitHandler is
-
-   end Generic_ExitHandler;
-
-   package body Generic_FileHandler is
-
-   end Generic_FileHandler;
 
    package body Generic_GetOpenFile is
 
@@ -190,18 +158,6 @@ package body Tcl.Ada is
       end Tcl_GetOpenFile;
 
    end Generic_GetOpenFile;
-
-   package body Generic_Hash is
-
-   end Generic_Hash;
-
-   package body Generic_Idle is
-
-   end Generic_Idle;
-
-   package body Generic_ManageStorage is
-
-   end Generic_ManageStorage;
 
    package body Generic_MathFunc is
 
@@ -327,10 +283,6 @@ package body Tcl.Ada is
 
    end Generic_PkgRequire;
 
-   package body Generic_StackChannel is
-
-   end Generic_StackChannel;
-
    package body Generic_TcpChannel is
 
       function Tcl_OpenTcpServer
@@ -352,14 +304,6 @@ package body Tcl.Ada is
       end Tcl_OpenTcpServer;
 
    end Generic_TcpChannel;
-
-   package body Generic_TimerHandler is
-
-   end Generic_TimerHandler;
-
-   package body Generic_Trace is
-
-   end Generic_Trace;
 
    package body Generic_TraceVar is
 
