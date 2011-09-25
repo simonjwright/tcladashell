@@ -1,15 +1,30 @@
 <html>
 <head>
 <title>TASH</title>
+<link rel="stylesheet" type="text/css" href="tcladashell.css"/>
 </head>
 <body>
+
+<div id="header">
+<a href="http://sourceforge.net/projects/tcladashell"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=135616&type=16"
+width="150" height="40" border="0" alt="Get Tcl Ada Shell at
+SourceForge.net. Fast, secure and Free Open Source software downloads"
+/></a></div>
+
 <h1>TASH</h1>
 
 <p><b>T</b>cl<b>A</b>da<b>SH</b>ell is an Ada binding to Tcl/Tk.
 
-<p>This is a temporary description; the previous description (from the
-original developer's hosting site, no longer extant)
+<p>This is a short description only; the previous description (from
+the original developer's hosting site, no longer extant)
 is <a href="index.htm">here</a>.
+
+<p>The TclAdaShell <a href="http://sourceforge.net">Sourceforge</a>
+project is to be
+found <a href="https://sourceforge.net/projects/tcladashell/">here</a>.
+
+<p>Downloads are to be
+found <a href="https://sourceforge.net/projects/tcladashell/files/">here</a>.
 
 <h2>Skinny Tcl Binding</h2>
 
@@ -44,7 +59,7 @@ than C.
 
 <p>An early paper describing the rationale of the design of TASH is
 available in several different formats in
-the <a href="http://tcladashell.sourceforge.net/docs.htm#intro">docs</a>
+the <a href="docs.htm#intro">docs</a>
 directory.
 
 <h2>Skinny Tk Binding</h2>
@@ -73,7 +88,7 @@ are implemented in Ada rather than C.
 <p>An early paper describing how TWASHELL is a Platform-Independent
 toolkit for development of Graphical User Interfaces is available in
 several different formats in
-the <a href="http://tcladashell.sourceforge.net/docs.htm#pigui">docs</a>
+the <a href="docs.htm#pigui">docs</a>
 directory.
 
 <h2>Unsupported features</h2>
@@ -92,7 +107,30 @@ but Snow Leopard has 8.5).
 developer <a href="https://savannah.nongnu.org/projects/rapid/">RAPID</a>
 does <i>not</i> depend on these unsupported features.
 
-<h2>Installation</h2>
+<h2><a name="installation">Installation</a></h2>
+
+<h3>Prerequisites</h3>
+
+<p>You need an Ada compiler. The instructions here are based
+on <a href="http://libre.adacore.com">GNAT</a>, though other compilers
+have been used and there is nothing GNAT-specific about TASH.
+
+<p>You also need Tcl/Tk with working <tt>tclsh</tt> and <tt>wish</tt>.
+
+<p>On Unix systems, this should be all aside from the usual
+development environment (<tt>bash</tt>/<tt>sh</tt>, <tt>make</tt>
+etc).
+
+<p>On Windows systems, you can get the development environment
+using <a href="http://www.cygwin.com">Cygwin</a>. Cygwin includes a
+Tcl/Tk implementation, but unfortunately it's not compatible with GNAT
+(there's a <tt>.dll</tt> clash). We recommend that you use the
+excellent Community edition
+from <a href="http://www.activestate.com/">ActiveState</a>, and these
+instructions are written assuming that. We also recommend that you
+install at <tt>C:\Tcl</tt> rather than
+at <tt>C:\Program&nbsp;Files\Tcl</tt>, to avoid problems with path
+names with spaces later on.
 
 <h3>Extract TASH</h3>
 
@@ -112,20 +150,26 @@ your HOME directory.
 
 <h3>Configure</h3>
 
-Configure for your system:
+<p>If you're running a Unix system, open up a shell window at the
+extracted TASH and say
+
 <pre>
   $ ./setup.tcl
 </pre>
 
-<p>If Tcl/Tk was installed correctly, and <tt>wish</tt> is in your
-path, a <tt>wish</tt> script will run which sets values for several
-makefile macros used to customize your TASH build. In most cases, the
-default values will be OK. If not, type in the correct values. It's
-important that the C compiler used to compile glue files is compatible
-with your Ada compiler; one way of achieving this (if you're using
-GNAT; note, these instructions assume that's the case) is to make sure
-that GNAT is first on your path. In any case, setup.tcl will use
-'gnatgcc' if found.
+<p>If you're running Windows, use Windows Explorer to locate and
+run <tt>setup.tcl</tt> (it may run on double-clicking, or you may have
+to right-click and <i>open with</i> <tt>wish</tt>). <b>Don't</b> try
+running this step from a Cygwin shell.
+
+<p>In either case, the script sets values for several makefile macros
+used to customize your TASH build. In most cases, the default values
+will be OK. If not, type in the correct values. It's important that
+the C compiler used to compile glue files is compatible with your Ada
+compiler; one way of achieving this (if you're using GNAT; note, these
+instructions assume that's the case) is to make sure that GNAT is
+first on your path. In any case, <tt>setup.tcl</tt> will
+use <tt>gnatgcc</tt> if found.
 
 <p>Press the Save button to create the <tt>tash_options.gpr</tt>
 and <tt>makeconf</tt> files.
@@ -134,11 +178,23 @@ and <tt>makeconf</tt> files.
 <pre>
   $ ./setup.tcl --nogui
 </pre>
-if you're prepared to accept the defaults.
+<p>if you're prepared to accept the defaults (and you're not running
+Windows).
 
 <h3>Build</h3>
 
-<p>Run
+<p>If you're running on Windows, you'll need to set up Cygwin so that
+GNAT and ActiveState Tcl/Tk are first on your path in Cygwin (which
+puts <tt>/usr/local/bin</tt> and <tt>/usr/bin</tt> before your Windows
+path). One way of doing this is to add the following line at the end
+of <tt>~/.bash_profile</tt>:
+<pre>
+  PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2011/bin:$PATH
+</pre>
+<p>(assuming that you've got ActiveState Tcl/Tk installed
+at <tt>C:\Tcl</tt> and GNAT at <tt>C:\GNAT\2011</tt>)
+
+<p>That done, run
 <pre>
   $ make all
 </pre>

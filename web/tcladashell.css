@@ -1,0 +1,77 @@
+/*
+   Stylesheet for the simple TclAdaShell page.
+   */
+
+* { margin : 0;
+    padding : 0;
+    }
+
+html { font-family : Verdana, Arial, Helvetica, sans-serif;
+       font-size : 20pt;
+       }
+
+body { font-size : 50%;
+       margin-left : .5em;
+       margin-right : .5em;
+       color : black;
+       background : white;
+       }
+
+div#header img { float : right;
+                 }
+
+h1, h2, h3, h4, h5, h6 { margin : 0.1em; }
+
+h1 { font-size : 1.7em;
+     text-transform : uppercase;
+     letter-spacing :.2em;
+     margin-top : .3em;
+     margin-bottom : 1em;
+     }
+
+h2 { font-size : 1.5em;
+     margin-top : .2em;
+     }
+
+h3 { font-size : 1.3em; }
+
+h4 { font-size : 1.2em; }
+
+h5 { font-size : 1.1em; }
+
+h6 { font-size : 1em; }
+
+p { margin : .1em 0 .1em 1em; }
+
+dl { margin-left : 1em; }
+
+ol { margin : .1em 0 .1em 2.7em; }  /* room for numbers */
+ul { margin : .1em 0 .1em 2.2em; }  /* room for bullets */
+
+ol ol, ul ul { margin : .1em 0 .1em 1.2em; }
+
+pre { background : #d0d0d0; }
+
+/* These two used for the release description definition list. */
+dl#release dt { font-weight : bold; }
+dl#release ul.release { margin-left :0;
+                        list-style-type : none; }
+
+table { margin : 0.2em 1em;
+        font-size : 100%;
+        border-collapse : collapse; }
+
+th,td { padding : 0.2em; }
+
+blockquote { margin : .2em 3em .2em 3em; }
+
+dt { margin-top : 0.2em; }
+dd { margin-left : 1em; }
+
+tt { font-family : Courier, monospace;
+     font-size : 1.05em;
+     }
+
+hr { margin-top : .5em; }
+
+.highlight { background : yellow; }

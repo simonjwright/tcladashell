@@ -33,15 +33,13 @@ these facilities is limited "in the field".
 API changes since previous release
 ==================================
 
-Changes in 20110917
+Changes in 20110925
 -------------------
 
-None.
-
-Changes in 20110723
--------------------
-
-None.
+The ClientData generics in Tcl.Ada had comments stating that the size
+of the ClientData formal type must be equal to the size of a C
+pointer. These have been replaced by assertions that the size of
+ClientData must not be greater than that of System.Address.
 
 Changes in 20090611
 -------------------
@@ -68,15 +66,12 @@ Changes in 20090207
 Other changes since previous release
 ====================================
 
-Changes in 20110917
+Changes in 20110925
 -------------------
 
 The top-level makefile now supports an 'install' target which on
 GNAT-based systems other than Debian installs TASH alongside your
 compiler (so you don't need to set ADA_PROJECT_PATH).
-
-Changes in 20110723
--------------------
 
 The setup.tcl script recognises gnatgcc, if present, as the compiler
 to use for the C compilations required to build the library.
@@ -91,3 +86,8 @@ Changes in 20090611
 -------------------
 
 No longer requires gprbuild.
+
+Changes in 20090207
+-------------------
+
+None.
