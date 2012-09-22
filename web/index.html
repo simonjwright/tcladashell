@@ -166,26 +166,49 @@ your HOME directory.
 
 <h3>Configure</h3>
 
-<p>If you're running a Unix system, open up a shell window at the
-extracted TASH and say
+<h4>On Unix</h4>
+
+<p>If you're running a Unix system, make sure you have the version of
+GNAT you wish to use at the beginning of your <tt>PATH</tt> (this is
+in case you have a clever script
+like <a href="https://sourceforge.net/projects/gnuada/files/gnatfe/">gnatfe</a>
+in <tt>/use/local/bin</tt>, which will
+confuse <tt>make&nbsp;install</tt>).
+
+<p>Open up a shell window at the extracted TASH and say
 
 <pre>
   $ ./setup.tcl
 </pre>
 
-<p>If you're running Windows, use Windows Explorer to locate and
-run <tt>setup.tcl</tt> (it may run on double-clicking, or you may have
-to right-click and <i>open with</i> <tt>wish</tt>). <b>Don't</b> try
-running this step from a Cygwin shell.
+<h4>On Windows</h4>
+
+<p>If you're running on Windows, you'll need to set up Cygwin so that
+GNAT and ActiveState Tcl/Tk are first on your path in Cygwin (which
+puts <tt>/usr/local/bin</tt> and <tt>/usr/bin</tt> before your Windows
+path). One way of doing this is to add the following line at the end
+of <tt>~/.bash_profile</tt>:
+<pre>
+  PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2011/bin:$PATH
+</pre>
+<p>(assuming that you've got ActiveState Tcl/Tk installed
+at <tt>C:\Tcl</tt> and GNAT at <tt>C:\GNAT\2011</tt>)
+
+<p>Use Windows Explorer to locate and run <tt>setup.tcl</tt> (it may
+run on double-clicking, or you may have to right-click and <i>open
+with</i> <tt>wish</tt>). <b>Don't</b> try running this step from a
+Cygwin shell.
+
+<h4>Common</h4>
 
 <p>In either case, the script sets values for several makefile macros
 used to customize your TASH build. In most cases, the default values
 will be OK. If not, type in the correct values. It's important that
 the C compiler used to compile glue files is compatible with your Ada
 compiler; one way of achieving this (if you're using GNAT; note, these
-instructions assume that's the case) is to make sure that GNAT is
-first on your path. In any case, <tt>setup.tcl</tt> will
-use <tt>gnatgcc</tt> if found.
+instructions assume that's the case) is to make sure that
+GNAT's <tt>gcc</tt> is first on your path. In any
+case, <tt>setup.tcl</tt> will use <tt>gnatgcc</tt> if found.
 
 <p>Press the Save button to create the <tt>tash_options.gpr</tt>
 and <tt>makeconf</tt> files.
@@ -198,17 +221,6 @@ and <tt>makeconf</tt> files.
 Windows).
 
 <h3>Build</h3>
-
-<p>If you're running on Windows, you'll need to set up Cygwin so that
-GNAT and ActiveState Tcl/Tk are first on your path in Cygwin (which
-puts <tt>/usr/local/bin</tt> and <tt>/usr/bin</tt> before your Windows
-path). One way of doing this is to add the following line at the end
-of <tt>~/.bash_profile</tt>:
-<pre>
-  PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2011/bin:$PATH
-</pre>
-<p>(assuming that you've got ActiveState Tcl/Tk installed
-at <tt>C:\Tcl</tt> and GNAT at <tt>C:\GNAT\2011</tt>)
 
 <p>That done, run
 <pre>
@@ -257,8 +269,8 @@ built with any GNAT-based compiler.
 <h4>Installing with the compiler</h4>
 
 <p>If you're using FSF GCC or GNAT GPL, the best way is to install
-TASH alongside your compiler. <em>Note, this does not work with
-Debian</em> (yet), because of its different approach to file system
+TASH alongside your compiler. <b><em>Note, this does not work with
+Debian</em></b> (yet), because of its different approach to file system
 layout for the Ada subsystem.
 
 <p>The remaining instructions assume use on a Unix machine, or Cygwin
@@ -268,7 +280,7 @@ if on Windows.
 <pre>
    $ make install
 </pre>
-(you may need to do this as root on Unix systems).
+<p>(you may need to do this as root on Unix systems).
 
 </body>
 </html>
