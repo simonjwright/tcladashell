@@ -168,49 +168,13 @@ proc EditSourceFile {} {
 
 # Where does GNAT install GPSs?
 proc FindInstallationPrefix {} {
-    # This proc runs "gnatls -v". It ignores all lines up to the
-    # 'Project Search Path" section, and then finds the shortest line
-    # ending in /lib/gnat/; this is the directory where GNAT looks for
-    # installed GPR files.
+    # This proc finds the directory one up from where "gnatls" is found.
 
-    # The prefix (as typically set by configure, ie the top level
-    # directory for the package installation) is then set two levels
-    # up from the discovered path.
-
-    # NB, this approach works for GNAT GPL and FSF GCC; it does not
-    # work for Debian, which uses a different directory structure.
-
-    set gnatls [open {|gnatls -v}]
-
-    set search_path_found 0
-    set project_dir ""
-
-    while {[gets $gnatls line] >= 0} {
-        if {$search_path_found} {
-            # Backslash separators => forward slashes, in case we're
-            # on Windows.
-            regsub -all {\\} $line {/} line
-            set line [string trim $line]
-            # On Windows, don't get the trailing '/'.
-            if [regexp {/lib/gnat/?$} $line] {
-                set pdl [string length $project_dir]
-                if {$pdl == 0 || [string length $line] < $pdl} {
-                    set project_dir $line
-                }
-            }
-        } elseif {[regexp {^Project} $line]} {
-            set search_path_found 1
-        }
-    }
+    set gnatls [open {|which gnatls}]
+    gets $gnatls line
     catch {close $gnatls}
 
-    set cwd [pwd]
-    set prefix ""
-    catch {
-        cd $project_dir/../..
-        set prefix [pwd]
-    }
-    cd $cwd
+    set prefix [file dirname [file dirname $line]]
 
     return $prefix
 }
