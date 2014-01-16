@@ -19,16 +19,17 @@
 
 include ../makeconf
 
-TCL_PROGRAMS = \
-freq$(EXE) \
-futurevalue$(EXE) \
-hello_world$(EXE) \
-tashell$(EXE) \
-timer$(EXE) \
-twashell$(EXE) \
+TCL_PROGRAMS =					\
+freq$(EXE)					\
+futurevalue$(EXE)				\
+hello_world$(EXE)				\
+tashell$(EXE)					\
+timer$(EXE)					\
+twashell$(EXE)					\
+watching$(EXE)					\
 wordify$(EXE)
 
-TASH_PROGRAMS = \
+TASH_PROGRAMS =					\
 freq2$(EXE)
 
 all::
@@ -43,6 +44,10 @@ test::
 
 test::
 	./tashell testfreq.tcl ../include words $(SUPPORTS_TASH)
+
+test::
+	echo 1023 >watching.in
+	./watching watching.tcl <watching.in
 
 ifeq ($(SUPPORTS_TASH),yes)
 test::
@@ -65,28 +70,30 @@ lib:
 # Distribution: expect DIST to be defined as the place beneath which
 # the demos directory is to appear
 
-SRC = \
-freq.adb \
-freq2.adb \
-futurevalue.adb \
-hello_world.adb \
-tash_demos.gpr \
-tashapp.adb \
-tashapp.ads \
-tashell.adb \
-timer.adb \
-twashapp.adb \
-twashapp.ads \
-twashell.adb \
+SRC =						\
+freq.adb					\
+freq2.adb					\
+futurevalue.adb					\
+hello_world.adb					\
+tash_demos.gpr					\
+tashapp.adb					\
+tashapp.ads					\
+tashell.adb					\
+timer.adb					\
+twashapp.adb					\
+twashapp.ads					\
+twashell.adb					\
+watching.adb					\
 wordify.adb
 
-SRC += \
-freq.pl \
-freq.tcl \
-futurevalue.tcl \
-makefile \
-testfreq.tcl \
-timer.tcl
+SRC +=						\
+freq.pl						\
+freq.tcl					\
+futurevalue.tcl					\
+makefile					\
+testfreq.tcl					\
+timer.tcl					\
+watching.tcl
 
 DEMOS = $(DIST)/demos
 
@@ -96,5 +103,4 @@ dist:
 	cp $(SRC) $(DEMOS)/
 
 clean:
-	-rm -rf .build *~ *.out $.unsorted $(TCL_PROGRAMS) $(TASH_PROGRAMS) 
-
+	-rm -rf .build *~ *.in *.out $.unsorted $(TCL_PROGRAMS) $(TASH_PROGRAMS)

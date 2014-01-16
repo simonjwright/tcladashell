@@ -29,6 +29,7 @@ project Tash_Demos is
      "tashell",
      "timer",
      "twashell",
+     "watching",
      "wordify"
     );
 
