@@ -49,7 +49,7 @@ procedure Watching is
          return Tcl.TCL_ERROR;
       end if;
 
-      Tcl.Async.Register;
+      Tcl.Async.Register (Interp);
 
       Command := CreateCommands.Tcl_CreateCommand
         (Interp,

@@ -32,7 +32,7 @@
 package Tcl.Async is
 
    --  Must be called before any other subprogram in the package.
-   procedure Register;
+   procedure Register (Interp : Tcl_Interp);
 
    --  Called to set the named Tcl variable in the global scope to the
    --  given value.

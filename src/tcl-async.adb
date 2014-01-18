@@ -31,7 +31,9 @@
 
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
+with GNAT.Threads;
 with Interfaces.C.Strings;
+with System;
 
 package body Tcl.Async is
 
@@ -84,6 +86,10 @@ package body Tcl.Async is
    --  Tcl_AsyncMark(), that there is data to be procssed).
    Async_Handler : Tcl_AsyncHandler;
 
+   --  Stores the Tcl Interpreter to be used if the Async Handler
+   --  isn't given one.
+   Default_Interpreter : Tcl_Interp;
+
    --  The handler to be registered.
    function Async_Proc (Dummy  : ClientData;
                         Interp : Tcl_Interp;
@@ -91,13 +97,14 @@ package body Tcl.Async is
                        return Interfaces.C.int;
    pragma Convention (C, Async_Proc);
 
-   procedure Register
+   procedure Register (Interp : Tcl_Interp)
    is
       pragma Assert (Async_Handler = null);
    begin
       --  We don't use any client data.
       Async_Handler := Tcl_AsyncCreate (proc => Async_Proc'Access,
                                         data => Null_ClientData);
+      Default_Interpreter := Interp;
    end Register;
 
    procedure Set (Tcl_Variable : String; Value : String)
@@ -134,9 +141,23 @@ package body Tcl.Async is
    is
       pragma Unreferenced (Dummy);
       Next_Update : Update;
+      Interpreter : Tcl_Interp := Interp;
       use Standard.Ada.Strings.Unbounded;
       use Interfaces.C, Interfaces.C.Strings;
    begin
+      --  We may not be in a thread already registered with the Ada
+      --  RTS; make it so.
+      declare
+         Ada_Id : System.Address;
+         pragma Unreferenced (Ada_Id);
+      begin
+         Ada_Id := GNAT.Threads.Register_Thread;
+      end;
+
+      if Interpreter = null then
+         Interpreter := Default_Interpreter;
+      end if;
+
       --  We don't want to rely on there being as many calls of this
       --  procedure as there were Sets.
       loop
@@ -160,7 +181,7 @@ package body Tcl.Async is
             begin
                Result :=
                  Tcl_SetVar
-                   (Interp,
+                   (Interpreter,
                     To_Chars_Ptr (C_Variable'Unchecked_Access,
                                   Nul_Check => True),
                     To_Chars_Ptr (C_Value'Unchecked_Access,
@@ -182,7 +203,7 @@ package body Tcl.Async is
             begin
                Result :=
                  Tcl_SetVar2
-                   (Interp,
+                   (Interpreter,
                     To_Chars_Ptr (C_Variable'Unchecked_Access,
                                   Nul_Check => True),
                     To_Chars_Ptr (C_Index'Unchecked_Access,
