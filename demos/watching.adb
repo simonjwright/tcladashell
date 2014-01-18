@@ -12,6 +12,7 @@
 with CArgv;
 with Interfaces.C.Strings;
 with Tcl.Ada;
+with Tcl.Async;
 
 procedure Watching is
 
@@ -29,9 +30,9 @@ procedure Watching is
 
    function Square
      (Client_Data : in Integer;
-      Interp : in Tcl.Tcl_Interp;
-      Argc : in Interfaces.C.int;
-      Argv : in CArgv.Chars_Ptr_Ptr) return Interfaces.C.int;
+      Interp      : in Tcl.Tcl_Interp;
+      Argc        : in Interfaces.C.int;
+      Argv        : in CArgv.Chars_Ptr_Ptr) return Interfaces.C.int;
    pragma Convention (C, Square);
 
    function Init (Interp : in Tcl.Tcl_Interp) return Interfaces.C.int is
@@ -47,6 +48,8 @@ procedure Watching is
       if Tcl.Tcl_Init (Interp) = Tcl.TCL_ERROR then
          return Tcl.TCL_ERROR;
       end if;
+
+      Tcl.Async.Register;
 
       Command := CreateCommands.Tcl_CreateCommand
         (Interp,
@@ -68,9 +71,9 @@ procedure Watching is
 
    function Square
      (Client_Data : in Integer;
-      Interp : in Tcl.Tcl_Interp;
-      Argc : in Interfaces.C.int;
-      Argv : in CArgv.Chars_Ptr_Ptr) return Interfaces.C.int
+      Interp      : in Tcl.Tcl_Interp;
+      Argc        : in Interfaces.C.int;
+      Argv        : in CArgv.Chars_Ptr_Ptr) return Interfaces.C.int
    is
       pragma Unreferenced (Client_Data);
       Input : Integer;
@@ -89,18 +92,9 @@ procedure Watching is
          Interfaces.C.Strings.New_String (Integer'Image (Squared)),
          Freeproc'Unrestricted_Access);
 
-      declare
-         Result : constant String :=
-            Tcl.Ada.Tcl_SetVar2
-              (Interp,
-               "tellback",
-               "42",
-               Integer'Image (Squared),
-               Tcl.TCL_GLOBAL_ONLY);
-         pragma Unreferenced (Result);
-      begin
-         null;
-      end;
+      Tcl.Async.Set (Tcl_Array => "tellback",
+                     Index     => "42",
+                     Value     => Integer'Image (Squared));
 
       return Tcl.TCL_OK;
    end Square;

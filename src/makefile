@@ -47,6 +47,8 @@ TCL_ADA_SRC =					\
   chelper.ads					\
   tcl-ada.adb					\
   tcl-ada.ads					\
+  tcl-async.adb					\
+  tcl-async.ads					\
   tcl-tk-ada.adb				\
   tcl-tk-ada.ads				\
   tcl-tk.adb					\
@@ -109,9 +111,13 @@ all:: build
 build: .build_lib tcl_record_sizes.ads
 	@[ -d ../lib ]  || mkdir ../lib
 	@[ -d ../include ] || mkdir ../include
-	cd .build_lib; \
-	  $(CC) -c $(CARGS) $(TCL_INCLUDE) $(addprefix ../,$(C_SRC)); \
+ifneq ($(GNATMAKE),gprbuild)
+	cd .build_lib;							\
+	  $(CC)								\
+	    -c $(CARGS) $(X11_INCLUDE) $(TCL_INCLUDE)			\
+	    $(addprefix ../,$(C_SRC));					\
 	  ar cr ../../lib/libtash.a $(patsubst %.c,%.o,$(C_SRC))
+endif
 	$(GNATMAKE) -Pbuild_tash_library
 	chmod -w ../lib/*.ali
 	cp -p $(ADA_SRC) ../include/

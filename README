@@ -1,4 +1,4 @@
-This is TASH version 8.6-0, intended for use with Tcl/Tk versions 8.4
+This is TASH version 8.6-1, intended for use with Tcl/Tk versions 8.4
 through 8.6.
 
 The notes at http://tcladashell.sourceforge.net/index.html#thick-binding
@@ -8,6 +8,18 @@ package hierarchy starting at Tash).
 
 API changes since previous release
 ==================================
+
+Changes in 20140118
+-------------------
+
+A new package Tcl.Async supports writing Tcl variables from Ada. This
+is especially important if the Ada code isn't running in the same
+thread as the Tcl interpreter.
+
+You can use the 'trace' facility in Tcl to detect when such a write
+has taken place.
+
+See watching.adb, watching.tcl in the demos/ directory for an example.
 
 Changes in 20110925
 -------------------
@@ -41,6 +53,11 @@ Changes in 20090207
 
 Other changes since previous release
 ====================================
+
+Changes in 20140118
+-------------------
+
+Supports XQuartz in Mac OS X.
 
 Changes in 20110925
 -------------------

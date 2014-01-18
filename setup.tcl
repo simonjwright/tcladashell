@@ -28,7 +28,7 @@ exec wish $0 $@
 # The option --nogui takes the defaults.
 
 set tash_version "8.6"
-set tash_release "0"
+set tash_release "1"
 
 proc cequal {left right} {
     return [expr [string compare $left $right] == 0]
@@ -168,14 +168,30 @@ proc EditSourceFile {} {
 
 # Where does GNAT install GPSs?
 proc FindInstallationPrefix {} {
-    # This proc finds the directory one up from where "gnatls" is found.
+    # This proc finds the directory one up from where "gnatls" is
+    # found. If we were only running on Unix, 'which' would help; but
+    # Windows is trickier.
 
-    set gnatls [open {|which gnatls}]
-    gets $gnatls line
-    catch {close $gnatls}
+    global env tcl_platform
 
-    set prefix [file dirname [file dirname $line]]
-
+    if {$tcl_platform(platform) == "windows"} {
+        set path_sep ";"
+        set dir_sep "\\"
+        set gnatls "gnatls.exe"
+    } else {
+        set path_sep ":"
+        set dir_sep "/"
+        set gnatls "gnatls"
+    }
+    set paths [split $env(PATH) $path_sep]
+    foreach p $paths {
+        set candidate $p$dir_sep$gnatls
+        if [file executable "$candidate"] {
+            return [file dirname $p]
+        }
+    }
+    puts "*** couldn't find $gnatls on the PATH."
+    set prefix "."
     return $prefix
 }
 
@@ -263,7 +279,7 @@ project Tash_Options is
    --  These are the C compiler options used to build Tash.
    C_Compiler_Options :=
      (
-      \"[join [concat $tashvar(CARGS) $tashvar(TCL_INCLUDE)] "\",\n      \""]\"
+      \"[join [concat $tashvar(CARGS) $tashvar(TCL_INCLUDE) $tashvar(X11_INCLUDE)] "\",\n      \""]\"
      );
 
    --  These options determine the location of the system's Tcl, Tk
@@ -372,9 +388,8 @@ proc Set_Macros {platform os osVersion} {
 	    set libtcl "$tclhome/lib/libtcl${tcl_version}$dynlib"
 	    set libtk  "$tclhome/lib/libtk${tk_version}$dynlib"
 
-	    # Not quite sure why we need X11 here, because neither
-	    # Linux (Mandrake 8.2) nor Darwin need it.
-	    set PossibleXHomes [list /usr/openwin /usr/X /usr/X11R6 /usr]
+	    set PossibleXHomes \
+                [list /usr/openwin /usr/X /usr/X11R6 /usr /opt/X11]
 	    foreach dir $PossibleXHomes {
 		set lib [file join $dir lib]
 		foreach file [list "libX11$dynlib" "libX11.a"] {
@@ -382,6 +397,7 @@ proc Set_Macros {platform os osVersion} {
 			set x11home $dir
 			set x11_lib [file join $x11home lib]
 			break
+
 		    }
 		}
 	    }
