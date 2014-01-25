@@ -1,0 +1,26 @@
+syntax: glob
+
+demos/.build
+demos/freq
+demos/futurevalue
+demos/hello_world
+demos/tashell
+demos/timer
+demos/twashell
+demos/watching
+demos/wordify
+
+include
+
+lib
+
+makeconf
+
+src/.build_lib
+src/tcl_record_sizes*
+
+tash_options.gpr
+
+tests/.build
+tests/compare
+tests/tashtest

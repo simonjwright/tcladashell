@@ -293,24 +293,30 @@ end Tash_Options;"
     catch {close $gprfid}
 }
 
-# Implement Save button command.  Creates makefile and
-# tash_options.gpr, and optionally creates linker options package.
+# Implement Save button command.  Update tashorder & tashvar from the
+# GUI.
 #-----------------------------------------------------------------
-proc Save {g} {
+proc Save_GUI {g} {
     global tashorder tashvar useLinkerOptions makefile tcl_platform
-    set row 0
     foreach name $tashorder {
         set w [string tolower $name]
         set tashvar($name) [$g.$w-entry get]
-	incr row
     }
+    Save
+}
+
+# Implement Save command.  Creates makefile and tash_options.gpr, and
+# optionally creates linker options package.
+#-----------------------------------------------------------------
+proc Save {} {
+    global useLinkerOptions makefile
     Createmakefile $makefile
     CreateGprFile
     if $useLinkerOptions {
 	CreateLinkerOptions
 	EditSourceFile
     } else {
-	# restore original tcl.adb file, if necessary
+	# restore original tcl.adb file, if necessary - ???
 	set pwd [pwd]
 	cd src
 	if [file exists tcl.adb.orig] {
@@ -319,6 +325,7 @@ proc Save {g} {
 	cd $pwd
     }
 }
+
 
 proc fileDialog {w ent title initial} {
     set types {
@@ -472,16 +479,23 @@ proc Set_Macros {platform os osVersion} {
     setvar EXE               "$exec_suffix"       {suffix for executable files}
 }
 
-set useLinkerOptions 0
-
 # Establish values for all macros depending on platform
 #------------------------------------------------------
 Set_Macros $tcl_platform(platform) $tcl_platform(os) $tcl_platform(osVersion)
 
-# Create window for installer to review and edit macro values
-#------------------------------------------------------------
 set makefile [file join [pwd] makeconf]
 set gpr [file join [pwd] tash_options.gpr]
+set useLinkerOptions 0
+
+# If no GUI required, save and finish
+#------------------------------------
+if {[lindex $argv 0] == "--nogui"} {
+    Save
+    exit
+}
+
+# Create window for installer to review and edit macro values
+#------------------------------------------------------------
 wm title    . "TASH $tashvar(TASH_VERSION)-$tashvar(TASH_RELEASE) Setup -- $makefile"
 wm iconname . "TASH Setup"
 
@@ -494,9 +508,6 @@ values for the macros, but you may have to edit them.  After you're\
 happy with the macro values, press \"Save\" to save the files."
 
 pack .instructions -side top -fill x -expand yes
-
-set f [frame .link]
-pack $f -side top
 
 set g [frame .grid]
 pack $g -side top
@@ -524,12 +535,8 @@ foreach name $tashorder {
     incr row
 }
 
-if {[lindex $argv 0] == "--nogui"} {
-    Save $g;exit
-} else {
-    frame .buttons
-    pack .buttons -side bottom -fill x -pady 2m
-    button .buttons.save   -text Save   -command "Save $g; exit"
-    button .buttons.cancel -text Cancel -command exit
-    pack .buttons.save .buttons.cancel -side left -expand 1
-}
+frame .buttons
+pack .buttons -side bottom -fill x -pady 2m
+button .buttons.save   -text Save   -command "Save_GUI $g; exit"
+button .buttons.cancel -text Cancel -command exit
+pack .buttons.save .buttons.cancel -side left -expand 1
