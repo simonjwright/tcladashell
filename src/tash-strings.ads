@@ -395,7 +395,7 @@ package Tash.Strings is
 private
 
    Null_Tash_String : constant Tash_String := (Ada.Finalization.Controlled
-   with Obj => Tcl.Null_Tcl_Obj);
+                                               with Obj => null);
 
    Verbose : Boolean := False;
 

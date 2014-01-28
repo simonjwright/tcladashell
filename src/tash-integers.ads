@@ -34,7 +34,6 @@
 --------------------------------------------------------------------
 
 with Ada.Finalization;
-with Tcl;
 
 package Tash.Integers is
 
@@ -320,7 +319,7 @@ private
 
    Null_Tash_Integer : constant Tash_Integer :=
      (Ada.Finalization.Controlled with
-      Obj => Tcl.Null_Tcl_Obj);
+      Obj => null);
 
    Verbose : Boolean := False;
 

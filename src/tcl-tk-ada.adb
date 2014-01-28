@@ -133,51 +133,51 @@ package body Tcl.Tk.Ada is
          "bind " & Widget_Image (Widgt) & " " & Sequence & " " & Script);
    end Bind;
 
-   procedure Bind (Widgt : in Widget'Class; Sequence : in String) is
-   begin --  Bind
+   procedure Unbind (Widgt : in Widget'Class; Sequence : in String) is
+   begin --  Unbind
       Tcl_Eval
         (Widgt.Interp,
          "bind " & Widget_Image (Widgt) & " " & Sequence);
-   end Bind;
+   end Unbind;
 
-   function Bind
+   function Unbind
      (Widgt    : in Widget'Class;
       Sequence : in String)
       return     String
    is
-   begin --  Bind
+   begin --  Unbind
       Tcl_Eval
         (Widgt.Interp,
          "bind " & Widget_Image (Widgt) & " " & Sequence);
       return Tcl.Ada.Tcl_GetResult (Widgt.Interp);
-   end Bind;
+   end Unbind;
 
-   procedure Bind_to_Main_Window
+   procedure Bind_To_Main_Window
      (Interp   : in Tcl_Interp;
       Sequence : in String;
       Script   : in String)
    is
-   begin --  Bind_to_Main_Window
+   begin --  Bind_To_Main_Window
       Tcl_Eval (Interp, "bind . " & Sequence & " " & Script);
-   end Bind_to_Main_Window;
+   end Bind_To_Main_Window;
 
-   procedure Bind_to_Main_Window
+   procedure Unbind_From_Main_Window
      (Interp   : in Tcl_Interp;
       Sequence : in String)
    is
-   begin --  Bind_to_Main_Window
+   begin --  Unbind_From_Main_Window
       Tcl_Eval (Interp, "bind . " & Sequence);
-   end Bind_to_Main_Window;
+   end Unbind_From_Main_Window;
 
-   function Bind_to_Main_Window
+   function Unbind_From_Main_Window
      (Interp   : in Tcl_Interp;
       Sequence : in String)
       return     String
    is
-   begin --  Bind_to_Main_Window
+   begin --  Unbind_From_Main_Window
       Tcl_Eval (Interp, "bind . " & Sequence);
       return Tcl.Ada.Tcl_GetResult (Interp);
-   end Bind_to_Main_Window;
+   end Unbind_From_Main_Window;
 
    function Create
      (pathName : in String;

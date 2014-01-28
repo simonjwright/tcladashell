@@ -94,50 +94,34 @@ package Tcl is
    type Tcl_Interp_Rec (<>) is private;
    type Tcl_Interp is access all Tcl_Interp_Rec;
    pragma Convention (C, Tcl_Interp);
-   Null_Tcl_Interp : constant Tcl_Interp := null;
-   function Is_Null (Ptr : in Tcl_Interp) return Boolean;
 
    type Tcl_AsyncHandler_Rec (<>) is private;
    type Tcl_AsyncHandler is access all Tcl_AsyncHandler_Rec;
    pragma Convention (C, Tcl_AsyncHandler);
-   Null_Tcl_AsyncHandler : constant Tcl_AsyncHandler := null;
-   function Is_Null (Ptr : in Tcl_AsyncHandler) return Boolean;
 
    type Tcl_Channel_Rec (<>) is private;
    type Tcl_Channel is access all Tcl_Channel_Rec;
    pragma Convention (C, Tcl_Channel);
-   Null_Tcl_Channel : constant Tcl_Channel := null;
-   function Is_Null (Ptr : in Tcl_Channel) return Boolean;
 
    type Tcl_Command_Rec (<>) is private;
    type Tcl_Command is access all Tcl_Command_Rec;
    pragma Convention (C, Tcl_Command);
-   Null_Tcl_Command : constant Tcl_Command := null;
-   function Is_Null (Ptr : in Tcl_Command) return Boolean;
 
    type Tcl_Condition_Rec (<>) is private;
    type Tcl_Condition is access all Tcl_Condition_Rec;
    pragma Convention (C, Tcl_Condition);
-   Null_Tcl_Condition : constant Tcl_Condition := null;
-   function Is_Null (Ptr : in Tcl_Condition) return Boolean;
 
    type Tcl_EncodingState_Rec (<>) is private;
    type Tcl_EncodingState is access all Tcl_EncodingState_Rec;
    pragma Convention (C, Tcl_EncodingState);
-   Null_Tcl_EncodingState : constant Tcl_EncodingState := null;
-   function Is_Null (Ptr : in Tcl_EncodingState) return Boolean;
 
    type Tcl_Encoding_Rec (<>) is private;
    type Tcl_Encoding is access all Tcl_Encoding_Rec;
    pragma Convention (C, Tcl_Encoding);
-   Null_Tcl_Encoding : constant Tcl_Encoding := null;
-   function Is_Null (Ptr : in Tcl_Encoding) return Boolean;
 
    type Tcl_Event_Rec;
    type Tcl_Event is access all Tcl_Event_Rec;
    pragma Convention (C, Tcl_Event);
-   Null_Tcl_Event : constant Tcl_Event := null;
-   function Is_Null (Ptr : in Tcl_Event) return Boolean;
 
    type Tcl_EventProc is access function
      (evPtr : in Tcl_Event;
@@ -156,62 +140,42 @@ package Tcl is
    type Tcl_Mutex_Rec (<>) is private;
    type Tcl_Mutex is access all Tcl_Mutex_Rec;
    pragma Convention (C, Tcl_Mutex);
-   Null_Tcl_Mutex : constant Tcl_Mutex := null;
-   function Is_Null (Ptr : in Tcl_Mutex) return Boolean;
 
    type Tcl_Pid_Rec (<>) is private;
    type Tcl_Pid is access all Tcl_Pid_Rec;
    pragma Convention (C, Tcl_Pid);
-   Null_Tcl_Pid : constant Tcl_Pid := null;
-   function Is_Null (Ptr : in Tcl_Pid) return Boolean;
 
    type Tcl_RegExp_Rec (<>) is private;
    type Tcl_RegExp is access all Tcl_RegExp_Rec;
    pragma Convention (C, Tcl_RegExp);
-   Null_Tcl_RegExp : constant Tcl_RegExp := null;
-   function Is_Null (Ptr : in Tcl_RegExp) return Boolean;
 
    type Tcl_ThreadDataKey_Rec (<>) is private;
    type Tcl_ThreadDataKey is access all Tcl_ThreadDataKey_Rec;
    pragma Convention (C, Tcl_ThreadDataKey);
-   Null_Tcl_ThreadDataKey : constant Tcl_ThreadDataKey := null;
-   function Is_Null (Ptr : in Tcl_ThreadDataKey) return Boolean;
 
    type Tcl_ThreadId_Rec (<>) is private;
    type Tcl_ThreadId is access all Tcl_ThreadId_Rec;
    pragma Convention (C, Tcl_ThreadId);
-   Null_Tcl_ThreadId : constant Tcl_ThreadId := null;
-   function Is_Null (Ptr : in Tcl_ThreadId) return Boolean;
 
    type Tcl_TimerToken_Rec (<>) is private;
    type Tcl_TimerToken is access all Tcl_TimerToken_Rec;
    pragma Convention (C, Tcl_TimerToken);
-   Null_Tcl_TimerToken : constant Tcl_TimerToken := null;
-   function Is_Null (Ptr : in Tcl_TimerToken) return Boolean;
 
    type Tcl_Trace_Rec (<>) is private;
    type Tcl_Trace is access all Tcl_Trace_Rec;
    pragma Convention (C, Tcl_Trace);
-   Null_Tcl_Trace : constant Tcl_Trace := null;
-   function Is_Null (Ptr : in Tcl_Trace) return Boolean;
 
    type Tcl_Var_Rec (<>) is private;
    type Tcl_Var is access all Tcl_Var_Rec;
    pragma Convention (C, Tcl_Var);
-   Null_Tcl_Var : constant Tcl_Var := null;
-   function Is_Null (Ptr : in Tcl_Var) return Boolean;
 
    type Tcl_ChannelTypeVersion_Rec (<>) is private;
    type Tcl_ChannelTypeVersion is access all Tcl_ChannelTypeVersion_Rec;
    pragma Convention (C, Tcl_ChannelTypeVersion);
-   Null_Tcl_ChannelTypeVersion : constant Tcl_ChannelTypeVersion := null;
-   function Is_Null (Ptr : in Tcl_ChannelTypeVersion) return Boolean;
 
    type Tcl_LoadHandle_Rec (<>) is private;
    type Tcl_LoadHandle is access all Tcl_LoadHandle_Rec;
    pragma Convention (C, Tcl_LoadHandle);
-   Null_Tcl_LoadHandle : constant Tcl_LoadHandle := null;
-   function Is_Null (Ptr : in Tcl_LoadHandle) return Boolean;
 
    --
    --  Flag values passed to Tcl_GetRegExpFromObj.
@@ -310,8 +274,6 @@ package Tcl is
 
    type Tcl_RegExpInfo is access all Tcl_RegExpInfo_Rec;
    pragma Convention (C, Tcl_RegExpInfo);
-   Null_Tcl_RegExpInfo : constant Tcl_RegExpInfo := null;
-   function Is_Null (Ptr : in Tcl_RegExpInfo) return Boolean;
 
    --
    --  Picky compilers complain if this typdef doesn't appear before the
@@ -321,14 +283,10 @@ package Tcl is
    type Tcl_OldStat_Rec (<>) is private;
    type stat is access all Tcl_OldStat_Rec;
    pragma Convention (C, stat);
-   Null_stat : constant stat := null;
-   function Is_Null (Ptr : in stat) return Boolean;
 
    type Tcl_StatBuf_Rec (<>) is private;
    type Tcl_StatBuf is access all Tcl_StatBuf_Rec;
    pragma Convention (C, Tcl_StatBuf);
-   Null_Tcl_StatBuf : constant Tcl_StatBuf := null;
-   function Is_Null (Ptr : in Tcl_StatBuf) return Boolean;
 
    --
    --  When a TCL command returns, the interpreter contains a result from the
@@ -388,8 +346,6 @@ package Tcl is
    pragma Convention (C, Tcl_Value_Rec);
    type Tcl_Value is access all Tcl_Value_Rec;
    pragma Convention (C, Tcl_Value);
-   Null_Tcl_Value : constant Tcl_Value := null;
-   function Is_Null (Ptr : in Tcl_Value) return Boolean;
 
    --
    --  Tcl_Obj forward declaration (for use by subprogram types)
@@ -624,8 +580,6 @@ package Tcl is
    pragma Convention (C, Tcl_ObjType_Rec);
    type Tcl_ObjType is access all Tcl_ObjType_Rec;
    pragma Convention (C, Tcl_ObjType);
-   Null_Tcl_ObjType : constant Tcl_ObjType := null;
-   function Is_Null (Ptr : in Tcl_ObjType) return Boolean;
 
    --
    --  One of the following structures exists for each object in the Tcl
@@ -643,8 +597,6 @@ package Tcl is
    pragma Convention (C, Tcl_Obj_Rec);
    type Tcl_Obj is access all Tcl_Obj_Rec;
    pragma Convention (C, Tcl_Obj);
-   Null_Tcl_Obj : constant Tcl_Obj := null;
-   function Is_Null (Ptr : in Tcl_Obj) return Boolean;
 
    type Tcl_Obj_Array is array (CNatural range <>) of aliased Tcl_Obj;
    pragma Convention (C, Tcl_Obj_Array);
@@ -675,8 +627,6 @@ package Tcl is
    type Tcl_SavedResult_Rec is private;
    type Tcl_SavedResult is access all Tcl_SavedResult_Rec;
    pragma Convention (C, Tcl_SavedResult);
-   Null_Tcl_SavedResult : constant Tcl_SavedResult := null;
-   function Is_Null (Ptr : in Tcl_SavedResult) return Boolean;
 
    --
    --  The following definitions support Tcl's namespace facility.
@@ -687,8 +637,7 @@ package Tcl is
    type Tcl_Namespace_Rec;
    type Tcl_Namespace is access all Tcl_Namespace_Rec;
    pragma Convention (C, Tcl_Namespace);
-   Null_Tcl_Namespace : constant Tcl_Namespace := null;
-   function Is_Null (Ptr : in Tcl_Namespace) return Boolean;
+
    type Tcl_Namespace_Rec is record
       name : C.Strings.chars_ptr;
       --  The namespace's name within its parent namespace. This
@@ -736,8 +685,6 @@ package Tcl is
    type Tcl_CallFrame_Rec is private;
    type Tcl_CallFrame is access all Tcl_CallFrame_Rec;
    pragma Convention (C, Tcl_CallFrame);
-   Null_Tcl_CallFrame : constant Tcl_CallFrame := null;
-   function Is_Null (Ptr : in Tcl_CallFrame) return Boolean;
 
    --
    --  Information about commands that is returned by Tcl_GetCommandInfo and
@@ -783,8 +730,6 @@ package Tcl is
    pragma Convention (C, Tcl_CmdInfo_Rec);
    type Tcl_CmdInfo is access all Tcl_CmdInfo_Rec;
    pragma Convention (C, Tcl_CmdInfo);
-   Null_Tcl_CmdInfo : constant Tcl_CmdInfo := null;
-   function Is_Null (Ptr : in Tcl_CmdInfo) return Boolean;
 
    --
    --  The structure defined below is used to hold dynamic strings.
@@ -796,8 +741,6 @@ package Tcl is
    type Tcl_DString_Rec is private;
    type Tcl_DString is access all Tcl_DString_Rec;
    pragma Convention (C, Tcl_DString);
-   Null_Tcl_DString : constant Tcl_DString := null;
-   function Is_Null (Ptr : in Tcl_DString) return Boolean;
 
    function Tcl_DStringLength (dsPtr : in Tcl_DString) return C.int;
    pragma Import (C, Tcl_DStringLength, "Tcl_CallDStringLength");
@@ -925,8 +868,6 @@ package Tcl is
    type Tcl_HashEntry_Rec (<>) is private;
    type Tcl_HashEntry is access all Tcl_HashEntry_Rec;
    pragma Convention (C, Tcl_HashEntry);
-   Null_Tcl_HashEntry : constant Tcl_HashEntry := null;
-   function Is_Null (Ptr : in Tcl_HashEntry) return Boolean;
 
    type Tcl_HashEntry_Array is
      array (CNatural range <>) of aliased Tcl_HashEntry;
@@ -942,14 +883,10 @@ package Tcl is
    type Tcl_HashSearch_Rec is private;
    type Tcl_HashSearch is access all Tcl_HashSearch_Rec;
    pragma Convention (C, Tcl_HashSearch);
-   Null_Tcl_HashSearch : constant Tcl_HashSearch := null;
-   function Is_Null (Ptr : in Tcl_HashSearch) return Boolean;
 
    type Tcl_HashTable_Rec is private;
    type Tcl_HashTable is access all Tcl_HashTable_Rec;
    pragma Convention (C, Tcl_HashTable);
-   Null_Tcl_HashTable : constant Tcl_HashTable := null;
-   function Is_Null (Ptr : in Tcl_HashTable) return Boolean;
 
    --
    --  Acceptable key types for hash tables:
@@ -1052,8 +989,6 @@ package Tcl is
    pragma Convention (C, Tcl_Time_Rec);
    type Tcl_Time is access all Tcl_Time_Rec;
    pragma Convention (C, Tcl_Time);
-   Null_Tcl_Time : constant Tcl_Time := null;
-   function Is_Null (Ptr : in Tcl_Time) return Boolean;
 
    type Tcl_SetTimerProc is access procedure (timePtr : in Tcl_Time);
    pragma Convention (C, Tcl_SetTimerProc);
@@ -1281,8 +1216,6 @@ package Tcl is
    pragma Convention (C, Tcl_ChannelType_Rec);
    type Tcl_ChannelType is access all Tcl_ChannelType_Rec;
    pragma Convention (C, Tcl_ChannelType);
-   Null_Tcl_ChannelType : constant Tcl_ChannelType := null;
-   function Is_Null (Ptr : in Tcl_ChannelType) return Boolean;
 
    --
    --  The following flags determine whether the blockModeProc above
@@ -1323,8 +1256,6 @@ package Tcl is
    pragma Convention (C, Tcl_NotifierProcs_Rec);
    type Tcl_NotifierProcs is access all Tcl_NotifierProcs_Rec;
    pragma Convention (C, Tcl_NotifierProcs);
-   Null_Tcl_NotifierProcs : constant Tcl_NotifierProcs := null;
-   function Is_Null (Ptr : in Tcl_NotifierProcs) return Boolean;
 
    --
    --  The following structure represents a user-defined encoding.  It
@@ -1359,8 +1290,6 @@ package Tcl is
    pragma Convention (C, Tcl_EncodingType_Rec);
    type Tcl_EncodingType is access all Tcl_EncodingType_Rec;
    pragma Convention (C, Tcl_EncodingType);
-   Null_Tcl_EncodingType : constant Tcl_EncodingType := null;
-   function Is_Null (Ptr : in Tcl_EncodingType) return Boolean;
 
    --
    --  The following definitions are used as values for the conversion control
@@ -1610,8 +1539,6 @@ package Tcl is
    pragma Convention (C, Tcl_Parse_Rec);
    type Tcl_Parse is access all Tcl_Parse_Rec;
    pragma Convention (C, Tcl_Parse);
-   Null_Tcl_Parse : constant Tcl_Parse := null;
-   function Is_Null (Ptr : in Tcl_Parse) return Boolean;
 
    --
    --  The following definitions are the error codes returned by the

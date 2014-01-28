@@ -813,7 +813,9 @@ begin --  Test_File
         " " &
         "../demos/testfreq.tcl" &
         " " &
-        "../demos/timer.tcl";
+        "../demos/timer.tcl" &
+        " " &
+        "../demos/watching.tcl";
    begin
       Tash.Test.Test_Case
         (Description => "simple file name match",
@@ -843,7 +845,9 @@ begin --  Test_File
         " " &
         "../demos/testfreq.tcl" &
         " " &
-        "../demos/timer.tcl";
+        "../demos/timer.tcl" &
+        " " &
+        "../demos/watching.tcl";
    begin
       Tash.Test.Test_Case
         (Description => "specify directory in file name match",
@@ -868,7 +872,9 @@ begin --  Test_File
         " " &
         "../demos/testfreq.tcl" &
         " " &
-        "../demos/timer.tcl";
+        "../demos/timer.tcl" &
+        " " &
+        "../demos/watching.tcl";
    begin
       Tash.Test.Test_Case
         (Description => "specify path prefix in file name match",

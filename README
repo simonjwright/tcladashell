@@ -6,8 +6,15 @@ describe the position with respect to TASH's "thick binding" (the
 package hierarchy starting at Tash).
 
 
-API changes since previous release
-==================================
+API changes
+===========
+
+Changes in 2014mmdd
+-------------------
+
+Tcl and Tcl.Tk no longer provide "Null_*" constants or "Is_Null (Ptr :
+in *) return Boolean;" functions (the types concerned are visibly
+access types, so the standard "null" is available).
 
 Changes in 20140118
 -------------------
@@ -51,8 +58,11 @@ Changes in 20090207
   was prone to introduce memory leaks.
 
 
-Other changes since previous release
-====================================
+Other changes
+=============
+
+Changes in 2014mmdd
+-------------------
 
 Changes in 20140118
 -------------------

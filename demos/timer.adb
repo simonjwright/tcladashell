@@ -282,8 +282,8 @@ begin --  Timer
 
    --  Bind ^C and ^Q keys to exit
    -------------------------------
-   Tcl.Tk.Ada.Bind_to_Main_Window (Interp, "<Control-c>", "{destroy .;exit}");
-   Tcl.Tk.Ada.Bind_to_Main_Window (Interp, "<Control-q>", "{destroy .;exit}");
+   Tcl.Tk.Ada.Bind_To_Main_Window (Interp, "<Control-c>", "{destroy .;exit}");
+   Tcl.Tk.Ada.Bind_To_Main_Window (Interp, "<Control-q>", "{destroy .;exit}");
 
    --  Reset timer value to 0.0
    ----------------------------

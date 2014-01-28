@@ -67,14 +67,14 @@ procedure PLang is --  PLang
 
    --  Regular expressions
    -----------------------
-   RE_Makefile       : Tash.Regexp.Tash_Regexp := +"[Mm]akefile";
-   RE_Object         : Tash.Regexp.Tash_Regexp := +"^.(o|ali|exe)$";
-   RE_C_Source       : Tash.Regexp.Tash_Regexp := +"^.[ch]$";
-   RE_Ada_Source     : Tash.Regexp.Tash_Regexp := +"^.(ada|ads|adb)$";
-   RE_Fortran_Source : Tash.Regexp.Tash_Regexp := +"^.(f|for)$";
-   RE_HTML_Source    : Tash.Regexp.Tash_Regexp := +"^.(htm|html)$";
-   RE_Bourne_Shell   : Tash.Regexp.Tash_Regexp := +"^(:|#)";
-   RE_Exec_Line      : Tash.Regexp.Tash_Regexp := +"^[  ]*(#|$)";
+   RE_Makefile       : constant Tash.Regexp.Tash_Regexp := +"[Mm]akefile";
+   RE_Object         : constant Tash.Regexp.Tash_Regexp := +"^.(o|ali|exe)$";
+   RE_C_Source       : constant Tash.Regexp.Tash_Regexp := +"^.[ch]$";
+   RE_Ada_Source     : constant Tash.Regexp.Tash_Regexp := +"^.(ada|ads|adb)$";
+   RE_Fortran_Source : constant Tash.Regexp.Tash_Regexp := +"^.(f|for)$";
+   RE_HTML_Source    : constant Tash.Regexp.Tash_Regexp := +"^.(htm|html)$";
+   RE_Bourne_Shell   : constant Tash.Regexp.Tash_Regexp := +"^(:|#)";
+   RE_Exec_Line      : constant Tash.Regexp.Tash_Regexp := +"^[  ]*(#|$)";
 
    procedure Show_Usage;
    procedure Show_Usage is
@@ -330,7 +330,7 @@ procedure PLang is --  PLang
       declare
          Program : constant String := Get_Program (Raw_Line (1 .. Last));
       begin
-         if Program'Length <= 0 then
+         if Program'Length = 0 then
             --  There was no program name on the first line.
             --  But, if the first line starts with a : or #, it's
             --  Bourne shell for sure.
@@ -392,7 +392,7 @@ procedure PLang is --  PLang
                   Program : constant String :=
                      Get_Program (Raw_Line (1 .. Last));
                begin
-                  if Program'Length <= 0 then
+                  if Program'Length = 0 then
 
                      --  Does not exec another program.  We will
                      --  list it as a Bourne shell script.

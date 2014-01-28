@@ -78,7 +78,7 @@ begin --  Freq
 
    --  iterate through every item and print it and its frequency count
    Entry_Ptr := Tcl_FirstHashEntry (Freq_Hash, Search);
-   while not Is_Null (Entry_Ptr) loop
+   while Entry_Ptr /= null loop
       Freq_Count := Tcl_GetHashValue (Entry_Ptr);
       Item       := Tcl_GetHashKey (Freq_Hash, Entry_Ptr);
       Ada.Text_IO.Put_Line

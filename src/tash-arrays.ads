@@ -36,7 +36,6 @@
 
 with Ada.Finalization;
 with Tash.Lists;
-with Tcl;
 
 package Tash.Arrays is
 
@@ -422,7 +421,7 @@ private
    procedure Finalize (TArray : in out Tash_Array);
 
    Null_Tash_Array : constant Tash_Array := (Ada.Finalization.Controlled with
-     Obj => Tcl.Null_Tcl_Obj);
+                                             Obj => null);
 
    Verbose : Boolean := False;
 

@@ -92,12 +92,12 @@ package Tcl.Tk.Ada is
      (pathName : in String;
       options  : in String := "")
       return     Widget
-   is abstract;
+     is abstract;
    procedure Create
      (Widgt    : out Widget;
       pathName : in String;
       options  : in String := "")
-is abstract;
+     is abstract;
    --  Creates a new widget in the "contextual" interpreter.  Options
    --  may be specified via the "options" parameter or the option
    --  database to configure the widget.
@@ -107,13 +107,13 @@ is abstract;
       pathName : in String;
       options  : in String := "")
       return     Widget
-   is abstract;
+     is abstract;
    procedure Create
      (Widgt    : out Widget;
       Interp   : in Tcl_Interp;
       pathName : in String;
       options  : in String := "")
-is abstract;
+     is abstract;
    --  Creates a new widget in the specified interpreter.  Options
    --  may be specified via the "options" parameter or the option
    --  database to configure the widget.
@@ -162,27 +162,45 @@ is abstract;
       Script   : in String);
    --  Associates Tcl script Script with the event Sequence.
 
-   procedure Bind (Widgt : in Widget'Class; Sequence : in String);
-   function Bind
+   procedure Unbind (Widgt : in Widget'Class; Sequence : in String);
+   function Unbind
      (Widgt    : in Widget'Class;
       Sequence : in String)
       return     String;
    --  Disassociates the binding from the event Sequence.
+   procedure Bind (Widgt : in Widget'Class; Sequence : in String)
+     renames Unbind;
+   function Bind
+     (Widgt    : in Widget'Class;
+      Sequence : in String)
+     return     String
+     renames Unbind;
+   --  Retained for backward compatibility.
 
-   procedure Bind_to_Main_Window
+   procedure Bind_To_Main_Window
      (Interp   : in Tcl_Interp;
       Sequence : in String;
       Script   : in String);
    --  Associates Tcl script Script with the event Sequence in the main window.
 
-   procedure Bind_to_Main_Window
+   procedure Unbind_From_Main_Window
      (Interp   : in Tcl_Interp;
       Sequence : in String);
-   function Bind_to_Main_Window
+   function Unbind_From_Main_Window
      (Interp   : in Tcl_Interp;
       Sequence : in String)
       return     String;
    --  Disassociates the binding from the event Sequence in the main window.
+   procedure Bind_To_Main_Window
+     (Interp   : in Tcl_Interp;
+     Sequence : in String)
+     renames Unbind_From_Main_Window;
+   function Bind_To_Main_Window
+     (Interp   : in Tcl_Interp;
+      Sequence : in String)
+     return     String
+     renames Unbind_From_Main_Window;
+   --  Retained for backward compatibility.
 
    ---------------------------------------------
    --

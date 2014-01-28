@@ -51,7 +51,6 @@ TCL_ADA_SRC =					\
   tcl-async.ads					\
   tcl-tk-ada.adb				\
   tcl-tk-ada.ads				\
-  tcl-tk.adb					\
   tcl-tk.ads					\
   tcl.adb					\
   tcl.ads

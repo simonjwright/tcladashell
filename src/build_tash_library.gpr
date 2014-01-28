@@ -46,7 +46,6 @@ project Build_Tash_Library is
      "tcl-async.ads",
      "tcl-tk-ada.adb",
      "tcl-tk-ada.ads",
-     "tcl-tk.adb",
      "tcl-tk.ads",
      "tcl.adb",
      "tcl.ads",

@@ -34,7 +34,6 @@
 --------------------------------------------------------------------
 
 with Ada.Finalization;
-with Tcl;
 
 package Tash.Floats is
 
@@ -260,7 +259,7 @@ package Tash.Floats is
 private
 
    Null_Tash_Float : constant Tash_Float := (Ada.Finalization.Controlled with
-     Obj => Tcl.Null_Tcl_Obj);
+                                             Obj => null);
 
    Verbose : Boolean := False;
 

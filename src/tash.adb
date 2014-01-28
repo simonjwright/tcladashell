@@ -48,15 +48,17 @@ package body Tash is
    function Image (Num : in Interfaces.C.int) return String;
 
    function Is_Null (TObject : in Tash_Object) return Boolean is
+      use type Tcl.Tcl_Obj;
    begin --  Is_Null
-      return Tcl.Is_Null (TObject.Obj);
+      return TObject.Obj = null;
    end Is_Null;
    pragma Inline (Is_Null);
 
    procedure Finalize (Obj : in out Tcl.Tcl_Obj) is
       pragma Warnings (Off, Obj); -- logically in out
+      use type Tcl.Tcl_Obj;
    begin --  Finalize
-      if not Tcl.Is_Null (Obj) then
+      if Obj /= null then
          if Tcl.Tcl_GetRefCount (Obj) > 0 then
             Tcl.Tcl_DecrRefCount (Obj);
             if Tash.Verbose then
@@ -72,8 +74,9 @@ package body Tash is
    end Finalize;
 
    procedure Adjust (TObject : in out Tash_Object) is
+      use type Tcl.Tcl_Obj;
    begin --  Adjust
-      if not Tcl.Is_Null (TObject.Obj) then
+      if TObject.Obj /= null then
          Tcl.Tcl_IncrRefCount (TObject.Obj);
          if Tash.Verbose then
             Ada.Text_IO.Put_Line ("Adjust: " & Internal_Rep (TObject));
@@ -154,8 +157,9 @@ package body Tash is
    function Image (TObject : in Tcl.Tcl_Obj) return String is
       --
       Length : aliased Interfaces.C.int;
+      use type Tcl.Tcl_Obj;
    begin --  Image
-      if Tcl.Is_Null (TObject) then
+      if TObject = null then
          return "NULL";
       elsif Tcl.Tcl_GetRefCount (TObject) = 0 then
          return "FINALIZED";

@@ -61,7 +61,6 @@
 --------------------------------------------------------------------
 
 with Ada.Finalization;
-with Tcl;
 
 package Tash.Lists is
 
@@ -679,7 +678,7 @@ package Tash.Lists is
 private
 
    Null_Tash_List : constant Tash_List := (Ada.Finalization.Controlled with
-     Obj => Tcl.Null_Tcl_Obj);
+                                           Obj => null);
 
    Verbose : Boolean := False;
 

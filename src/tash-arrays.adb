@@ -265,9 +265,11 @@ package body Tash.Arrays is
       InterpObj  : Tcl.Tcl_Obj;
       ElementObj : aliased Tcl.Tcl_Obj;
 
+      use type Tcl.Tcl_Obj;
+
    begin -- Get_Element
 
-      if Tcl.Is_Null (TArray) then
+      if TArray = null then
          Tash_Interp.Raise_Exception
            (Interp  => Interp,
             E       => Array_Error'Identity,
@@ -313,7 +315,7 @@ package body Tash.Arrays is
             E       => Array_Error'Identity,
             Message => CHelper.Value (Tcl.Tcl_GetStringResult (Interp)));
       end if;
-      if Tcl.Is_Null (ElementObj) then
+      if ElementObj = null then
          Tash_Interp.Raise_Exception (
             Interp  => Interp,
             E       => Array_Error'Identity,
@@ -412,9 +414,6 @@ package body Tash.Arrays is
       use type Tcl.Tcl_Obj;
    begin -- Type_Of_Array_Element (
       if ObjPtr = null then
-         return "null";
-      end if;
-      if Tcl.Is_Null (ObjPtr) then
          return "null";
       end if;
       return CHelper.Value (Tcl.Tcl_GetObjTypeName (ObjPtr));
@@ -626,9 +625,11 @@ package body Tash.Arrays is
       Result  : Interfaces.C.int;
       Interp  : Tcl.Tcl_Interp;
 
+      use type Tcl.Tcl_Obj;
+
    begin -- Set_Element
 
-      if Tcl.Is_Null (TArray.Obj) then
+      if TArray.Obj = null then
          --  A Tash array is merely a unique variable name for a
          --  Tcl array.  We will now create a Tcl object and a
          --  unique variable name string to store in it.
@@ -686,9 +687,11 @@ package body Tash.Arrays is
       Result  : Interfaces.C.int;
       Interp  : Tcl.Tcl_Interp;
 
+      use type Tcl.Tcl_Obj;
+
    begin -- Set_Element
 
-      if Tcl.Is_Null (TArray.Obj) then
+      if TArray.Obj = null then
          --  A Tash array is merely a unique variable name for a
          --  Tcl array.  We will now create a Tcl object and a
          --  unique variable name string to store in it.
@@ -742,9 +745,11 @@ package body Tash.Arrays is
       Result  : Interfaces.C.int;
       Interp  : Tcl.Tcl_Interp;
 
+      use type Tcl.Tcl_Obj;
+
    begin -- Set_Elements
 
-      if Tcl.Is_Null (TArray.Obj) then
+      if TArray.Obj = null then
          --  A Tash array is merely a unique variable name for a
          --  Tcl array.  We will now create a Tcl object and a
          --  unique variable name string to store in it.
@@ -787,9 +792,11 @@ package body Tash.Arrays is
       Interp  : Tcl.Tcl_Interp;
       Result  : Interfaces.C.int;
 
+      use type Tcl.Tcl_Obj;
+
    begin -- Delete_Element
 
-      if Tcl.Is_Null (TArray.Obj) then
+      if TArray.Obj = null then
          return;
       end if;
 
@@ -948,9 +955,11 @@ package body Tash.Arrays is
          Result  : Interfaces.C.int;
          Interp  : Tcl.Tcl_Interp;
 
+         use type Tcl.Tcl_Obj;
+
       begin -- Set_Element
 
-         if Tcl.Is_Null (TArray.Obj) then
+         if TArray.Obj = null then
             --  A Tash array is merely a unique variable name for a
             --  Tcl array.  We will now create a Tcl object and a
             --  unique variable name string to store in it.
@@ -1127,9 +1136,11 @@ package body Tash.Arrays is
          Result  : Interfaces.C.int;
          Interp  : Tcl.Tcl_Interp;
 
+         use type Tcl.Tcl_Obj;
+
       begin -- Set_Element
 
-         if Tcl.Is_Null (TArray.Obj) then
+         if TArray.Obj = null then
             --  A Tash array is merely a unique variable name for a
             --  Tcl array.  We will now create a Tcl object and a
             --  unique variable name string to store in it.
@@ -1265,9 +1276,11 @@ package body Tash.Arrays is
       Ref_Count : Interfaces.C.int;
       Indices   : Tash.Lists.Tash_List;
 
+      use type Tcl.Tcl_Obj;
+
    begin -- Finalize
 
-      if Tcl.Is_Null (TArray.Obj) then
+      if TArray.Obj = null then
          return;
       end if;
       Ref_Count := Tcl.Tcl_GetRefCount (TArray.Obj);

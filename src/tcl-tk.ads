@@ -46,74 +46,50 @@ package Tcl.Tk is
    type Tk_BindingTable_Rec (<>) is private;
    type Tk_BindingTable is access all Tk_BindingTable_Rec;
    pragma Convention (C, Tk_BindingTable);
-   Null_Tk_BindingTable : constant Tk_BindingTable := null;
-   function Is_Null (Ptr : in Tk_BindingTable) return Boolean;
 
    type Tk_Canvas_Rec (<>) is private;
    type Tk_Canvas is access all Tk_Canvas_Rec;
    pragma Convention (C, Tk_Canvas);
-   Null_Tk_Canvas : constant Tk_Canvas := null;
-   function Is_Null (Ptr : in Tk_Canvas) return Boolean;
 
    type Tk_Cursor_Rec (<>) is private;
    type Tk_Cursor is access all Tk_Cursor_Rec;
    pragma Convention (C, Tk_Cursor);
-   Null_Tk_Cursor : constant Tk_Cursor := null;
-   function Is_Null (Ptr : in Tk_Cursor) return Boolean;
 
    type Tk_ErrorHandler_Rec (<>) is private;
    type Tk_ErrorHandler is access all Tk_ErrorHandler_Rec;
    pragma Convention (C, Tk_ErrorHandler);
-   Null_Tk_ErrorHandler : constant Tk_ErrorHandler := null;
-   function Is_Null (Ptr : in Tk_ErrorHandler) return Boolean;
 
    type Tk_Font_Rec (<>) is private;
    type Tk_Font is access all Tk_Font_Rec;
    pragma Convention (C, Tk_Font);
-   Null_Tk_Font : constant Tk_Font := null;
-   function Is_Null (Ptr : in Tk_Font) return Boolean;
 
    type Tk_Image_Rec (<>) is private;
    type Tk_Image is access all Tk_Image_Rec;
    pragma Convention (C, Tk_Image);
-   Null_Tk_Image : constant Tk_Image := null;
-   function Is_Null (Ptr : in Tk_Image) return Boolean;
 
    type Tk_ImageMaster_Rec (<>) is private;
    type Tk_ImageMaster is access all Tk_ImageMaster_Rec;
    pragma Convention (C, Tk_ImageMaster);
-   Null_Tk_ImageMaster : constant Tk_ImageMaster := null;
-   function Is_Null (Ptr : in Tk_ImageMaster) return Boolean;
 
    type Tk_OptionTable_Rec (<>) is private;
    type Tk_OptionTable is access all Tk_OptionTable_Rec;
    pragma Convention (C, Tk_OptionTable);
-   Null_Tk_OptionTable : constant Tk_OptionTable := null;
-   function Is_Null (Ptr : in Tk_OptionTable) return Boolean;
 
    type Tk_PostscriptInfo_Rec (<>) is private;
    type Tk_PostscriptInfo is access all Tk_PostscriptInfo_Rec;
    pragma Convention (C, Tk_PostscriptInfo);
-   Null_Tk_PostscriptInfo : constant Tk_PostscriptInfo := null;
-   function Is_Null (Ptr : in Tk_PostscriptInfo) return Boolean;
 
    type Tk_TextLayout_Rec (<>) is private;
    type Tk_TextLayout is access all Tk_TextLayout_Rec;
    pragma Convention (C, Tk_TextLayout);
-   Null_Tk_TextLayout : constant Tk_TextLayout := null;
-   function Is_Null (Ptr : in Tk_TextLayout) return Boolean;
 
    type Tk_Window_Rec (<>) is private;
    type Tk_Window is access all Tk_Window_Rec;
    pragma Convention (C, Tk_Window);
-   Null_Tk_Window : constant Tk_Window := null;
-   function Is_Null (Ptr : in Tk_Window) return Boolean;
 
    type Tk_3DBorder_Rec (<>) is private;
    type Tk_3DBorder is access all Tk_3DBorder_Rec;
    pragma Convention (C, Tk_3DBorder);
-   Null_Tk_3DBorder : constant Tk_3DBorder := null;
-   function Is_Null (Ptr : in Tk_3DBorder) return Boolean;
 
    --
    --  Additional types exported to clients.
@@ -194,8 +170,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_OptionSpec_Rec);
    type Tk_OptionSpec is access all Tk_OptionSpec_Rec;
    pragma Convention (C, Tk_OptionSpec);
-   Null_Tk_OptionSpec : constant Tk_OptionSpec := null;
-   function Is_Null (Ptr : in Tk_OptionSpec) return Boolean;
 
    --
    --  Flag values for Tk_OptionSpec structures.  These flags are shared by
@@ -229,14 +203,10 @@ package Tcl.Tk is
    type Tk_SavedOption_Rec (<>) is private;
    type Tk_SavedOption is access all Tk_SavedOption_Rec;
    pragma Convention (C, Tk_SavedOption);
-   Null_Tk_SavedOption : constant Tk_SavedOption := null;
-   function Is_Null (Ptr : in Tk_SavedOption) return Boolean;
 
    type Tk_SavedOptions_Rec (<>) is private;
    type Tk_SavedOptions is access all Tk_SavedOptions_Rec;
    pragma Convention (C, Tk_SavedOptions);
-   Null_Tk_SavedOptions : constant Tk_SavedOptions := null;
-   function Is_Null (Ptr : in Tk_SavedOptions) return Boolean;
 
    --
    --  Structure used to describe application-specific configuration
@@ -283,8 +253,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_CustomOption_Rec);
    type Tk_CustomOption is access all Tk_CustomOption_Rec;
    pragma Convention (C, Tk_CustomOption);
-   Null_Tk_CustomOption : constant Tk_CustomOption := null;
-   function Is_Null (Ptr : in Tk_CustomOption) return Boolean;
 
    --
    --  Structure used to specify information for Tk_ConfigureWidget.  Each
@@ -353,8 +321,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_ConfigSpec_Rec);
    type Tk_ConfigSpec is access all Tk_ConfigSpec_Rec;
    pragma Convention (C, Tk_ConfigSpec);
-   Null_Tk_ConfigSpec : constant Tk_ConfigSpec := null;
-   function Is_Null (Ptr : in Tk_ConfigSpec) return Boolean;
 
    type Tk_ConfigSpec_Array is
      array (CNatural range <>) of aliased Tk_ConfigSpec_Rec;
@@ -403,8 +369,6 @@ package Tcl.Tk is
    type Tk_ArgvInfo_Rec (<>) is private;                       -- @todo
    type Tk_ArgvInfo is access all Tk_ArgvInfo_Rec;
    pragma Convention (C, Tk_ArgvInfo);
-   Null_Tk_ArgvInfo : constant Tk_ArgvInfo := null;
-   function Is_Null (Ptr : in Tk_ArgvInfo) return Boolean;
 
    --
    --  Legal values for the type field of a Tk_ArgvInfo: see the user
@@ -531,8 +495,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_FontMetrics_Rec);
    type Tk_FontMetrics is access all Tk_FontMetrics_Rec;
    pragma Convention (C, Tk_FontMetrics);
-   Null_Tk_FontMetrics : constant Tk_FontMetrics := null;
-   function Is_Null (Ptr : in Tk_FontMetrics) return Boolean;
 
    --
    --  Flags passed to Tk_MeasureChars:
@@ -580,8 +542,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_GeomMgr_Rec);
    type Tk_GeomMgr is access all Tk_GeomMgr_Rec;
    pragma Convention (C, Tk_GeomMgr);
-   Null_Tk_GeomMgr : constant Tk_GeomMgr := null;
-   function Is_Null (Ptr : in Tk_GeomMgr) return Boolean;
 
    --
    --  Result values returned by Tk_GetScrollInfo:
@@ -617,14 +577,10 @@ package Tcl.Tk is
    type XVirtualEvent_Rec (<>) is private;
    type XVirtualEvent is access all XVirtualEvent_Rec;
    pragma Convention (C, XVirtualEvent);
-   Null_XVirtualEvent : constant XVirtualEvent := null;
-   function Is_Null (Ptr : in XVirtualEvent) return Boolean;
 
    type XActivateDeactivateEvent_Rec (<>) is private;
    type XActivateDeactivateEvent is access all XActivateDeactivateEvent_Rec;
    pragma Convention (C, XActivateDeactivateEvent);
-   Null_XActivateDeactivateEvent : constant XActivateDeactivateEvent := null;
-   function Is_Null (Ptr : in XActivateDeactivateEvent) return Boolean;
 
    subtype XActivateEvent is XActivateDeactivateEvent;
 
@@ -673,8 +629,6 @@ package Tcl.Tk is
    type Tk_FakeWin_Rec (<>) is private;
    type Tk_FakeWin is access all Tk_FakeWin_Rec;
    pragma Convention (C, Tk_FakeWin);
-   Null_Tk_FakeWin : constant Tk_FakeWin := null;
-   function Is_Null (Ptr : in Tk_FakeWin) return Boolean;
 
    --
    --  Flag values for TkWindow {and Tk_FakeWin} structures are:
@@ -781,8 +735,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_SmoothMethod_Rec);
    type Tk_SmoothMethod is access all Tk_SmoothMethod_Rec;
    pragma Convention (C, Tk_SmoothMethod);
-   Null_Tk_SmoothMethod : constant Tk_SmoothMethod := null;
-   function Is_Null (Ptr : in Tk_SmoothMethod) return Boolean;
 
    --
    --  For each item in a canvas widget there exists one record with
@@ -846,8 +798,6 @@ package Tcl.Tk is
 
    end record;
    pragma Convention (C, Tk_Item_Rec);
-   Null_Tk_Item : constant Tk_Item := null;
-   function Is_Null (Ptr : in Tk_Item) return Boolean;
 
    type Tk_ItemCreateProc is access function
      (interp  : in Tcl_Interp;
@@ -1019,8 +969,6 @@ package Tcl.Tk is
       reserved4 : C.Strings.chars_ptr;
    end record;
    pragma Convention (C, Tk_ItemType_Rec);
-   Null_Tk_ItemType : constant Tk_ItemType := null;
-   function Is_Null (Ptr : in Tk_ItemType) return Boolean;
 
    --
    --  Flag bits for canvases {redraw_flags}:
@@ -1097,8 +1045,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_CanvasTextInfo_Rec);
    type Tk_CanvasTextInfo is access all Tk_CanvasTextInfo_Rec;
    pragma Convention (C, Tk_CanvasTextInfo);
-   Null_Tk_CanvasTextInfo : constant Tk_CanvasTextInfo := null;
-   function Is_Null (Ptr : in Tk_CanvasTextInfo) return Boolean;
 
    --
    --  Structures used for Dashing and Outline.
@@ -1114,8 +1060,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_Dash_Rec);
    type Tk_Dash is access all Tk_Dash_Rec;
    pragma Convention (C, Tk_Dash);
-   Null_Tk_Dash : constant Tk_Dash := null;
-   function Is_Null (Ptr : in Tk_Dash) return Boolean;
 
    type Tk_TSOffset_Rec is record
       flags : C.int;     --  flags; see tk.h for possible values
@@ -1125,8 +1069,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_TSOffset_Rec);
    type Tk_TSOffset is access all Tk_TSOffset_Rec;
    pragma Convention (C, Tk_TSOffset);
-   Null_Tk_TSOffset : constant Tk_TSOffset := null;
-   function Is_Null (Ptr : in Tk_TSOffset) return Boolean;
 
    --
    --  Bit fields in Tk_Offset->flags:
@@ -1144,8 +1086,6 @@ package Tcl.Tk is
    type Tk_Outline_Rec (<>) is private;
    type Tk_Outline is access all Tk_Outline_Rec;
    pragma Convention (C, Tk_Outline);
-   Null_Tk_Outline : constant Tk_Outline := null;
-   function Is_Null (Ptr : in Tk_Outline) return Boolean;
 
    --
    -- --------------------------------------------------------------
@@ -1212,8 +1152,6 @@ package Tcl.Tk is
    type Tk_ImageType_Rec (<>) is private;                  -- @todo
    type Tk_ImageType is access all Tk_ImageType_Rec;
    pragma Convention (C, Tk_ImageType);
-   Null_Tk_ImageType : constant Tk_ImageType := null;
-   function Is_Null (Ptr : in Tk_ImageType) return Boolean;
 
    --
    -- --------------------------------------------------------------
@@ -1231,8 +1169,6 @@ package Tcl.Tk is
    type Tk_PhotoHandle_Rec (<>) is private;                  -- @todo
    type Tk_PhotoHandle is access all Tk_PhotoHandle_Rec;
    pragma Convention (C, Tk_PhotoHandle);
-   Null_Tk_PhotoHandle : constant Tk_PhotoHandle := null;
-   function Is_Null (Ptr : in Tk_PhotoHandle) return Boolean;
 
    --
    --  The following structure describes a block of pixels in memory:
@@ -1258,8 +1194,6 @@ package Tcl.Tk is
    pragma Convention (C, Tk_PhotoImageBlock_Rec);
    type Tk_PhotoImageBlock is access all Tk_PhotoImageBlock_Rec;
    pragma Convention (C, Tk_PhotoImageBlock);
-   Null_Tk_PhotoImageBlock : constant Tk_PhotoImageBlock := null;
-   function Is_Null (Ptr : in Tk_PhotoImageBlock) return Boolean;
 
    --
    --  Procedure prototypes and structures used in reading and
@@ -1272,8 +1206,6 @@ package Tcl.Tk is
    type Tk_PhotoImageFormat_Rec (<>) is private;               -- @todo
    type Tk_PhotoImageFormat is access all Tk_PhotoImageFormat_Rec;
    pragma Convention (C, Tk_PhotoImageFormat);
-   Null_Tk_PhotoImageFormat : constant Tk_PhotoImageFormat := null;
-   function Is_Null (Ptr : in Tk_PhotoImageFormat) return Boolean;
 
    type Tk_ImageFileMatchProc is access function
      (chan      : in Tcl_Channel;

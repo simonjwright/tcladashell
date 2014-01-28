@@ -80,8 +80,9 @@ package body Tash.Lists is
       --
       Result : Interfaces.C.int;
       IntPtr : aliased Interfaces.C.int;
+      use type Tcl.Tcl_Obj;
    begin --  Length
-      if Tcl.Is_Null (Obj) then
+      if Obj = null then
          return 0;
       else
          Result :=
@@ -114,8 +115,9 @@ package body Tash.Lists is
       Length     : constant Interfaces.C.int :=
         Tash.Lists.Length (Interp, List);
       Object : aliased Tcl.Tcl_Obj;
+      use type Tcl.Tcl_Obj;
    begin --  Get_Element
-      if Tcl.Is_Null (List) then
+      if List = null then
          raise List_Error;
       elsif Length < Interfaces.C.int (Index) then
          raise List_Error;
@@ -570,7 +572,7 @@ package body Tash.Lists is
       if Obj = null then
          return "null";
       end if;
-      if Tcl.Is_Null (Obj) then
+      if Obj = null then
          return "null";
       end if;
       return CHelper.Value (Tcl.Tcl_GetObjTypeName (Obj));
