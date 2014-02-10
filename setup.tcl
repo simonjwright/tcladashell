@@ -28,7 +28,7 @@ exec wish $0 $@
 # The option --nogui takes the defaults.
 
 set tash_version "8.6"
-set tash_release "1"
+set tash_release "2"
 
 proc cequal {left right} {
     return [expr [string compare $left $right] == 0]
