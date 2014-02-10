@@ -36,6 +36,8 @@
 --
 --------------------------------------------------------------------
 
+pragma Ada_2005;
+
 with CArgv;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
@@ -609,13 +611,13 @@ package Tcl is
    --  These subprograms are implemented in TASH's C bindings.
    --
 
-   procedure Tcl_IncrRefCount (objPtr : in Tcl_Obj);
+   procedure Tcl_IncrRefCount (objPtr : not null Tcl_Obj);
    pragma Import (C, Tcl_IncrRefCount, "Tcl_CallIncrRefCount");
 
-   procedure Tcl_DecrRefCount (objPtr : in Tcl_Obj);
+   procedure Tcl_DecrRefCount (objPtr : not null Tcl_Obj);
    pragma Import (C, Tcl_DecrRefCount, "Tcl_CallDecrRefCount");
 
-   function Tcl_IsShared (objPtr : in Tcl_Obj) return C.int;
+   function Tcl_IsShared (objPtr : not null Tcl_Obj) return C.int;
    pragma Import (C, Tcl_IsShared, "Tcl_CallIsShared");
 
    --
@@ -742,20 +744,20 @@ package Tcl is
    type Tcl_DString is access all Tcl_DString_Rec;
    pragma Convention (C, Tcl_DString);
 
-   function Tcl_DStringLength (dsPtr : in Tcl_DString) return C.int;
+   function Tcl_DStringLength (dsPtr : not null Tcl_DString) return C.int;
    pragma Import (C, Tcl_DStringLength, "Tcl_CallDStringLength");
 
    function Tcl_DStringValue
-     (dsPtr : in Tcl_DString)
+     (dsPtr : not null Tcl_DString)
       return  C.Strings.chars_ptr;
    pragma Import (C, Tcl_DStringValue, "Tcl_CallDStringValue");
 
    procedure Tcl_DStringSetLength
-     (dsPtr  : in Tcl_DString;
+     (dsPtr  : not null Tcl_DString;
       length : in C.int);
    pragma Import (C, Tcl_DStringSetLength, "Tcl_DStringSetLength");
 
-   procedure Tcl_DStringTrunc (dsPtr : in Tcl_DString; length : in C.int)
+   procedure Tcl_DStringTrunc (dsPtr : not null Tcl_DString; length : in C.int)
      renames Tcl_DStringSetLength;
 
    --
@@ -900,18 +902,18 @@ package Tcl is
    --
 
    function Tcl_GetHashValue
-     (HashEntry : in Tcl_HashEntry)
+     (HashEntry : not null Tcl_HashEntry)
       return      ClientData;
    pragma Import (C, Tcl_GetHashValue, "Tcl_CallGetHashValue");
 
    procedure Tcl_SetHashValue
-     (HashEntry : in Tcl_HashEntry;
+     (HashEntry : not null Tcl_HashEntry;
       value     : in ClientData);
    pragma Import (C, Tcl_SetHashValue, "Tcl_CallSetHashValue");
 
    function Tcl_GetHashKey
-     (HashTable : in Tcl_HashTable;
-      HashEntry : in Tcl_HashEntry)
+     (HashTable : not null Tcl_HashTable;
+      HashEntry : not null Tcl_HashEntry)
       return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetHashKey, "Tcl_CallGetHashKey");
 
@@ -921,15 +923,15 @@ package Tcl is
    --
 
    function Tcl_FindHashEntry
-     (HashTable : in Tcl_HashTable;
+     (HashTable : not null Tcl_HashTable;
       key       : in C.Strings.chars_ptr)
       return      Tcl_HashEntry;
    pragma Import (C, Tcl_FindHashEntry, "Tcl_CallFindHashEntry");
 
    function Tcl_CreateHashEntry
-     (HashTable : in Tcl_HashTable;
+     (HashTable : not null Tcl_HashTable;
       key       : in C.Strings.chars_ptr;
-      newPtr    : access C.int)
+      newPtr    : not null access C.int)
       return      Tcl_HashEntry;
    pragma Import (C, Tcl_CreateHashEntry, "Tcl_CallCreateHashEntry");
 
@@ -1601,16 +1603,16 @@ package Tcl is
    --  with an enumeration literal.  Use Tcl_SetResult instead.
 
    function Tcl_TranslateFileName
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       name      : in C.Strings.chars_ptr;
-      bufferPtr : in Tcl_DString)
+      bufferPtr : not null Tcl_DString)
      return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_TranslateFileName, "Tcl_TranslateFileName");
 
    function Tcl_TildeSubst
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       name      : in C.Strings.chars_ptr;
-      bufferPtr : in Tcl_DString)
+      bufferPtr : not null Tcl_DString)
      return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_TildeSubst, "Tcl_TranslateFileName");
 
@@ -1693,7 +1695,7 @@ package Tcl is
    --  0
 
    procedure Tcl_PkgProvideEx
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       name    : in C.Strings.chars_ptr;
       version : in C.Strings.chars_ptr;
       data    : in ClientData);
@@ -1702,11 +1704,11 @@ package Tcl is
    --  1
 
    function Tcl_PkgRequireEx
-     (interp        : in Tcl_Interp;
+     (interp        : not null Tcl_Interp;
       name          : in C.Strings.chars_ptr;
       version       : in C.Strings.chars_ptr;
       exact         : in C.int;
-      clientdataptr : in ClientData)
+      clientdataptr : access ClientData)    -- can be null
       return          C.Strings.chars_ptr;
    pragma Import (C, Tcl_PkgRequireEx, "Tcl_PkgRequireEx");
 
@@ -1753,7 +1755,7 @@ package Tcl is
    procedure Tcl_CreateFileHandler
      (fd   : in C.int;
       mask : in C.int;
-      proc : in Tcl_FileProc;
+      proc : not null Tcl_FileProc;
       data : in ClientData);
    pragma Import (C, Tcl_CreateFileHandler, "Tcl_CreateFileHandler");
 
@@ -1770,7 +1772,7 @@ package Tcl is
 
    --  11
 
-   procedure Tcl_SetTimer (timePtr : in Tcl_Time);
+   procedure Tcl_SetTimer (timePtr : not null Tcl_Time);
    pragma Import (C, Tcl_SetTimer, "Tcl_SetTimer");
 
    --  12
@@ -1786,15 +1788,15 @@ package Tcl is
    --  14
 
    function Tcl_AppendAllObjTypes
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj)
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj)
       return   C.int;
    pragma Import (C, Tcl_AppendAllObjTypes, "Tcl_AppendAllObjTypes");
 
    --  15
 
    procedure Tcl_AppendStringsToObj
-     (objPtr  : in Tcl_Obj;
+     (objPtr  : not null Tcl_Obj;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
@@ -1808,7 +1810,7 @@ package Tcl is
    --  16
 
    procedure Tcl_AppendToObj
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       bytes  : in C.Strings.chars_ptr;
       length : in C.int);
    pragma Import (C, Tcl_AppendToObj, "Tcl_AppendToObj");
@@ -1824,16 +1826,16 @@ package Tcl is
    --  18
 
    function Tcl_ConvertToType
-     (interp  : in Tcl_Interp;
-      objPtr  : in Tcl_Obj;
-      typePtr : in Tcl_ObjType)
+     (interp  : not null Tcl_Interp;
+      objPtr  : not null Tcl_Obj;
+      typePtr : not null Tcl_ObjType)
       return    C.int;
    pragma Import (C, Tcl_ConvertToType, "Tcl_ConvertToType");
 
    --  19
 
    procedure Tcl_DbDecrRefCount
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       file   : in C.Strings.chars_ptr;
       line   : in C.int);
    pragma Import (C, Tcl_DbDecrRefCount, "Tcl_DbDecrRefCount");
@@ -1841,7 +1843,7 @@ package Tcl is
    --  20
 
    procedure Tcl_DbIncrRefCount
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       file   : in C.Strings.chars_ptr;
       line   : in C.int);
    pragma Import (C, Tcl_DbIncrRefCount, "Tcl_DbIncrRefCount");
@@ -1849,7 +1851,7 @@ package Tcl is
    --  21
 
    function Tcl_DbIsShared
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       file   : in C.Strings.chars_ptr;
       line   : in C.int)
       return   C.int;
@@ -1922,7 +1924,7 @@ package Tcl is
 
    --  29
 
-   function Tcl_DuplicateObj (objPtr : in Tcl_Obj) return Tcl_Obj;
+   function Tcl_DuplicateObj (objPtr : not null Tcl_Obj) return Tcl_Obj;
    pragma Import (C, Tcl_DuplicateObj, "Tcl_DuplicateObj");
 
    --  30
@@ -1931,89 +1933,89 @@ package Tcl is
    --  macros, which in TASH are implemented as C functions; so it's
    --  omitted here.
 
---     procedure TclFreeObj (objPtr : in Tcl_Obj);
+--     procedure TclFreeObj (objPtr : not null Tcl_Obj);
 --     pragma Import (C, TclFreeObj, "TclFreeObj");
 
    --  31
 
    function Tcl_GetBoolean
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       str     : in C.Strings.chars_ptr;
-      boolPtr : access C.int)
+      boolPtr : not null access C.int)
       return    C.int;
    pragma Import (C, Tcl_GetBoolean, "Tcl_GetBoolean");
 
    --  32
 
    function Tcl_GetBooleanFromObj
-     (interp  : in Tcl_Interp;
-      objPtr  : in Tcl_Obj;
-      boolPtr : access C.int)
+     (interp  : not null Tcl_Interp;
+      objPtr  : not null Tcl_Obj;
+      boolPtr : not null access C.int)
       return    C.int;
    pragma Import (C, Tcl_GetBooleanFromObj, "Tcl_GetBooleanFromObj");
 
    --  33
 
    function Tcl_GetByteArrayFromObj
-     (objPtr    : in Tcl_Obj;
-      lengthPtr : access C.int)
+     (objPtr    : not null Tcl_Obj;
+      lengthPtr : access C.int)               -- can be null
       return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetByteArrayFromObj, "Tcl_GetByteArrayFromObj");
 
    --  34
 
    function Tcl_GetDouble
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       str       : in C.Strings.chars_ptr;
-      doublePtr : access C.double)
+      doublePtr : not null access C.double)
       return      C.int;
    pragma Import (C, Tcl_GetDouble, "Tcl_GetDouble");
 
    --  35
 
    function Tcl_GetDoubleFromObj
-     (interp    : in Tcl_Interp;
-      objPtr    : in Tcl_Obj;
-      doublePtr : access C.double)
+     (interp    : not null Tcl_Interp;
+      objPtr    : not null Tcl_Obj;
+      doublePtr : not null access C.double)
       return      C.int;
    pragma Import (C, Tcl_GetDoubleFromObj, "Tcl_GetDoubleFromObj");
 
    --  36
 
    function Tcl_GetIndexFromObj
-     (interp   : in Tcl_Interp;
-      objPtr   : in Tcl_Obj;
+     (interp   : not null Tcl_Interp;
+      objPtr   : not null Tcl_Obj;
       tablePtr : in CArgv.Chars_Ptr_Ptr;
       msg      : in C.Strings.chars_ptr;
       flags    : in C.int;
-      indexPtr : access C.int)
+      indexPtr : not null access C.int)
       return     C.int;
    pragma Import (C, Tcl_GetIndexFromObj, "Tcl_GetIndexFromObj");
 
    --  37
 
    function Tcl_GetInt
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       str    : in C.Strings.chars_ptr;
-      intPtr : access C.int)
+      intPtr : not null access C.int)
       return   C.int;
    pragma Import (C, Tcl_GetInt, "Tcl_GetInt");
 
    --  38
 
    function Tcl_GetIntFromObj
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj;
-      intPtr : access C.int)
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj;
+      intPtr : not null access C.int)
       return   C.int;
    pragma Import (C, Tcl_GetIntFromObj, "Tcl_GetIntFromObj");
 
    --  39
 
    function Tcl_GetLongFromObj
-     (interp  : in Tcl_Interp;
-      objPtr  : in Tcl_Obj;
-      longPtr : access C.long)
+     (interp  : not null Tcl_Interp;
+      objPtr  : not null Tcl_Obj;
+      longPtr : not null access C.long)
       return    C.int;
    pragma Import (C, Tcl_GetLongFromObj, "Tcl_GetLongFromObj");
 
@@ -2031,40 +2033,40 @@ package Tcl is
    --  41
 
    function Tcl_GetStringFromObj
-     (objPtr    : in Tcl_Obj;
-      lengthPtr : access C.int)
+     (objPtr    : not null Tcl_Obj;
+      lengthPtr : access C.int)            -- can be null
       return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetStringFromObj, "Tcl_GetStringFromObj");
 
    --  42
 
-   procedure Tcl_InvalidateStringRep (objPtr : in Tcl_Obj);
+   procedure Tcl_InvalidateStringRep (objPtr : not null Tcl_Obj);
    pragma Import (C, Tcl_InvalidateStringRep, "Tcl_InvalidateStringRep");
 
    --  43
 
    function Tcl_ListObjAppendList
-     (interp      : in Tcl_Interp;
-      listPtr     : in Tcl_Obj;
-      elemListPtr : in Tcl_Obj)
+     (interp      : not null Tcl_Interp;
+      listPtr     : not null Tcl_Obj;
+      elemListPtr : not null Tcl_Obj)
       return        C.int;
    pragma Import (C, Tcl_ListObjAppendList, "Tcl_ListObjAppendList");
 
    --  44
 
    function Tcl_ListObjAppendElement
-     (interp  : in Tcl_Interp;
-      listPtr : in Tcl_Obj;
-      objPtr  : in Tcl_Obj)
+     (interp  : not null Tcl_Interp;
+      listPtr : not null Tcl_Obj;
+      objPtr  : not null Tcl_Obj)
       return    C.int;
    pragma Import (C, Tcl_ListObjAppendElement, "Tcl_ListObjAppendElement");
 
    --  45
 
    function Tcl_ListObjGetElements
-     (interp  : in Tcl_Interp;
-      listPtr : in Tcl_Obj;
-      objcPtr : access C.int;
+     (interp  : not null Tcl_Interp;
+      listPtr : not null Tcl_Obj;
+      objcPtr : not null access C.int;
       objv    : in Tcl_Obj_Array)
       return    C.int;
    pragma Import (C, Tcl_ListObjGetElements, "Tcl_ListObjGetElements");
@@ -2072,27 +2074,27 @@ package Tcl is
    --  46
 
    function Tcl_ListObjIndex
-     (interp    : in Tcl_Interp;
-      listPtr   : in Tcl_Obj;
+     (interp    : not null Tcl_Interp;
+      listPtr   : not null Tcl_Obj;
       index     : in C.int;
-      objPtrPtr : access Tcl_Obj)
+      objPtrPtr : not null access Tcl_Obj)
       return      C.int;
    pragma Import (C, Tcl_ListObjIndex, "Tcl_ListObjIndex");
 
    --  47
 
    function Tcl_ListObjLength
-     (interp  : in Tcl_Interp;
-      listPtr : in Tcl_Obj;
-      intPtr  : access C.int)
+     (interp  : not null Tcl_Interp;
+      listPtr : not null Tcl_Obj;
+      intPtr  : not null access C.int)
       return    C.int;
    pragma Import (C, Tcl_ListObjLength, "Tcl_ListObjLength");
 
    --  48
 
    function Tcl_ListObjReplace
-     (interp  : in Tcl_Interp;
-      listPtr : in Tcl_Obj;
+     (interp  : not null Tcl_Interp;
+      listPtr : not null Tcl_Obj;
       first   : in C.int;
       count   : in C.int;
       objc    : in C.int;
@@ -2151,13 +2153,14 @@ package Tcl is
 
    --  57
 
-   procedure Tcl_SetBooleanObj (objPtr : in Tcl_Obj; boolValue : in C.int);
+   procedure Tcl_SetBooleanObj (objPtr : not null Tcl_Obj;
+                                boolValue : in C.int);
    pragma Import (C, Tcl_SetBooleanObj, "Tcl_SetBooleanObj");
 
    --  58
 
    function Tcl_SetByteArrayLength
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       length : in C.int)
       return   C.Strings.chars_ptr;
    pragma Import (C, Tcl_SetByteArrayLength, "Tcl_SetByteArrayLength");
@@ -2165,7 +2168,7 @@ package Tcl is
    --  59
 
    procedure Tcl_SetByteArrayObj
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       bytes  : in C.Strings.chars_ptr;
       length : in C.int);
    pragma Import (C, Tcl_SetByteArrayObj, "Tcl_SetByteArrayObj");
@@ -2173,37 +2176,37 @@ package Tcl is
    --  60
 
    procedure Tcl_SetDoubleObj
-     (objPtr      : in Tcl_Obj;
+     (objPtr      : not null Tcl_Obj;
       doubleValue : in C.double);
    pragma Import (C, Tcl_SetDoubleObj, "Tcl_SetDoubleObj");
 
    --  61
 
-   procedure Tcl_SetIntObj (objPtr : in Tcl_Obj; intValue : in C.int);
+   procedure Tcl_SetIntObj (objPtr : not null Tcl_Obj; intValue : in C.int);
    pragma Import (C, Tcl_SetIntObj, "Tcl_SetIntObj");
 
    --  62
 
    procedure Tcl_SetListObj
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       objc   : in C.int;
       objv   : in Tcl_Obj_Array);
    pragma Import (C, Tcl_SetListObj, "Tcl_SetListObj");
 
    --  63
 
-   procedure Tcl_SetLongObj (objPtr : in Tcl_Obj; longValue : in C.long);
+   procedure Tcl_SetLongObj (objPtr : not null Tcl_Obj; longValue : in C.long);
    pragma Import (C, Tcl_SetLongObj, "Tcl_SetLongObj");
 
    --  64
 
-   procedure Tcl_SetObjLength (objPtr : in Tcl_Obj; length : in C.int);
+   procedure Tcl_SetObjLength (objPtr : not null Tcl_Obj; length : in C.int);
    pragma Import (C, Tcl_SetObjLength, "Tcl_SetObjLength");
 
    --  65
 
    procedure Tcl_SetStringObj
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       bytes  : in C.Strings.chars_ptr;
       length : in C.int);
    pragma Import (C, Tcl_SetStringObj, "Tcl_SetStringObj");
@@ -2211,34 +2214,34 @@ package Tcl is
    --  66
 
    procedure Tcl_AddErrorInfo
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       message : in C.Strings.chars_ptr);
    pragma Import (C, Tcl_AddErrorInfo, "Tcl_AddErrorInfo");
 
    --  67
 
    procedure Tcl_AddObjErrorInfo
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       message : in C.Strings.chars_ptr;
       length  : in C.int);
    pragma Import (C, Tcl_AddObjErrorInfo, "Tcl_AddObjErrorInfo");
 
    --  68
 
-   procedure Tcl_AllowExceptions (interp : in Tcl_Interp);
+   procedure Tcl_AllowExceptions (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_AllowExceptions, "Tcl_AllowExceptions");
 
    --  69
 
    procedure Tcl_AppendElement
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       strng  : in C.Strings.chars_ptr);
    pragma Import (C, Tcl_AppendElement, "Tcl_AppendElement");
 
    --  70
 
    procedure Tcl_AppendResult
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
@@ -2252,27 +2255,27 @@ package Tcl is
    --  71
 
    function Tcl_AsyncCreate
-     (proc : in Tcl_AsyncProc;
+     (proc : not null Tcl_AsyncProc;
       data : in ClientData)
       return Tcl_AsyncHandler;
    pragma Import (C, Tcl_AsyncCreate, "Tcl_AsyncCreate");
 
    --  72
 
-   procedure Tcl_AsyncDelete (async : in Tcl_AsyncHandler);
+   procedure Tcl_AsyncDelete (async : not null Tcl_AsyncHandler);
    pragma Import (C, Tcl_AsyncDelete, "Tcl_AsyncDelete");
 
    --  73
 
    function Tcl_AsyncInvoke
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       code   : in C.int)
       return   C.int;
    pragma Import (C, Tcl_AsyncInvoke, "Tcl_AsyncInvoke");
 
    --  74
 
-   procedure Tcl_AsyncMark (async : in Tcl_AsyncHandler);
+   procedure Tcl_AsyncMark (async : not null Tcl_AsyncHandler);
    pragma Import (C, Tcl_AsyncMark, "Tcl_AsyncMark");
 
    --  75
@@ -2282,21 +2285,21 @@ package Tcl is
 
    --  76
 
-   procedure Tcl_BackgroundError (interp : in Tcl_Interp);
+   procedure Tcl_BackgroundError (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_BackgroundError, "Tcl_BackgroundError");
 
    --  77
 
    function Tcl_Backslash
      (src     : in C.Strings.chars_ptr;
-      readPtr : access C.int)
+      readPtr : access C.int)                 -- can be null
       return    C.char;
    pragma Import (C, Tcl_Backslash, "Tcl_Backslash");
 
    --  78
 
    function Tcl_BadChannelOption
-     (interp     : in Tcl_Interp;
+     (interp     : not null Tcl_Interp;
       optionName : in C.Strings.chars_ptr;
       optionList : in C.Strings.chars_ptr)
       return       C.int;
@@ -2305,23 +2308,23 @@ package Tcl is
    --  79
 
    procedure Tcl_CallWhenDeleted
-     (interp : in Tcl_Interp;
-      proc   : in Tcl_InterpDeleteProc;
+     (interp : not null Tcl_Interp;
+      proc   : not null Tcl_InterpDeleteProc;
       data   : in ClientData);
    pragma Import (C, Tcl_CallWhenDeleted, "Tcl_CallWhenDeleted");
 
    --  80
 
    procedure Tcl_CancelIdleCall
-     (idleProc : in Tcl_IdleProc;
+     (idleProc : not null Tcl_IdleProc;
       data     : in ClientData);
    pragma Import (C, Tcl_CancelIdleCall, "Tcl_CancelIdleCall");
 
    --  81
 
    function Tcl_Close
-     (interp : in Tcl_Interp;
-      chan   : in Tcl_Channel)
+     (interp : not null Tcl_Interp;
+      chan   : not null Tcl_Channel)
       return   C.int;
    pragma Import (C, Tcl_Close, "Tcl_Close");
 
@@ -2360,9 +2363,9 @@ package Tcl is
    --  86
 
    function Tcl_CreateAlias
-     (slave     : in Tcl_Interp;
+     (slave     : not null Tcl_Interp;
       slaveCmd  : in C.Strings.chars_ptr;
-      target    : in Tcl_Interp;
+      target    : not null Tcl_Interp;
       targetCmd : in C.Strings.chars_ptr;
       argc      : in C.int;
       argv      : in CArgv.Chars_Ptr_Ptr)
@@ -2372,9 +2375,9 @@ package Tcl is
    --  87
 
    function Tcl_CreateAliasObj
-     (slave     : in Tcl_Interp;
+     (slave     : not null Tcl_Interp;
       slaveCmd  : in C.Strings.chars_ptr;
-      target    : in Tcl_Interp;
+      target    : not null Tcl_Interp;
       targetCmd : in C.Strings.chars_ptr;
       objc      : in C.int;
       objv      : in Tcl_Obj_Array)
@@ -2384,7 +2387,7 @@ package Tcl is
    --  88
 
    function Tcl_CreateChannel
-     (typePtr      : in Tcl_ChannelType;
+     (typePtr      : not null Tcl_ChannelType;
       chanName     : in C.Strings.chars_ptr;
       instancedata : in ClientData;
       mask         : in C.int)
@@ -2394,43 +2397,43 @@ package Tcl is
    --  89
 
    procedure Tcl_CreateChannelHandler
-     (chan : in Tcl_Channel;
+     (chan : not null Tcl_Channel;
       mask : in C.int;
-      proc : in Tcl_ChannelProc;
+      proc : not null Tcl_ChannelProc;
       data : in ClientData);
    pragma Import (C, Tcl_CreateChannelHandler, "Tcl_CreateChannelHandler");
 
    --  90
 
    procedure Tcl_CreateCloseHandler
-     (chan : in Tcl_Channel;
-      proc : in Tcl_CloseProc;
+     (chan : not null Tcl_Channel;
+      proc : not null Tcl_CloseProc;
       data : in ClientData);
    pragma Import (C, Tcl_CreateCloseHandler, "Tcl_CreateCloseHandler");
 
    --  91
 
    function Tcl_CreateCommand
-     (interp     : in Tcl_Interp;
+     (interp     : not null Tcl_Interp;
       cmdName    : in C.Strings.chars_ptr;
-      proc       : in Tcl_CmdProc;
+      proc       : not null Tcl_CmdProc;
       data       : in ClientData;
-      deleteProc : in Tcl_CmdDeleteProc)
+      deleteProc : in Tcl_CmdDeleteProc)    -- can be null
       return       Tcl_Command;
    pragma Import (C, Tcl_CreateCommand, "Tcl_CreateCommand");
 
    --  92
 
    procedure Tcl_CreateEventSource
-     (setupProc : in Tcl_EventSetupProc;
-      checkProc : in Tcl_EventCheckProc;
+     (setupProc : not null Tcl_EventSetupProc;
+      checkProc : not null Tcl_EventCheckProc;
       data      : in ClientData);
    pragma Import (C, Tcl_CreateEventSource, "Tcl_CreateEventSource");
 
    --  93
 
    procedure Tcl_CreateExitHandler
-     (proc : in Tcl_ExitProc;
+     (proc : not null Tcl_ExitProc;
       data : in ClientData);
    pragma Import (C, Tcl_CreateExitHandler, "Tcl_CreateExitHandler");
 
@@ -2442,29 +2445,29 @@ package Tcl is
    --  95
 
    procedure Tcl_CreateMathFunc
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       name     : in C.Strings.chars_ptr;
       numArgs  : in C.int;
       argTypes : in Tcl_ValueType;
-      proc     : in Tcl_MathProc;
+      proc     : not null Tcl_MathProc;
       data     : in ClientData);
    pragma Import (C, Tcl_CreateMathFunc, "Tcl_CreateMathFunc");
 
    --  96
 
    function Tcl_CreateObjCommand
-     (interp     : in Tcl_Interp;
+     (interp     : not null Tcl_Interp;
       cmdName    : in C.Strings.chars_ptr;
-      proc       : in Tcl_ObjCmdProc;
+      proc       : not null Tcl_ObjCmdProc;
       data       : in ClientData;
-      deleteProc : in Tcl_CmdDeleteProc)
+      deleteProc : in Tcl_CmdDeleteProc)    -- can be null
       return       Tcl_Command;
    pragma Import (C, Tcl_CreateObjCommand, "Tcl_CreateObjCommand");
 
    --  97
 
    function Tcl_CreateSlave
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       slaveName : in C.Strings.chars_ptr;
       isSafe    : in C.int)
       return      Tcl_Interp;
@@ -2474,7 +2477,7 @@ package Tcl is
 
    function Tcl_CreateTimerHandler
      (milliseconds : in C.int;
-      proc         : in Tcl_TimerProc;
+      proc         : not null Tcl_TimerProc;
       data         : in ClientData)
       return         Tcl_TimerToken;
    pragma Import (C, Tcl_CreateTimerHandler, "Tcl_CreateTimerHandler");
@@ -2482,9 +2485,9 @@ package Tcl is
    --  99
 
    function Tcl_CreateTrace
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       level  : in C.int;
-      proc   : in Tcl_CmdTraceProc;
+      proc   : not null Tcl_CmdTraceProc;
       data   : in ClientData)
       return   Tcl_Trace;
    pragma Import (C, Tcl_CreateTrace, "Tcl_CreateTrace");
@@ -2492,30 +2495,30 @@ package Tcl is
    --  100
 
    procedure Tcl_DeleteAssocData
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       name   : in C.Strings.chars_ptr);
    pragma Import (C, Tcl_DeleteAssocData, "Tcl_DeleteAssocData");
 
    --  101
 
    procedure Tcl_DeleteChannelHandler
-     (chan : in Tcl_Channel;
-      proc : in Tcl_ChannelProc;
+     (chan : not null Tcl_Channel;
+      proc : not null Tcl_ChannelProc;
       data : in ClientData);
    pragma Import (C, Tcl_DeleteChannelHandler, "Tcl_DeleteChannelHandler");
 
    --  102
 
    procedure Tcl_DeleteCloseHandler
-     (chan : in Tcl_Channel;
-      proc : in Tcl_CloseProc;
+     (chan : not null Tcl_Channel;
+      proc : not null Tcl_CloseProc;
       data : in ClientData);
    pragma Import (C, Tcl_DeleteCloseHandler, "Tcl_DeleteCloseHandler");
 
    --  103
 
    function Tcl_DeleteCommand
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       cmdName : in C.Strings.chars_ptr)
       return    C.int;
    pragma Import (C, Tcl_DeleteCommand, "Tcl_DeleteCommand");
@@ -2523,8 +2526,8 @@ package Tcl is
    --  104
 
    function Tcl_DeleteCommandFromToken
-     (interp  : in Tcl_Interp;
-      command : in Tcl_Command)
+     (interp  : not null Tcl_Interp;
+      command : not null Tcl_Command)
       return    C.int;
    pragma Import
      (C,
@@ -2534,45 +2537,45 @@ package Tcl is
    --  105
 
    procedure Tcl_DeleteEvents
-     (proc : in Tcl_EventDeleteProc;
+     (proc : not null Tcl_EventDeleteProc;
       data : in ClientData);
    pragma Import (C, Tcl_DeleteEvents, "Tcl_DeleteEvents");
 
    --  106
 
    procedure Tcl_DeleteEventSource
-     (setupProc : in Tcl_EventSetupProc;
-      checkProc : in Tcl_EventCheckProc;
+     (setupProc : not null Tcl_EventSetupProc;
+      checkProc : not null Tcl_EventCheckProc;
       data      : in ClientData);
    pragma Import (C, Tcl_DeleteEventSource, "Tcl_DeleteEventSource");
 
    --  107
 
    procedure Tcl_DeleteExitHandler
-     (proc : in Tcl_ExitProc;
+     (proc : not null Tcl_ExitProc;
       data : in ClientData);
    pragma Import (C, Tcl_DeleteExitHandler, "Tcl_DeleteExitHandler");
 
    --  108
 
-   procedure Tcl_DeleteHashEntry (entryPtr : in Tcl_HashEntry);
+   procedure Tcl_DeleteHashEntry (entryPtr : not null Tcl_HashEntry);
    pragma Import (C, Tcl_DeleteHashEntry, "Tcl_DeleteHashEntry");
 
    --  109
 
-   procedure Tcl_DeleteHashTable (tablePtr : in Tcl_HashTable);
+   procedure Tcl_DeleteHashTable (tablePtr : not null Tcl_HashTable);
    pragma Import (C, Tcl_DeleteHashTable, "Tcl_DeleteHashTable");
 
    --  110
 
-   procedure Tcl_DeleteInterp (interp : in Tcl_Interp);
+   procedure Tcl_DeleteInterp (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_DeleteInterp, "Tcl_DeleteInterp");
 
    --  UNIX
 
    --  111
 
-   procedure Tcl_DetachPids (numPids : in C.int; pidPtr : in Tcl_Pid);
+   procedure Tcl_DetachPids (numPids : in C.int; pidPtr : not null Tcl_Pid);
    pragma Import (C, Tcl_DetachPids, "Tcl_DetachPids");
 
    --  UNIX
@@ -2581,19 +2584,20 @@ package Tcl is
 
    --  112
 
-   procedure Tcl_DeleteTimerHandler (token : in Tcl_TimerToken);
+   procedure Tcl_DeleteTimerHandler (token : not null Tcl_TimerToken);
    pragma Import (C, Tcl_DeleteTimerHandler, "Tcl_DeleteTimerHandler");
 
    --  113
 
-   procedure Tcl_DeleteTrace (interp : in Tcl_Interp; trace : in Tcl_Trace);
+   procedure Tcl_DeleteTrace (interp : not null Tcl_Interp;
+                              trace : not null Tcl_Trace);
    pragma Import (C, Tcl_DeleteTrace, "Tcl_DeleteTrace");
 
    --  114
 
    procedure Tcl_DontCallWhenDeleted
-     (interp : in Tcl_Interp;
-      proc   : in Tcl_InterpDeleteProc;
+     (interp : not null Tcl_Interp;
+      proc   : not null Tcl_InterpDeleteProc;
       data   : in ClientData);
    pragma Import (C, Tcl_DontCallWhenDeleted, "Tcl_DontCallWhenDeleted");
 
@@ -2604,13 +2608,14 @@ package Tcl is
 
    --  116
 
-   procedure Tcl_DoWhenIdle (proc : in Tcl_IdleProc; data : in ClientData);
+   procedure Tcl_DoWhenIdle (proc : not null Tcl_IdleProc;
+                             data : in ClientData);
    pragma Import (C, Tcl_DoWhenIdle, "Tcl_DoWhenIdle");
 
    --  117
 
    function Tcl_DStringAppend
-     (dsPtr  : in Tcl_DString;
+     (dsPtr  : not null Tcl_DString;
       str    : in C.Strings.chars_ptr;
       length : in C.int)
       return   C.Strings.chars_ptr;
@@ -2619,50 +2624,50 @@ package Tcl is
    --  118
 
    function Tcl_DStringAppendElement
-     (dsPtr : in Tcl_DString;
+     (dsPtr : not null Tcl_DString;
       strng : in C.Strings.chars_ptr)
       return  C.Strings.chars_ptr;
    pragma Import (C, Tcl_DStringAppendElement, "Tcl_DStringAppendElement");
 
    --  119
 
-   procedure Tcl_DStringEndSublist (dsPtr : in Tcl_DString);
+   procedure Tcl_DStringEndSublist (dsPtr : not null Tcl_DString);
    pragma Import (C, Tcl_DStringEndSublist, "Tcl_DStringEndSublist");
 
    --  120
 
-   procedure Tcl_DStringFree (dsPtr : in Tcl_DString);
+   procedure Tcl_DStringFree (dsPtr : not null Tcl_DString);
    pragma Import (C, Tcl_DStringFree, "Tcl_DStringFree");
 
    --  121
 
    procedure Tcl_DStringGetResult
-     (interp : in Tcl_Interp;
-      dsPtr  : in Tcl_DString);
+     (interp : not null Tcl_Interp;
+      dsPtr  : not null Tcl_DString);
    pragma Import (C, Tcl_DStringGetResult, "Tcl_DStringGetResult");
 
    --  122
 
-   procedure Tcl_DStringInit (dsPtr : in Tcl_DString);
+   procedure Tcl_DStringInit (dsPtr : not null Tcl_DString);
    pragma Import (C, Tcl_DStringInit, "Tcl_DStringInit");
 
    --  123
 
    procedure Tcl_DStringResult
-     (interp : in Tcl_Interp;
-      dsPtr  : in Tcl_DString);
+     (interp : not null Tcl_Interp;
+      dsPtr  : not null Tcl_DString);
    pragma Import (C, Tcl_DStringResult, "Tcl_DStringResult");
 
    --  124
 
    --  125
 
-   procedure Tcl_DStringStartSublist (dsPtr : in Tcl_DString);
+   procedure Tcl_DStringStartSublist (dsPtr : not null Tcl_DString);
    pragma Import (C, Tcl_DStringStartSublist, "Tcl_DStringStartSublist");
 
    --  126
 
-   function Tcl_Eof (chan : in Tcl_Channel) return C.int;
+   function Tcl_Eof (chan : not null Tcl_Channel) return C.int;
    pragma Import (C, Tcl_Eof, "Tcl_Eof");
 
    --  127
@@ -2678,7 +2683,7 @@ package Tcl is
    --  129
 
    function Tcl_Eval
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       strng  : in C.Strings.chars_ptr)
       return   C.int;
    pragma Import (C, Tcl_Eval, "Tcl_Eval");
@@ -2686,7 +2691,7 @@ package Tcl is
    --  130
 
    function Tcl_EvalFile
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       fileName : in C.Strings.chars_ptr)
       return     C.int;
    pragma Import (C, Tcl_EvalFile, "Tcl_EvalFile");
@@ -2694,8 +2699,8 @@ package Tcl is
    --  131
 
    function Tcl_EvalObj
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj)
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj)
       return   C.int;
    pragma Import (C, Tcl_EvalObj, "Tcl_EvalObj");
 
@@ -2703,7 +2708,7 @@ package Tcl is
 
    procedure Tcl_EventuallyFree
      (data     : in ClientData;
-      freeProc : in Tcl_FreeProc);
+      freeProc : not null Tcl_FreeProc);
    pragma Import (C, Tcl_EventuallyFree, "Tcl_EventuallyFree");
 
    --  133
@@ -2714,7 +2719,7 @@ package Tcl is
    --  134
 
    function Tcl_ExposeCommand
-     (interp         : in Tcl_Interp;
+     (interp         : not null Tcl_Interp;
       hiddenCmdToken : in C.Strings.chars_ptr;
       cmdName        : in C.Strings.chars_ptr)
       return           C.int;
@@ -2723,70 +2728,70 @@ package Tcl is
    --  135
 
    function Tcl_ExprBoolean
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       str    : in C.Strings.chars_ptr;
-      ptr    : access C.int)
+      ptr    : not null access C.int)
       return   C.int;
    pragma Import (C, Tcl_ExprBoolean, "Tcl_ExprBoolean");
 
    --  136
 
    function Tcl_ExprBooleanObj
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj;
-      ptr    : access C.int)
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj;
+      ptr    : not null access C.int)
       return   C.int;
    pragma Import (C, Tcl_ExprBooleanObj, "Tcl_ExprBooleanObj");
 
    --  137
 
    function Tcl_ExprDouble
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       str    : in C.Strings.chars_ptr;
-      ptr    : access C.double)
+      ptr    : not null access C.double)
       return   C.int;
    pragma Import (C, Tcl_ExprDouble, "Tcl_ExprDouble");
 
    --  138
 
    function Tcl_ExprDoubleObj
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj;
-      ptr    : access C.double)
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj;
+      ptr    : not null access C.double)
       return   C.int;
    pragma Import (C, Tcl_ExprDoubleObj, "Tcl_ExprDoubleObj");
 
    --  139
 
    function Tcl_ExprLong
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       str    : in C.Strings.chars_ptr;
-      ptr    : access C.long)
+      ptr    : not null access C.long)
       return   C.int;
    pragma Import (C, Tcl_ExprLong, "Tcl_ExprLong");
 
    --  140
 
    function Tcl_ExprLongObj
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj;
-      ptr    : access C.long)
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj;
+      ptr    : not null access C.long)
       return   C.int;
    pragma Import (C, Tcl_ExprLongObj, "Tcl_ExprLongObj");
 
    --  141
 
    function Tcl_ExprObj
-     (interp       : in Tcl_Interp;
-      objPtr       : in Tcl_Obj;
-      resultPtrPtr : access Tcl_Obj)
+     (interp       : not null Tcl_Interp;
+      objPtr       : not null Tcl_Obj;
+      resultPtrPtr : not null access Tcl_Obj)
       return         C.int;
    pragma Import (C, Tcl_ExprObj, "Tcl_ExprObj");
 
    --  142
 
    function Tcl_ExprString
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       strng  : in C.Strings.chars_ptr)
       return   C.int;
    pragma Import (C, Tcl_ExprString, "Tcl_ExprString");
@@ -2804,41 +2809,41 @@ package Tcl is
    --  145
 
    function Tcl_FirstHashEntry
-     (tablePtr  : in Tcl_HashTable;
-      searchPtr : in Tcl_HashSearch)
+     (tablePtr  : not null Tcl_HashTable;
+      searchPtr : not null Tcl_HashSearch)
       return      Tcl_HashEntry;
    pragma Import (C, Tcl_FirstHashEntry, "Tcl_FirstHashEntry");
 
    --  146
 
-   function Tcl_Flush (chan : in Tcl_Channel) return C.int;
+   function Tcl_Flush (chan : not null Tcl_Channel) return C.int;
    pragma Import (C, Tcl_Flush, "Tcl_Flush");
 
    --  147
 
-   procedure Tcl_FreeResult (interp : in Tcl_Interp);
+   procedure Tcl_FreeResult (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_FreeResult, "Tcl_FreeResult");
 
    --  148
 
    function Tcl_GetAlias
-     (interp          : in Tcl_Interp;
+     (interp          : not null Tcl_Interp;
       slaveCmd        : in C.Strings.chars_ptr;
-      targetInterpPtr : in Tcl_Interp;
+      targetInterpPtr : not null access Tcl_Interp;
       targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
-      argcPtr         : access C.int;
-      argvPtr         : access CArgv.Chars_Ptr_Ptr)
+      argcPtr         : not null access C.int;
+      argvPtr         : not null access CArgv.Chars_Ptr_Ptr)
       return            C.int;
    pragma Import (C, Tcl_GetAlias, "Tcl_GetAlias");
 
    --  149
 
    function Tcl_GetAliasObj
-     (interp          : in Tcl_Interp;
+     (interp          : not null Tcl_Interp;
       slaveCmd        : in C.Strings.chars_ptr;
-      targetInterpPtr : in Tcl_Interp;
+      targetInterpPtr : not null access Tcl_Interp;
       targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
-      objcPtr         : access C.int;
+      objcPtr         : not null access C.int;
       objv            : in Tcl_Obj_Array)
       return            C.int;
    pragma Import (C, Tcl_GetAliasObj, "Tcl_GetAliasObj");
@@ -2846,30 +2851,31 @@ package Tcl is
    --  150
 
    function Tcl_GetAssocData
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       name    : in C.Strings.chars_ptr;
-      procPtr : in Tcl_InterpDeleteProc)
+      procPtr : access Tcl_InterpDeleteProc)    -- can be null
       return    ClientData;
    pragma Import (C, Tcl_GetAssocData, "Tcl_GetAssocData");
 
    --  151
 
    function Tcl_GetChannel
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       chanName : in C.Strings.chars_ptr;
-      modePtr  : access C.int)
+      modePtr  : not null access C.int)
       return     Tcl_Channel;
    pragma Import (C, Tcl_GetChannel, "Tcl_GetChannel");
 
    --  152
 
-   function Tcl_GetChannelBufferSize (chan : in Tcl_Channel) return C.int;
+   function Tcl_GetChannelBufferSize
+     (chan : not null Tcl_Channel) return C.int;
    pragma Import (C, Tcl_GetChannelBufferSize, "Tcl_GetChannelBufferSize");
 
    --  153
 
    function Tcl_GetChannelHandle
-     (chan      : in Tcl_Channel;
+     (chan      : not null Tcl_Channel;
       direction : in C.int;
       handleptr : in ClientData)
       return      C.int;
@@ -2878,7 +2884,7 @@ package Tcl is
    --  154
 
    function Tcl_GetChannelInstanceData
-     (chan : in Tcl_Channel)
+     (chan : not null Tcl_Channel)
       return ClientData;
    pragma Import
      (C,
@@ -2887,47 +2893,47 @@ package Tcl is
 
    --  155
 
-   function Tcl_GetChannelMode (chan : in Tcl_Channel) return C.int;
+   function Tcl_GetChannelMode (chan : not null Tcl_Channel) return C.int;
    pragma Import (C, Tcl_GetChannelMode, "Tcl_GetChannelMode");
 
    --  156
 
    function Tcl_GetChannelName
-     (chan : in Tcl_Channel)
+     (chan : not null Tcl_Channel)
       return C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetChannelName, "Tcl_GetChannelName");
 
    --  157
 
    function Tcl_GetChannelOption
-     (interp     : in Tcl_Interp;
-      chan       : in Tcl_Channel;
+     (interp     : not null Tcl_Interp;
+      chan       : not null Tcl_Channel;
       optionName : in C.Strings.chars_ptr;
-      dsPtr      : in Tcl_DString)
+      dsPtr      : not null Tcl_DString)
       return       C.int;
    pragma Import (C, Tcl_GetChannelOption, "Tcl_GetChannelOption");
 
    --  158
 
    function Tcl_GetChannelType
-     (chan : in Tcl_Channel)
+     (chan : not null Tcl_Channel)
       return Tcl_ChannelType;
    pragma Import (C, Tcl_GetChannelType, "Tcl_GetChannelType");
 
    --  159
 
    function Tcl_GetCommandInfo
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       cmdName : in C.Strings.chars_ptr;
-      infoPtr : in Tcl_CmdInfo)
+      infoPtr : not null Tcl_CmdInfo)
       return    C.int;
    pragma Import (C, Tcl_GetCommandInfo, "Tcl_GetCommandInfo");
 
    --  160
 
    function Tcl_GetCommandName
-     (interp  : in Tcl_Interp;
-      command : in Tcl_Command)
+     (interp  : not null Tcl_Interp;
+      command : not null Tcl_Command)
       return    C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetCommandName, "Tcl_GetCommandName");
 
@@ -2944,14 +2950,14 @@ package Tcl is
    --  163
 
    function Tcl_GetInterpPath
-     (askInterp   : in Tcl_Interp;
-      slaveInterp : in Tcl_Interp)
+     (askInterp   : not null Tcl_Interp;
+      slaveInterp : not null Tcl_Interp)
       return        C.int;
    pragma Import (C, Tcl_GetInterpPath, "Tcl_GetInterpPath");
 
    --  164
 
-   function Tcl_GetMaster (interp : in Tcl_Interp) return Tcl_Interp;
+   function Tcl_GetMaster (interp : not null Tcl_Interp) return Tcl_Interp;
    pragma Import (C, Tcl_GetMaster, "Tcl_GetMaster");
 
    --  165
@@ -2969,7 +2975,7 @@ package Tcl is
    --  167
 
    procedure Tcl_GetOpenFile
-     (interp     : in Tcl_Interp;
+     (interp     : not null Tcl_Interp;
       str        : in C.Strings.chars_ptr;
       forWriting : in C.int;
       checkUsage : in C.int;
@@ -2988,23 +2994,23 @@ package Tcl is
    function Tcl_GetRefCount (objPtr : in Tcl_Obj) return C.int;
 
    function Tcl_GetResult
-     (interp : in Tcl_Interp)
+     (interp : not null Tcl_Interp)
       return   C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetResult, "Tcl_GetStringResult");
 
    --  169
 
    function Tcl_Gets
-     (chan  : in Tcl_Channel;
-      dsPtr : in Tcl_DString)
+     (chan  : not null Tcl_Channel;
+      dsPtr : not null Tcl_DString)
       return  C.int;
    pragma Import (C, Tcl_Gets, "Tcl_Gets");
 
    --  170
 
    function Tcl_GetsObj
-     (chan   : in Tcl_Channel;
-      objPtr : in Tcl_Obj)
+     (chan   : not null Tcl_Channel;
+      objPtr : not null Tcl_Obj)
       return   C.int;
    pragma Import (C, Tcl_GetsObj, "Tcl_GetsObj");
 
@@ -3016,7 +3022,7 @@ package Tcl is
    --  172
 
    function Tcl_GetSlave
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       slaveName : in C.Strings.chars_ptr)
       return      Tcl_Interp;
    pragma Import (C, Tcl_GetSlave, "Tcl_GetSlave");
@@ -3029,14 +3035,14 @@ package Tcl is
    --  174
 
    function Tcl_GetStringResult
-     (interp : in Tcl_Interp)
+     (interp : not null Tcl_Interp)
       return   C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetStringResult, "Tcl_GetStringResult");
 
    --  175
 
    function Tcl_GetVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       varName : in C.Strings.chars_ptr;
       flags   : in C.int)
       return    C.Strings.chars_ptr;
@@ -3045,7 +3051,7 @@ package Tcl is
    --  176
 
    function Tcl_GetVar2
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       part1  : in C.Strings.chars_ptr;
       part2  : in C.Strings.chars_ptr;
       flags  : in C.int)
@@ -3055,7 +3061,7 @@ package Tcl is
    --  177
 
    function Tcl_GlobalEval
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       command : in C.Strings.chars_ptr)
       return    C.int;
    pragma Import (C, Tcl_GlobalEval, "Tcl_GlobalEval");
@@ -3063,15 +3069,15 @@ package Tcl is
    --  178
 
    function Tcl_GlobalEvalObj
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj)
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj)
       return   C.int;
    pragma Import (C, Tcl_GlobalEvalObj, "Tcl_GlobalEvalObj");
 
    --  179
 
    function Tcl_HideCommand
-     (interp         : in Tcl_Interp;
+     (interp         : not null Tcl_Interp;
       cmdName        : in C.Strings.chars_ptr;
       hiddenCmdToken : in C.Strings.chars_ptr)
       return           C.int;
@@ -3079,34 +3085,34 @@ package Tcl is
 
    --  180
 
-   function Tcl_Init (interp : in Tcl_Interp) return C.int;
+   function Tcl_Init (interp : not null Tcl_Interp) return C.int;
    pragma Import (C, Tcl_Init, "Tcl_Init");
 
    --  181
 
    procedure Tcl_InitHashTable
-     (tablePtr : in Tcl_HashTable;
+     (tablePtr : not null Tcl_HashTable;
       keyType  : in C.int);
    pragma Import (C, Tcl_InitHashTable, "Tcl_InitHashTable");
 
    --  182
 
-   function Tcl_InputBlocked (chan : in Tcl_Channel) return C.int;
+   function Tcl_InputBlocked (chan : not null Tcl_Channel) return C.int;
    pragma Import (C, Tcl_InputBlocked, "Tcl_InputBlocked");
 
    --  183
 
-   function Tcl_InputBuffered (chan : in Tcl_Channel) return C.int;
+   function Tcl_InputBuffered (chan : not null Tcl_Channel) return C.int;
    pragma Import (C, Tcl_InputBuffered, "Tcl_InputBuffered");
 
    --  184
 
-   function Tcl_InterpDeleted (interp : in Tcl_Interp) return C.int;
+   function Tcl_InterpDeleted (interp : not null Tcl_Interp) return C.int;
    pragma Import (C, Tcl_InterpDeleted, "Tcl_InterpDeleted");
 
    --  185
 
-   function Tcl_IsSafe (interp : in Tcl_Interp) return C.int;
+   function Tcl_IsSafe (interp : not null Tcl_Interp) return C.int;
    pragma Import (C, Tcl_IsSafe, "Tcl_IsSafe");
 
    --  186
@@ -3114,14 +3120,14 @@ package Tcl is
    function Tcl_JoinPath
      (argc      : in C.int;
       argv      : in CArgv.Chars_Ptr_Ptr;
-      resultPtr : in Tcl_DString)
+      resultPtr : not null Tcl_DString)
       return      C.Strings.chars_ptr;
    pragma Import (C, Tcl_JoinPath, "Tcl_JoinPath");
 
    --  187
 
    function Tcl_LinkVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       varName : in C.Strings.chars_ptr;
       addr    : in System.Address;
       typ     : in C.int)
@@ -3140,7 +3146,7 @@ package Tcl is
 
    --  190
 
-   function Tcl_MakeSafe (interp : in Tcl_Interp) return C.int;
+   function Tcl_MakeSafe (interp : not null Tcl_Interp) return C.int;
    pragma Import (C, Tcl_MakeSafe, "Tcl_MakeSafe");
 
    --  191
@@ -3161,21 +3167,22 @@ package Tcl is
    --  193
 
    function Tcl_NextHashEntry
-     (searchPtr : in Tcl_HashSearch)
+     (searchPtr : not null Tcl_HashSearch)
       return      Tcl_HashEntry;
    pragma Import (C, Tcl_NextHashEntry, "Tcl_NextHashEntry");
 
    --  194
 
-   procedure Tcl_NotifyChannel (channel : in Tcl_Channel; mask : in C.int);
+   procedure Tcl_NotifyChannel (channel : not null Tcl_Channel;
+                                mask : in C.int);
    pragma Import (C, Tcl_NotifyChannel, "Tcl_NotifyChannel");
 
    --  195
 
    function Tcl_ObjGetVar2
-     (interp   : in Tcl_Interp;
-      part1Ptr : in Tcl_Obj;
-      part2Ptr : in Tcl_Obj;
+     (interp   : not null Tcl_Interp;
+      part1Ptr : not null Tcl_Obj;
+      part2Ptr : not null Tcl_Obj;
       flags    : in C.int)
       return     Tcl_Obj;
    pragma Import (C, Tcl_ObjGetVar2, "Tcl_ObjGetVar2");
@@ -3183,10 +3190,10 @@ package Tcl is
    --  196
 
    function Tcl_ObjSetVar2
-     (interp      : in Tcl_Interp;
-      part1Ptr    : in Tcl_Obj;
-      part2Ptr    : in Tcl_Obj;
-      newValuePtr : in Tcl_Obj;
+     (interp      : not null Tcl_Interp;
+      part1Ptr    : not null Tcl_Obj;
+      part2Ptr    : not null Tcl_Obj;
+      newValuePtr : not null Tcl_Obj;
       flags       : in C.int)
       return        Tcl_Obj;
    pragma Import (C, Tcl_ObjSetVar2, "Tcl_ObjSetVar2");
@@ -3196,7 +3203,7 @@ package Tcl is
    --  197
 
    function Tcl_OpenCommandChannel
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       argc   : in C.int;
       argv   : in CArgv.Chars_Ptr_Ptr;
       flags  : in C.int)
@@ -3210,7 +3217,7 @@ package Tcl is
    --  198
 
    function Tcl_OpenFileChannel
-     (interp      : in Tcl_Interp;
+     (interp      : not null Tcl_Interp;
       fileName    : in C.Strings.chars_ptr;
       modeString  : in C.Strings.chars_ptr;
       permissions : in C.int)
@@ -3220,7 +3227,7 @@ package Tcl is
    --  199
 
    function Tcl_OpenTcpClient
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       port    : in C.int;
       address : in System.Address;
       myaddr  : in System.Address;
@@ -3232,10 +3239,10 @@ package Tcl is
    --  200
 
    function Tcl_OpenTcpServer
-     (interp       : in Tcl_Interp;
+     (interp       : not null Tcl_Interp;
       port         : in C.int;
       host         : in C.Strings.chars_ptr;
-      acceptProc   : in Tcl_TcpAcceptProc;
+      acceptProc   : not null Tcl_TcpAcceptProc;
       callbackdata : in ClientData)
       return         Tcl_Channel;
    pragma Import (C, Tcl_OpenTcpServer, "Tcl_OpenTcpServer");
@@ -3248,7 +3255,7 @@ package Tcl is
    --  202
 
    procedure Tcl_PrintDouble
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       value  : in C.double;
       dst    : in C.Strings.chars_ptr);
    pragma Import (C, Tcl_PrintDouble, "Tcl_PrintDouble");
@@ -3263,21 +3270,21 @@ package Tcl is
    --  204
 
    function Tcl_PosixError
-     (interp : in Tcl_Interp)
+     (interp : not null Tcl_Interp)
       return   C.Strings.chars_ptr;
    pragma Import (C, Tcl_PosixError, "Tcl_PosixError");
 
    --  205
 
    procedure Tcl_QueueEvent
-     (evPtr    : in Tcl_Event;
+     (evPtr    : not null Tcl_Event;
       position : in Tcl_QueuePosition);
    pragma Import (C, Tcl_QueueEvent, "Tcl_QueueEvent");
 
    --  206
 
    function Tcl_Read
-     (chan   : in Tcl_Channel;
+     (chan   : not null Tcl_Channel;
       bufPtr : in C.Strings.chars_ptr;
       toRead : in C.int)
       return   C.int;
@@ -3297,7 +3304,7 @@ package Tcl is
    --  208
 
    function Tcl_RecordAndEval
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       cmd    : in C.Strings.chars_ptr;
       flags  : in C.int)
       return   C.int;
@@ -3306,8 +3313,8 @@ package Tcl is
    --  209
 
    function Tcl_RecordAndEvalObj
-     (interp : in Tcl_Interp;
-      cmdPtr : in Tcl_Obj;
+     (interp : not null Tcl_Interp;
+      cmdPtr : not null Tcl_Obj;
       flags  : in C.int)
       return   C.int;
    pragma Import (C, Tcl_RecordAndEvalObj, "Tcl_RecordAndEvalObj");
@@ -3315,19 +3322,19 @@ package Tcl is
    --  210
 
    procedure Tcl_RegisterChannel
-     (interp : in Tcl_Interp;
-      chan   : in Tcl_Channel);
+     (interp : not null Tcl_Interp;
+      chan   : not null Tcl_Channel);
    pragma Import (C, Tcl_RegisterChannel, "Tcl_RegisterChannel");
 
    --  211
 
-   procedure Tcl_RegisterObjType (typePtr : in Tcl_ObjType);
+   procedure Tcl_RegisterObjType (typePtr : not null Tcl_ObjType);
    pragma Import (C, Tcl_RegisterObjType, "Tcl_RegisterObjType");
 
    --  212
 
    function Tcl_RegExpCompile
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       strng  : in C.Strings.chars_ptr)
       return   Tcl_RegExp;
    pragma Import (C, Tcl_RegExpCompile, "Tcl_RegExpCompile");
@@ -3335,8 +3342,8 @@ package Tcl is
    --  213
 
    function Tcl_RegExpExec
-     (interp : in Tcl_Interp;
-      regexp : in Tcl_RegExp;
+     (interp : not null Tcl_Interp;
+      regexp : not null Tcl_RegExp;
       str    : in C.Strings.chars_ptr;
       start  : in C.Strings.chars_ptr)
       return   C.int;
@@ -3345,7 +3352,7 @@ package Tcl is
    --  214
 
    function Tcl_RegExpMatch
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       str     : in C.Strings.chars_ptr;
       pattern : in C.Strings.chars_ptr)
       return    C.int;
@@ -3354,7 +3361,7 @@ package Tcl is
    --  215
 
    procedure Tcl_RegExpRange
-     (regexp   : in Tcl_RegExp;
+     (regexp   : not null Tcl_RegExp;
       index    : in C.int;
       startPtr : in CArgv.Chars_Ptr_Ptr;
       endPtr   : in CArgv.Chars_Ptr_Ptr);
@@ -3367,14 +3374,14 @@ package Tcl is
 
    --  217
 
-   procedure Tcl_ResetResult (interp : in Tcl_Interp);
+   procedure Tcl_ResetResult (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_ResetResult, "Tcl_ResetResult");
 
    --  218
 
    function Tcl_ScanElement
      (str     : in C.Strings.chars_ptr;
-      flagPtr : access C.int)
+      flagPtr : not null access C.int)
       return    C.int;
    pragma Import (C, Tcl_ScanElement, "Tcl_ScanElement");
 
@@ -3383,14 +3390,14 @@ package Tcl is
    function Tcl_ScanCountedElement
      (str     : in C.Strings.chars_ptr;
       length  : in C.int;
-      flagPtr : access C.int)
+      flagPtr : not null access C.int)
       return    C.int;
    pragma Import (C, Tcl_ScanCountedElement, "Tcl_ScanCountedElement");
 
    --  220
 
    function Tcl_Seek
-     (chan   : in Tcl_Channel;
+     (chan   : not null Tcl_Channel;
       offset : in C.int;
       mode   : in C.int)
       return   C.int;
@@ -3409,24 +3416,24 @@ package Tcl is
    --  223
 
    procedure Tcl_SetAssocData
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       name   : in C.Strings.chars_ptr;
-      proc   : in Tcl_InterpDeleteProc;
+      proc   : not null Tcl_InterpDeleteProc;
       data   : in ClientData);
    pragma Import (C, Tcl_SetAssocData, "Tcl_SetAssocData");
 
    --  224
 
    procedure Tcl_SetChannelBufferSize
-     (chan : in Tcl_Channel;
+     (chan : not null Tcl_Channel;
       sz   : in C.int);
    pragma Import (C, Tcl_SetChannelBufferSize, "Tcl_SetChannelBufferSize");
 
    --  225
 
    function Tcl_SetChannelOption
-     (interp     : in Tcl_Interp;
-      chan       : in Tcl_Channel;
+     (interp     : not null Tcl_Interp;
+      chan       : not null Tcl_Channel;
       optionName : in C.Strings.chars_ptr;
       newValue   : in C.Strings.chars_ptr)
       return       C.int;
@@ -3435,9 +3442,9 @@ package Tcl is
    --  226
 
    function Tcl_SetCommandInfo
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       cmdName : in C.Strings.chars_ptr;
-      infoPtr : in Tcl_CmdInfo)
+      infoPtr : not null Tcl_CmdInfo)
       return    C.int;
    pragma Import (C, Tcl_SetCommandInfo, "Tcl_SetCommandInfo");
 
@@ -3449,7 +3456,7 @@ package Tcl is
    --  228
 
    procedure Tcl_SetErrorCode
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
@@ -3462,18 +3469,18 @@ package Tcl is
 
    --  229
 
-   procedure Tcl_SetMaxBlockTime (timePtr : in Tcl_Time);
+   procedure Tcl_SetMaxBlockTime (timePtr : not null Tcl_Time);
    pragma Import (C, Tcl_SetMaxBlockTime, "Tcl_SetMaxBlockTime");
 
    --  230
 
-   procedure Tcl_SetPanicProc (panicProc : in Tcl_PanicProc);
+   procedure Tcl_SetPanicProc (panicProc : not null Tcl_PanicProc);
    pragma Import (C, Tcl_SetPanicProc, "Tcl_SetPanicProc");
 
    --  231
 
    function Tcl_SetRecursionLimit
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       depth  : in C.int)
       return   C.int;
    pragma Import (C, Tcl_SetRecursionLimit, "Tcl_SetRecursionLimit");
@@ -3481,12 +3488,12 @@ package Tcl is
    --  232
 
    procedure Tcl_SetResult
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       str      : in C.Strings.chars_ptr;
-      freeProc : in Tcl_FreeProc);
+      freeProc : not null Tcl_FreeProc);
 
    procedure Tcl_SetResult
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       str      : in C.Strings.chars_ptr;
       freeProc : in C.int);
    pragma Import (C, Tcl_Setresult, "Tcl_SetResult");
@@ -3499,26 +3506,27 @@ package Tcl is
    --  234
 
    procedure Tcl_SetObjErrorCode
-     (interp      : in Tcl_Interp;
-      errorObjPtr : in Tcl_Obj);
+     (interp      : not null Tcl_Interp;
+      errorObjPtr : not null Tcl_Obj);
    pragma Import (C, Tcl_SetObjErrorCode, "Tcl_SetObjErrorCode");
 
    --  235
 
    procedure Tcl_SetObjResult
-     (interp       : in Tcl_Interp;
-      resultObjPtr : in Tcl_Obj);
+     (interp       : not null Tcl_Interp;
+      resultObjPtr : not null Tcl_Obj);
    pragma Import (C, Tcl_SetObjResult, "Tcl_SetObjResult");
 
    --  236
 
-   procedure Tcl_SetStdChannel (channel : in Tcl_Channel; typ : in C.int);
+   procedure Tcl_SetStdChannel (channel : not null Tcl_Channel;
+                                typ : in C.int);
    pragma Import (C, Tcl_SetStdChannel, "Tcl_SetStdChannel");
 
    --  237
 
    function Tcl_SetVar
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       varName  : in C.Strings.chars_ptr;
       newValue : in C.Strings.chars_ptr;
       flags    : in C.int)
@@ -3528,7 +3536,7 @@ package Tcl is
    --  238
 
    function Tcl_SetVar2
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       part1    : in C.Strings.chars_ptr;
       part2    : in C.Strings.chars_ptr;
       newValue : in C.Strings.chars_ptr;
@@ -3548,16 +3556,16 @@ package Tcl is
 
    --  241
 
-   procedure Tcl_SourceRCFile (interp : in Tcl_Interp);
+   procedure Tcl_SourceRCFile (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_SourceRCFile, "Tcl_SourceRCFile");
 
    --  242
 
    function Tcl_SplitList
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       listStr : in C.Strings.chars_ptr;
-      argcPtr : access C.int;
-      argvPtr : access CArgv.Chars_Ptr_Ptr)
+      argcPtr : not null access C.int;
+      argvPtr : not null access CArgv.Chars_Ptr_Ptr)
       return    C.int;
    pragma Import (C, Tcl_SplitList, "Tcl_SplitList");
 
@@ -3565,17 +3573,17 @@ package Tcl is
 
    procedure Tcl_SplitPath
      (path    : in C.Strings.chars_ptr;
-      argcPtr : access C.int;
-      argvPtr : access CArgv.Chars_Ptr_Ptr);
+      argcPtr : not null access C.int;
+      argvPtr : not null access CArgv.Chars_Ptr_Ptr);
    pragma Import (C, Tcl_SplitPath, "Tcl_SplitPath");
 
    --  244
 
    procedure Tcl_StaticPackage
-     (interp       : in Tcl_Interp;
+     (interp       : Tcl_Interp;               -- can be null
       pkgName      : in C.Strings.chars_ptr;
-      initProc     : in Tcl_PackageInitProc;
-      safeInitProc : in Tcl_PackageInitProc);
+      initProc     : not null Tcl_PackageInitProc;
+      safeInitProc : Tcl_PackageInitProc);     -- can be null
    pragma Import (C, Tcl_StaticPackage, "Tcl_StaticPackage");
 
    --  245
@@ -3588,27 +3596,27 @@ package Tcl is
 
    --  246
 
-   function Tcl_Tell (chan : in Tcl_Channel) return C.int;
+   function Tcl_Tell (chan : not null Tcl_Channel) return C.int;
    pragma Import (C, Tcl_Tell, "Tcl_Tell");
 
    --  247
 
    procedure Tcl_TraceVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       varName : in C.Strings.chars_ptr;
       flags   : in C.int;
-      proc    : in Tcl_VarTraceProc;
+      proc    : not null Tcl_VarTraceProc;
       data    : in ClientData);
    pragma Import (C, Tcl_TraceVar, "Tcl_TraceVar");
 
    --  248
 
    procedure Tcl_TraceVar2
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       part1  : in C.Strings.chars_ptr;
       part2  : in C.Strings.chars_ptr;
       flags  : in C.int;
-      proc   : in Tcl_VarTraceProc;
+      proc   : not null Tcl_VarTraceProc;
       data   : in ClientData);
    pragma Import (C, Tcl_TraceVar2, "Tcl_TraceVar2");
 
@@ -3617,7 +3625,7 @@ package Tcl is
    --  250
 
    function Tcl_Ungets
-     (chan   : in Tcl_Channel;
+     (chan   : not null Tcl_Channel;
       str    : in C.Strings.chars_ptr;
       len    : in C.int;
       atHead : in C.int)
@@ -3627,22 +3635,22 @@ package Tcl is
    --  251
 
    procedure Tcl_UnlinkVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       varName : in C.Strings.chars_ptr);
    pragma Import (C, Tcl_UnlinkVar, "Tcl_UnlinkVar");
 
    --  252
 
    function Tcl_UnregisterChannel
-     (interp : in Tcl_Interp;
-      chan   : in Tcl_Channel)
+     (interp : not null Tcl_Interp;
+      chan   : not null Tcl_Channel)
       return   C.int;
    pragma Import (C, Tcl_UnregisterChannel, "Tcl_UnregisterChannel");
 
    --  253
 
    function Tcl_UnsetVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       varName : in C.Strings.chars_ptr;
       flags   : in C.int)
       return    C.int;
@@ -3651,7 +3659,7 @@ package Tcl is
    --  254
 
    function Tcl_UnsetVar2
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       part1  : in C.Strings.chars_ptr;
       part2  : in C.Strings.chars_ptr;
       flags  : in C.int)
@@ -3661,35 +3669,35 @@ package Tcl is
    --  255
 
    procedure Tcl_UntraceVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       varName : in C.Strings.chars_ptr;
       flags   : in C.int;
-      proc    : in Tcl_VarTraceProc;
+      proc    : not null Tcl_VarTraceProc;
       data    : in ClientData);
    pragma Import (C, Tcl_UntraceVar, "Tcl_UntraceVar");
 
    --  256
 
    procedure Tcl_UntraceVar2
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       part1  : in C.Strings.chars_ptr;
       part2  : in C.Strings.chars_ptr;
       flags  : in C.int;
-      proc   : in Tcl_VarTraceProc;
+      proc   : not null Tcl_VarTraceProc;
       data   : in ClientData);
    pragma Import (C, Tcl_UntraceVar2, "Tcl_UntraceVar2");
 
    --  257
 
    procedure Tcl_UpdateLinkedVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       varName : in C.Strings.chars_ptr);
    pragma Import (C, Tcl_UpdateLinkedVar, "Tcl_UpdateLinkedVar");
 
    --  258
 
    function Tcl_UpVar
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       frameName : in C.Strings.chars_ptr;
       varName   : in C.Strings.chars_ptr;
       localName : in C.Strings.chars_ptr;
@@ -3700,7 +3708,7 @@ package Tcl is
    --  259
 
    function Tcl_UpVar2
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       frameName : in C.Strings.chars_ptr;
       part1     : in C.Strings.chars_ptr;
       part2     : in C.Strings.chars_ptr;
@@ -3712,7 +3720,7 @@ package Tcl is
    --  260
 
    function Tcl_VarEval
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
@@ -3727,10 +3735,10 @@ package Tcl is
    --  261
 
    function Tcl_VarTraceInfo
-     (interp         : in Tcl_Interp;
+     (interp         : not null Tcl_Interp;
       varName        : in C.Strings.chars_ptr;
       flags          : in C.int;
-      procPtr        : in Tcl_VarTraceProc;
+      procPtr        : not null Tcl_VarTraceProc;
       prevclientdata : in ClientData)
       return           ClientData;
    pragma Import (C, Tcl_VarTraceInfo, "Tcl_VarTraceInfo");
@@ -3738,11 +3746,11 @@ package Tcl is
    --  262
 
    function Tcl_VarTraceInfo2
-     (interp         : in Tcl_Interp;
+     (interp         : not null Tcl_Interp;
       part1          : in C.Strings.chars_ptr;
       part2          : in C.Strings.chars_ptr;
       flags          : in C.int;
-      procPtr        : in Tcl_VarTraceProc;
+      procPtr        : not null Tcl_VarTraceProc;
       prevclientdata : in ClientData)
       return           ClientData;
    pragma Import (C, Tcl_VarTraceInfo2, "Tcl_VarTraceInfo2");
@@ -3750,7 +3758,7 @@ package Tcl is
    --  263
 
    function Tcl_Write
-     (chan : in Tcl_Channel;
+     (chan : not null Tcl_Channel;
       s    : in C.Strings.chars_ptr;
       slen : in C.int)
       return C.int;
@@ -3759,7 +3767,7 @@ package Tcl is
    --  264
 
    procedure Tcl_WrongNumArgs
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       objc    : in C.int;
       objv    : in Tcl_Obj_Array;
       message : in C.Strings.chars_ptr);
@@ -3786,14 +3794,14 @@ package Tcl is
    --  269
 
    function Tcl_HashStats
-     (tablePtr : in Tcl_HashTable)
+     (tablePtr : not null Tcl_HashTable)
       return     C.Strings.chars_ptr;
    pragma Import (C, Tcl_HashStats, "Tcl_HashStats");
 
    --  270
 
    function Tcl_ParseVar
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       str     : in C.Strings.chars_ptr;
       termPtr : in CArgv.Chars_Ptr_Ptr)
       return    C.Strings.chars_ptr;
@@ -3802,7 +3810,7 @@ package Tcl is
    --  271
 
    function Tcl_PkgPresent
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       name    : in C.Strings.chars_ptr;
       version : in C.Strings.chars_ptr;
       exact   : in C.int)
@@ -3812,18 +3820,18 @@ package Tcl is
    --  272
 
    function Tcl_PkgPresentEx
-     (interp        : in Tcl_Interp;
+     (interp        : not null Tcl_Interp;
       name          : in C.Strings.chars_ptr;
       version       : in C.Strings.chars_ptr;
       exact         : in C.int;
-      clientdataptr : in ClientData)
+      clientdataptr : access ClientData)    -- can be null
       return          C.Strings.chars_ptr;
    pragma Import (C, Tcl_PkgPresentEx, "Tcl_PkgPresentEx");
 
    --  273
 
    function Tcl_PkgProvide
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       name    : in C.Strings.chars_ptr;
       version : in C.Strings.chars_ptr)
       return    C.int;
@@ -3832,7 +3840,7 @@ package Tcl is
    --  274
 
    function Tcl_PkgRequire
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       name    : in C.Strings.chars_ptr;
       version : in C.Strings.chars_ptr;
       exact   : in C.int)
@@ -3846,8 +3854,8 @@ package Tcl is
    --  277
 
    function Tcl_WaitPid
-     (pid     : in Tcl_Pid;
-      statPtr : access C.int;
+     (pid     : not null Tcl_Pid;
+      statPtr : not null access C.int;
       options : in C.int)
       return    Tcl_Pid;
    pragma Import (C, Tcl_WaitPid, "Tcl_WaitPid");
@@ -3863,39 +3871,40 @@ package Tcl is
    --  279
 
    procedure Tcl_GetVersion
-     (major      : access C.int;
-      minor      : access C.int;
-      patchLevel : access C.int;
-      typ        : access C.int);
+     (major      : not null access C.int;
+      minor      : not null access C.int;
+      patchLevel : not null access C.int;
+      typ        : not null access C.int);
    pragma Import (C, Tcl_GetVersion, "Tcl_GetVersion");
 
    --  280
 
-   procedure Tcl_InitMemory (interp : in Tcl_Interp);
+   procedure Tcl_InitMemory (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_InitMemory, "Tcl_InitMemory");
 
    --  281
 
+   --  XXX outdated?
    function Tcl_StackChannel
-     (interp       : in Tcl_Interp;
-      typePtr      : in Tcl_ChannelType;
+     (interp       : not null Tcl_Interp;
+      typePtr      : not null Tcl_ChannelType;
       instancedata : in ClientData;
       mask         : in C.int;
-      prevChan     : in Tcl_Channel)
+      prevChan     : not null Tcl_Channel)
       return         Tcl_Channel;
    pragma Import (C, Tcl_StackChannel, "Tcl_StackChannel");
 
    --  282
 
    procedure Tcl_UnstackChannel
-     (interp : in Tcl_Interp;
-      chan   : in Tcl_Channel);
+     (interp : not null Tcl_Interp;
+      chan   : not null Tcl_Channel);
    pragma Import (C, Tcl_UnstackChannel, "Tcl_UnstackChannel");
 
    --  283
 
    function Tcl_GetStackedChannel
-     (chan : in Tcl_Channel)
+     (chan : not null Tcl_Channel)
       return Tcl_Channel;
    pragma Import (C, Tcl_GetStackedChannel, "Tcl_GetStackedChannel");
 
@@ -3906,21 +3915,21 @@ package Tcl is
    --  286
 
    procedure Tcl_AppendObjToObj
-     (objPtr       : in Tcl_Obj;
-      appendObjPtr : in Tcl_Obj);
+     (objPtr       : not null Tcl_Obj;
+      appendObjPtr : not null Tcl_Obj);
    pragma Import (C, Tcl_AppendObjToObj, "Tcl_AppendObjToObj");
 
    --  287
 
    function Tcl_CreateEncoding
-     (typePtr : in Tcl_EncodingType)
+     (typePtr : not null Tcl_EncodingType)
       return    Tcl_Encoding;
    pragma Import (C, Tcl_CreateEncoding, "Tcl_CreateEncoding");
 
    --  288
 
    procedure Tcl_CreateThreadExitHandler
-     (proc : in Tcl_ExitProc;
+     (proc : not null Tcl_ExitProc;
       data : in ClientData);
    pragma Import
      (C,
@@ -3930,7 +3939,7 @@ package Tcl is
    --  289
 
    procedure Tcl_DeleteThreadExitHandler
-     (proc : in Tcl_ExitProc;
+     (proc : not null Tcl_ExitProc;
       data : in ClientData);
    pragma Import
      (C,
@@ -3939,13 +3948,13 @@ package Tcl is
 
    --  290
 
-   procedure Tcl_DiscardResult (statePtr : in Tcl_SavedResult);
+   procedure Tcl_DiscardResult (statePtr : not null Tcl_SavedResult);
    pragma Import (C, Tcl_DiscardResult, "Tcl_DiscardResult");
 
    --  291
 
    function Tcl_EvalEx
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       script   : in C.Strings.chars_ptr;
       numBytes : in C.int;
       flags    : in C.int)
@@ -3955,7 +3964,7 @@ package Tcl is
    --  292
 
    function Tcl_EvalObjv
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       objc   : in C.int;
       objv   : in Tcl_Obj_Array;
       flags  : in C.int)
@@ -3965,8 +3974,8 @@ package Tcl is
    --  293
 
    function Tcl_EvalObjEx
-     (interp : in Tcl_Interp;
-      objPtr : in Tcl_Obj;
+     (interp : not null Tcl_Interp;
+      objPtr : not null Tcl_Obj;
       flags  : in C.int)
       return   C.int;
    pragma Import (C, Tcl_EvalObjEx, "Tcl_EvalObjEx");
@@ -3979,27 +3988,27 @@ package Tcl is
    --  295
 
    function Tcl_ExternalToUtf
-     (interp      : in Tcl_Interp;
-      encoding    : in Tcl_Encoding;
+     (interp      : not null Tcl_Interp;
+      encoding    : not null Tcl_Encoding;
       src         : in C.Strings.chars_ptr;
       srcLen      : in C.int;
       flags       : in C.int;
-      statePtr    : in Tcl_EncodingState;
+      statePtr    : not null Tcl_EncodingState;
       dst         : in C.Strings.chars_ptr;
       dstLen      : in C.int;
-      srcReadPtr  : access C.int;
-      dstWrotePtr : access C.int;
-      dstCharsPtr : access C.int)
+      srcReadPtr  : access C.int;    -- can be null
+      dstWrotePtr : access C.int;    -- can be null
+      dstCharsPtr : access C.int)    -- can be null
       return        C.int;
    pragma Import (C, Tcl_ExternalToUtf, "Tcl_ExternalToUtf");
 
    --  296
 
    function Tcl_ExternalToUtfDString
-     (encoding : in Tcl_Encoding;
+     (encoding : not null Tcl_Encoding;
       src      : in C.Strings.chars_ptr;
       srcLen   : in C.int;
-      dsPtr    : in Tcl_DString)
+      dsPtr    : not null Tcl_DString)
       return     C.Strings.chars_ptr;
    pragma Import (C, Tcl_ExternalToUtfDString, "Tcl_ExternalToUtfDString");
 
@@ -4015,7 +4024,7 @@ package Tcl is
 
    --  299
 
-   procedure Tcl_FreeEncoding (encoding : in Tcl_Encoding);
+   procedure Tcl_FreeEncoding (encoding : not null Tcl_Encoding);
    pragma Import (C, Tcl_FreeEncoding, "Tcl_FreeEncoding");
 
    --  300
@@ -4026,7 +4035,7 @@ package Tcl is
    --  301
 
    function Tcl_GetEncoding
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       name   : in C.Strings.chars_ptr)
       return   Tcl_Encoding;
    pragma Import (C, Tcl_GetEncoding, "Tcl_GetEncoding");
@@ -4034,39 +4043,39 @@ package Tcl is
    --  302
 
    function Tcl_GetEncodingName
-     (encoding : in Tcl_Encoding)
+     (encoding : not null Tcl_Encoding)
       return     C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetEncodingName, "Tcl_GetEncodingName");
 
    --  303
 
-   procedure Tcl_GetEncodingNames (interp : in Tcl_Interp);
+   procedure Tcl_GetEncodingNames (interp : not null Tcl_Interp);
    pragma Import (C, Tcl_GetEncodingNames, "Tcl_GetEncodingNames");
 
    --  304
 
    function Tcl_GetIndexFromObjStruct
-     (interp   : in Tcl_Interp;
-      objPtr   : in Tcl_Obj;
+     (interp   : not null Tcl_Interp;
+      objPtr   : not null Tcl_Obj;
       tablePtr : in CArgv.Chars_Ptr_Ptr;
       offset   : in C.int;
       msg      : in C.Strings.chars_ptr;
       flags    : in C.int;
-      indexPtr : access C.int)
+      indexPtr : not null access C.int)
       return     C.int;
    pragma Import (C, Tcl_GetIndexFromObjStruct, "Tcl_GetIndexFromObjStruct");
 
    --  305
 
    procedure Tcl_GetThreadData
-     (keyPtr : in Tcl_ThreadDataKey;
+     (keyPtr : not null Tcl_ThreadDataKey;
       size   : in C.int);
    pragma Import (C, Tcl_GetThreadData, "Tcl_GetThreadData");
 
    --  306
 
    function Tcl_GetVar2Ex
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       part1  : in C.Strings.chars_ptr;
       part2  : in C.Strings.chars_ptr;
       flags  : in C.int)
@@ -4080,24 +4089,24 @@ package Tcl is
 
    --  308
 
-   procedure Tcl_MutexLock (mutexPtr : in Tcl_Mutex);
+   procedure Tcl_MutexLock (mutexPtr : not null Tcl_Mutex);
    pragma Import (C, Tcl_MutexLock, "Tcl_MutexLock");
 
    --  309
 
-   procedure Tcl_MutexUnlock (mutexPtr : in Tcl_Mutex);
+   procedure Tcl_MutexUnlock (mutexPtr : not null Tcl_Mutex);
    pragma Import (C, Tcl_MutexUnlock, "Tcl_MutexUnlock");
 
    --  310
 
-   procedure Tcl_ConditionNotify (condPtr : in Tcl_Condition);
+   procedure Tcl_ConditionNotify (condPtr : not null Tcl_Condition);
    pragma Import (C, Tcl_ConditionNotify, "Tcl_ConditionNotify");
 
    --  311
 
    procedure Tcl_ConditionWait
-     (condPtr  : in Tcl_Condition;
-      mutexPtr : in Tcl_Mutex;
+     (condPtr  : not null Tcl_Condition;
+      mutexPtr : not null Tcl_Mutex;
       timePtr  : in Tcl_Time);
    pragma Import (C, Tcl_ConditionWait, "Tcl_ConditionWait");
 
@@ -4112,8 +4121,8 @@ package Tcl is
    --  313
 
    function Tcl_ReadChars
-     (channel     : in Tcl_Channel;
-      objPtr      : in Tcl_Obj;
+     (channel     : not null Tcl_Channel;
+      objPtr      : not null Tcl_Obj;
       charsToRead : in C.int;
       appendFlag  : in C.int)
       return        C.int;
@@ -4122,21 +4131,21 @@ package Tcl is
    --  314
 
    procedure Tcl_RestoreResult
-     (interp   : in Tcl_Interp;
-      statePtr : in Tcl_SavedResult);
+     (interp   : not null Tcl_Interp;
+      statePtr : not null Tcl_SavedResult);
    pragma Import (C, Tcl_RestoreResult, "Tcl_RestoreResult");
 
    --  315
 
    procedure Tcl_SaveResult
-     (interp   : in Tcl_Interp;
-      statePtr : in Tcl_SavedResult);
+     (interp   : not null Tcl_Interp;
+      statePtr : not null Tcl_SavedResult);
    pragma Import (C, Tcl_SaveResult, "Tcl_SaveResult");
 
    --  316
 
    function Tcl_SetSystemEncoding
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       name   : in C.Strings.chars_ptr)
       return   C.int;
    pragma Import (C, Tcl_SetSystemEncoding, "Tcl_SetSystemEncoding");
@@ -4144,24 +4153,24 @@ package Tcl is
    --  317
 
    function Tcl_SetVar2Ex
-     (interp      : in Tcl_Interp;
+     (interp      : not null Tcl_Interp;
       part1       : in C.Strings.chars_ptr;
       part2       : in C.Strings.chars_ptr;
-      newValuePtr : in Tcl_Obj;
+      newValuePtr : not null Tcl_Obj;
       flags       : in C.int)
       return        Tcl_Obj;
    pragma Import (C, Tcl_SetVar2Ex, "Tcl_SetVar2Ex");
 
    --  318
 
-   procedure Tcl_ThreadAlert (threadId : in Tcl_ThreadId);
+   procedure Tcl_ThreadAlert (threadId : not null Tcl_ThreadId);
    pragma Import (C, Tcl_ThreadAlert, "Tcl_ThreadAlert");
 
    --  319
 
    procedure Tcl_ThreadQueueEvent
-     (threadId : in Tcl_ThreadId;
-      evPtr    : in Tcl_Event;
+     (threadId : not null Tcl_ThreadId;
+      evPtr    : not null Tcl_Event;
       position : in Tcl_QueuePosition);
    pragma Import (C, Tcl_ThreadQueueEvent, "Tcl_ThreadQueueEvent");
 
@@ -4216,7 +4225,7 @@ package Tcl is
 
    function Tcl_UtfBackslash
      (src     : in C.Strings.chars_ptr;
-      readPtr : access C.int;
+      readPtr : access C.int;               -- can be null
       dst     : in C.Strings.chars_ptr)
       return    C.int;
    pragma Import (C, Tcl_UtfBackslash, "Tcl_UtfBackslash");
@@ -4255,27 +4264,27 @@ package Tcl is
    --  332
 
    function Tcl_UtfToExternal
-     (interp      : in Tcl_Interp;
-      encoding    : in Tcl_Encoding;
+     (interp      : not null Tcl_Interp;
+      encoding    : not null Tcl_Encoding;
       src         : in C.Strings.chars_ptr;
       srcLen      : in C.int;
       flags       : in C.int;
-      statePtr    : in Tcl_EncodingState;
+      statePtr    : not null Tcl_EncodingState;
       dst         : in C.Strings.chars_ptr;
       dstLen      : in C.int;
-      srcReadPtr  : access C.int;
-      dstWrotePtr : access C.int;
-      dstCharsPtr : access C.int)
+      srcReadPtr  : access C.int;    -- can be null
+      dstWrotePtr : access C.int;    -- can be null
+      dstCharsPtr : access C.int)    -- can be null
       return        C.int;
    pragma Import (C, Tcl_UtfToExternal, "Tcl_UtfToExternal");
 
    --  333
 
    function Tcl_UtfToExternalDString
-     (encoding : in Tcl_Encoding;
+     (encoding : not null Tcl_Encoding;
       src      : in C.Strings.chars_ptr;
       srcLen   : in C.int;
-      dsPtr    : in Tcl_DString)
+      dsPtr    : not null Tcl_DString)
       return     C.Strings.chars_ptr;
    pragma Import (C, Tcl_UtfToExternalDString, "Tcl_UtfToExternalDString");
 
@@ -4293,7 +4302,7 @@ package Tcl is
 
    function Tcl_UtfToUniChar
      (src   : in C.Strings.chars_ptr;
-      chPtr : in Tcl_UniChar)
+      chPtr : not null access Tcl_UniChar)
       return  C.int;
    pragma Import (C, Tcl_UtfToUniChar, "Tcl_UtfToUniChar");
 
@@ -4305,7 +4314,7 @@ package Tcl is
    --  338
 
    function Tcl_WriteChars
-     (chan   : in Tcl_Channel;
+     (chan   : not null Tcl_Channel;
       src    : in C.Strings.chars_ptr;
       srcLen : in C.int)
       return   C.int;
@@ -4314,14 +4323,15 @@ package Tcl is
    --  339
 
    function Tcl_WriteObj
-     (chan   : in Tcl_Channel;
-      objPtr : in Tcl_Obj)
+     (chan   : not null Tcl_Channel;
+      objPtr : not null Tcl_Obj)
       return   C.int;
    pragma Import (C, Tcl_WriteObj, "Tcl_WriteObj");
 
    --  340
 
-   function Tcl_GetString (objPtr : in Tcl_Obj) return C.Strings.chars_ptr;
+   function Tcl_GetString
+     (objPtr : not null Tcl_Obj) return C.Strings.chars_ptr;
    pragma Import (C, Tcl_GetString, "Tcl_GetString");
 
    --  341
@@ -4396,9 +4406,9 @@ package Tcl is
    --  354
 
    function Tcl_UniCharToUtfDString
-     (strng    : in Tcl_UniChar;
+     (strng    : in C.Strings.chars_ptr;
       numChars : in C.int;
-      dsPtr    : in Tcl_DString)
+      dsPtr    : not null Tcl_DString)
       return     C.Strings.chars_ptr;
    pragma Import (C, Tcl_UniCharToUtfDString, "Tcl_UniCharToUtfDString");
 
@@ -4407,15 +4417,15 @@ package Tcl is
    function Tcl_UtfToUniCharDString
      (strng  : in C.Strings.chars_ptr;
       length : in C.int;
-      dsPtr  : in Tcl_DString)
-      return   Tcl_UniChar;
+      dsPtr  : not null Tcl_DString)
+      return   C.Strings.chars_ptr;
    pragma Import (C, Tcl_UtfToUniCharDString, "Tcl_UtfToUniCharDString");
 
    --  356
 
    function Tcl_GetRegExpFromObj
-     (interp : in Tcl_Interp;
-      patObj : in Tcl_Obj;
+     (interp : not null Tcl_Interp;
+      patObj : not null Tcl_Obj;
       flags  : in C.int)
       return   Tcl_RegExp;
    pragma Import (C, Tcl_GetRegExpFromObj, "Tcl_GetRegExpFromObj");
@@ -4423,21 +4433,21 @@ package Tcl is
    --  357
 
    function Tcl_EvalTokens
-     (interp   : in Tcl_Interp;
-      tokenPtr : in Tcl_Token;
+     (interp   : not null Tcl_Interp;
+      tokenPtr : not null Tcl_Token;
       count    : in C.int)
       return     Tcl_Obj;
    pragma Import (C, Tcl_EvalTokens, "Tcl_EvalTokens");
 
    --  358
 
-   procedure Tcl_FreeParse (parsePtr : in Tcl_Parse);
+   procedure Tcl_FreeParse (parsePtr : not null Tcl_Parse);
    pragma Import (C, Tcl_FreeParse, "Tcl_FreeParse");
 
    --  359
 
    procedure Tcl_LogCommandInfo
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       script  : in C.Strings.chars_ptr;
       command : in C.Strings.chars_ptr;
       length  : in C.int);
@@ -4446,10 +4456,10 @@ package Tcl is
    --  360
 
    function Tcl_ParseBraces
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       strng    : in C.Strings.chars_ptr;
       numBytes : in C.int;
-      parsePtr : in Tcl_Parse;
+      parsePtr : not null Tcl_Parse;
       append   : in C.int;
       termPtr  : in CArgv.Chars_Ptr_Ptr)
       return     C.int;
@@ -4458,31 +4468,31 @@ package Tcl is
    --  361
 
    function Tcl_ParseCommand
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       strng    : in C.Strings.chars_ptr;
       numBytes : in C.int;
       nested   : in C.int;
-      parsePtr : in Tcl_Parse)
+      parsePtr : not null Tcl_Parse)
       return     C.int;
    pragma Import (C, Tcl_ParseCommand, "Tcl_ParseCommand");
 
    --  362
 
    function Tcl_ParseExpr
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       strng    : in C.Strings.chars_ptr;
       numBytes : in C.int;
-      parsePtr : in Tcl_Parse)
+      parsePtr : not null Tcl_Parse)
       return     C.int;
    pragma Import (C, Tcl_ParseExpr, "Tcl_ParseExpr");
 
    --  363
 
    function Tcl_ParseQuotedString
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       strng    : in C.Strings.chars_ptr;
       numBytes : in C.int;
-      parsePtr : in Tcl_Parse;
+      parsePtr : not null Tcl_Parse;
       append   : in C.int;
       termPtr  : in CArgv.Chars_Ptr_Ptr)
       return     C.int;
@@ -4491,10 +4501,10 @@ package Tcl is
    --  364
 
    function Tcl_ParseVarName
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       strng    : in C.Strings.chars_ptr;
       numBytes : in C.int;
-      parsePtr : in Tcl_Parse;
+      parsePtr : not null Tcl_Parse;
       append   : in C.int)
       return     C.int;
    pragma Import (C, Tcl_ParseVarName, "Tcl_ParseVarName");
@@ -4569,9 +4579,9 @@ package Tcl is
    --  376
 
    function Tcl_RegExpExecObj
-     (interp   : in Tcl_Interp;
-      regexp   : in Tcl_RegExp;
-      objPtr   : in Tcl_Obj;
+     (interp   : not null Tcl_Interp;
+      regexp   : not null Tcl_RegExp;
+      objPtr   : not null Tcl_Obj;
       offset   : in C.int;
       nmatches : in C.int;
       flags    : in C.int)
@@ -4581,8 +4591,8 @@ package Tcl is
    --  377
 
    procedure Tcl_RegExpGetInfo
-     (regexp  : in Tcl_RegExp;
-      infoPtr : in Tcl_RegExpInfo);
+     (regexp  : not null Tcl_RegExp;
+      infoPtr : not null Tcl_RegExpInfo);
    pragma Import (C, Tcl_RegExpGetInfo, "Tcl_RegExpGetInfo");
 
    --  378
@@ -4596,33 +4606,33 @@ package Tcl is
    --  379
 
    procedure Tcl_SetUnicodeObj
-     (objPtr   : in Tcl_Obj;
+     (objPtr   : not null Tcl_Obj;
       unicode  : in Tcl_UniChar;
       numChars : in C.int);
    pragma Import (C, Tcl_SetUnicodeObj, "Tcl_SetUnicodeObj");
 
    --  380
 
-   function Tcl_GetCharLength (objPtr : in Tcl_Obj) return C.int;
+   function Tcl_GetCharLength (objPtr : not null Tcl_Obj) return C.int;
    pragma Import (C, Tcl_GetCharLength, "Tcl_GetCharLength");
 
    --  381
 
    function Tcl_GetUniChar
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       index  : in C.int)
       return   Tcl_UniChar;
    pragma Import (C, Tcl_GetUniChar, "Tcl_GetUniChar");
 
    --  382
 
-   function Tcl_GetUnicode (objPtr : in Tcl_Obj) return Tcl_UniChar;
+   function Tcl_GetUnicode (objPtr : not null Tcl_Obj) return Tcl_UniChar;
    pragma Import (C, Tcl_GetUnicode, "Tcl_GetUnicode");
 
    --  383
 
    function Tcl_GetRange
-     (objPtr : in Tcl_Obj;
+     (objPtr : not null Tcl_Obj;
       first  : in C.int;
       last   : in C.int)
       return   Tcl_Obj;
@@ -4631,7 +4641,7 @@ package Tcl is
    --  384
 
    procedure Tcl_AppendUnicodeToObj
-     (objPtr  : in Tcl_Obj;
+     (objPtr  : not null Tcl_Obj;
       unicode : in Tcl_UniChar;
       length  : in C.int);
    pragma Import (C, Tcl_AppendUnicodeToObj, "Tcl_AppendUnicodeToObj");
@@ -4639,15 +4649,15 @@ package Tcl is
    --  385
 
    function Tcl_RegExpMatchObj
-     (interp     : in Tcl_Interp;
-      stringObj  : in Tcl_Obj;
-      patternObj : in Tcl_Obj)
+     (interp     : not null Tcl_Interp;
+      stringObj  : not null Tcl_Obj;
+      patternObj : not null Tcl_Obj)
       return       C.int;
    pragma Import (C, Tcl_RegExpMatchObj, "Tcl_RegExpMatchObj");
 
    --  386
 
-   procedure Tcl_SetNotifier (notifierProcPtr : in Tcl_NotifierProcs);
+   procedure Tcl_SetNotifier (notifierProcPtr : not null Tcl_NotifierProcs);
    pragma Import (C, Tcl_SetNotifier, "Tcl_SetNotifier");
 
    --  387
@@ -4663,7 +4673,7 @@ package Tcl is
    --  389
 
    function Tcl_GetChannelNamesEx
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       pattern : in C.Strings.chars_ptr)
       return    C.int;
    pragma Import (C, Tcl_GetChannelNamesEx, "Tcl_GetChannelNamesEx");
@@ -4672,7 +4682,7 @@ package Tcl is
 
    function Tcl_ProcObjCmd
      (data   : in ClientData;
-      interp : in Tcl_Interp;
+      interp : not null Tcl_Interp;
       objc   : in C.int;
       objv   : in Tcl_Obj_Array)
       return   C.int;
@@ -4689,7 +4699,7 @@ package Tcl is
    procedure Tcl_Main
      (argc        : in C.int;
       argv        : in CArgv.Chars_Ptr_Ptr;
-      appInitProc : in Tcl_AppInitProc);
+      appInitProc : not null Tcl_AppInitProc);
    pragma Import (C, Tcl_Main, "Tcl_Main");
 
    --
@@ -4698,7 +4708,7 @@ package Tcl is
    --  class is neither DLLEXPORT nor DLLIMPORT
    --
 
-   function Tcl_AppInit (interp : in Tcl_Interp) return C.int;
+   function Tcl_AppInit (interp : not null Tcl_Interp) return C.int;
    pragma Import (C, Tcl_AppInit, "Tcl_AppInit");
 
    --

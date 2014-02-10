@@ -28,6 +28,8 @@
 --
 --------------------------------------------------------------------
 
+pragma Ada_2005;
+
 with Ada.Text_IO;
 
 package body Tcl is
@@ -47,7 +49,7 @@ package body Tcl is
    pragma Import (C, AppendStringsToObj, "Tcl_AppendStringsToObj");
 
    procedure Tcl_AppendStringsToObj
-     (objPtr  : in Tcl_Obj;
+     (objPtr  : not null Tcl_Obj;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
@@ -87,7 +89,7 @@ package body Tcl is
    pragma Import (C, AppendResult, "Tcl_AppendResult");
 
    procedure Tcl_AppendResult
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
@@ -127,7 +129,7 @@ package body Tcl is
    pragma Import (C, SetErrorCode, "Tcl_SetErrorCode");
 
    procedure Tcl_SetErrorCode
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
@@ -168,7 +170,7 @@ package body Tcl is
    pragma Import (C, VarEval, "Tcl_VarEval");
 
    function Tcl_VarEval
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;

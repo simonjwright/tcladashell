@@ -35,6 +35,8 @@
 --
 --------------------------------------------------------------------
 
+pragma Ada_2005;
+
 with CHelper;
 
 package Tcl.Tk is
@@ -595,22 +597,23 @@ package Tcl.Tk is
    -- --------------------------------------------------------------
    --
 
-   function Tk_ScreenNumber (tkwin : in Tk_Window) return C.int;
+   function Tk_ScreenNumber (tkwin : not null Tk_Window) return C.int;
    pragma Import (C, Tk_ScreenNumber, "Tk_CallScreenNumber");
 
-   function Tk_Depth (tkwin : in Tk_Window) return C.int;
+   function Tk_Depth (tkwin : not null Tk_Window) return C.int;
    pragma Import (C, Tk_Depth, "Tk_CallDepth");
 
-   function Tk_PathName (tkwin : in Tk_Window) return C.Strings.chars_ptr;
+   function Tk_PathName
+     (tkwin : not null Tk_Window) return C.Strings.chars_ptr;
    pragma Import (C, Tk_PathName, "Tk_CallPathName");
 
-   function Tk_Name (tkwin : in Tk_Window) return Tk_Uid;
+   function Tk_Name (tkwin : not null Tk_Window) return Tk_Uid;
    pragma Import (C, Tk_Name, "Tk_CallName");
 
-   function Tk_Class (tkwin : in Tk_Window) return Tk_Uid;
+   function Tk_Class (tkwin : not null Tk_Window) return Tk_Uid;
    pragma Import (C, Tk_Class, "Tk_CallClass");
 
-   function Tk_Parent (tkwin : in Tk_Window) return Tk_Window;
+   function Tk_Parent (tkwin : not null Tk_Window) return Tk_Window;
    pragma Import (C, Tk_Parent, "Tk_CallParent");
 
    --
@@ -1277,11 +1280,11 @@ package Tcl.Tk is
    --  a photo image.
    --
 
-   procedure Tk_CreateOldImageType (typePtr : in Tk_ImageType);
+   procedure Tk_CreateOldImageType (typePtr : not null Tk_ImageType);
    pragma Import (C, Tk_CreateOldImageType, "Tk_CreateOldImageType");
 
    procedure Tk_CreateOldPhotoImageFormat
-     (formatPtr : in Tk_PhotoImageFormat);
+     (formatPtr : not null Tk_PhotoImageFormat);
    pragma Import
      (C, Tk_CreateOldPhotoImageFormat, "Tk_CreateOldPhotoImageFormat");
 
@@ -1311,11 +1314,11 @@ package Tcl.Tk is
    procedure Tk_Main
      (argc : in C.int;
       argv : in CArgv.Chars_Ptr_Ptr;
-      proc : in Tcl_AppInitProc);
+      proc : not null Tcl_AppInitProc);
    pragma Import (C, Tk_Main, "Tk_CallMain");
 
    procedure Tk_InitImageArgs
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       argc   : in C.int;
       argv   : in CArgv.Chars_Ptr_Ptr);
    pragma Import (C, Tk_InitImageArgs, "Tk_InitImageArgs");
@@ -1393,7 +1396,7 @@ package Tcl.Tk is
    --  5
 
    procedure Tk_AddOption
-     (tkwin    : in Tk_Window;
+     (tkwin    : not null Tk_Window;
       name     : in C.Strings.chars_ptr;
       value    : in C.Strings.chars_ptr;
       priority : in C.int);
@@ -1404,7 +1407,7 @@ package Tcl.Tk is
    --  7
 
    procedure Tk_CanvasDrawableCoords
-     (canvas       : in Tk_Canvas;
+     (canvas       : not null Tk_Canvas;
       x            : in C.double;
       y            : in C.double;
       drawableXPtr : access C.short;
@@ -1414,7 +1417,7 @@ package Tcl.Tk is
    --  8
 
    procedure Tk_CanvasEventuallyRedraw
-     (canvas : in Tk_Canvas;
+     (canvas : not null Tk_Canvas;
       x1     : in C.int;
       y1     : in C.int;
       x2     : in C.int;
@@ -1424,8 +1427,8 @@ package Tcl.Tk is
    --  9
 
    function Tk_CanvasGetCoord
-     (interp    : in Tcl_Interp;
-      canvas    : in Tk_Canvas;
+     (interp    : not null Tcl_Interp;
+      canvas    : not null Tk_Canvas;
       str       : in C.Strings.chars_ptr;
       doublePtr : access C.double)
       return      C.int;
@@ -1434,7 +1437,7 @@ package Tcl.Tk is
    --  10
 
    function Tk_CanvasGetTextInfo
-     (canvas : in Tk_Canvas)
+     (canvas : not null Tk_Canvas)
       return   Tk_CanvasTextInfo;
    pragma Import (C, Tk_CanvasGetTextInfo, "Tk_CanvasGetTextInfo");
 
@@ -1445,17 +1448,17 @@ package Tcl.Tk is
    --  13
 
    function Tk_CanvasPsFont
-     (interp : in Tcl_Interp;
-      canvas : in Tk_Canvas;
-      font   : in Tk_Font)
+     (interp : not null Tcl_Interp;
+      canvas : not null Tk_Canvas;
+      font   : not null Tk_Font)
       return   C.int;
    pragma Import (C, Tk_CanvasPsFont, "Tk_CanvasPsFont");
 
    --  14
 
    procedure Tk_CanvasPsPath
-     (interp    : in Tcl_Interp;
-      canvas    : in Tk_Canvas;
+     (interp    : not null Tcl_Interp;
+      canvas    : not null Tk_Canvas;
       coordPtr  : access C.double;
       numPoints : in C.int);
    pragma Import (C, Tk_CanvasPsPath, "Tk_CanvasPsPath");
@@ -1465,7 +1468,7 @@ package Tcl.Tk is
    --  16
 
    function Tk_CanvasPsY
-     (canvas : in Tk_Canvas;
+     (canvas : not null Tk_Canvas;
       y      : in C.double)
       return   C.double;
    pragma Import (C, Tk_CanvasPsY, "Tk_CanvasPsY");
@@ -1476,8 +1479,8 @@ package Tcl.Tk is
 
    function Tk_CanvasTagsParseProc
      (data    : in ClientData;
-      interp  : in Tcl_Interp;
-      tkwin   : in Tk_Window;
+      interp  : not null Tcl_Interp;
+      tkwin   : not null Tk_Window;
       value   : in C.Strings.chars_ptr;
       widgRec : in C.Strings.chars_ptr;
       offset  : in C.int)
@@ -1488,22 +1491,22 @@ package Tcl.Tk is
 
    function Tk_CanvasTagsPrintProc
      (data        : in ClientData;
-      tkwin       : in Tk_Window;
+      tkwin       : not null Tk_Window;
       widgRec     : in C.Strings.chars_ptr;
       offset      : in C.int;
-      freeProcPtr : in Tcl_FreeProc)
+      freeProcPtr : in Tcl_FreeProc)          -- XXX
       return        C.Strings.chars_ptr;
    pragma Import (C, Tk_CanvasTagsPrintProc, "Tk_CanvasTagsPrintProc");
 
    --  20
 
-   function Tk_CanvasTkwin (canvas : in Tk_Canvas) return Tk_Window;
+   function Tk_CanvasTkwin (canvas : not null Tk_Canvas) return Tk_Window;
    pragma Import (C, Tk_CanvasTkwin, "Tk_CanvasTkwin");
 
    --  21
 
    procedure Tk_CanvasWindowCoords
-     (canvas     : in Tk_Canvas;
+     (canvas     : not null Tk_Canvas;
       x          : in C.double;
       y          : in C.double;
       screenXPtr : access C.short;
@@ -1515,7 +1518,7 @@ package Tcl.Tk is
    --  23
 
    function Tk_CharBbox
-     (layout    : in Tk_TextLayout;
+     (layout    : not null Tk_TextLayout;
       index     : in C.int;
       xPtr      : access C.int;
       yPtr      : access C.int;
@@ -1531,17 +1534,17 @@ package Tcl.Tk is
    --  26
 
    function Tk_ClipboardClear
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window)
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window)
       return   C.int;
    pragma Import (C, Tk_ClipboardClear, "Tk_ClipboardClear");
 
    --  27
 
    function Tk_ConfigureInfo
-     (interp   : in Tcl_Interp;
-      tkwin    : in Tk_Window;
-      specs    : in Tk_ConfigSpec;
+     (interp   : not null Tcl_Interp;
+      tkwin    : not null Tk_Window;
+      specs    : not null Tk_ConfigSpec;
       widgRec  : in C.Strings.chars_ptr;
       argvName : in C.Strings.chars_ptr;
       flags    : in C.int)
@@ -1551,9 +1554,9 @@ package Tcl.Tk is
    --  28
 
    function Tk_ConfigureValue
-     (interp   : in Tcl_Interp;
-      tkwin    : in Tk_Window;
-      specs    : in Tk_ConfigSpec;
+     (interp   : not null Tcl_Interp;
+      tkwin    : not null Tk_Window;
+      specs    : not null Tk_ConfigSpec;
       widgRec  : in C.Strings.chars_ptr;
       argvName : in C.Strings.chars_ptr;
       flags    : in C.int)
@@ -1563,9 +1566,9 @@ package Tcl.Tk is
    --  29
 
    function Tk_ConfigureWidget
-     (interp  : in Tcl_Interp;
-      tkwin   : in Tk_Window;
-      specs   : in Tk_ConfigSpec;
+     (interp  : not null Tcl_Interp;
+      tkwin   : not null Tk_Window;
+      specs   : not null Tk_ConfigSpec;
       argc    : in C.int;
       argv    : in CArgv.Chars_Ptr_Ptr;
       widgRec : in C.Strings.chars_ptr;
@@ -1578,7 +1581,7 @@ package Tcl.Tk is
    --  31
 
    function Tk_ComputeTextLayout
-     (font       : in Tk_Font;
+     (font       : not null Tk_Font;
       str        : in C.Strings.chars_ptr;
       numChars   : in C.int;
       wrapLength : in C.int;
@@ -1594,15 +1597,15 @@ package Tcl.Tk is
    function Tk_CoordsToWindow
      (rootX : in C.int;
       rootY : in C.int;
-      tkwin : in Tk_Window)
+      tkwin : not null Tk_Window)
       return  Tk_Window;
    pragma Import (C, Tk_CoordsToWindow, "Tk_CoordsToWindow");
 
    --  33
 
    function Tk_CreateBinding
-     (interp       : in Tcl_Interp;
-      bindingTable : in Tk_BindingTable;
+     (interp       : not null Tcl_Interp;
+      bindingTable : not null Tk_BindingTable;
       object       : in ClientData;
       eventStr     : in C.Strings.chars_ptr;
       command      : in C.Strings.chars_ptr;
@@ -1613,7 +1616,7 @@ package Tcl.Tk is
    --  34
 
    function Tk_CreateBindingTable
-     (interp : in Tcl_Interp)
+     (interp : not null Tcl_Interp)
       return   Tk_BindingTable;
    pragma Import (C, Tk_CreateBindingTable, "Tk_CreateBindingTable");
 
@@ -1625,17 +1628,18 @@ package Tcl.Tk is
 
    --  38
 
-   procedure Tk_CreateImageType (typePtr : in Tk_ImageType);
+   procedure Tk_CreateImageType (typePtr : not null Tk_ImageType);
    pragma Import (C, Tk_CreateImageType, "Tk_CreateImageType");
 
    --  39
 
-   procedure Tk_CreateItemType (typePtr : in Tk_ItemType);
+   procedure Tk_CreateItemType (typePtr : not null Tk_ItemType);
    pragma Import (C, Tk_CreateItemType, "Tk_CreateItemType");
 
    --  40
 
-   procedure Tk_CreatePhotoImageFormat (formatPtr : in Tk_PhotoImageFormat);
+   procedure Tk_CreatePhotoImageFormat
+     (formatPtr : not null Tk_PhotoImageFormat);
    pragma Import (C, Tk_CreatePhotoImageFormat, "Tk_CreatePhotoImageFormat");
 
    --  41
@@ -1643,8 +1647,8 @@ package Tcl.Tk is
    --  42
 
    function Tk_CreateWindow
-     (interp     : in Tcl_Interp;
-      parent     : in Tk_Window;
+     (interp     : not null Tcl_Interp;
+      parent     : not null Tk_Window;
       name       : in C.Strings.chars_ptr;
       screenName : in C.Strings.chars_ptr)
       return       Tk_Window;
@@ -1653,8 +1657,8 @@ package Tcl.Tk is
    --  43
 
    function Tk_CreateWindowFromPath
-     (interp     : in Tcl_Interp;
-      tkwin      : in Tk_Window;
+     (interp     : not null Tcl_Interp;
+      tkwin      : not null Tk_Window;
       pathName   : in C.Strings.chars_ptr;
       screenName : in C.Strings.chars_ptr)
       return       Tk_Window;
@@ -1663,7 +1667,7 @@ package Tcl.Tk is
    --  44
 
    function Tk_DefineBitmap
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       name   : in C.Strings.chars_ptr;
       source : in C.Strings.chars_ptr;
       width  : in C.int;
@@ -1673,21 +1677,22 @@ package Tcl.Tk is
 
    --  45
 
-   procedure Tk_DefineCursor (window : in Tk_Window; cursor : in Tk_Cursor);
+   procedure Tk_DefineCursor (window : not null Tk_Window;
+                              cursor : not null Tk_Cursor);
    pragma Import (C, Tk_DefineCursor, "Tk_DefineCursor");
 
    --  46
 
    procedure Tk_DeleteAllBindings
-     (bindingTable : in Tk_BindingTable;
+     (bindingTable : not null Tk_BindingTable;
       object       : in ClientData);
    pragma Import (C, Tk_DeleteAllBindings, "Tk_DeleteAllBindings");
 
    --  47
 
    function Tk_DeleteBinding
-     (interp       : in Tcl_Interp;
-      bindingTable : in Tk_BindingTable;
+     (interp       : not null Tcl_Interp;
+      bindingTable : not null Tk_BindingTable;
       object       : in ClientData;
       eventStr     : in C.Strings.chars_ptr)
       return         C.int;
@@ -1695,12 +1700,12 @@ package Tcl.Tk is
 
    --  48
 
-   procedure Tk_DeleteBindingTable (bindingTable : in Tk_BindingTable);
+   procedure Tk_DeleteBindingTable (bindingTable : not null Tk_BindingTable);
    pragma Import (C, Tk_DeleteBindingTable, "Tk_DeleteBindingTable");
 
    --  49
 
-   procedure Tk_DeleteErrorHandler (handler : in Tk_ErrorHandler);
+   procedure Tk_DeleteErrorHandler (handler : not null Tk_ErrorHandler);
    pragma Import (C, Tk_DeleteErrorHandler, "Tk_DeleteErrorHandler");
 
    --  50
@@ -1710,7 +1715,7 @@ package Tcl.Tk is
    --  52
 
    procedure Tk_DeleteImage
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       name   : in C.Strings.chars_ptr);
    pragma Import (C, Tk_DeleteImage, "Tk_DeleteImage");
 
@@ -1718,20 +1723,20 @@ package Tcl.Tk is
 
    --  54
 
-   procedure Tk_DestroyWindow (tkwin : in Tk_Window);
+   procedure Tk_DestroyWindow (tkwin : not null Tk_Window);
    pragma Import (C, Tk_DestroyWindow, "Tk_DestroyWindow");
 
    --  55
 
    function Tk_DisplayName
-     (tkwin : in Tk_Window)
+     (tkwin : not null Tk_Window)
       return  C.Strings.chars_ptr;
    pragma Import (C, Tk_DisplayName, "Tk_DisplayName");
 
    --  56
 
    function Tk_DistanceToTextLayout
-     (layout : in Tk_TextLayout;
+     (layout : not null Tk_TextLayout;
       x      : in C.int;
       y      : in C.int)
       return   C.int;
@@ -1754,7 +1759,7 @@ package Tcl.Tk is
    --  64
 
    function Tk_FindPhoto
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       imageName : in C.Strings.chars_ptr)
       return      Tk_PhotoHandle;
    pragma Import (C, Tk_FindPhoto, "Tk_FindPhoto");
@@ -1763,7 +1768,7 @@ package Tcl.Tk is
 
    --  66
 
-   procedure Tk_Free3DBorder (border : in Tk_3DBorder);
+   procedure Tk_Free3DBorder (border : not null Tk_3DBorder);
    pragma Import (C, Tk_Free3DBorder, "Tk_Free3DBorder");
 
    --  67
@@ -1776,14 +1781,14 @@ package Tcl.Tk is
 
    --  71
 
-   procedure Tk_FreeFont (f : in Tk_Font);
+   procedure Tk_FreeFont (f : not null Tk_Font);
    pragma Import (C, Tk_FreeFont, "Tk_FreeFont");
 
    --  72
 
    --  73
 
-   procedure Tk_FreeImage (image : in Tk_Image);
+   procedure Tk_FreeImage (image : not null Tk_Image);
    pragma Import (C, Tk_FreeImage, "Tk_FreeImage");
 
    --  74
@@ -1792,7 +1797,7 @@ package Tcl.Tk is
 
    --  76
 
-   procedure Tk_FreeTextLayout (textLayout : in Tk_TextLayout);
+   procedure Tk_FreeTextLayout (textLayout : not null Tk_TextLayout);
    pragma Import (C, Tk_FreeTextLayout, "Tk_FreeTextLayout");
 
    --  77
@@ -1802,7 +1807,7 @@ package Tcl.Tk is
    --  79
 
    procedure Tk_GeometryRequest
-     (tkwin     : in Tk_Window;
+     (tkwin     : not null Tk_Window;
       reqWidth  : in C.int;
       reqHeight : in C.int);
    pragma Import (C, Tk_GeometryRequest, "Tk_GeometryRequest");
@@ -1810,8 +1815,8 @@ package Tcl.Tk is
    --  80
 
    function Tk_Get3DBorder
-     (interp    : in Tcl_Interp;
-      tkwin     : in Tk_Window;
+     (interp    : not null Tcl_Interp;
+      tkwin     : not null Tk_Window;
       colorName : in Tk_Uid)
       return      Tk_3DBorder;
    pragma Import (C, Tk_Get3DBorder, "Tk_Get3DBorder");
@@ -1819,15 +1824,15 @@ package Tcl.Tk is
    --  81
 
    procedure Tk_GetAllBindings
-     (interp       : in Tcl_Interp;
-      bindingTable : in Tk_BindingTable;
+     (interp       : not null Tcl_Interp;
+      bindingTable : not null Tk_BindingTable;
       object       : in ClientData);
    pragma Import (C, Tk_GetAllBindings, "Tk_GetAllBindings");
 
    --  82
 
    function Tk_GetAnchor
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       str       : in C.Strings.chars_ptr;
       anchorPtr : in Tk_Anchor)
       return      C.int;
@@ -1838,8 +1843,8 @@ package Tcl.Tk is
    --  84
 
    function Tk_GetBinding
-     (interp       : in Tcl_Interp;
-      bindingTable : in Tk_BindingTable;
+     (interp       : not null Tcl_Interp;
+      bindingTable : not null Tk_BindingTable;
       object       : in ClientData;
       eventStr     : in C.Strings.chars_ptr)
       return         C.Strings.chars_ptr;
@@ -1852,7 +1857,7 @@ package Tcl.Tk is
    --  87
 
    function Tk_GetCapStyle
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       str    : in C.Strings.chars_ptr;
       capPtr : access C.int)
       return   C.int;
@@ -1867,8 +1872,8 @@ package Tcl.Tk is
    --  91
 
    function Tk_GetCursor
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
       str    : in Tk_Uid)
       return   Tk_Cursor;
    pragma Import (C, Tk_GetCursor, "Tk_GetCursor");
@@ -1876,8 +1881,8 @@ package Tcl.Tk is
    --  92
 
    function Tk_GetCursorFromData
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
       source : in C.Strings.chars_ptr;
       mask   : in C.Strings.chars_ptr;
       width  : in C.int;
@@ -1892,8 +1897,8 @@ package Tcl.Tk is
    --  93
 
    function Tk_GetFont
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
       str    : in C.Strings.chars_ptr)
       return   Tk_Font;
    pragma Import (C, Tk_GetFont, "Tk_GetFont");
@@ -1901,16 +1906,16 @@ package Tcl.Tk is
    --  94
 
    function Tk_GetFontFromObj
-     (tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj)
+     (tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj)
       return   Tk_Font;
    pragma Import (C, Tk_GetFontFromObj, "Tk_GetFontFromObj");
 
    --  95
 
    procedure Tk_GetFontMetrics
-     (font  : in Tk_Font;
-      fmPtr : in Tk_FontMetrics);
+     (font  : not null Tk_Font;
+      fmPtr : not null Tk_FontMetrics);
    pragma Import (C, Tk_GetFontMetrics, "Tk_GetFontMetrics");
 
    --  96
@@ -1918,10 +1923,10 @@ package Tcl.Tk is
    --  97
 
    function Tk_GetImage
-     (interp     : in Tcl_Interp;
-      tkwin      : in Tk_Window;
+     (interp     : not null Tcl_Interp;
+      tkwin      : not null Tk_Window;
       name       : in C.Strings.chars_ptr;
-      changeProc : in Tk_ImageChangedProc;
+      changeProc : not null Tk_ImageChangedProc;
       data       : in ClientData)
       return       Tk_Image;
    pragma Import (C, Tk_GetImage, "Tk_GetImage");
@@ -1929,9 +1934,9 @@ package Tcl.Tk is
    --  98
 
    function Tk_GetImageMasterData
-     (interp     : in Tcl_Interp;
+     (interp     : not null Tcl_Interp;
       name       : in C.Strings.chars_ptr;
-      typePtrPtr : in Tk_ImageType)
+      typePtrPtr : not null Tk_ImageType)
       return       ClientData;
    pragma Import (C, Tk_GetImageMasterData, "Tk_GetImageMasterData");
 
@@ -1943,7 +1948,7 @@ package Tcl.Tk is
    --  100
 
    function Tk_GetJoinStyle
-     (interp  : in Tcl_Interp;
+     (interp  : not null Tcl_Interp;
       str     : in C.Strings.chars_ptr;
       joinPtr : access C.int)
       return    C.int;
@@ -1952,7 +1957,7 @@ package Tcl.Tk is
    --  101
 
    function Tk_GetJustify
-     (interp     : in Tcl_Interp;
+     (interp     : not null Tcl_Interp;
       str        : in C.Strings.chars_ptr;
       justifyPtr : in Tk_Justify)
       return       C.int;
@@ -1966,7 +1971,7 @@ package Tcl.Tk is
    --  103
 
    function Tk_GetOption
-     (tkwin     : in Tk_Window;
+     (tkwin     : not null Tk_Window;
       name      : in C.Strings.chars_ptr;
       className : in C.Strings.chars_ptr)
       return      Tk_Uid;
@@ -1975,8 +1980,8 @@ package Tcl.Tk is
    --  104
 
    function Tk_GetPixels
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
       str    : in C.Strings.chars_ptr;
       intPtr : access C.int)
       return   C.int;
@@ -1987,7 +1992,7 @@ package Tcl.Tk is
    --  106
 
    function Tk_GetRelief
-     (interp    : in Tcl_Interp;
+     (interp    : not null Tcl_Interp;
       name      : in C.Strings.chars_ptr;
       reliefPtr : access C.int)
       return      C.int;
@@ -1996,7 +2001,7 @@ package Tcl.Tk is
    --  107
 
    procedure Tk_GetRootCoords
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       xPtr  : access C.int;
       yPtr  : access C.int);
    pragma Import (C, Tk_GetRootCoords, "Tk_GetRootCoords");
@@ -2004,7 +2009,7 @@ package Tcl.Tk is
    --  108
 
    function Tk_GetScrollInfo
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       argc   : in C.int;
       argv   : in CArgv.Chars_Ptr_Ptr;
       dblPtr : access C.double;
@@ -2015,8 +2020,8 @@ package Tcl.Tk is
    --  109
 
    function Tk_GetScreenMM
-     (interp    : in Tcl_Interp;
-      tkwin     : in Tk_Window;
+     (interp    : not null Tcl_Interp;
+      tkwin     : not null Tk_Window;
       str       : in C.Strings.chars_ptr;
       doublePtr : access C.double)
       return      C.int;
@@ -2034,7 +2039,7 @@ package Tcl.Tk is
    --  113
 
    procedure Tk_GetVRootGeometry
-     (tkwin     : in Tk_Window;
+     (tkwin     : not null Tk_Window;
       xPtr      : access C.int;
       yPtr      : access C.int;
       widthPtr  : access C.int;
@@ -2044,8 +2049,8 @@ package Tcl.Tk is
    --  114
 
    function Tk_Grab
-     (interp     : in Tcl_Interp;
-      tkwin      : in Tk_Window;
+     (interp     : not null Tcl_Interp;
+      tkwin      : not null Tk_Window;
       grabGlobal : in C.int)
       return       C.int;
    pragma Import (C, Tk_Grab, "Tk_Grab");
@@ -2057,7 +2062,7 @@ package Tcl.Tk is
    --  117
 
    procedure Tk_ImageChanged
-     (master      : in Tk_ImageMaster;
+     (master      : not null Tk_ImageMaster;
       x           : in C.int;
       y           : in C.int;
       width       : in C.int;
@@ -2068,7 +2073,9 @@ package Tcl.Tk is
 
    --  118
 
-   function Tk_Init (interp : in Tcl_Interp) return C.int;
+   function Tk_Init
+     (interp : Tcl_Interp)    -- can be null
+     return C.int;
    pragma Import (C, Tk_Init, "Tk_Init");
 
    --  119
@@ -2076,7 +2083,7 @@ package Tcl.Tk is
    --  120
 
    function Tk_IntersectTextLayout
-     (layout : in Tk_TextLayout;
+     (layout : not null Tk_TextLayout;
       x      : in C.int;
       y      : in C.int;
       width  : in C.int;
@@ -2087,8 +2094,8 @@ package Tcl.Tk is
    --  121
 
    procedure Tk_MaintainGeometry
-     (slave  : in Tk_Window;
-      master : in Tk_Window;
+     (slave  : not null Tk_Window;
+      master : not null Tk_Window;
       x      : in C.int;
       y      : in C.int;
       width  : in C.int;
@@ -2097,31 +2104,31 @@ package Tcl.Tk is
 
    --  122
 
-   function Tk_MainWindow (interp : in Tcl_Interp) return Tk_Window;
+   function Tk_MainWindow (interp : not null Tcl_Interp) return Tk_Window;
    pragma Import (C, Tk_MainWindow, "Tk_MainWindow");
 
    --  123
 
-   procedure Tk_MakeWindowExist (tkwin : in Tk_Window);
+   procedure Tk_MakeWindowExist (tkwin : not null Tk_Window);
    pragma Import (C, Tk_MakeWindowExist, "Tk_MakeWindowExist");
 
    --  124
 
    procedure Tk_ManageGeometry
-     (tkwin  : in Tk_Window;
-      mgrPtr : in Tk_GeomMgr;
+     (tkwin  : not null Tk_Window;
+      mgrPtr : not null Tk_GeomMgr;
       data   : in ClientData);
    pragma Import (C, Tk_ManageGeometry, "Tk_ManageGeometry");
 
    --  125
 
-   procedure Tk_MapWindow (tkwin : in Tk_Window);
+   procedure Tk_MapWindow (tkwin : not null Tk_Window);
    pragma Import (C, Tk_MapWindow, "Tk_MapWindow");
 
    --  126
 
    function Tk_MeasureChars
-     (tkfont    : in Tk_Font;
+     (tkfont    : not null Tk_Font;
       source    : in C.Strings.chars_ptr;
       numBytes  : in C.int;
       maxPixels : in C.int;
@@ -2133,7 +2140,7 @@ package Tcl.Tk is
    --  127
 
    procedure Tk_MoveResizeWindow
-     (tkwin  : in Tk_Window;
+     (tkwin  : not null Tk_Window;
       x      : in C.int;
       y      : in C.int;
       width  : in C.int;
@@ -2143,7 +2150,7 @@ package Tcl.Tk is
    --  128
 
    procedure Tk_MoveWindow
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       x     : in C.int;
       y     : in C.int);
    pragma Import (C, Tk_MoveWindow, "Tk_MoveWindow");
@@ -2151,7 +2158,7 @@ package Tcl.Tk is
    --  129
 
    procedure Tk_MoveToplevelWindow
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       x     : in C.int;
       y     : in C.int);
    pragma Import (C, Tk_MoveToplevelWindow, "Tk_MoveToplevelWindow");
@@ -2159,7 +2166,7 @@ package Tcl.Tk is
    --  130
 
    function Tk_NameOf3DBorder
-     (border : in Tk_3DBorder)
+     (border : not null Tk_3DBorder)
       return   C.Strings.chars_ptr;
    pragma Import (C, Tk_NameOf3DBorder, "Tk_NameOf3DBorder");
 
@@ -2183,13 +2190,13 @@ package Tcl.Tk is
 
    --  136
 
-   function Tk_NameOfFont (font : in Tk_Font) return C.Strings.chars_ptr;
+   function Tk_NameOfFont (font : not null Tk_Font) return C.Strings.chars_ptr;
    pragma Import (C, Tk_NameOfFont, "Tk_NameOfFont");
 
    --  137
 
    function Tk_NameOfImage
-     (imageMaster : in Tk_ImageMaster)
+     (imageMaster : not null Tk_ImageMaster)
       return        C.Strings.chars_ptr;
    pragma Import (C, Tk_NameOfImage, "Tk_NameOfImage");
 
@@ -2213,9 +2220,9 @@ package Tcl.Tk is
    --  141
 
    function Tk_NameToWindow
-     (interp   : in Tcl_Interp;
+     (interp   : not null Tcl_Interp;
       pathName : in C.Strings.chars_ptr;
-      tkwin    : in Tk_Window)
+      tkwin    : not null Tk_Window)
       return     Tk_Window;
    pragma Import (C, Tk_NameToWindow, "Tk_NameToWindow");
 
@@ -2224,11 +2231,11 @@ package Tcl.Tk is
    --  143
 
    function Tk_ParseArgv
-     (interp   : in Tcl_Interp;
-      tkwin    : in Tk_Window;
+     (interp   : not null Tcl_Interp;
+      tkwin    : not null Tk_Window;
       argcPtr  : access C.int;
       argv     : in CArgv.Chars_Ptr_Ptr;
-      argTable : in Tk_ArgvInfo;
+      argTable : not null Tk_ArgvInfo;
       flags    : in C.int)
       return     C.int;
    pragma Import (C, Tk_ParseArgv, "Tk_ParseArgv");
@@ -2236,8 +2243,8 @@ package Tcl.Tk is
    --  144
 
    procedure Tk_PhotoPutBlock
-     (handle   : in Tk_PhotoHandle;
-      blockPtr : in Tk_PhotoImageBlock;
+     (handle   : not null Tk_PhotoHandle;
+      blockPtr : not null Tk_PhotoImageBlock;
       x        : in C.int;
       y        : in C.int;
       width    : in C.int;
@@ -2247,8 +2254,8 @@ package Tcl.Tk is
    --  145
 
    procedure Tk_PhotoPutZoomedBlock
-     (handle     : in Tk_PhotoHandle;
-      blockPtr   : in Tk_PhotoImageBlock;
+     (handle     : not null Tk_PhotoHandle;
+      blockPtr   : not null Tk_PhotoImageBlock;
       x          : in C.int;
       y          : in C.int;
       width      : in C.int;
@@ -2262,20 +2269,20 @@ package Tcl.Tk is
    --  146
 
    function Tk_PhotoGetImage
-     (handle   : in Tk_PhotoHandle;
-      blockPtr : in Tk_PhotoImageBlock)
+     (handle   : not null Tk_PhotoHandle;
+      blockPtr : not null Tk_PhotoImageBlock)
       return     C.int;
    pragma Import (C, Tk_PhotoGetImage, "Tk_PhotoGetImage");
 
    --  147
 
-   procedure Tk_PhotoBlank (handle : in Tk_PhotoHandle);
+   procedure Tk_PhotoBlank (handle : not null Tk_PhotoHandle);
    pragma Import (C, Tk_PhotoBlank, "Tk_PhotoBlank");
 
    --  148
 
    procedure Tk_PhotoExpand
-     (handle : in Tk_PhotoHandle;
+     (handle : not null Tk_PhotoHandle;
       width  : in C.int;
       height : in C.int);
    pragma Import (C, Tk_PhotoExpand, "Tk_PhotoExpand");
@@ -2283,7 +2290,7 @@ package Tcl.Tk is
    --  149
 
    procedure Tk_PhotoGetSize
-     (handle    : in Tk_PhotoHandle;
+     (handle    : not null Tk_PhotoHandle;
       widthPtr  : access C.int;
       heightPtr : access C.int);
    pragma Import (C, Tk_PhotoGetSize, "Tk_PhotoGetSize");
@@ -2291,7 +2298,7 @@ package Tcl.Tk is
    --  150
 
    procedure Tk_PhotoSetSize
-     (handle : in Tk_PhotoHandle;
+     (handle : not null Tk_PhotoHandle;
       width  : in C.int;
       height : in C.int);
    pragma Import (C, Tk_PhotoSetSize, "Tk_PhotoSetSize");
@@ -2299,7 +2306,7 @@ package Tcl.Tk is
    --  151
 
    function Tk_PointToChar
-     (layout : in Tk_TextLayout;
+     (layout : not null Tk_TextLayout;
       x      : in C.int;
       y      : in C.int)
       return   C.int;
@@ -2308,8 +2315,8 @@ package Tcl.Tk is
    --  152
 
    function Tk_PostscriptFontName
-     (tkfont : in Tk_Font;
-      dsPtr  : in Tcl_DString)
+     (tkfont : not null Tk_Font;
+      dsPtr  : not null Tcl_DString)
       return   C.int;
    pragma Import (C, Tk_PostscriptFontName, "Tk_PostscriptFontName");
 
@@ -2322,7 +2329,7 @@ package Tcl.Tk is
    --  156
 
    procedure Tk_ResizeWindow
-     (tkwin  : in Tk_Window;
+     (tkwin  : not null Tk_Window;
       width  : in C.int;
       height : in C.int);
    pragma Import (C, Tk_ResizeWindow, "Tk_ResizeWindow");
@@ -2330,9 +2337,9 @@ package Tcl.Tk is
    --  157
 
    function Tk_RestackWindow
-     (tkwin      : in Tk_Window;
+     (tkwin      : not null Tk_Window;
       aboveBelow : in C.int;
-      other      : in Tk_Window)
+      other      : not null Tk_Window)
       return       C.int;
    pragma Import (C, Tk_RestackWindow, "Tk_RestackWindow");
 
@@ -2340,13 +2347,15 @@ package Tcl.Tk is
 
    --  159
 
-   function Tk_SafeInit (interp : in Tcl_Interp) return C.int;
+   function Tk_SafeInit
+     (interp : Tcl_Interp)    -- can be null
+     return C.int;
    pragma Import (C, Tk_SafeInit, "Tk_SafeInit");
 
    --  160
 
    function Tk_SetAppName
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       name  : in C.Strings.chars_ptr)
       return  C.Strings.chars_ptr;
    pragma Import (C, Tk_SetAppName, "Tk_SetAppName");
@@ -2354,8 +2363,8 @@ package Tcl.Tk is
    --  161
 
    procedure Tk_SetBackgroundFromBorder
-     (tkwin  : in Tk_Window;
-      border : in Tk_3DBorder);
+     (tkwin  : not null Tk_Window;
+      border : not null Tk_3DBorder);
    pragma Import
      (C,
       Tk_SetBackgroundFromBorder,
@@ -2364,14 +2373,14 @@ package Tcl.Tk is
    --  162
 
    procedure Tk_SetClass
-     (tkwin     : in Tk_Window;
+     (tkwin     : not null Tk_Window;
       className : in C.Strings.chars_ptr);
    pragma Import (C, Tk_SetClass, "Tk_SetClass");
 
    --  163
 
    procedure Tk_SetGrid
-     (tkwin      : in Tk_Window;
+     (tkwin      : not null Tk_Window;
       reqWidth   : in C.int;
       reqHeight  : in C.int;
       gridWidth  : in C.int;
@@ -2380,13 +2389,14 @@ package Tcl.Tk is
 
    --  164
 
-   procedure Tk_SetInternalBorder (tkwin : in Tk_Window; width : in C.int);
+   procedure Tk_SetInternalBorder (tkwin : not null Tk_Window;
+                                   width : in C.int);
    pragma Import (C, Tk_SetInternalBorder, "Tk_SetInternalBorder");
 
    --  165
 
    procedure Tk_SetWindowBackground
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       pixel : in C.unsigned_long);
    pragma Import (C, Tk_SetWindowBackground, "Tk_SetWindowBackground");
 
@@ -2395,14 +2405,14 @@ package Tcl.Tk is
    --  167
 
    procedure Tk_SetWindowBorder
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       pixel : in C.unsigned_long);
    pragma Import (C, Tk_SetWindowBorder, "Tk_SetWindowBorder");
 
    --  168
 
    procedure Tk_SetWindowBorderWidth
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       width : in C.int);
    pragma Import (C, Tk_SetWindowBorderWidth, "Tk_SetWindowBorderWidth");
 
@@ -2417,27 +2427,27 @@ package Tcl.Tk is
    --  173
 
    procedure Tk_SizeOfImage
-     (image     : in Tk_Image;
+     (image     : not null Tk_Image;
       widthPtr  : access C.int;
       heightPtr : access C.int);
    pragma Import (C, Tk_SizeOfImage, "Tk_SizeOfImage");
 
    --  174
 
-   function Tk_StrictMotif (tkwin : in Tk_Window) return C.int;
+   function Tk_StrictMotif (tkwin : not null Tk_Window) return C.int;
    pragma Import (C, Tk_StrictMotif, "Tk_StrictMotif");
 
    --  175
 
    procedure Tk_TextLayoutToPostscript
-     (interp : in Tcl_Interp;
-      layout : in Tk_TextLayout);
+     (interp : not null Tcl_Interp;
+      layout : not null Tk_TextLayout);
    pragma Import (C, Tk_TextLayoutToPostscript, "Tk_TextLayoutToPostscript");
 
    --  176
 
    function Tk_TextWidth
-     (font     : in Tk_Font;
+     (font     : not null Tk_Font;
       str      : in C.Strings.chars_ptr;
       numBytes : in C.int)
       return     C.int;
@@ -2445,7 +2455,7 @@ package Tcl.Tk is
 
    --  177
 
-   procedure Tk_UndefineCursor (window : in Tk_Window);
+   procedure Tk_UndefineCursor (window : not null Tk_Window);
    pragma Import (C, Tk_UndefineCursor, "Tk_UndefineCursor");
 
    --  178
@@ -2454,30 +2464,30 @@ package Tcl.Tk is
 
    --  180
 
-   procedure Tk_Ungrab (tkwin : in Tk_Window);
+   procedure Tk_Ungrab (tkwin : not null Tk_Window);
    pragma Import (C, Tk_Ungrab, "Tk_Ungrab");
 
    --  181
 
    procedure Tk_UnmaintainGeometry
-     (slave  : in Tk_Window;
-      master : in Tk_Window);
+     (slave  : not null Tk_Window;
+      master : not null Tk_Window);
    pragma Import (C, Tk_UnmaintainGeometry, "Tk_UnmaintainGeometry");
 
    --  182
 
-   procedure Tk_UnmapWindow (tkwin : in Tk_Window);
+   procedure Tk_UnmapWindow (tkwin : not null Tk_Window);
    pragma Import (C, Tk_UnmapWindow, "Tk_UnmapWindow");
 
    --  183
 
-   procedure Tk_UnsetGrid (tkwin : in Tk_Window);
+   procedure Tk_UnsetGrid (tkwin : not null Tk_Window);
    pragma Import (C, Tk_UnsetGrid, "Tk_UnsetGrid");
 
    --  184
 
    procedure Tk_UpdatePointer
-     (tkwin : in Tk_Window;
+     (tkwin : not null Tk_Window;
       x     : in C.int;
       y     : in C.int;
       state : in C.int);
@@ -2488,9 +2498,9 @@ package Tcl.Tk is
    --  186
 
    function Tk_Alloc3DBorderFromObj
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj)
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj)
       return   Tk_3DBorder;
    pragma Import (C, Tk_Alloc3DBorderFromObj, "Tk_Alloc3DBorderFromObj");
 
@@ -2499,93 +2509,94 @@ package Tcl.Tk is
    --  188
 
    function Tk_AllocCursorFromObj
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj)
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj)
       return   Tk_Cursor;
    pragma Import (C, Tk_AllocCursorFromObj, "Tk_AllocCursorFromObj");
 
    --  189
 
    function Tk_AllocFontFromObj
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj)
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj)
       return   Tk_Font;
    pragma Import (C, Tk_AllocFontFromObj, "Tk_AllocFontFromObj");
 
    --  190
 
    function Tk_CreateOptionTable
-     (interp      : in Tcl_Interp;
-      templatePtr : in Tk_OptionSpec)
+     (interp      : not null Tcl_Interp;
+      templatePtr : not null Tk_OptionSpec)
       return        Tk_OptionTable;
    pragma Import (C, Tk_CreateOptionTable, "Tk_CreateOptionTable");
 
    --  191
 
-   procedure Tk_DeleteOptionTable (optionTable : in Tk_OptionTable);
+   procedure Tk_DeleteOptionTable (optionTable : not null Tk_OptionTable);
    pragma Import (C, Tk_DeleteOptionTable, "Tk_DeleteOptionTable");
 
    --  192
 
    procedure Tk_Free3DBorderFromObj
-     (tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj);
+     (tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj);
    pragma Import (C, Tk_Free3DBorderFromObj, "Tk_Free3DBorderFromObj");
 
    --  193
 
    procedure Tk_FreeBitmapFromObj
-     (tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj);
+     (tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj);
    pragma Import (C, Tk_FreeBitmapFromObj, "Tk_FreeBitmapFromObj");
 
    --  194
 
    procedure Tk_FreeColorFromObj
-     (tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj);
+     (tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj);
    pragma Import (C, Tk_FreeColorFromObj, "Tk_FreeColorFromObj");
 
    --  195
 
    procedure Tk_FreeConfigOptions
      (recordPtr   : in C.Strings.chars_ptr;
-      optionToken : in Tk_OptionTable;
-      tkwin       : in Tk_Window);
+      optionToken : not null Tk_OptionTable;
+      tkwin       : not null Tk_Window);
    pragma Import (C, Tk_FreeConfigOptions, "Tk_FreeConfigOptions");
 
    --  196
 
-   procedure Tk_FreeSavedOptions (savePtr : in Tk_SavedOptions);
+   procedure Tk_FreeSavedOptions (savePtr : not null Tk_SavedOptions);
    pragma Import (C, Tk_FreeSavedOptions, "Tk_FreeSavedOptions");
 
    --  197
 
    procedure Tk_FreeCursorFromObj
-     (tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj);
+     (tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj);
    pragma Import (C, Tk_FreeCursorFromObj, "Tk_FreeCursorFromObj");
 
    --  198
 
-   procedure Tk_FreeFontFromObj (tkwin : in Tk_Window; objPtr : in Tcl_Obj);
+   procedure Tk_FreeFontFromObj (tkwin : not null Tk_Window;
+                                 objPtr : not null Tcl_Obj);
    pragma Import (C, Tk_FreeFontFromObj, "Tk_FreeFontFromObj");
 
    --  199
 
    function Tk_Get3DBorderFromObj
-     (tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj)
+     (tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj)
       return   Tk_3DBorder;
    pragma Import (C, Tk_Get3DBorderFromObj, "Tk_Get3DBorderFromObj");
 
    --  200
 
    function Tk_GetAnchorFromObj
-     (interp    : in Tcl_Interp;
-      objPtr    : in Tcl_Obj;
+     (interp    : not null Tcl_Interp;
+      objPtr    : not null Tcl_Obj;
       anchorPtr : in Tk_Anchor)
       return      C.int;
    pragma Import (C, Tk_GetAnchorFromObj, "Tk_GetAnchorFromObj");
@@ -2597,38 +2608,38 @@ package Tcl.Tk is
    --  203
 
    function Tk_GetCursorFromObj
-     (tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj)
+     (tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj)
       return   Tk_Cursor;
    pragma Import (C, Tk_GetCursorFromObj, "Tk_GetCursorFromObj");
 
    --  204
 
    function Tk_GetOptionInfo
-     (interp      : in Tcl_Interp;
+     (interp      : not null Tcl_Interp;
       recordPtr   : in C.Strings.chars_ptr;
-      optionTable : in Tk_OptionTable;
-      namePtr     : in Tcl_Obj;
-      tkwin       : in Tk_Window)
+      optionTable : not null Tk_OptionTable;
+      namePtr     : not null Tcl_Obj;
+      tkwin       : not null Tk_Window)
       return        Tcl_Obj;
    pragma Import (C, Tk_GetOptionInfo, "Tk_GetOptionInfo");
 
    --  205
 
    function Tk_GetOptionValue
-     (interp      : in Tcl_Interp;
+     (interp      : not null Tcl_Interp;
       recordPtr   : in C.Strings.chars_ptr;
-      optionTable : in Tk_OptionTable;
-      namePtr     : in Tcl_Obj;
-      tkwin       : in Tk_Window)
+      optionTable : not null Tk_OptionTable;
+      namePtr     : not null Tcl_Obj;
+      tkwin       : not null Tk_Window)
       return        Tcl_Obj;
    pragma Import (C, Tk_GetOptionValue, "Tk_GetOptionValue");
 
    --  206
 
    function Tk_GetJustifyFromObj
-     (interp     : in Tcl_Interp;
-      objPtr     : in Tcl_Obj;
+     (interp     : not null Tcl_Interp;
+      objPtr     : not null Tcl_Obj;
       justifyPtr : in Tk_Justify)
       return       C.int;
    pragma Import (C, Tk_GetJustifyFromObj, "Tk_GetJustifyFromObj");
@@ -2636,9 +2647,9 @@ package Tcl.Tk is
    --  207
 
    function Tk_GetMMFromObj
-     (interp    : in Tcl_Interp;
-      tkwin     : in Tk_Window;
-      objPtr    : in Tcl_Obj;
+     (interp    : not null Tcl_Interp;
+      tkwin     : not null Tk_Window;
+      objPtr    : not null Tcl_Obj;
       doublePtr : access C.double)
       return      C.int;
    pragma Import (C, Tk_GetMMFromObj, "Tk_GetMMFromObj");
@@ -2646,9 +2657,9 @@ package Tcl.Tk is
    --  208
 
    function Tk_GetPixelsFromObj
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
-      objPtr : in Tcl_Obj;
+     (interp : not null Tcl_Interp;
+      tkwin  : not null Tk_Window;
+      objPtr : not null Tcl_Obj;
       intPtr : access C.int)
       return   C.int;
    pragma Import (C, Tk_GetPixelsFromObj, "Tk_GetPixelsFromObj");
@@ -2656,8 +2667,8 @@ package Tcl.Tk is
    --  209
 
    function Tk_GetReliefFromObj
-     (interp    : in Tcl_Interp;
-      objPtr    : in Tcl_Obj;
+     (interp    : not null Tcl_Interp;
+      objPtr    : not null Tcl_Obj;
       resultPtr : access C.int)
       return      C.int;
    pragma Import (C, Tk_GetReliefFromObj, "Tk_GetReliefFromObj");
@@ -2665,7 +2676,7 @@ package Tcl.Tk is
    --  210
 
    function Tk_GetScrollInfoObj
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       objc   : in C.int;
       objv   : in Tcl_Obj_Array;
       dblPtr : access C.double;
@@ -2676,10 +2687,10 @@ package Tcl.Tk is
    --  211
 
    function Tk_InitOptions
-     (interp      : in Tcl_Interp;
+     (interp      : not null Tcl_Interp;
       recordPtr   : in C.Strings.chars_ptr;
-      optionToken : in Tk_OptionTable;
-      tkwin       : in Tk_Window)
+      optionToken : not null Tk_OptionTable;
+      tkwin       : not null Tk_Window)
       return        C.int;
    pragma Import (C, Tk_InitOptions, "Tk_InitOptions");
 
@@ -2688,44 +2699,44 @@ package Tcl.Tk is
    procedure Tk_MainEx
      (argc        : in C.int;
       argv        : in CArgv.Chars_Ptr_Ptr;
-      appInitProc : in Tcl_AppInitProc;
-      interp      : in Tcl_Interp);
+      appInitProc : not null Tcl_AppInitProc;
+      interp      : not null Tcl_Interp);
    pragma Import (C, Tk_MainEx, "Tk_MainEx");
 
    --  213
 
-   procedure Tk_RestoreSavedOptions (savePtr : in Tk_SavedOptions);
+   procedure Tk_RestoreSavedOptions (savePtr : not null Tk_SavedOptions);
    pragma Import (C, Tk_RestoreSavedOptions, "Tk_RestoreSavedOptions");
 
    --  214
 
    function Tk_SetOptions
-     (interp      : in Tcl_Interp;
+     (interp      : not null Tcl_Interp;
       recordPtr   : in C.Strings.chars_ptr;
-      optionTable : in Tk_OptionTable;
+      optionTable : not null Tk_OptionTable;
       objc        : in C.int;
       objv        : in Tcl_Obj_Array;
-      tkwin       : in Tk_Window;
-      savePtr     : in Tk_SavedOptions;
+      tkwin       : not null Tk_Window;
+      savePtr     : not null Tk_SavedOptions;
       maskPtr     : access C.int)
       return        C.int;
    pragma Import (C, Tk_SetOptions, "Tk_SetOptions");
 
    --  215
 
-   procedure Tk_InitConsoleChannels (interp : in Tcl_Interp);
+   procedure Tk_InitConsoleChannels (interp : not null Tcl_Interp);
    pragma Import (C, Tk_InitConsoleChannels, "Tk_InitConsoleChannels");
 
    --  216
 
-   function Tk_CreateConsoleWindow (interp : in Tcl_Interp) return C.int;
+   function Tk_CreateConsoleWindow (interp : not null Tcl_Interp) return C.int;
    pragma Import (C, Tk_CreateConsoleWindow, "Tk_CreateConsoleWindow");
 
    --  217
 
    procedure Tk_CreateSmoothMethod
-     (interp : in Tcl_Interp;
-      method : in Tk_SmoothMethod);
+     (interp : not null Tcl_Interp;
+      method : not null Tk_SmoothMethod);
    pragma Import (C, Tk_CreateSmoothMethod, "Tk_CreateSmoothMethod");
 
    --  Slot 218 is reserved
@@ -2735,15 +2746,15 @@ package Tcl.Tk is
    --  220
 
    function Tk_GetDash
-     (interp : in Tcl_Interp;
+     (interp : not null Tcl_Interp;
       value  : in C.Strings.chars_ptr;
-      dash   : in Tk_Dash)
+      dash   : not null Tk_Dash)
       return   C.int;
    pragma Import (C, Tk_GetDash, "Tk_GetDash");
 
    --  221
 
-   procedure Tk_CreateOutline (outline : in Tk_Outline);
+   procedure Tk_CreateOutline (outline : not null Tk_Outline);
    pragma Import (C, Tk_CreateOutline, "Tk_CreateOutline");
 
    --  222
@@ -2753,27 +2764,27 @@ package Tcl.Tk is
    --  224
 
    function Tk_ChangeOutlineGC
-     (canvas  : in Tk_Canvas;
-      item    : in Tk_Item;
-      outline : in Tk_Outline)
+     (canvas  : not null Tk_Canvas;
+      item    : not null Tk_Item;
+      outline : not null Tk_Outline)
       return    C.int;
    pragma Import (C, Tk_ChangeOutlineGC, "Tk_ChangeOutlineGC");
 
    --  225
 
    function Tk_ResetOutlineGC
-     (canvas  : in Tk_Canvas;
-      item    : in Tk_Item;
-      outline : in Tk_Outline)
+     (canvas  : not null Tk_Canvas;
+      item    : not null Tk_Item;
+      outline : not null Tk_Outline)
       return    C.int;
    pragma Import (C, Tk_ResetOutlineGC, "Tk_ResetOutlineGC");
 
    --  226
 
    function Tk_CanvasPsOutline
-     (canvas  : in Tk_Canvas;
-      item    : in Tk_Item;
-      outline : in Tk_Outline)
+     (canvas  : not null Tk_Canvas;
+      item    : not null Tk_Item;
+      outline : not null Tk_Outline)
       return    C.int;
    pragma Import (C, Tk_CanvasPsOutline, "Tk_CanvasPsOutline");
 
@@ -2782,9 +2793,9 @@ package Tcl.Tk is
    --  228
 
    function Tk_CanvasGetCoordFromObj
-     (interp    : in Tcl_Interp;
-      canvas    : in Tk_Canvas;
-      obj       : in Tcl_Obj;
+     (interp    : not null Tcl_Interp;
+      canvas    : not null Tk_Canvas;
+      obj       : not null Tcl_Obj;
       doublePtr : access C.double)
       return      C.int;
    pragma Import (C, Tk_CanvasGetCoordFromObj, "Tk_CanvasGetCoordFromObj");
@@ -2794,7 +2805,7 @@ package Tcl.Tk is
    --  230
 
    procedure Tk_DitherPhoto
-     (handle : in Tk_PhotoHandle;
+     (handle : not null Tk_PhotoHandle;
       x      : in C.int;
       y      : in C.int;
       width  : in C.int;
@@ -2808,17 +2819,17 @@ package Tcl.Tk is
    --  233
 
    function Tk_PostscriptFont
-     (interp : in Tcl_Interp;
-      psInfo : in Tk_PostscriptInfo;
-      font   : in Tk_Font)
+     (interp : not null Tcl_Interp;
+      psInfo : not null Tk_PostscriptInfo;
+      font   : not null Tk_Font)
       return   C.int;
    pragma Import (C, Tk_PostscriptFont, "Tk_PostscriptFont");
 
    --  234
 
    function Tk_PostscriptImage
-     (image   : in Tk_Image;
-      interp  : in Tcl_Interp;
+     (image   : not null Tk_Image;
+      interp  : not null Tcl_Interp;
       tkwin   : in Tk_Window;
       psinfo  : in Tk_PostscriptInfo;
       x       : in C.int;
@@ -2832,8 +2843,8 @@ package Tcl.Tk is
    --  235
 
    procedure Tk_PostscriptPath
-     (interp    : in Tcl_Interp;
-      psInfo    : in Tk_PostscriptInfo;
+     (interp    : not null Tcl_Interp;
+      psInfo    : not null Tk_PostscriptInfo;
       coordPtr  : access C.double;
       numPoints : in C.int);
    pragma Import (C, Tk_PostscriptPath, "Tk_PostscriptPath");
@@ -2844,7 +2855,7 @@ package Tcl.Tk is
 
    function Tk_PostscriptY
      (y      : in C.double;
-      psInfo : in Tk_PostscriptInfo)
+      psInfo : not null Tk_PostscriptInfo)
       return   C.double;
    pragma Import (C, Tk_PostscriptY, "Tk_PostscriptY");
 

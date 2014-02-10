@@ -1,6 +1,9 @@
 syntax: glob
 
+*.orig
+
 demos/.build
+
 demos/freq
 demos/futurevalue
 demos/hello_world
@@ -9,6 +12,11 @@ demos/timer
 demos/twashell
 demos/watching
 demos/wordify
+
+demos/freq.unsorted
+demos/freq.*.out
+demos/watching.in
+demos/words
 
 include
 

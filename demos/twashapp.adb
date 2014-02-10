@@ -27,12 +27,6 @@ package body TWashApp is
          return Tcl.TCL_ERROR;
       end if;
 
-      Tcl.Ada.Tcl_StaticPackage
-        (Interp,
-         "Tk",
-         Tcl.Tk.Tk_Init'Access,
-         Tcl.Tk.Tk_SafeInit'Access);
-
       --  Call the init procedures for included packages.  Each call should
       --  look like this:
       --
