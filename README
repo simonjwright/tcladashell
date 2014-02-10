@@ -9,12 +9,19 @@ package hierarchy starting at Tash).
 API changes
 ===========
 
-Changes in 2014mmdd
+Changes in 20140210
 -------------------
 
 Tcl and Tcl.Tk no longer provide "Null_*" constants or "Is_Null (Ptr :
 in *) return Boolean;" functions (the types concerned are visibly
 access types, so the standard "null" is available).
+
+Tcl, Tcl.Ada and Tcl.Tk use "not null" in subprogram parameters where
+applicable. Note that, although this is an Ada 2005 construct, your
+GNAT project can still specify Ada 95 if required, because of the use
+of the GNAT-specific "pragma Ada_2005".
+
+Fixed some confusion between Tcl_UniChar and strings of same.
 
 Changes in 20140118
 -------------------
@@ -61,8 +68,10 @@ Changes in 20090207
 Other changes
 =============
 
-Changes in 2014mmdd
+Changes in 20140210
 -------------------
+
+None.
 
 Changes in 20140118
 -------------------
