@@ -4391,14 +4391,14 @@ package Tcl is
 
    --  352
 
-   function Tcl_UniCharLen (str : in Tcl_UniChar) return C.int;
+   function Tcl_UniCharLen (str : in C.Strings.chars_ptr) return C.int;
    pragma Import (C, Tcl_UniCharLen, "Tcl_UniCharLen");
 
    --  353
 
    function Tcl_UniCharNcmp
-     (cs   : in Tcl_UniChar;
-      ct   : in Tcl_UniChar;
+     (cs   : in C.Strings.chars_ptr;
+      ct   : in C.Strings.chars_ptr;
       n    : in C.unsigned_long)
       return C.int;
    pragma Import (C, Tcl_UniCharNcmp, "Tcl_UniCharNcmp");
@@ -4598,7 +4598,7 @@ package Tcl is
    --  378
 
    function Tcl_NewUnicodeObj
-     (unicode  : in Tcl_UniChar;
+     (unicode  : in C.Strings.chars_ptr;
       numChars : in C.int)
       return     Tcl_Obj;
    pragma Import (C, Tcl_NewUnicodeObj, "Tcl_NewUnicodeObj");
@@ -4607,7 +4607,7 @@ package Tcl is
 
    procedure Tcl_SetUnicodeObj
      (objPtr   : not null Tcl_Obj;
-      unicode  : in Tcl_UniChar;
+      unicode  : in C.Strings.chars_ptr;
       numChars : in C.int);
    pragma Import (C, Tcl_SetUnicodeObj, "Tcl_SetUnicodeObj");
 
@@ -4642,7 +4642,7 @@ package Tcl is
 
    procedure Tcl_AppendUnicodeToObj
      (objPtr  : not null Tcl_Obj;
-      unicode : in Tcl_UniChar;
+      unicode : in C.Strings.chars_ptr;
       length  : in C.int);
    pragma Import (C, Tcl_AppendUnicodeToObj, "Tcl_AppendUnicodeToObj");
 
