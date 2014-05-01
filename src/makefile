@@ -120,12 +120,12 @@ tcl_record_sizes.c: tcl_record_sizes.tcl
 
 build:: lib-static-stamp lib-relocatable-stamp
 
-lib-static-stamp: tash.gpr
-	$(GPRBUILD) -p -P build_tash_library.gpr -XLIBRARY_TYPE=static
+lib-static-stamp: build_tash_library.gpr
+	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=static
 	touch $@
 
-lib-relocatable-stamp: tash.gpr
-	$(GPRBUILD) -p -P build_tash_library.gpr -XLIBRARY_TYPE=relocatable
+lib-relocatable-stamp: build_tash_library.gpr
+	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=relocatable
 	touch $@
 
 # To distribute source ...
