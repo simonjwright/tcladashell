@@ -159,7 +159,7 @@ project Build_Tash_Library is
    package IDE is
       for Compiler_Command ("ada") use "gnatmake";
       for Gnatlist use "gnatls";
-      for VCS_Kind use "Hg";
+      for VCS_Kind use "Mercurial";
    end IDE;
 
    package Builder is
