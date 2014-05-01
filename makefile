@@ -54,8 +54,13 @@ install:
 	-mkdir -p $(prefix)/include/tash
 	tar -c -f- -C include . | tar -x -f- -C $(prefix)/include/tash/
 	-mkdir -p $(prefix)/lib/tash/lib-static
-	tar -c -f- -C lib . | tar -x -f- -C $(prefix)/lib/tash/lib-static
+	tar -c -f- -C lib-static . | \
+	  tar -x -f- -C $(prefix)/lib/tash/lib-static
 	chmod -w $(prefix)/lib/tash/lib-static/*.ali
+	-mkdir -p $(prefix)/lib/tash/lib-relocatable
+	tar -c -f- -C lib-relocatable . | \
+	  tar -x -f- -C $(prefix)/lib/tash/lib-relocatable
+	chmod -w $(prefix)/lib/tash/lib-relocatable/*.ali
 
 # RPM related variables/rules :
 

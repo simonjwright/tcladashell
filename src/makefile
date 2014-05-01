@@ -32,7 +32,7 @@
 
 # At least for Mac OS X, gnatmake doesn't build shared libraries
 # correctly (at GNAT GPL 2011); use gprbuild.
-GNATMAKE ?= gnatmake
+GPRBUILD ?= gprbuild
 
 all::
 
@@ -107,22 +107,7 @@ SCRIPTS =					\
 
 all:: build
 
-build: .build_lib tcl_record_sizes.ads
-	@[ -d ../lib ]  || mkdir ../lib
-	@[ -d ../include ] || mkdir ../include
-ifneq ($(GNATMAKE),gprbuild)
-	cd .build_lib;							\
-	  $(CC)								\
-	    -c $(CARGS) $(X11_INCLUDE) $(TCL_INCLUDE)			\
-	    $(addprefix ../,$(C_SRC));					\
-	  ar cr ../../lib/libtash.a $(patsubst %.c,%.o,$(C_SRC))
-endif
-	$(GNATMAKE) -Pbuild_tash_library
-	chmod -w ../lib/*.ali
-	cp -p $(ADA_SRC) ../include/
-
-.build_lib:
-	mkdir $@
+build:: tcl_record_sizes.ads
 
 tcl_record_sizes.ads: tcl_record_sizes$(EXE)
 	./$< >$@
@@ -132,6 +117,16 @@ tcl_record_sizes$(EXE): tcl_record_sizes.c
 
 tcl_record_sizes.c: tcl_record_sizes.tcl
 	tclsh $< >$@
+
+build:: lib-static-stamp lib-relocatable-stamp
+
+lib-static-stamp: tash.gpr
+	$(GPRBUILD) -p -P build_tash_library.gpr -XLIBRARY_TYPE=static
+	touch $@
+
+lib-relocatable-stamp: tash.gpr
+	$(GPRBUILD) -p -P build_tash_library.gpr -XLIBRARY_TYPE=relocatable
+	touch $@
 
 # To distribute source ...
 dist:
@@ -143,8 +138,10 @@ test:
 	# no action
 
 clean:
-	-rm -rf .build_lib *~ \
+	-rm -f *~ \
 	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads \
-	  ../include ../lib
+	  lib-static-stamp lib-relocatable-stamp
+	-gnatclean -P build_tash_library.gpr -XLIBRARY_TYPE=static
+	-gnatclean -P build_tash_library.gpr -XLIBRARY_TYPE=relocatable
 
-.PHONY: all build clean dist test
+.PHONY: all build clean dist install test

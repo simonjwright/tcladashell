@@ -33,9 +33,12 @@ project Tash is
 
   Compiler_Options := Tash_Options.Compiler_Options;
 
+   type Library_T is ("static", "relocatable");
+   Library_Type : Library_T := external ("LIBRARY_TYPE", "static");
+
   for Library_Name use "tash";
-  for Library_Kind use "static";
-  for Library_Dir use "../../lib/tash/lib-static";
+  for Library_Kind use Library_Type;
+  for Library_Dir use "../../lib/tash/lib-" & Library_Type;
   for Source_Dirs use ("../../include/tash");
   for Externally_Built use "true";
 

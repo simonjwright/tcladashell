@@ -20,11 +20,13 @@ demos/words
 
 include
 
-lib
+lib-static
+lib-relocatable
 
 makeconf
 
-src/.build_lib
+src/.build*
+src/lib-*-stamp
 src/tcl_record_sizes*
 
 tash_options.gpr
