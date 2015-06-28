@@ -28,6 +28,8 @@
 
 include ../makeconf
 
+GPRBUILD ?= gprbuild
+
 all::
 
 # Tcl/Tk versions later than 8.4 don't provide the interfaces relied
@@ -55,7 +57,7 @@ TASH_PROGRAMS = \
 #------------------------------
 all::
 	[ -d .build ] || mkdir .build
-	gnatmake -Ptash_tests
+	$(GPRBUILD) -Ptash_tests
 
 VERBOSE =
 GNATMEM =
@@ -129,4 +131,4 @@ dist:
 	cp $(SRC) $(MATERIEL) $(TESTS)/
 
 clean:
-	-rm -rf .build *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS) 
+	-rm -rf .build *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS)

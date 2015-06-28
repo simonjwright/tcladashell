@@ -21,17 +21,19 @@ all::
 
 include ../makeconf
 
+GPRBUILD ?= gprbuild
+
 TCL_PROGRAMS =
 
 TASH_PROGRAMS = plang$(EXE)
 
 # Because there are no Tcl-only programs in Apps, we have not to even
-# try to build if Tash isn't supported (gnatmake tries to build the
+# try to build if Tash isn't supported (gprbuild tries to build the
 # world if there are no mains).
 ifeq ($(SUPPORTS_TASH),yes)
 all::
 	[ -d .build ] || mkdir .build
-	gnatmake -Ptash_apps
+	$(GPRBUILD) -Ptash_apps
 endif
 
 test::
@@ -60,4 +62,4 @@ dist:
 	cp $(SRC) $(APPS)/
 
 clean:
-	-rm -rf .build *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS) 
+	-rm -rf .build *~ $(TCL_PROGRAMS) $(TASH_PROGRAMS)

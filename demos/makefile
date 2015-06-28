@@ -19,6 +19,8 @@
 
 include ../makeconf
 
+GPRBUILD ?= gprbuild
+
 TCL_PROGRAMS =					\
 freq$(EXE)					\
 futurevalue$(EXE)				\
@@ -34,7 +36,7 @@ freq2$(EXE)
 
 all::
 	[ -d .build ] || mkdir .build
-	gnatmake -P tash_demos
+	$(GPRBUILD) -P tash_demos
 
 test::
 	./timer

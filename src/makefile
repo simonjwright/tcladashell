@@ -30,13 +30,14 @@
 # To build and run the sample application programs, cd to ../apps and
 # run "make all test" again.
 
-# At least for Mac OS X, gnatmake doesn't build shared libraries
-# correctly (at GNAT GPL 2011); use gprbuild.
-GPRBUILD ?= gprbuild
-
 all::
 
 include ../makeconf
+
+# At least for Mac OS X, gnatmake doesn't build shared libraries
+# correctly (at GNAT GPL 2011); use gprbuild.
+GPRBUILD ?= gprbuild
+GPRCLEAN ?= gprclean
 
 GEN_SRC = tcl_record_sizes.ads
 
@@ -138,10 +139,10 @@ test:
 	# no action
 
 clean:
+	-$(GPRCLEAN) -P build_tash_library.gpr -XLIBRARY_TYPE=static
+	-$(GPRCLEAN) -P build_tash_library.gpr -XLIBRARY_TYPE=relocatable
 	-rm -f *~ \
 	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads \
 	  lib-static-stamp lib-relocatable-stamp
-	-gnatclean -P build_tash_library.gpr -XLIBRARY_TYPE=static
-	-gnatclean -P build_tash_library.gpr -XLIBRARY_TYPE=relocatable
 
 .PHONY: all build clean dist install test

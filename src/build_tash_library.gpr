@@ -157,7 +157,6 @@ project Build_Tash_Library is
    for Library_Options use Tash_Options.Linker_Options;
 
    package IDE is
-      for Compiler_Command ("ada") use "gnatmake";
       for Gnatlist use "gnatls";
       for VCS_Kind use "Mercurial";
    end IDE;
