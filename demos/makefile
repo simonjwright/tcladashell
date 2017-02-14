@@ -76,16 +76,22 @@ SRC =						\
 freq.adb					\
 freq2.adb					\
 futurevalue.adb					\
+futurevalue_app.adb				\
+futurevalue_app.ads				\
 hello_world.adb					\
 tash_demos.gpr					\
 tashapp.adb					\
 tashapp.ads					\
 tashell.adb					\
 timer.adb					\
+timer_app.adb					\
+timer_app.ads					\
 twashapp.adb					\
 twashapp.ads					\
 twashell.adb					\
 watching.adb					\
+watching_support.adb				\
+watching_support.ads				\
 wordify.adb
 
 SRC +=						\
