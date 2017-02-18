@@ -139,9 +139,9 @@ etc).
 
 <p>On Windows systems, you can get the development environment
 using <a href="http://www.cygwin.com">Cygwin</a>. Cygwin includes a
-Tcl/Tk implementation, but unfortunately it's not compatible with GNAT
-(there's a <tt>.dll</tt> clash). We recommend that you use the
-excellent Community edition
+Tcl/Tk implementation, but unfortunately it may not be compatible with
+GNAT (in the early 2000's, there was a <tt>.dll</tt> clash). We
+recommend that you use the excellent Community edition
 from <a href="http://www.activestate.com/">ActiveState</a>, and these
 instructions are written assuming that. We also recommend that you
 install at <tt>C:\Tcl</tt> rather than
@@ -156,12 +156,16 @@ your HOME directory.
 
 <p>Assuming this is your home directory, go there and extract TASH by
 <pre>
-  $ unzip tash-8.6-0-src-20110917.zip
+  $ unzip tash-8.6-3-20170217.zip
+</pre>
+or
+<pre>
+  $ tar zxvf tash-8.6-3-20170217.tgz
 </pre>
 
 <p>and then enter the source directory:
 <pre>
-  $ cd tash-8.6-0-src-20110917
+  $ cd tash-8.6-3-20170217
 </pre>
 
 <h3>Configure</h3>
@@ -207,8 +211,7 @@ will be OK. If not, type in the correct values. It's important that
 the C compiler used to compile glue files is compatible with your Ada
 compiler; one way of achieving this (if you're using GNAT; note, these
 instructions assume that's the case) is to make sure that
-GNAT's <tt>gcc</tt> is first on your path. In any
-case, <tt>setup.tcl</tt> will use <tt>gnatgcc</tt> if found.
+GNAT's <tt>gcc</tt> is first on your path.
 
 <p>Press the Save button to create the <tt>tash_options.gpr</tt>
 and <tt>makeconf</tt> files.
@@ -247,7 +250,7 @@ the <tt>test/</tt>, <tt>demos/</tt> and, with Tcl/Tk
 
 <p>If you're using a GNAT-based compiler, it's <em>strongly</em> recommended
 that you use
-the <a href="http://gcc.gnu.org/onlinedocs/gcc-4.6.0/gnat_ugn_unw/GNAT-Project-Manager.html">GNAT
+the <a href="http://docs.adacore.com/gprbuild-docs/html/gprbuild_ug/gnat_project_manager.html">GNAT
 Project</a> feature.
 
 <h4>Using in-place</h4>
@@ -258,7 +261,7 @@ built with any GNAT-based compiler.
 <p>Make sure that the TASH distribution directory is on your
 <tt>ADA_PROJECT_PATH</tt>, by eg
 <pre>
-  $ export ADA_PROJECT_PATH=~/tash-8.6-0-src-20110917:$ADA_PROJECT_PATH
+  $ export ADA_PROJECT_PATH=~/tash-8.6-3-20170217:$ADA_PROJECT_PATH
 </pre>
 
 <p>Your GPR should include TASH:
@@ -269,9 +272,7 @@ built with any GNAT-based compiler.
 <h4>Installing with the compiler</h4>
 
 <p>If you're using FSF GCC or GNAT GPL, the best way is to install
-TASH alongside your compiler. <b><em>Note, this does not work with
-Debian</em></b> (yet), because of its different approach to file system
-layout for the Ada subsystem.
+TASH alongside your compiler.
 
 <p>The remaining instructions assume use on a Unix machine, or Cygwin
 if on Windows.
