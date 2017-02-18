@@ -12,17 +12,22 @@
 --  write to the Free Software Foundation, 59 Temple Place - Suite
 --  330, Boston, MA 02111-1307, USA.
 
---  $Id$
---
---  This file provides the compilation options for building and
---  linking against the built Tash library.
+--  This file provides the compilation options for building the
+--  tcladashell library libtash.a.
 --
 --  The withed 'tash_options.gpr' is created by running the script
---  'setup.tcl' in this directory.
+--  'setup.tcl' in the parent directory.
 
 with "tash_options";
 
 project Tash is
+
+   type Library_T is ("static", "relocatable");
+   Library_Type : Library_T := external ("LIBRARY_TYPE", "static");
+
+   for Library_Name use "tash";
+
+   for Languages use ("ada", "c");
 
    --  Tcl/Tk versions later than 8.4 don't provide the interfaces
    --  relied on by the Tash.* package hierarchy, so (by default) they
@@ -31,19 +36,150 @@ project Tash is
    type Answer is ("no", "yes");
    Supports_Tash : Answer := Tash_Options.Supports_Tash;
 
-   Compiler_Options := Tash_Options.Compiler_Options;
+   for Source_Dirs use ("src");
 
-   type Library_T is ("static", "relocatable");
-   Library_Type : Library_T := external ("LIBRARY_TYPE", "static");
+   Basic_Ada_Source_Files :=
+     (
+      "cargv.adb",
+      "cargv.ads",
+      "chelper.adb",
+      "chelper.ads",
+      "tcl-ada.adb",
+      "tcl-ada.ads",
+      "tcl-async.adb",
+      "tcl-async.ads",
+      "tcl-tk-ada.adb",
+      "tcl-tk-ada.ads",
+      "tcl-tk.ads",
+      "tcl.adb",
+      "tcl.ads",
+      "tcl_record_sizes.ads"
+     );
 
-   for Library_Name use "tash";
+   Basic_Ada_Units :=
+     (
+      "cargv",
+      "chelper",
+      "tcl.ada",
+      "tcl.async",
+      "tcl.tk.ada",
+      "tcl.tk",
+      "tcl",
+      "tcl_record_sizes"
+     );
+
+   Basic_C_Source_Files :=
+     (
+      "tclmacro.c",
+      "tkmacro.c"
+     );
+
+   Extended_Ada_Source_Files :=
+     (
+      "tash-arrays.adb",
+      "tash-arrays.ads",
+      "tash-file.adb",
+      "tash-file.ads",
+      "tash-file_io.adb",
+      "tash-file_io.ads",
+      "tash-float_arrays.ads",
+      "tash-float_lists.ads",
+      "tash-floats.adb",
+      "tash-floats.ads",
+      "tash-integer_arrays.ads",
+      "tash-integer_lists.ads",
+      "tash-integers.adb",
+      "tash-integers.ads",
+      "tash-lists.adb",
+      "tash-lists.ads",
+      "tash-platform.adb",
+      "tash-platform.ads",
+      "tash-regexp.adb",
+      "tash-regexp.ads",
+      "tash-strings.adb",
+      "tash-strings.ads",
+      "tash-system.adb",
+      "tash-system.ads",
+      "tash.adb",
+      "tash.ads"
+     );
+
+   Extended_Ada_Units :=
+     (
+      "tash.arrays",
+      "tash.file",
+      "tash.file_io",
+      "tash.float_arrays",
+      "tash.float_lists",
+      "tash.floats",
+      "tash.integer_arrays",
+      "tash.integer_lists",
+      "tash.integers",
+      "tash.lists",
+      "tash.platform",
+      "tash.regexp",
+      "tash.strings",
+      "tash.system",
+      "tash"
+     );
+
+   Extended_C_Source_Files :=
+     (
+      "tcl_backward_compatibility_glue.c"
+     );
+
+   Source_Units := Basic_Ada_Units;
+   --  Variable can't be declared for the first time in a case
+   --  alternative.
+
+   case Supports_Tash is
+      when "no" =>
+         for Source_Files use
+           Basic_Ada_Source_Files & Basic_C_Source_Files;
+      when "yes" =>
+         for Source_Files use
+           Basic_Ada_Source_Files & Basic_C_Source_Files
+           & Extended_Ada_Source_Files & Extended_C_Source_Files;
+         Source_Units := Basic_Ada_Units & Extended_Ada_Units;
+   end case;
+
+   for Object_Dir use ".build_lib-" & Library_Type;
    for Library_Kind use Library_Type;
-   for Library_Dir use "lib-" & Library_Type;
-   for Source_Dirs use ("include");
-   for Externally_Built use "true";
+   for Library_Dir use "../lib-" & Library_Type;
+   case Library_Type is
+      when "relocatable" =>
+         for Library_Src_Dir use "../include";
+         for Library_Interface use Source_Units;
+      when "static" =>
+         --  Neither gnatmake nor gprbuild handles this case
+         --  properly. Rely on the relocatable build to copy the
+         --  required interface units to ./include.
+         null;
+   end case;
+   for Library_Options use Tash_Options.Linker_Options;
+
+   package IDE is
+      for Gnatlist use "gnatls";
+      for VCS_Kind use "Mercurial";
+   end IDE;
+
+   package Builder is
+      for Default_Switches ("ada") use ("-m", "-g");
+   end Builder;
+
+   package Compiler is
+      for Default_Switches ("ada") use Tash_Options.Compiler_Options;
+      for Default_Switches ("c") use Tash_Options.C_Compiler_Options;
+   end Compiler;
 
    package Linker is
       for Linker_Options use Tash_Options.Linker_Options;
    end Linker;
+
+   --  Pretty printer (useful with GPS while reformatting the code to
+   --  avoid style & other warnings).
+   package Pretty_Printer is
+      for Default_Switches ("ada") use ("-l2", "-c3");
+   end Pretty_Printer;
 
 end Tash;

@@ -12,15 +12,10 @@
 --  write to the Free Software Foundation, 59 Temple Place - Suite
 --  330, Boston, MA 02111-1307, USA.
 
---  $Id$
---
 --  This file provides the compilation options for building the
 --  Hello_World mini-demo.
---
---  The withed 'tash_options.gpr' is created by running the script
---  'setup.tcl' in the parent directory.
 
-with "tash";
+with "../tash";
 
 project Hello_World is
 
@@ -37,21 +32,13 @@ project Hello_World is
   for Object_Dir use ".build";
 
   --  GLIDE/GPS configuration.
-  package IDE is
-     for Compiler_Command ("ada") use "gnatmake";
-     for Gnatlist use "gnatls";
-     for Vcs_Kind use "CVS";
-  end IDE;
+  package IDE renames Tash.IDE;
 
   --  GNATMAKE configuration options.
-  package Builder is
-     for Default_Switches ("ada") use ("-m", "-g");
-  end Builder;
+  package Builder renames Tash.Builder;
 
   --  GCC configuration options.
-  package Compiler is
-     for Default_Switches ("ada") use Tash.Compiler_Options;
-  end Compiler;
+  package Compiler renames Tash.Compiler;
 
   -- GNATBIND configuration options.
   package Binder is
@@ -59,8 +46,6 @@ project Hello_World is
   end Binder;
 
   --  GNATLINK configuration options.
-  package Linker is
-     for Default_Switches ("ada") use Tash.Linker_Options;
-  end Linker;
+  package Linker renames Tash.Linker;
 
 end Hello_World;

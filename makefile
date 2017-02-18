@@ -45,49 +45,33 @@ clean:
 
 # Rule "install" does not depend on rule "all":
 # "make install" should be executed as root but not necessarily "make all".
-#
-# These rules are for installation with an FSF/GPL GNAT.
-install:
-	-mkdir -p $(prefix)/lib/gnat/
-	cp tash.gpr-for-installation $(prefix)/lib/gnat/tash.gpr
-	cp tash_options.gpr $(prefix)/lib/gnat/tash_options.gpr
-	-mkdir -p $(prefix)/include/tash
-	tar -c -f- -C include . | tar -x -f- -C $(prefix)/include/tash/
-	-mkdir -p $(prefix)/lib/tash/lib-static
-	tar -c -f- -C lib-static . | \
-	  tar -x -f- -C $(prefix)/lib/tash/lib-static
-	chmod -w $(prefix)/lib/tash/lib-static/*.ali
-	-mkdir -p $(prefix)/lib/tash/lib-relocatable
-	tar -c -f- -C lib-relocatable . | \
-	  tar -x -f- -C $(prefix)/lib/tash/lib-relocatable
-	chmod -w $(prefix)/lib/tash/lib-relocatable/*.ali
+install: install-static install-relocatable
 
-# RPM related variables/rules :
+install-static: src/lib-static-stamp
+	gprinstall					\
+	  -f						\
+	  --prefix=$(prefix)				\
+	  -P tash.gpr					\
+	  --install-name=tash				\
+	  --project-subdir=$(GPR_INSTALL_SUBDIR)	\
+	  -XLIBRARY_TYPE=static				\
+	  --mode=dev					\
+	  --create-missing-dirs				\
+	  --build-var=LIBRARY_TYPE			\
+	  --build-name=static
 
-INSTALLROOT     := $(shell echo -n $(INSTALLROOT) | sed 's@^/@@')
-ARCHITECTURE     = $(shell uname -m)
-
-# Rule "rpm" should depend on rule "all" but that does not work reliably yet
-# (i.e. does work on first build but does not work on repeated builds)
-#
-# NB! the RPM should contain the .gpr files, but I (sjw) don't use
-# RPMs and in any case suspect that they're mainly used in Debian,
-# which uses a different file system layout and library naming
-# convention from the FSF/GPL ones.
-rpm: # all
-	rm -rf ./rpm_build && mkdir -p ./rpm_build
-	rpmbuild --buildroot "`pwd`/rpm_build" \
-                 --define "InstallPath $(INSTALLROOT)" \
-                 --define "TashVersion $(TASH_VERSION)" \
-                 --define "TashRelease $(TASH_RELEASE)" \
-                 --define "_topdir `pwd`" \
-                 --define "_builddir `pwd`" \
-                 --define "_rpmdir %{_topdir}" \
-                 --define "_sourcedir %{_topdir}" \
-                 --define "_specdir %{_topdir}" \
-                 --define "_srcrpmdir %{_topdir}" \
-                 --define "_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.$(ARCHITECTURE).rpm" \
-                 -bb tash.spec
+install-relocatable: src/lib-relocatable-stamp
+	gprinstall					\
+	  -f						\
+	  --prefix=$(prefix)				\
+	  -P tash.gpr					\
+	  --install-name=tash				\
+	  --project-subdir=$(GPR_INSTALL_SUBDIR)	\
+	  -XLIBRARY_TYPE=relocatable			\
+	  --mode=dev					\
+	  --create-missing-dirs				\
+	  --build-var=LIBRARY_TYPE			\
+	  --build-name=relocatable
 
 # Rules for constructing a distribution.
 
@@ -100,17 +84,29 @@ SRC = 						\
   README					\
   makefile					\
   setup.tcl					\
-  tash.gpr-for-installation			\
   tash.gpr
 
-dist:
-	-rm -rf $(DIST) $(DIST).zip
+dist: dist-src dist-zip dist-tgz
+
+dist-src: $(DIST)
+dist-zip: $(DIST).zip
+dist-tgz: $(DIST).tgz
+
+$(DIST):
+	-rm -rf $(DIST)
 	mkdir $(DIST)
 	cp $(SRC) $(DIST)/
 	for s in $(SUBDIRS); do \
 	  $(MAKE) -C $$s DIST=../$(DIST) dist; \
 	done
-	zip -r $(DIST).zip $(DIST)
+
+$(DIST).zip: dist-src
+	-rm $@
+	zip -r $@ $(DIST)
+
+$(DIST).tgz: dist-src
+	-rm $@
+	tar zcvf $@ $(DIST)
 
 # Rules for maintaining the SourceForge web pages.
 
@@ -130,6 +126,7 @@ upload-docs:
 	  --update						\
 	  --verbose						\
 	  web/*							\
-	  $(SFUSER),tcladashell@web.sourceforge.net:htdocs/
+	$(SFUSER),tcladashell@web.sourceforge.net:htdocs/
 
-.PHONY: clean dist force install rpm test upload-docs
+.PHONY: clean dist dist-src dist-zip dist-tgz force install rpm \
+	  test upload-docs

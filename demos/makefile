@@ -13,8 +13,6 @@
 # write to the Free Software Foundation, 59 Temple Place - Suite
 # 330, Boston, MA 02111-1307, USA.
 
-# $Id$
-
 # This makefile builds and runs the demo programs.
 
 include ../makeconf
@@ -45,7 +43,7 @@ test::
 	./futurevalue
 
 test::
-	./tashell testfreq.tcl ../include words $(SUPPORTS_TASH)
+	./tashell testfreq.tcl ../src words $(SUPPORTS_TASH)
 
 test::
 	echo 1023 >watching.in

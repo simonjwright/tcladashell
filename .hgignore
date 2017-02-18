@@ -2,7 +2,9 @@ syntax: glob
 
 *.orig
 
-demos/.build
+.build*
+gpr_query.db*
+auto.cgpr
 
 demos/freq
 demos/futurevalue
@@ -19,18 +21,16 @@ demos/watching.in
 demos/words
 
 include
-
 lib-static
 lib-relocatable
 
 makeconf
 
-src/.build*
 src/lib-*-stamp
 src/tcl_record_sizes*
 
 tash_options.gpr
 
-tests/.build
 tests/compare
 tests/tashtest
+tests/test_compare.ada

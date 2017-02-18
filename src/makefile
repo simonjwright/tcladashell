@@ -102,9 +102,10 @@ ifeq ($(SUPPORTS_TASH),yes)
 endif
 
 SCRIPTS =					\
-  build_tash_library.gpr			\
   makefile					\
   tcl_record_sizes.tcl
+
+TASH_GPR = ../tash.gpr
 
 all:: build
 
@@ -121,11 +122,11 @@ tcl_record_sizes.c: tcl_record_sizes.tcl
 
 build:: lib-static-stamp lib-relocatable-stamp
 
-lib-static-stamp: build_tash_library.gpr
+lib-static-stamp: $(TASH_GPR)
 	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=static
 	touch $@
 
-lib-relocatable-stamp: build_tash_library.gpr
+lib-relocatable-stamp: $(TASH_GPR)
 	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=relocatable
 	touch $@
 
@@ -139,8 +140,8 @@ test:
 	# no action
 
 clean:
-	-$(GPRCLEAN) -P build_tash_library.gpr -XLIBRARY_TYPE=static
-	-$(GPRCLEAN) -P build_tash_library.gpr -XLIBRARY_TYPE=relocatable
+	-$(GPRCLEAN) -P $(TASH_GPR) -XLIBRARY_TYPE=static
+	-$(GPRCLEAN) -P $(TASH_GPR) -XLIBRARY_TYPE=relocatable
 	-rm -f *~ \
 	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads \
 	  lib-static-stamp lib-relocatable-stamp

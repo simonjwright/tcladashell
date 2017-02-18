@@ -33,7 +33,7 @@
 #define __CYGWIN__
 #endif
 
-#include "tk.h"
+#include <tk.h>
 
 char * Tk_CallPathName (Tk_Window tkwin)
 {
