@@ -145,8 +145,8 @@ project Tash is
 
    for Object_Dir use ".build_lib-" & Library_Type;
    for Library_Kind use Library_Type;
-   for Library_Dir use "../lib-" & Library_Type;
-   for Library_Src_Dir use "../include-" & Library_Type;
+   for Library_Dir use "lib-" & Library_Type;
+   for Library_Src_Dir use "include-" & Library_Type;
    case Library_Type is
       when "relocatable" =>
          for Library_Interface use Source_Units;
