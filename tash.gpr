@@ -13,7 +13,7 @@
 --  330, Boston, MA 02111-1307, USA.
 
 --  This file provides the compilation options for building the
---  tcladashell library libtash.a.
+--  tcladashell library libtash.{a,dll,so,dylib}.
 --
 --  The withed 'tash_options.gpr' is created by running the script
 --  'setup.tcl' in the parent directory.
@@ -146,22 +146,14 @@ project Tash is
    for Object_Dir use ".build_lib-" & Library_Type;
    for Library_Kind use Library_Type;
    for Library_Dir use "../lib-" & Library_Type;
+   for Library_Src_Dir use "../include-" & Library_Type;
    case Library_Type is
       when "relocatable" =>
-         for Library_Src_Dir use "../include";
          for Library_Interface use Source_Units;
+         for Library_Options use Tash_Options.Linker_Options;
       when "static" =>
-         --  Neither gnatmake nor gprbuild handles this case
-         --  properly. Rely on the relocatable build to copy the
-         --  required interface units to ./include.
          null;
    end case;
-   for Library_Options use Tash_Options.Linker_Options;
-
-   package IDE is
-      for Gnatlist use "gnatls";
-      for VCS_Kind use "Mercurial";
-   end IDE;
 
    package Builder is
       for Default_Switches ("ada") use ("-m", "-g");

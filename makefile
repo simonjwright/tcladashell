@@ -13,8 +13,6 @@
 # write to the Free Software Foundation, 59 Temple Place - Suite
 # 330, Boston, MA 02111-1307, USA.
 
-# $Id$
-
 # This makefile builds the TASH library for either Unix or Windows. To
 # build correctly, you must have previously run the setup program,
 # setup.tcl, in this directory. This will create the makeconf file

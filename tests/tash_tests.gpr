@@ -19,57 +19,62 @@ with "../tash";
 
 project Tash_Tests is
 
-  Tcl_Mains :=
-    (
-     "compare",
-     "tashtest"
-    );
+   Tcl_Mains :=
+     (
+      "compare",
+      "tashtest"
+     );
 
-  Tash_Mains :=
-    (
-     "test_arrays",
-     "test_file",
-     "test_file_io",
-     "test_floats",
-     "test_format",
-     "test_integers",
-     "test_lists",
-     "test_platform",
-     "test_regexp",
-     "test_strings",
-     "test_system"
-    );
+   Tash_Mains :=
+     (
+      "test_arrays",
+      "test_file",
+      "test_file_io",
+      "test_floats",
+      "test_format",
+      "test_integers",
+      "test_lists",
+      "test_platform",
+      "test_regexp",
+      "test_strings",
+      "test_system"
+     );
 
-  case Tash.Supports_Tash is
-     when "no" =>
-        for Main use Tcl_Mains;
-     when "yes" =>
-        for Main use Tcl_Mains & Tash_Mains;
-  end case;
+   case Tash.Supports_Tash is
+      when "no" =>
+         for Main use Tcl_Mains;
+      when "yes" =>
+         for Main use Tcl_Mains & Tash_Mains;
+   end case;
 
-  for Exec_Dir use ".";
+   for Exec_Dir use ".";
 
-  --  The source locations for the project.
-  for Source_Dirs use (".");
+   --  The source locations for the project.
+   for Source_Dirs use (".");
 
-  --  Each Project that contains source must have its own build
-  --  directory.
-  for Object_Dir use ".build";
+   --  Each Project that contains source must have its own build
+   --  directory.
+   for Object_Dir use ".build";
 
-  --  GLIDE/GPS configuration.
-  package IDE renames Tash.IDE;
+   --  GNATMAKE configuration options.
+   package Builder is
+      for Default_Switches ("ada") use ("-m", "-g");
+   end Builder;
 
-  --  GNATMAKE configuration options.
-  package Builder renames Tash.Builder;
+   --  GCC configuration options.
+   package Compiler is
+      for Default_Switches ("ada") use
+        (
+         "-O2",
+         "-gnatqQafoy",
+         "-gnatwaL"
+        );
 
-  --  GCC configuration options.
-  package Compiler renames Tash.Compiler;
+   end Compiler;
 
-  -- GNATBIND configuration options.
-  package Binder is
-     for Default_Switches ("ada") use ("-E");
-  end Binder;
-
-  package Linker renames Tash.Linker;
+   -- GNATBIND configuration options.
+   package Binder is
+      for Default_Switches ("ada") use ("-E");
+   end Binder;
 
 end Tash_Tests;
