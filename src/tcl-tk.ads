@@ -3,6 +3,7 @@
 --  tcl-tk.ads -- This package is the "thin" binding to Tcl.Tk.
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
+--  Copyright (c) 2014, 2019 Simon Wright <simon@pushface.org>
 --
 --  Tash is free software; you can redistribute it and/or modify it under
 --  terms of the GNU General Public License as published by the Free
@@ -605,7 +606,6 @@ package Tcl.Tk is
 
    function Tk_PathName
      (tkwin : not null Tk_Window) return C.Strings.chars_ptr;
-   pragma Import (C, Tk_PathName, "Tk_CallPathName");
 
    function Tk_Name (tkwin : not null Tk_Window) return Tk_Uid;
    pragma Import (C, Tk_Name, "Tk_CallName");
@@ -1315,7 +1315,6 @@ package Tcl.Tk is
      (argc : in C.int;
       argv : in CArgv.Chars_Ptr_Ptr;
       proc : not null Tcl_AppInitProc);
-   pragma Import (C, Tk_Main, "Tk_CallMain");
 
    procedure Tk_InitImageArgs
      (interp : not null Tcl_Interp;

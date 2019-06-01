@@ -3,6 +3,9 @@
 --  tcl.ads -- This package is the "thin" binding to Tcl.
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
+--  Copyright (c) 2008 O Kellogg
+--  Copyright (c) 2006, 2008, 2009, 2011, 2014, 2019
+--     Simon Wright <simon@pushface.org>
 --
 --  Tash is free software; you can redistribute it and/or modify it
 --  under terms of the GNU General Public License as published by the
@@ -612,13 +615,10 @@ package Tcl is
    --
 
    procedure Tcl_IncrRefCount (objPtr : not null Tcl_Obj);
-   pragma Import (C, Tcl_IncrRefCount, "Tcl_CallIncrRefCount");
 
    procedure Tcl_DecrRefCount (objPtr : not null Tcl_Obj);
-   pragma Import (C, Tcl_DecrRefCount, "Tcl_CallDecrRefCount");
 
    function Tcl_IsShared (objPtr : not null Tcl_Obj) return C.int;
-   pragma Import (C, Tcl_IsShared, "Tcl_CallIsShared");
 
    --
    --  The following structure contains the state needed by
@@ -904,18 +904,15 @@ package Tcl is
    function Tcl_GetHashValue
      (HashEntry : not null Tcl_HashEntry)
       return      ClientData;
-   pragma Import (C, Tcl_GetHashValue, "Tcl_CallGetHashValue");
 
    procedure Tcl_SetHashValue
      (HashEntry : not null Tcl_HashEntry;
       value     : in ClientData);
-   pragma Import (C, Tcl_SetHashValue, "Tcl_CallSetHashValue");
 
    function Tcl_GetHashKey
      (HashTable : not null Tcl_HashTable;
       HashEntry : not null Tcl_HashEntry)
       return      C.Strings.chars_ptr;
-   pragma Import (C, Tcl_GetHashKey, "Tcl_CallGetHashKey");
 
    --
    --  Macros to use for clients to use to invoke find and create procedures
@@ -926,14 +923,12 @@ package Tcl is
      (HashTable : not null Tcl_HashTable;
       key       : in C.Strings.chars_ptr)
       return      Tcl_HashEntry;
-   pragma Import (C, Tcl_FindHashEntry, "Tcl_CallFindHashEntry");
 
    function Tcl_CreateHashEntry
      (HashTable : not null Tcl_HashTable;
       key       : in C.Strings.chars_ptr;
       newPtr    : not null access C.int)
       return      Tcl_HashEntry;
-   pragma Import (C, Tcl_CreateHashEntry, "Tcl_CallCreateHashEntry");
 
    --
    --  Flag values to pass to Tcl_DoOneEvent to disable searches

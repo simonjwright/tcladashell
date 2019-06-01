@@ -112,7 +112,8 @@ package body Tcl.Ada is
       begin --  Tcl_CreateCommand
          return Tcl_CreateCommand
                   (interp,
-                   C.Strings.To_Chars_Ptr (C_cmdName'Unchecked_Access),
+                   C.Strings.To_Chars_Ptr (C_cmdName'Unchecked_Access,
+                                           Nul_Check => True),
                    proc,
                    data,
                    deleteProc);

@@ -3,6 +3,9 @@
 -- tcl.adb --
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
+--  Copyright (c) 2008 O Kellogg
+--  Copyright (c) 2006, 2008, 2009, 2014, 2019
+--     Simon Wright <simon@pushface.org>
 --
 --  Tash is free software; you can redistribute it and/or modify it under
 --  terms of the GNU General Public License as published by the Free
@@ -33,6 +36,101 @@ pragma Ada_2005;
 with Ada.Text_IO;
 
 package body Tcl is
+
+   --  Some subprograms here correspond to C macros. C functions are
+   --  provided to invoke the macros. However, only Ada units can form
+   --  part of the public interface of the library, and what where
+   --  global symbols in the other units (including C units) are
+   --  converted to local symbols and hence not visible to callers.
+   --
+   --  So we have to call the C functions from Ada code, rather than
+   --  having pragma Import in the package spec.
+
+   procedure Tcl_IncrRefCount (objPtr : not null Tcl_Obj) is
+      procedure Tcl_CallIncrRefCount (objPtr : not null Tcl_Obj);
+      pragma Import (C, Tcl_CallIncrRefCount, "Tcl_CallIncrRefCount");
+   begin
+      Tcl_CallIncrRefCount (objPtr);
+   end Tcl_IncrRefCount;
+
+   procedure Tcl_DecrRefCount (objPtr : not null Tcl_Obj) is
+      procedure Tcl_CallDecrRefCount (objPtr : not null Tcl_Obj);
+      pragma Import (C, Tcl_CallDecrRefCount, "Tcl_CallDecrRefCount");
+   begin
+      Tcl_CallDecrRefCount (objPtr);
+   end Tcl_DecrRefCount;
+
+   function Tcl_IsShared (objPtr : not null Tcl_Obj) return C.int is
+      function Tcl_CallIsShared (objPtr : not null Tcl_Obj) return C.int;
+      pragma Import (C, Tcl_CallIsShared, "Tcl_CallIsShared");
+   begin
+      return Tcl_CallIsShared (objPtr);
+   end Tcl_IsShared;
+
+   function Tcl_GetHashValue
+     (HashEntry : not null Tcl_HashEntry)
+     return       ClientData is
+      function Tcl_CallGetHashValue
+        (HashEntry : not null Tcl_HashEntry)
+        return      ClientData;
+      pragma Import (C, Tcl_CallGetHashValue, "Tcl_CallGetHashValue");
+   begin
+      return Tcl_CallGetHashValue (HashEntry);
+   end Tcl_GetHashValue;
+
+   procedure Tcl_SetHashValue
+     (HashEntry : not null Tcl_HashEntry;
+      value     : in ClientData) is
+      procedure Tcl_CallSetHashValue
+        (HashEntry : not null Tcl_HashEntry;
+         value     : in ClientData);
+      pragma Import (C, Tcl_CallSetHashValue, "Tcl_CallSetHashValue");
+   begin
+      Tcl_CallSetHashValue (HashEntry, value);
+   end Tcl_SetHashValue;
+
+   function Tcl_GetHashKey
+     (HashTable : not null Tcl_HashTable;
+      HashEntry : not null Tcl_HashEntry)
+     return      C.Strings.chars_ptr is
+      function Tcl_CallGetHashKey
+        (HashTable : not null Tcl_HashTable;
+         HashEntry : not null Tcl_HashEntry)
+        return      C.Strings.chars_ptr;
+      pragma Import (C, Tcl_CallGetHashKey, "Tcl_CallGetHashKey");
+   begin
+      return Tcl_CallGetHashKey (HashTable, HashEntry);
+   end Tcl_GetHashKey;
+
+   function Tcl_FindHashEntry
+     (HashTable : not null Tcl_HashTable;
+      key       : in C.Strings.chars_ptr)
+     return      Tcl_HashEntry is
+      function Tcl_CallFindHashEntry
+        (HashTable : not null Tcl_HashTable;
+         key       : in C.Strings.chars_ptr)
+        return      Tcl_HashEntry;
+      pragma Import (C, Tcl_CallFindHashEntry, "Tcl_CallFindHashEntry");
+   begin
+      return Tcl_CallFindHashEntry (HashTable, key);
+   end Tcl_FindHashEntry;
+
+   function Tcl_CreateHashEntry
+     (HashTable : not null Tcl_HashTable;
+      key       : in C.Strings.chars_ptr;
+      newPtr    : not null access C.int)
+     return      Tcl_HashEntry is
+      function Tcl_CallCreateHashEntry
+        (HashTable : not null Tcl_HashTable;
+         key       : in C.Strings.chars_ptr;
+         newPtr    : not null access C.int)
+        return      Tcl_HashEntry;
+      pragma Import (C, Tcl_CallCreateHashEntry, "Tcl_CallCreateHashEntry");
+   begin
+      return Tcl_CallCreateHashEntry (HashTable, key, newPtr);
+   end Tcl_CreateHashEntry;
+
+   --  End of C macro interfaces.
 
    procedure AppendStringsToObj
      (objPtr    : in Tcl_Obj;

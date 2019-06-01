@@ -50,6 +50,7 @@ project Tash is
       "tcl-async.ads",
       "tcl-tk-ada.adb",
       "tcl-tk-ada.ads",
+      "tcl-tk.adb",
       "tcl-tk.ads",
       "tcl.adb",
       "tcl.ads",
@@ -140,7 +141,7 @@ project Tash is
          for Source_Files use
            Basic_Ada_Source_Files & Basic_C_Source_Files
            & Extended_Ada_Source_Files & Extended_C_Source_Files;
-         Source_Units := Basic_Ada_Units & Extended_Ada_Units;
+         Source_Units := Source_Units & Extended_Ada_Units;
    end case;
 
    for Object_Dir use ".build_lib-" & Library_Type;
