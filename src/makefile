@@ -13,8 +13,6 @@
 # write to the Free Software Foundation, 59 Temple Place - Suite
 # 330, Boston, MA 02111-1307, USA.
 
-# $Id$
-
 # This makefile builds the TASH library for either Unix or Windows.
 # To build correctly, you must have previously run the setup program,
 # setup.tcl, in the main TASH directory.  This will create the makeconf
@@ -38,6 +36,9 @@ include ../makeconf
 # correctly (at GNAT GPL 2011); use gprbuild.
 GPRBUILD ?= gprbuild
 GPRCLEAN ?= gprclean
+CC       ?= gcc
+
+TASH_GPR ?= ../tash.gpr
 
 GEN_SRC = tcl_record_sizes.ads
 
@@ -52,6 +53,7 @@ TCL_ADA_SRC =					\
   tcl-async.ads					\
   tcl-tk-ada.adb				\
   tcl-tk-ada.ads				\
+  tcl-tk.adb					\
   tcl-tk.ads					\
   tcl.adb					\
   tcl.ads
@@ -120,15 +122,13 @@ tcl_record_sizes$(EXE): tcl_record_sizes.c
 tcl_record_sizes.c: tcl_record_sizes.tcl
 	tclsh $< >$@
 
-build:: lib-static-stamp lib-relocatable-stamp
+build:: lib-static lib-relocatable
 
-lib-static-stamp: $(TASH_GPR)
-	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=static
-	touch $@
+lib-static:
+	$(GPRBUILD) -p -P $(TASH_GPR) $< -XLIBRARY_TYPE=static
 
-lib-relocatable-stamp: $(TASH_GPR)
-	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=relocatable
-	touch $@
+lib-relocatable:
+	$(GPRBUILD) -p -P $(TASH_GPR) -XLIBRARY_TYPE=relocatable
 
 # To distribute source ...
 dist:
@@ -143,7 +143,6 @@ clean:
 	-$(GPRCLEAN) -P $(TASH_GPR) -XLIBRARY_TYPE=static
 	-$(GPRCLEAN) -P $(TASH_GPR) -XLIBRARY_TYPE=relocatable
 	-rm -f *~ \
-	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads \
-	  lib-static-stamp lib-relocatable-stamp
+	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads
 
-.PHONY: all build clean dist install test
+.PHONY: all build clean dist install test lib-static lib-relocatable

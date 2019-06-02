@@ -1,10 +1,18 @@
 syntax: glob
 
 *.orig
+*~
 
 .build*
 gpr_query.db*
 auto.cgpr
+
+makeconf
+tash_options.gpr
+
+include
+lib-static
+lib-relocatable
 
 demos/freq
 demos/futurevalue
@@ -20,16 +28,7 @@ demos/freq.*.out
 demos/watching.in
 demos/words
 
-include
-lib-static
-lib-relocatable
-
-makeconf
-
-src/lib-*-stamp
 src/tcl_record_sizes*
-
-tash_options.gpr
 
 tests/compare
 tests/tashtest

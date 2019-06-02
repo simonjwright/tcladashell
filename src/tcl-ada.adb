@@ -3,6 +3,9 @@
 -- tcl-ada.adb --
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
+--  Copyright (c) 2008, Oliver Kellogg
+--  Copyright (c) 2006, 2008, 2011, 2014, 2019
+--     Simon Wright <simon@pushface.org>
 --
 --  Tash is free software; you can redistribute it and/or modify it under
 --  terms of the GNU General Public License as published by the Free
@@ -31,6 +34,7 @@
 pragma Ada_2005;
 
 with Ada.Exceptions;
+with Ada.Unchecked_Conversion;
 with CHelper;
 
 package body Tcl.Ada is
@@ -161,6 +165,31 @@ package body Tcl.Ada is
       end Tcl_GetOpenFile;
 
    end Generic_GetOpenFile;
+
+   package body Generic_Hash is
+
+      pragma Warnings (Off, "* instantiation *");
+      function To_ClientData
+      is new Standard.Ada.Unchecked_Conversion (System.Address, ClientData);
+      function From_ClientData
+      is new Standard.Ada.Unchecked_Conversion (ClientData, System.Address);
+      pragma Warnings (On, "* instantiation *");
+
+      function Tcl_GetHashValue
+        (HashEntry : not null Tcl_HashEntry)
+        return      ClientData is
+      begin
+         return To_ClientData (Tcl.Tcl_GetHashValue (HashEntry));
+      end Tcl_GetHashValue;
+
+      procedure Tcl_SetHashValue
+        (HashEntry : not null Tcl_HashEntry;
+         value     : in ClientData) is
+      begin
+         Tcl.Tcl_SetHashValue (HashEntry, From_ClientData (value));
+      end Tcl_SetHashValue;
+
+   end Generic_Hash;
 
    package body Generic_MathFunc is
 
