@@ -122,13 +122,15 @@ tcl_record_sizes$(EXE): tcl_record_sizes.c
 tcl_record_sizes.c: tcl_record_sizes.tcl
 	tclsh $< >$@
 
-build:: lib-static lib-relocatable
+build:: lib-static-stamp lib-relocatable-stamp
 
-lib-static:
-	$(GPRBUILD) -p -P $(TASH_GPR) $< -XLIBRARY_TYPE=static
+lib-static-stamp: $(TASH_GPR) tcl_record_sizes.ads
+	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=static
+	touch $@
 
-lib-relocatable:
-	$(GPRBUILD) -p -P $(TASH_GPR) -XLIBRARY_TYPE=relocatable
+lib-relocatable-stamp: $(TASH_GPR) tcl_record_sizes.ads
+	$(GPRBUILD) -p -P $< -XLIBRARY_TYPE=relocatable
+	touch $@
 
 # To distribute source ...
 dist:
@@ -143,6 +145,7 @@ clean:
 	-$(GPRCLEAN) -P $(TASH_GPR) -XLIBRARY_TYPE=static
 	-$(GPRCLEAN) -P $(TASH_GPR) -XLIBRARY_TYPE=relocatable
 	-rm -f *~ \
-	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads
+	  tcl_record_sizes.c tcl_record_sizes$(EXE) tcl_record_sizes.ads \
+	  lib-static-stamp lib-relocatable-stamp
 
-.PHONY: all build clean dist install test lib-static lib-relocatable
+.PHONY: all build clean dist install test
