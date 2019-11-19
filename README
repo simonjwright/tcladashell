@@ -1,5 +1,7 @@
-This is TASH version 8.6-2, intended for use with Tcl/Tk versions 8.4
+This is TASH version 8.6-4, intended for use with Tcl/Tk versions 8.4
 through 8.6.
+
+This is a maintenance release.
 
 The notes at http://tcladashell.sourceforge.net/index.html#thick-binding
 describe the position with respect to TASH's "thick binding" (the
@@ -8,6 +10,11 @@ package hierarchy starting at Tash).
 
 API changes
 ===========
+
+Changes in 20191119
+-------------------
+
+None.
 
 Changes in 20140210
 -------------------
@@ -67,6 +74,11 @@ Changes in 20090207
 
 Other changes
 =============
+
+Changes in 20191119
+-------------------
+
+Reorganized build and distribution.
 
 Changes in 20140210
 -------------------
