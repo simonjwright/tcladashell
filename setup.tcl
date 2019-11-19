@@ -24,7 +24,7 @@ exec wish $0 $@
 # customize to the local environment.
 
 set tash_version "8.6"
-set tash_release "3"
+set tash_release "4"
 
 proc cequal {left right} {
     return [expr [string compare $left $right] == 0]
@@ -342,6 +342,7 @@ proc Set_Macros {platform os osVersion} {
     setvar TK_VERSION        "$tk_version"        {Tk version}
     setvar TK_LIBRARY        "$libtk"             {Tk library}
     setvar SUPPORTS_TASH     "[supportsTash]"     {Are Tash.* supported?}
+    setvar CC                "gcc"                {C compiler}
     setvar CARGS             "-g -O2"             {C compiler switches}
     setvar AARGS             "-g -O2 -gnatqQafoy -gnatwaL" \
         {Ada compiler switches}

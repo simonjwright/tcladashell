@@ -13,23 +13,27 @@
 # write to the Free Software Foundation, 59 Temple Place - Suite
 # 330, Boston, MA 02111-1307, USA.
 
-# This makefile builds the TASH library for either Unix or Windows. To
-# build correctly, you must have previously run the setup program,
-# setup.tcl, in this directory. This will create the makeconf file
-# included below.
+# This makefile builds the TASH library for either Unix or Windows.
+# It depends on the configuration file makeconf; you can allow the
+# makefile to create it itself using default parameters for your
+# operating system, or you can run it interactively:
+#   $ ./setup.tcl
 
 # Build and test TASH by executing "make all test" in this directory.
 # Or, you can cd into each of the subdirectories, src, demos, tests,
 # and apps, and execute "make all test" in each one in turn.
 
-# If you want to install the TASH library elsewhere, copy the contents
-# of ../lib and ../include directory to the install directory.
+# Install with your compiler using "make install" (possibly "sudo make
+# install"). If you want to install the TASH library elsewhere, say
+#   $ make install prefix=/where/ever
 
+makeconf:
+	./setup.tcl --nogui
 include makeconf
 
 SUBDIRS = src tests demos apps
 
-FOR_ALL_SUBUNITS = +for i in ${SUBDIRS}; do ${MAKE} -w -C $${i} $@ || exit 1; done
+FOR_ALL_SUBUNITS = +for i in ${SUBDIRS}; do "${MAKE}" -w -C $${i} $@ || exit 1; done
 
 all:
 	$(FOR_ALL_SUBUNITS)

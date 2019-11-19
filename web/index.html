@@ -129,11 +129,12 @@ does <i>not</i> depend on these unsupported features.
 
 <p>You need an Ada compiler. The instructions here are based
 on <a href="http://libre.adacore.com">GNAT</a>, though other compilers
-have been used and there is nothing GNAT-specific about TASH.
+have been used and there is nothing GNAT-specific about TASH (there
+are GNAT-isms in the build support files).
 
 <p>You also need Tcl/Tk with working <tt>tclsh</tt> and <tt>wish</tt>.
 
-<p>On Unix systems, this should be all aside from the usual
+<p>On Unix systems, this should be all, aside from the usual
 development environment (<tt>bash</tt>/<tt>sh</tt>, <tt>make</tt>
 etc).
 
@@ -179,12 +180,6 @@ like <a href="https://sourceforge.net/projects/gnuada/files/gnatfe/">gnatfe</a>
 in <tt>/use/local/bin</tt>, which will
 confuse <tt>make&nbsp;install</tt>).
 
-<p>Open up a shell window at the extracted TASH and say
-
-<pre>
-  $ ./setup.tcl
-</pre>
-
 <h4>On Windows</h4>
 
 <p>If you're running on Windows, you'll need to set up Cygwin so that
@@ -193,35 +188,35 @@ puts <tt>/usr/local/bin</tt> and <tt>/usr/bin</tt> before your Windows
 path). One way of doing this is to add the following line at the end
 of <tt>~/.bash_profile</tt>:
 <pre>
-  PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2011/bin:$PATH
+  PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2019/bin:$PATH
 </pre>
 <p>(assuming that you've got ActiveState Tcl/Tk installed
-at <tt>C:\Tcl</tt> and GNAT at <tt>C:\GNAT\2011</tt>)
-
-<p>Use Windows Explorer to locate and run <tt>setup.tcl</tt> (it may
-run on double-clicking, or you may have to right-click and <i>open
-with</i> <tt>wish</tt>). <b>Don't</b> try running this step from a
-Cygwin shell.
+at <tt>C:\Tcl</tt> and GNAT at <tt>C:\GNAT\2019</tt>).
 
 <h4>Common</h4>
 
-<p>In either case, the script sets values for several makefile macros
-used to customize your TASH build. In most cases, the default values
-will be OK. If not, type in the correct values. It's important that
-the C compiler used to compile glue files is compatible with your Ada
-compiler; one way of achieving this (if you're using GNAT; note, these
-instructions assume that's the case) is to make sure that
-GNAT's <tt>gcc</tt> is first on your path.
+<p>It's important that the C compiler used to compile glue files is
+compatible with your Ada compiler; one way of achieving this (if
+you're using GNAT; note, these instructions assume that's the case) is
+to make sure that GNAT's <tt>gcc</tt> is first on your path.
 
-<p>Press the Save button to create the <tt>tash_options.gpr</tt>
-and <tt>makeconf</tt> files.
+<p>If you're happy to accept default settings, there's nothing
+more; <tt>make</tt> creates default <tt>makeconf</tt>
+and <tt>tash_options.gpr</tt>
+using <tt>setup.tcl&nbsp;--nogui</tt>. If not, open up a shell window
+at the extracted TASH and say
 
-<p>You can say
 <pre>
-  $ ./setup.tcl --nogui
+  $ ./setup.tcl
 </pre>
-<p>if you're prepared to accept the defaults (and you're not running
-Windows).
+
+<p>In either case, the script sets values for several makefile macros
+used to customize your TASH build.
+
+<p>In most cases, the default values will be OK. If not, either edit
+the generated files or run <tt>setup.tcl</tt> interactively and type
+in the correct values; press the Save button to create
+the <tt>tash_options.gpr</tt> and <tt>makeconf</tt> files.
 
 <h3>Build</h3>
 
@@ -231,9 +226,12 @@ Windows).
 </pre>
 
 <p>This will compile the necessary C glue files and build the TASH
-library as a static library (<tt>libtash.a</tt>) with
-<tt>.ali</tt> files in <tt>lib/</tt>, and the corresponding Ada source
-files in <tt>include/</tt>.
+library statically (<tt>libtash.a</tt>) or relocatably
+(<tt>libtash.so</tt>, <tt>libtash.dll</tt> or <tt>libtash.dylib</tt>)
+with
+<tt>.ali</tt> files in <tt>lib-static/</tt>
+or <tt>lib-relocatable/</tt> respectively, and the corresponding Ada
+source files in <tt>include/</tt> and <tt>include-relocatable/</tt>.
 
 <h3>Run tests</h3>
 
