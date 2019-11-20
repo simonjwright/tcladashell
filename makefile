@@ -94,7 +94,7 @@ dist-src: $(DIST)
 dist-zip: $(DIST).zip
 dist-tgz: $(DIST).tgz
 
-$(DIST):
+$(DIST): force
 	-rm -rf $(DIST)
 	mkdir $(DIST)
 	cp $(SRC) $(DIST)/
