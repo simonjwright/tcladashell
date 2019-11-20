@@ -11,7 +11,7 @@ package hierarchy starting at Tash).
 API changes
 ===========
 
-Changes in 20191119
+Changes in 20191120
 -------------------
 
 None.
@@ -75,7 +75,7 @@ Changes in 20090207
 Other changes
 =============
 
-Changes in 20191119
+Changes in 20191120
 -------------------
 
 Reorganized build and distribution.
