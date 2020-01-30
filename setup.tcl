@@ -34,6 +34,12 @@ proc lempty {string} {
     return [expr [string length $string] == 0]
 }
 
+proc lprefix {prefix list} {
+    set res {}
+    foreach l $list {lappend res $prefix$l}
+    return $res
+}
+
 proc setvar {name value comments} {
     global tashvar tashorder tashcomments
     set tashvar($name) $value
@@ -219,7 +225,7 @@ proc Save {} {
 # Establish values for all macros depending on platform
 #------------------------------------------------------
 proc Set_Macros {platform os osVersion} {
-    global tcl_version tk_version tcl_interactive tcl_library tk_library env
+    global tcl_platform tcl_version tk_version tcl_interactive env
     global tash_version tash_release library_switches gpr_switches
 
     set x11home           ""
@@ -235,9 +241,7 @@ proc Set_Macros {platform os osVersion} {
     } else {
 	set tclhome [file dirname [file dirname [info nameofexecutable]]]
 	set tcl_include [file join $tclhome include]
-	if {![info exists [file join $tcl_include tcl.h]]} {
-	    set tcl_include [file join $tcl_include [file tail $tcl_library]]
-	}
+        lappend tcl_include [file join $tcl_include tcl]
     }
     set library_switches  ""
 
@@ -255,11 +259,13 @@ proc Set_Macros {platform os osVersion} {
 	    regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
 	    regsub {\.} $tcl_version {} tcl_short_version
 	    regsub {\.} $tk_version  {} tk_short_version
+            if $tcl_platform(threaded) {
+                if [file exists $tclhome/lib/tcl${tcl_short_version}t.lib] {
+                    set tcl_short_version ${tcl_short_version}t
+                    set tk_short_version ${tk_short_version}t
+                }
+            }
 	    set tclsh "tclsh${tcl_short_version}"
-	    set libtcl ""
-	    set tcldll "tcl${tcl_short_version}.dll"
-	    set libtk ""
-	    set tkdll  "tk${tk_short_version}.dll"
 	    append library_switches "-L$tclhome/lib "
 	    append library_switches "-ltk$tk_short_version "
 	    append library_switches "-ltcl$tcl_short_version "
@@ -267,33 +273,40 @@ proc Set_Macros {platform os osVersion} {
 	}
 	"unix" {
 	    set tclsh "tclsh"
-	    set dynlib [info sharedlibextension]
-	    set libtcl "$tclhome/lib/libtcl${tcl_version}$dynlib"
-	    set libtk  "$tclhome/lib/libtk${tk_version}$dynlib"
 
-	    set PossibleXHomes \
-                [list /usr/openwin /usr/X /usr/X11R6 /usr /opt/X11]
-	    foreach dir $PossibleXHomes {
-		set lib [file join $dir lib]
-		foreach file [list "libX11$dynlib" "libX11.a"] {
-		    if [file exists [file join $lib $file]] {
-			set x11home $dir
-			set x11_lib [file join $x11home lib]
-			break
-		    }
-		}
-	    }
-	    if [file isdirectory [file join $x11home include]] {
-		set x11_include [file join $x11home include]
-	    } else {
-		foreach dir $PossibleXHomes {
-		    set include [file join $dir include]
-		    if [file isdirectory $include] {
-			set x11_include $include
-			break
-		    }
-		}
-	    }
+            switch $os {
+                "Darwin" {
+                    set x11_include \
+                        "/System/Library/Frameworks/Tk.framework/Headers"
+                    set x11_lib ""
+                }
+                default {
+                    set PossibleXHomes \
+                        [list /usr/openwin /usr/X /usr/X11R6 /usr]
+                    set dynlib [info sharedlibextension]
+                    foreach dir $PossibleXHomes {
+                        set lib [file join $dir lib]
+                        foreach file [list "libX11$dynlib" "libX11.a"] {
+                            if [file exists [file join $lib $file]] {
+                                set x11home $dir
+                                set x11_lib [file join $x11home lib]
+                                break
+                            }
+                        }
+                    }
+                    if [file isdirectory [file join $x11home include]] {
+                        set x11_include [file join $x11home include]
+                    } else {
+                        foreach dir $PossibleXHomes {
+                            set include [file join $dir include]
+                            if [file isdirectory $include] {
+                                set x11_include $include
+                                break
+                            }
+                        }
+                    }
+                }
+            }
 	    if [cequal $os "SunOS"] {
 		append library_switches " -R$tclhome/lib -L$tclhome/lib"
 		append library_switches " -ltk$tk_version -ltcl$tcl_version"
@@ -336,11 +349,10 @@ proc Set_Macros {platform os osVersion} {
     }
     setvar TCLSH             "$tclsh"             {Tclsh executable}
     setvar TCLHOME           "$tclhome"           {Tcl Home directory}
-    setvar TCL_INCLUDE       "-I$tcl_include"     {Tcl include directory}
+    setvar TCL_INCLUDE       [lprefix "-I" $tcl_include] \
+                                                  {Tcl include directories}
     setvar TCL_VERSION       "$tcl_version"       {Tcl version}
-    setvar TCL_LIBRARY       "$libtcl"            {Tcl library}
     setvar TK_VERSION        "$tk_version"        {Tk version}
-    setvar TK_LIBRARY        "$libtk"             {Tk library}
     setvar SUPPORTS_TASH     "[supportsTash]"     {Are Tash.* supported?}
     setvar CC                "gcc"                {C compiler}
     setvar CARGS             "-g -O2"             {C compiler switches}
