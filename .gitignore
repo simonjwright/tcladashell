@@ -1,9 +1,8 @@
-syntax: glob
-
 *.orig
 *~
 
 .build*
+*-stamp
 gpr_query.db*
 gnatinspect.db
 auto.cgpr
@@ -12,9 +11,8 @@ tash-8.[0-9]*
 makeconf
 tash_options.gpr
 
-include
-lib-static
-lib-relocatable
+include*
+lib-*
 
 demos/freq
 demos/futurevalue
