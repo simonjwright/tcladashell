@@ -82,8 +82,7 @@ DIST = tash-$(TASH_VERSION)-$(TASH_RELEASE)-$(DATE)
 
 SRC = 						\
   COPYING					\
-  INSTALL					\
-  README					\
+  README.md					\
   makefile					\
   setup.tcl					\
   tash.gpr
@@ -112,23 +111,23 @@ $(DIST).tgz: dist-src
 
 # Rules for maintaining the SourceForge web pages.
 
-RSYNC ?= rsync
+# RSYNC ?= rsync
 
-SFUSER ?= simonjwright
+# SFUSER ?= simonjwright
 
-upload-docs:
-	$(RSYNC)						\
-	  --compress						\
-	  --copy-unsafe-links					\
-	  --cvs-exclude						\
-	  --perms						\
-	  --recursive						\
-	  --rsh=ssh						\
-	  --times						\
-	  --update						\
-	  --verbose						\
-	  web/*							\
-	$(SFUSER),tcladashell@web.sourceforge.net:htdocs/
+# upload-docs:
+# 	$(RSYNC)						\
+# 	  --compress						\
+# 	  --copy-unsafe-links					\
+# 	  --cvs-exclude						\
+# 	  --perms						\
+# 	  --recursive						\
+# 	  --rsh=ssh						\
+# 	  --times						\
+# 	  --update						\
+# 	  --verbose						\
+# 	  web/*							\
+# 	$(SFUSER),tcladashell@web.sourceforge.net:htdocs/
 
 .PHONY: clean dist dist-src dist-zip dist-tgz force install rpm \
 	  test upload-docs
