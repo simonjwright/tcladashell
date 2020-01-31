@@ -35,7 +35,7 @@ wm title . "Future Value of Savings"
 
 set form [list \
    [list msa "Monthly Savings Amount:" 100] \
-   [list int "Annual Interest Rate:"   0.08] \
+   [list int "Annual Interest Rate:"   8] \
    [list yrs "Number of Years:"        30]]
 
 # Create and initialize three widgets for:

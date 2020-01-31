@@ -184,7 +184,7 @@ package body FutureValue_App is
       Tcl.Tk.Ada.Pack (Label, "-side right");
 
       --  Initialize interest rate
-      Tcl.Ada.Tcl_Eval (Interp, ".rate.entry insert end 0.10");
+      Tcl.Ada.Tcl_Eval (Interp, ".rate.entry insert end 8");
 
       --  Create a frame, label and entry field for number of years
       Tcl.Tk.Ada.Create (Frame, ".yrs", "-bd 2");
@@ -195,7 +195,7 @@ package body FutureValue_App is
       Tcl.Tk.Ada.Pack (Label, "-side right");
 
       --  Initialize savings amount
-      Tcl.Ada.Tcl_Eval (Interp, ".yrs.entry insert end 10");
+      Tcl.Ada.Tcl_Eval (Interp, ".yrs.entry insert end 30");
 
       --  Create a frame, button, and result label for computed result
       Tcl.Tk.Ada.Create (Frame, ".fv", "-bd 2");
