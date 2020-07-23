@@ -3,6 +3,7 @@
 -- tcl-tk-ada.adb --
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
+--  Copyright (c) 2006-2020 Simon Wright <simon@pushface.org>
 --
 --  Tash is free software; you can redistribute it and/or modify it under
 --  terms of the GNU General Public License as published by the Free
@@ -28,8 +29,8 @@
 --
 --------------------------------------------------------------------
 
+with Ada.Text_IO;
 with Tcl.Ada;
-with Text_IO;
 
 package body Tcl.Tk.Ada is
 
@@ -42,7 +43,7 @@ package body Tcl.Tk.Ada is
    procedure Tcl_Eval (Interp : in Tcl_Interp; Cmd : in String) is
    begin --  Tcl_Eval
       if Trace then
-         Text_IO.Put_Line (Cmd);
+         Standard.Ada.Text_IO.Put_Line (Cmd);
       end if;
       Tcl.Ada.Tcl_Eval (Interp, Cmd);
    end Tcl_Eval;

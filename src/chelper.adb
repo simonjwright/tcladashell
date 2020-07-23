@@ -3,6 +3,7 @@
 -- chelper.adb --
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
+--  Copyright (c) 2006-2020 Simon Wright <simon@pushface.org>
 --
 --  See the file "license.htm" for information on usage and
 --  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -11,6 +12,7 @@
 --------------------------------------------------------------------
 
 with Ada.Strings.Fixed;
+with Ada.Characters.Latin_1;
 
 package body CHelper is
 
@@ -617,7 +619,7 @@ package body CHelper is
    begin --  Append
       Result.all (1 .. S_Length + 1) := C.Strings.Value (Source);
       Result.all (Length)            := C.To_C (New_Item);
-      Result.all (Length + 1)        := C.To_C (ASCII.NUL);
+      Result.all (Length + 1)        := C.To_C (Ada.Characters.Latin_1.NUL);
       C.Strings.Free (Source);
       Source := C.Strings.To_Chars_Ptr (Result);
    end Append;
