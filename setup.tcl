@@ -276,9 +276,16 @@ proc Set_Macros {platform os osVersion} {
 
             switch $os {
                 "Darwin" {
-                    set x11_include \
-                        "/System/Library/Frameworks/Tk.framework/Headers"
+                    set x11_include ""
                     set x11_lib ""
+                    if [file isdirectory \
+                        "/System/Library/Frameworks/Tk.framework/Headers/X11"] {
+                        set x11_include \
+                            "/System/Library/Frameworks/Tk.framework/Headers"
+                    } elseif [file isdirectory "/opt/X11/include"] {
+                        set x11_include \
+                            "/opt/X11/include"
+                    }
                 }
                 default {
                     set PossibleXHomes \
