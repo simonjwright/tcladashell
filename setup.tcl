@@ -135,8 +135,8 @@ proc CreateMakeconfFile {makefile} {
 	WriteOneMacro $makefid $name $tashvar($name) $tashcomments($name)
     }
 
-    WriteOneMacro $makefid LARGS [concat "-ltash" [join $library_switches]] \
-        {All link switches for TASH, Tcl, and Tk}
+    WriteOneMacro $makefid LARGS [join $library_switches] \
+        {All link switches for Tcl, and Tk}
 
     catch {close $makefid}
 }
@@ -235,98 +235,99 @@ proc Set_Macros {platform os osVersion} {
 
     regsub -all {[ \t]+} $os "_" os
 
+    set library_switches  ""
+
     if [cequal $os "Darwin"] {
-	set tclhome "/usr"
-	set tcl_include "/usr/include"
+	set tclhome ""
+        set tclsh "tclsh"
+        if [file isdirectory "/Library/Frameworks/Tcl.framework"] {
+            # Assume we're running ActiveTcl.
+            set tcl_include "/Library/Frameworks/Tk.framework/Headers \
+                /Library/Frameworks/Tcl.framework/Headers"
+            append library_switches \
+                "-F/Library/Frameworks -framework Tk -framework Tcl"
+        } elseif [file isdirectory "/System/Library/Frameworks/Tcl.framework"] {
+            # Assume we're running Catalina or earlier, Tcl/Tk
+            # supported (if grudgingly).
+            # Includes, libraries are actually in MacOSX SDK, faked to look
+            # as though they're in traditional places.
+            set tcl_include "" 
+            set x11_include "/opt/X11/include"
+            append library_switches "-ltk$tk_version -ltcl$tcl_version"
+        } else {
+            puts stderr "Can't find Tcl for macOS"
+            exit 2
+        }
     } else {
 	set tclhome [file dirname [file dirname [info nameofexecutable]]]
 	set tcl_include [file join $tclhome include]
         lappend tcl_include [file join $tcl_include tcl]
-    }
-    set library_switches  ""
-
-    set pwd               [pwd]
-
-    switch $platform {
-	"windows" {
-	    # This assumes ActiveTcl. Cygwin Tcl/Tk (at 30 Oct 2006)
-	    # wouldn't run properly when called from Ada.
-	    #
-	    # It also assumes a GNAT that recognises tcl84.lib as a
-	    # candidate for the linker switch -ltcl84.
-	    #
-	    # Most development tools get confused by paths with spaces.
-	    regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
-	    regsub {\.} $tcl_version {} tcl_short_version
-	    regsub {\.} $tk_version  {} tk_short_version
-            if $tcl_platform(threaded) {
-                if [file exists $tclhome/lib/tcl${tcl_short_version}t.lib] {
-                    set tcl_short_version ${tcl_short_version}t
-                    set tk_short_version ${tk_short_version}t
+        switch $platform {
+            "windows" {
+                # This assumes ActiveTcl. Cygwin Tcl/Tk (at 30 Oct 2006)
+                # wouldn't run properly when called from Ada.
+                #
+                # It also assumes a GNAT that recognises tcl84.lib as a
+                # candidate for the linker switch -ltcl84.
+                #
+                # Most development tools get confused by paths with spaces.
+                regsub {PROGRAM FILES} $tclhome "PROGRA~1" tclhome
+                regsub {\.} $tcl_version {} tcl_short_version
+                regsub {\.} $tk_version  {} tk_short_version
+                if $tcl_platform(threaded) {
+                    if [file exists $tclhome/lib/tcl${tcl_short_version}t.lib] {
+                        set tcl_short_version ${tcl_short_version}t
+                        set tk_short_version ${tk_short_version}t
+                    }
                 }
+                set tclsh "tclsh${tcl_short_version}"
+                append library_switches "-L$tclhome/lib "
+                append library_switches "-ltk$tk_short_version "
+                append library_switches "-ltcl$tcl_short_version "
+                set exec_suffix ".exe"
             }
-	    set tclsh "tclsh${tcl_short_version}"
-	    append library_switches "-L$tclhome/lib "
-	    append library_switches "-ltk$tk_short_version "
-	    append library_switches "-ltcl$tcl_short_version "
-	    set exec_suffix ".exe"
-	}
-	"unix" {
-	    set tclsh "tclsh"
+            "unix" {
+                set tclsh "tclsh"
 
-            switch $os {
-                "Darwin" {
-                    set x11_include ""
-                    set x11_lib ""
-                    if [file isdirectory \
-                        "/System/Library/Frameworks/Tk.framework/Headers/X11"] {
-                        set x11_include \
-                            "/System/Library/Frameworks/Tk.framework/Headers"
-                    } elseif [file isdirectory "/opt/X11/include"] {
-                        set x11_include \
-                            "/opt/X11/include"
-                    }
-                }
-                default {
-                    set PossibleXHomes \
-                        [list /usr/openwin /usr/X /usr/X11R6 /usr]
-                    set dynlib [info sharedlibextension]
-                    foreach dir $PossibleXHomes {
-                        set lib [file join $dir lib]
-                        foreach file [list "libX11$dynlib" "libX11.a"] {
-                            if [file exists [file join $lib $file]] {
-                                set x11home $dir
-                                set x11_lib [file join $x11home lib]
-                                break
-                            }
-                        }
-                    }
-                    if [file isdirectory [file join $x11home include]] {
-                        set x11_include [file join $x11home include]
-                    } else {
+                switch $os {
+                    default {
+                        set PossibleXHomes \
+                            [list /usr/openwin /usr/X /usr/X11R6 /usr]
+                        set dynlib [info sharedlibextension]
                         foreach dir $PossibleXHomes {
-                            set include [file join $dir include]
-                            if [file isdirectory $include] {
-                                set x11_include $include
-                                break
+                            set lib [file join $dir lib]
+                            foreach file [list "libX11$dynlib" "libX11.a"] {
+                                if [file exists [file join $lib $file]] {
+                                    set x11home $dir
+                                    set x11_lib [file join $x11home lib]
+                                    break
+                                }
+                            }
+                        }
+                        if [file isdirectory [file join $x11home include]] {
+                            set x11_include [file join $x11home include]
+                        } else {
+                            foreach dir $PossibleXHomes {
+                                set include [file join $dir include]
+                                if [file isdirectory $include] {
+                                    set x11_include $include
+                                    break
+                                }
                             }
                         }
                     }
                 }
+                if [cequal $os "SunOS"] {
+                    append library_switches " -R$tclhome/lib -L$tclhome/lib"
+                    append library_switches " -ltk$tk_version -ltcl$tcl_version"
+                } else {
+                    # Must be Linux (?)
+                    append library_switches " -Wl,-rpath,$tclhome/lib"
+                    append library_switches " -L$tclhome/lib"
+                    append library_switches " -ltk$tk_version -ltcl$tcl_version"
+                }
             }
-	    if [cequal $os "SunOS"] {
-		append library_switches " -R$tclhome/lib -L$tclhome/lib"
-		append library_switches " -ltk$tk_version -ltcl$tcl_version"
-	    } elseif [cequal $os "Darwin"] {
-		append library_switches " -L$tclhome/lib"
-		append library_switches " -ltk$tk_version -ltcl$tcl_version"
-	    } else {
-		# Must be Linux (?)
-		append library_switches " -Wl,-rpath,$tclhome/lib"
-		append library_switches " -L$tclhome/lib"
-		append library_switches " -ltk$tk_version -ltcl$tcl_version"
-	    }
-	}
+        }
     }
 
     setvar PLATFORM          $platform            {OS platform}
