@@ -31,8 +31,6 @@
 --
 --------------------------------------------------------------------
 
-pragma Ada_2005;
-
 with Ada.Exceptions;
 with Ada.Unchecked_Conversion;
 with CHelper;

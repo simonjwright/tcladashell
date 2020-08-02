@@ -39,8 +39,6 @@
 --
 --------------------------------------------------------------------
 
-pragma Ada_2005;
-
 with CArgv;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;

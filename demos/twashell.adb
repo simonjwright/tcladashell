@@ -20,7 +20,6 @@ with TWashApp;
 procedure TWASHell is --  Tcl Windowing Ada SHell
 
    package C renames Interfaces.C;
-   use type C.int;
 
    --  Argc and Argv include the command name
    Argc : C.int;
