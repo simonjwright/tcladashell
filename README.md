@@ -56,26 +56,26 @@ The GUI developer RAPID does not depend on these unsupported features.
 
 You need an Ada compiler. The instructions here are based on GNAT, though other compilers have been used and there is nothing GNAT-specific about TASH (there are GNAT-isms in the build support files).
 
-You also need Tcl/Tk with working `tclsh` and `wish`.
+You also need Tcl/Tk with working `tclsh` and `wish`. On macOS, you may need to use ActiveState's [Community Edition](https://www.activestate.com/products/tcl/downloads/) (Apple may cease Tcl/Tk support after Catalina).
 
 On Unix systems, this should be all, aside from the usual development environment (`bash`/`sh`, `make` etc).
 
-On Windows systems, you can get the development environment using Cygwin. Cygwin includes a Tcl/Tk implementation, but unfortunately it may not be compatible with GNAT (in the early 2000's, there was a `.dll` clash). We recommend that you use the excellent Community edition from ActiveState, and these instructions are written assuming that. We also recommend that you install at `C:\Tcl` or `C:\ActiveTcl` rather than at `C:\Program Files\Tcl`, to avoid problems with path names with spaces later on.
+On Windows systems, you can get the development environment using Cygwin. Cygwin includes a Tcl/Tk implementation, but unfortunately it may not be compatible with GNAT (in the early 2000's, there was a `.dll` clash). We recommend that you use ActiveState's [Community Edition](https://www.activestate.com/products/tcl/downloads/), and these instructions are written assuming that. We also recommend that you install at `C:\Tcl` or `C:\ActiveTcl` rather than at `C:\Program Files\Tcl`, to avoid problems with path names with spaces later on.
 
 ### Extract TASH ###
 
 Choose a place to build TASH. If you're not using GNAT GPL or FSF GCC, this should be the place you intend to use it from, perhaps your HOME directory.
-Assuming this is your home directory, go there and extract TASH by
+Assuming this is your home directory, go there and extract the downloaded TASH archive by (for the 20200802 release)
 ```
-$ unzip tash-8.6-3-20170217.zip
+$ unzip $downloads/tcladashell-Rel_20200802.zip
 ```
 or
 ```
-$ tar zxvf tash-8.6-3-20170217.tgz
+$ tar zxvf $downloads/tcladashell-Rel_20200802.tar.gz
 ```
 and then enter the source directory:
 ```
-$ cd tash-8.6-3-20170217
+$ cd tcladashell-Rel_20200802
 ```
 
 ### Configure ###
@@ -88,9 +88,9 @@ If you're running a Unix system, make sure you have the version of GNAT you wish
 
 If you're running on Windows, you'll need to set up Cygwin so that GNAT and ActiveState Tcl/Tk are first on your path in Cygwin (which puts `/usr/local/bin` and `/usr/bin` before your Windows path). One way of doing this is to add the following line at the end of `~/.bash_profile`:
 ```
-PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2019/bin:$PATH
+PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2020/bin:$PATH
 ```
-(assuming that you've got ActiveState Tcl/Tk installed at C:\Tcl and GNAT at C:\GNAT\2019).
+(assuming that you've got ActiveState Tcl/Tk installed at C:\Tcl and GNAT at C:\GNAT\2020).
 
 #### Common ####
 
@@ -130,7 +130,7 @@ After the make all stage, you can use TASH where it was built with any GNAT-base
 
 Make sure that the TASH distribution directory is on your `ADA_PROJECT_PATH`, by e.g.
 ```
-$ export ADA_PROJECT_PATH=~/tash-8.6-3-20170217:$ADA_PROJECT_PATH
+$ export ADA_PROJECT_PATH=~/tcladashell-Rel_20200802:$ADA_PROJECT_PATH
 ```
 Your GPR should include TASH:
 ```

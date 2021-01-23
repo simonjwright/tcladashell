@@ -1,5 +1,11 @@
 # Tcl Ada SHell #
 
+## Changes in 20200802 ##
+
+Supports use of ActiveTcl on macOS. Prompted by the Catalina/Xcode 1.6 warning that the native Tcl/Tk won’t be supported in future releases.
+
+Also removed some compiler warnings.
+
 ## Changes in 20200130 ##
 
 Corrected setup failures in macOS Mojave, Debian stretch, and Windows 10.
