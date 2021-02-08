@@ -4,7 +4,7 @@
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
 --  Copyright (c) 2008 O Kellogg
---  Copyright (c) 2006, 2008, 2009, 2014, 2019
+--  Copyright (c) 2006, 2008, 2009, 2014, 2019, 2021
 --     Simon Wright <simon@pushface.org>
 --
 --  Tash is free software; you can redistribute it and/or modify it under
@@ -310,20 +310,23 @@ package body Tcl is
    end Tcl_GetRefCount;
 
    procedure Tcl_PrintObj (Ptr : in Tcl_Obj) is
-      Len : aliased C.int;
-      StringFromValue : constant C.Strings.chars_ptr
-         := Tcl_GetStringFromObj (Ptr, Len'Access);
-      ObjTypeName : constant C.Strings.chars_ptr
-         := Tcl_GetObjTypeName (Ptr);
-      RefCount : constant C.int := Tcl_GetRefCount (Ptr);
    begin
       if Ptr = null then
          Ada.Text_IO.Put ("NULL");
       else
-         Ada.Text_IO.Put
-           ("s=""" & C.Strings.Value (StringFromValue) & """ " &
-            "t=" & C.Strings.Value (ObjTypeName) & " " &
-            "c=" & C.int'Image (RefCount));
+         declare
+            Len : aliased C.int;
+            StringFromValue : constant C.Strings.chars_ptr
+              := Tcl_GetStringFromObj (Ptr, Len'Access);
+            ObjTypeName : constant C.Strings.chars_ptr
+              := Tcl_GetObjTypeName (Ptr);
+            RefCount : constant C.int := Tcl_GetRefCount (Ptr);
+         begin
+            Ada.Text_IO.Put
+              ("s=""" & C.Strings.Value (StringFromValue) & """ " &
+                 "t=" & C.Strings.Value (ObjTypeName) & " " &
+                 "c=" & C.int'Image (RefCount));
+         end;
       end if;
    end Tcl_PrintObj;
 
