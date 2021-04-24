@@ -56,6 +56,8 @@ The GUI developer RAPID does not depend on these unsupported features.
 
 You need an Ada compiler. The instructions here are based on GNAT, though other compilers have been used and there is nothing GNAT-specific about TASH (there are GNAT-isms in the build support files).
 
+You need `gprbuild`; many GNAT packages provide it by default, but it's a separate package under Debian.
+
 You also need Tcl/Tk with working `tclsh` and `wish`. On macOS, you may need to use ActiveState's [Community Edition](https://www.activestate.com/products/tcl/downloads/) (Apple may cease Tcl/Tk support after Catalina).
 
 On Unix systems, this should be all, aside from the usual development environment (`bash`/`sh`, `make` etc).

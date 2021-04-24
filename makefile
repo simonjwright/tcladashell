@@ -27,9 +27,7 @@
 # install"). If you want to install the TASH library elsewhere, say
 #   $ make install prefix=/where/ever
 
-makeconf:
-	./setup.tcl --nogui
-include makeconf
+-include makeconf
 
 SUBDIRS = src tests demos apps
 
@@ -45,35 +43,41 @@ clean:
 	$(FOR_ALL_SUBUNITS)
 	rm -f makeconf tash_options.gpr
 
+makeconf:
+	./setup.tcl --nogui
+
 # Rule "install" does not depend on rule "all":
-# "make install" should be executed as root but not necessarily "make all".
+# "make install" should be executed as root but "make all" need not be.
 install: install-static install-relocatable
 
 install-static: src/lib-static-stamp
-	gprinstall					\
-	  -f						\
-	  --prefix=$(prefix)				\
-	  -P tash.gpr					\
-	  --install-name=tash				\
-	  --project-subdir=$(GPR_INSTALL_SUBDIR)	\
-	  -XLIBRARY_TYPE=static				\
-	  --mode=dev					\
-	  --create-missing-dirs				\
-	  --build-var=LIBRARY_TYPE			\
+	gprinstall				\
+	  -f					\
+	  --prefix=$(prefix)			\
+	  -P tash.gpr				\
+	  --install-name=tash			\
+	  -XLIBRARY_TYPE=static			\
+	  --mode=dev				\
+	  --create-missing-dirs			\
+	  --build-var=LIBRARY_TYPE		\
 	  --build-name=static
 
 install-relocatable: src/lib-relocatable-stamp
-	gprinstall					\
-	  -f						\
-	  --prefix=$(prefix)				\
-	  -P tash.gpr					\
-	  --install-name=tash				\
-	  --project-subdir=$(GPR_INSTALL_SUBDIR)	\
-	  -XLIBRARY_TYPE=relocatable			\
-	  --mode=dev					\
-	  --create-missing-dirs				\
-	  --build-var=LIBRARY_TYPE			\
+	gprinstall				\
+	  -f					\
+	  --prefix=$(prefix)			\
+	  -P tash.gpr				\
+	  --install-name=tash			\
+	  -XLIBRARY_TYPE=relocatable		\
+	  --mode=dev				\
+	  --create-missing-dirs			\
+	  --build-var=LIBRARY_TYPE		\
 	  --build-name=relocatable
+
+uninstall:
+	gprinstall				\
+	  --prefix=$(prefix)			\
+	  --uninstall tash
 
 # Rules for constructing a distribution.
 
@@ -109,25 +113,4 @@ $(DIST).tgz: dist-src
 	-rm $@
 	tar zcvf $@ $(DIST)
 
-# Rules for maintaining the SourceForge web pages.
-
-# RSYNC ?= rsync
-
-# SFUSER ?= simonjwright
-
-# upload-docs:
-# 	$(RSYNC)						\
-# 	  --compress						\
-# 	  --copy-unsafe-links					\
-# 	  --cvs-exclude						\
-# 	  --perms						\
-# 	  --recursive						\
-# 	  --rsh=ssh						\
-# 	  --times						\
-# 	  --update						\
-# 	  --verbose						\
-# 	  web/*							\
-# 	$(SFUSER),tcladashell@web.sourceforge.net:htdocs/
-
-.PHONY: clean dist dist-src dist-zip dist-tgz force install rpm \
-	  test upload-docs
+.PHONY: clean dist dist-src dist-zip dist-tgz force install test uninstall
