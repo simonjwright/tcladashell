@@ -1,5 +1,18 @@
 # Tcl Ada SHell #
 
+## Changes in 20210424 ##
+
+Noted that `gprbuild` is a prerequisite.
+
+Improved the `makefile`:
+
+* it doesn't warn before building a missing `makeconf`
+* it doesn't introduce a bad project subdirectory when installing
+* it includes an `uninstall` target
+* it no longer supports uploading documentation to SourceForge.
+
+`Tcl_PrintObj` deals with a null parameter instead of dereferencing it.
+
 ## Changes in 20200802 ##
 
 Supports use of ActiveTcl on macOS. Prompted by the Catalina/Xcode 1.6 warning that the native Tcl/Tk won’t be supported in future releases.
