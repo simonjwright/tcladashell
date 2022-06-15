@@ -27,6 +27,8 @@ abstract project Options is
       when "linux" =>
          Platform_Linker_Options :=
            (
+	    "-ltk",
+	    "-ltcl"
            );
       when "macos" =>
          Platform_Linker_Options :=
@@ -50,7 +52,8 @@ abstract project Options is
    C_Compiler_Switches := ("-g", "-O2");
    case Platform is
       when "linux" =>
-         C_Compiler_Switches := C_Compiler_Switches & ();
+         C_Compiler_Switches := C_Compiler_Switches & ("-I/usr/include/tcl",
+	                                               "-I/usr/include/tk");
       when "macos" =>
          C_Compiler_Switches := C_Compiler_Switches
            & (
