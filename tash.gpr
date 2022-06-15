@@ -15,7 +15,7 @@
 --  This file provides the compilation options for building the
 --  tcladashell library libtash.{a,dll,so,dylib}.
 
-with "config/tcladashell_config.gpr";
+with "options.gpr";
 
 project Tash is
 
@@ -83,61 +83,19 @@ project Tash is
    for Library_Dir use "lib-" & Library_Type;
    for Library_Src_Dir use "include-" & Library_Type;
 
-   Platform_Linker_Options := ();
-   case Platform is
-      when "linux" =>
-         Platform_Linker_Options :=
-           (
-           );
-      when "macos" =>
-         Platform_Linker_Options :=
-           (
-            "-F/Library/Frameworks",
-            "-framework",
-            "Tk",
-            "-framework",
-            "Tcl"
-           );
-      when "windows" =>
-         Platform_Linker_Options :=
-           (
-           );
-   end case;
-
    case Library_Type is
       when "relocatable" =>
          for Library_Interface use Source_Units;
-         for Library_Options use Platform_Linker_Options;
+         for Library_Options use Options.Platform_Linker_Options;
       when "static" =>
          null;
    end case;
 
-   package Builder is
-      for Default_Switches ("ada") use ("-m", "-g");
-   end Builder;
+   package Builder renames Options.Builder;
 
-   C_Compiler_Switches := ("-g", "-O2");
-   case Platform is
-      when "linux" =>
-         C_Compiler_Switches := C_Compiler_Switches & ();
-      when "macos" =>
-         C_Compiler_Switches := C_Compiler_Switches
-           & (
-              "-I/Library/Frameworks/Tk.framework/Headers",
-              "-I/Library/Frameworks/Tcl.framework/Headers"
-             );
-      when "windows" =>
-         C_Compiler_Switches := C_Compiler_Switches & ();
-   end case;
+   package Compiler renames Options.Compiler;
 
-   package Compiler is
-      for Default_Switches ("ada") use Tcladashell_Config.Ada_Compiler_Switches;
-      for Default_Switches ("c") use C_Compiler_Switches;
-   end Compiler;
-
-   package Linker is
-      for Linker_Options use Platform_Linker_Options;
-   end Linker;
+   package Linker renames Options.Linker;
 
    --  Pretty printer (useful with GPS while reformatting the code to
    --  avoid style & other warnings).
