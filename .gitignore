@@ -33,3 +33,5 @@ src/tcl_record_sizes*
 tests/compare
 tests/tashtest
 tests/test_compare.ada
+
+alire

@@ -14,13 +14,13 @@
 
 --  This file provides the compilation options for building the
 --  tcladashell library libtash.{a,dll,so,dylib}.
---
---  The withed 'tash_options.gpr' is created by running the script
---  'setup.tcl' in the parent directory.
 
-with "tash_options";
+with "config/tcladashell_config.gpr";
 
 project Tash is
+
+   type Platform_Type is ("linux", "macos", "windows");
+   Platform : Platform_Type := external ("TCLADASHELL_PLATFORM", "linux");
 
    type Library_T is ("static", "relocatable");
    Library_Type : Library_T := external ("LIBRARY_TYPE", "static");
@@ -29,12 +29,8 @@ project Tash is
 
    for Languages use ("ada", "c");
 
-   --  Tcl/Tk versions later than 8.4 don't provide the interfaces
-   --  relied on by the Tash.* package hierarchy, so (by default) they
-   --  won't be built if the Tcl/Tk version is later.
-
    type Answer is ("no", "yes");
-   Supports_Tash : Answer := Tash_Options.Supports_Tash;
+   Supports_Tash : Answer := "no";
 
    for Source_Dirs use ("src");
 
@@ -75,83 +71,43 @@ project Tash is
       "tkmacro.c"
      );
 
-   Extended_Ada_Source_Files :=
-     (
-      "tash-arrays.adb",
-      "tash-arrays.ads",
-      "tash-file.adb",
-      "tash-file.ads",
-      "tash-file_io.adb",
-      "tash-file_io.ads",
-      "tash-float_arrays.ads",
-      "tash-float_lists.ads",
-      "tash-floats.adb",
-      "tash-floats.ads",
-      "tash-integer_arrays.ads",
-      "tash-integer_lists.ads",
-      "tash-integers.adb",
-      "tash-integers.ads",
-      "tash-lists.adb",
-      "tash-lists.ads",
-      "tash-platform.adb",
-      "tash-platform.ads",
-      "tash-regexp.adb",
-      "tash-regexp.ads",
-      "tash-strings.adb",
-      "tash-strings.ads",
-      "tash-system.adb",
-      "tash-system.ads",
-      "tash.adb",
-      "tash.ads"
-     );
-
-   Extended_Ada_Units :=
-     (
-      "tash.arrays",
-      "tash.file",
-      "tash.file_io",
-      "tash.float_arrays",
-      "tash.float_lists",
-      "tash.floats",
-      "tash.integer_arrays",
-      "tash.integer_lists",
-      "tash.integers",
-      "tash.lists",
-      "tash.platform",
-      "tash.regexp",
-      "tash.strings",
-      "tash.system",
-      "tash"
-     );
-
-   Extended_C_Source_Files :=
-     (
-      "tcl_backward_compatibility_glue.c"
-     );
-
    Source_Units := Basic_Ada_Units;
    --  Variable can't be declared for the first time in a case
    --  alternative.
 
-   case Supports_Tash is
-      when "no" =>
-         for Source_Files use
-           Basic_Ada_Source_Files & Basic_C_Source_Files;
-      when "yes" =>
-         for Source_Files use
-           Basic_Ada_Source_Files & Basic_C_Source_Files
-           & Extended_Ada_Source_Files & Extended_C_Source_Files;
-         Source_Units := Source_Units & Extended_Ada_Units;
-   end case;
+   for Source_Files use
+     Basic_Ada_Source_Files & Basic_C_Source_Files;
 
    for Object_Dir use ".build_lib-" & Library_Type;
    for Library_Kind use Library_Type;
    for Library_Dir use "lib-" & Library_Type;
    for Library_Src_Dir use "include-" & Library_Type;
+
+   Platform_Linker_Options := ();
+   case Platform is
+      when "linux" =>
+         Platform_Linker_Options :=
+           (
+           );
+      when "macos" =>
+         Platform_Linker_Options :=
+           (
+            "-F/Library/Frameworks",
+            "-framework",
+            "Tk",
+            "-framework",
+            "Tcl"
+           );
+      when "windows" =>
+         Platform_Linker_Options :=
+           (
+           );
+   end case;
+
    case Library_Type is
       when "relocatable" =>
          for Library_Interface use Source_Units;
-         for Library_Options use Tash_Options.Linker_Options;
+         for Library_Options use Platform_Linker_Options;
       when "static" =>
          null;
    end case;
@@ -160,13 +116,27 @@ project Tash is
       for Default_Switches ("ada") use ("-m", "-g");
    end Builder;
 
+   C_Compiler_Switches := ("-g", "-O2");
+   case Platform is
+      when "linux" =>
+         C_Compiler_Switches := C_Compiler_Switches & ();
+      when "macos" =>
+         C_Compiler_Switches := C_Compiler_Switches
+           & (
+              "-I/Library/Frameworks/Tk.framework/Headers",
+              "-I/Library/Frameworks/Tcl.framework/Headers"
+             );
+      when "windows" =>
+         C_Compiler_Switches := C_Compiler_Switches & ();
+   end case;
+
    package Compiler is
-      for Default_Switches ("ada") use Tash_Options.Compiler_Options;
-      for Default_Switches ("c") use Tash_Options.C_Compiler_Options;
+      for Default_Switches ("ada") use Tcladashell_Config.Ada_Compiler_Switches;
+      for Default_Switches ("c") use C_Compiler_Switches;
    end Compiler;
 
    package Linker is
-      for Linker_Options use Tash_Options.Linker_Options;
+      for Linker_Options use Platform_Linker_Options;
    end Linker;
 
    --  Pretty printer (useful with GPS while reformatting the code to

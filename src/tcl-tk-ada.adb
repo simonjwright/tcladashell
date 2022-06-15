@@ -36,11 +36,11 @@ package body Tcl.Tk.Ada is
 
    Trace : Boolean := False;
 
-   procedure Tcl_Eval (Interp : in Tcl_Interp; Cmd : in String);
-   function Get_Main_Window (Interp : in Tcl_Interp) return Frame;
+   procedure Tcl_Eval (Interp : Tcl_Interp; Cmd : String);
+   function Get_Main_Window (Interp : Tcl_Interp) return Frame;
    pragma Unreferenced (Get_Main_Window);  --  XXX what is it for, then?
 
-   procedure Tcl_Eval (Interp : in Tcl_Interp; Cmd : in String) is
+   procedure Tcl_Eval (Interp : Tcl_Interp; Cmd : String) is
    begin --  Tcl_Eval
       if Trace then
          Standard.Ada.Text_IO.Put_Line (Cmd);
@@ -48,36 +48,36 @@ package body Tcl.Tk.Ada is
       Tcl.Ada.Tcl_Eval (Interp, Cmd);
    end Tcl_Eval;
 
-   procedure Set_Trace (State : in Boolean) is
+   procedure Set_Trace (State : Boolean) is
    begin --  Set_Trace
       Trace := State;
    end Set_Trace;
 
-   function Widget_Image (Win : in Widget'Class) return String is
+   function Widget_Image (Win : Widget'Class) return String is
    begin --  Widget_Image
       return CHelper.Value (Win.Name);
    end Widget_Image;
 
    function "&"
-     (Left  : in Widget'Class;
-      Right : in Widget'Class)
+     (Left  : Widget'Class;
+      Right : Widget'Class)
       return  String
    is
    begin --  "&"
       return Widget_Image (Left) & Widget_Image (Right);
    end "&";
 
-   function "&" (Left : in Widget'Class; Right : in String) return String is
+   function "&" (Left : Widget'Class; Right : String) return String is
    begin --  "&"
       return Widget_Image (Left) & Right;
    end "&";
 
-   function "&" (Left : in String; Right : in Widget'Class) return String is
+   function "&" (Left : String; Right : Widget'Class) return String is
    begin --  "&"
       return Left & Widget_Image (Right);
    end "&";
 
-   procedure Set_Context (Interp : in Tcl_Interp) is
+   procedure Set_Context (Interp : Tcl_Interp) is
    begin --  Set_Context
       Context := Interp;
    end Set_Context;
@@ -87,7 +87,7 @@ package body Tcl.Tk.Ada is
       return Context;
    end Get_Context;
 
-   function Get_Interp (Widgt : in Widget'Class) return Tcl_Interp is
+   function Get_Interp (Widgt : Widget'Class) return Tcl_Interp is
    begin --  Get_Interp
       return Widgt.Interp;
    end Get_Interp;
@@ -99,8 +99,8 @@ package body Tcl.Tk.Ada is
    end Destroy;
 
    function cget
-     (Widgt  : in Widget'Class;
-      option : in String)
+     (Widgt  : Widget'Class;
+      option : String)
       return   String
    is
    begin --  cget
@@ -109,8 +109,8 @@ package body Tcl.Tk.Ada is
    end cget;
 
    function configure
-     (Widgt   : in Widget'Class;
-      options : in String := "")
+     (Widgt   : Widget'Class;
+      options : String := "")
       return    String
    is
    begin --  configure
@@ -118,15 +118,15 @@ package body Tcl.Tk.Ada is
       return Tcl.Ada.Tcl_GetResult (Widgt.Interp);
    end configure;
 
-   procedure configure (Widgt : in Widget'Class; options : in String := "") is
+   procedure configure (Widgt : Widget'Class; options : String := "") is
    begin --  configure
       Execute_Widget_Command (Widgt, "configure", options);
    end configure;
 
    procedure Bind
-     (Widgt    : in Widget'Class;
-      Sequence : in String;
-      Script   : in String)
+     (Widgt    : Widget'Class;
+      Sequence : String;
+      Script   : String)
    is
    begin --  Bind
       Tcl_Eval
@@ -134,7 +134,7 @@ package body Tcl.Tk.Ada is
          "bind " & Widget_Image (Widgt) & " " & Sequence & " " & Script);
    end Bind;
 
-   procedure Unbind (Widgt : in Widget'Class; Sequence : in String) is
+   procedure Unbind (Widgt : Widget'Class; Sequence : String) is
    begin --  Unbind
       Tcl_Eval
         (Widgt.Interp,
@@ -142,8 +142,8 @@ package body Tcl.Tk.Ada is
    end Unbind;
 
    function Unbind
-     (Widgt    : in Widget'Class;
-      Sequence : in String)
+     (Widgt    : Widget'Class;
+      Sequence : String)
       return     String
    is
    begin --  Unbind
@@ -154,25 +154,25 @@ package body Tcl.Tk.Ada is
    end Unbind;
 
    procedure Bind_To_Main_Window
-     (Interp   : in Tcl_Interp;
-      Sequence : in String;
-      Script   : in String)
+     (Interp   : Tcl_Interp;
+      Sequence : String;
+      Script   : String)
    is
    begin --  Bind_To_Main_Window
       Tcl_Eval (Interp, "bind . " & Sequence & " " & Script);
    end Bind_To_Main_Window;
 
    procedure Unbind_From_Main_Window
-     (Interp   : in Tcl_Interp;
-      Sequence : in String)
+     (Interp   : Tcl_Interp;
+      Sequence : String)
    is
    begin --  Unbind_From_Main_Window
       Tcl_Eval (Interp, "bind . " & Sequence);
    end Unbind_From_Main_Window;
 
    function Unbind_From_Main_Window
-     (Interp   : in Tcl_Interp;
-      Sequence : in String)
+     (Interp   : Tcl_Interp;
+      Sequence : String)
       return     String
    is
    begin --  Unbind_From_Main_Window
@@ -180,28 +180,31 @@ package body Tcl.Tk.Ada is
       return Tcl.Ada.Tcl_GetResult (Interp);
    end Unbind_From_Main_Window;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     Frame
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Frame;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     Frame
    is
       --
@@ -213,45 +216,49 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Frame;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
-   function Get_Main_Window (Interp : in Tcl_Interp) return Frame is
+   function Get_Main_Window (Interp : Tcl_Interp) return Frame is
       --
       Prime_Window : aliased C.char_array := C.To_C (".");
    begin --  Get_Main_Window
       return (C.Strings.To_Chars_Ptr (Prime_Window'Unchecked_Access), Interp);
    end Get_Main_Window;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     Toplevel
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Toplevel;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     Toplevel
    is
       --
@@ -263,38 +270,42 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Toplevel;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     Label
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Label;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     Label
    is
       --
@@ -306,38 +317,42 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Label;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     Message
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Message;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     Message
    is
       --
@@ -349,38 +364,42 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Message;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     Button
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Button;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     Button
    is
       --
@@ -392,38 +411,42 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out Button;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     RadioButton
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out RadioButton;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     RadioButton
    is
       --
@@ -435,38 +458,42 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out RadioButton;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     CheckButton
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out CheckButton;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     CheckButton
    is
       --
@@ -478,24 +505,25 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out CheckButton;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
-   procedure Flash (Buttn : in Button'Class) is
+   procedure Flash (Buttn : Button'Class) is
    begin --  Flash
       Execute_Widget_Command (Widget'Class (Buttn), "flash");
    end Flash;
 
    function Invoke
-     (Buttn   : in Button'Class;
-      options : in String := "")
+     (Buttn   : Button'Class;
+      options : String := "")
       return    String
    is
    begin --  Invoke
@@ -503,58 +531,61 @@ package body Tcl.Tk.Ada is
       return Tcl.Ada.Tcl_GetResult (Buttn.Interp);
    end Invoke;
 
-   procedure Deselect (Buttn : in RadioButton) is
+   procedure Deselect (Buttn : RadioButton) is
    begin --  Deselect
       Execute_Widget_Command (Widget'Class (Buttn), "deselect");
    end Deselect;
 
-   procedure Tk_Select (Buttn : in RadioButton) is
+   procedure Tk_Select (Buttn : RadioButton) is
    begin --  Tk_Select
       Execute_Widget_Command (Widget'Class (Buttn), "select");
    end Tk_Select;
 
-   procedure Toggle (Buttn : in RadioButton) is
+   procedure Toggle (Buttn : RadioButton) is
    begin --  Toggle
       Execute_Widget_Command (Widget'Class (Buttn), "toggle");
    end Toggle;
 
-   procedure Deselect (Buttn : in CheckButton) is
+   procedure Deselect (Buttn : CheckButton) is
    begin --  Deselect
       Execute_Widget_Command (Widget'Class (Buttn), "deselect");
    end Deselect;
 
-   procedure Tk_Select (Buttn : in CheckButton) is
+   procedure Tk_Select (Buttn : CheckButton) is
    begin --  Tk_Select
       Execute_Widget_Command (Widget'Class (Buttn), "select");
    end Tk_Select;
 
-   procedure Toggle (Buttn : in CheckButton) is
+   procedure Toggle (Buttn : CheckButton) is
    begin --  Toggle
       Execute_Widget_Command (Widget'Class (Buttn), "toggle");
    end Toggle;
 
+   overriding
    function Create
-     (pathName : in String;
-      options  : in String := "")
+     (pathName : String;
+      options  : String := "")
       return     EntryWidget
    is
    begin --  Create
       return Create (Context, pathName, options);
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out EntryWidget;
-      pathName : in String;
-      options  : in String := "")
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Context, pathName, options);
    end Create;
 
+   overriding
    function Create
-     (Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+     (Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
       return     EntryWidget
    is
       --
@@ -566,23 +597,24 @@ package body Tcl.Tk.Ada is
       return The_Widget;
    end Create;
 
+   overriding
    procedure Create
      (Widgt    : out EntryWidget;
-      Interp   : in Tcl_Interp;
-      pathName : in String;
-      options  : in String := "")
+      Interp   : Tcl_Interp;
+      pathName : String;
+      options  : String := "")
    is
    begin --  Create
       Widgt := Create (Interp, pathName, options);
    end Create;
 
-   function get (Widgt : in EntryWidget) return String is
+   function get (Widgt : EntryWidget) return String is
    begin --  get
       Execute_Widget_Command (Widgt, "get");
       return Tcl.Ada.Tcl_GetResult (Widgt.Interp);
    end get;
 
-   procedure After (Ms : in Natural) is
+   procedure After (Ms : Natural) is
       --
       use CArgv;
       Argv : CArgv.Chars_Ptr_Ptr := CArgv.Empty & Natural'Image (Ms);
@@ -591,26 +623,26 @@ package body Tcl.Tk.Ada is
       CArgv.Free (Argv);
    end After;
 
-   procedure After (Interp : in Tcl_Interp; Ms : in Natural) is
+   procedure After (Interp : Tcl_Interp; Ms : Natural) is
    begin --  After
       Tcl_Eval (Interp, "after " & Natural'Image (Ms));
    end After;
 
-   function After (Ms : in Natural; Script : in String) return String is
+   function After (Ms : Natural; Script : String) return String is
    begin --  After
       Tcl_Eval (Context, "after " & Natural'Image (Ms) & " " & Script);
       return Tcl.Ada.Tcl_GetResult (Context);
    end After;
 
-   procedure After (Ms : in Natural; Script : in String) is
+   procedure After (Ms : Natural; Script : String) is
    begin --  After
       Tcl_Eval (Context, "after " & Natural'Image (Ms) & " " & Script);
    end After;
 
    function After
-     (Interp : in Tcl_Interp;
-      Ms     : in Natural;
-      Script : in String)
+     (Interp : Tcl_Interp;
+      Ms     : Natural;
+      Script : String)
       return   String
    is
    begin --  After
@@ -619,55 +651,55 @@ package body Tcl.Tk.Ada is
    end After;
 
    procedure After
-     (Interp : in Tcl_Interp;
-      Ms     : in Natural;
-      Script : in String)
+     (Interp : Tcl_Interp;
+      Ms     : Natural;
+      Script : String)
    is
    begin --  After
       Tcl_Eval (Interp, "after " & Natural'Image (Ms) & " " & Script);
    end After;
 
-   procedure Cancel (id_or_script : in String) is
+   procedure Cancel (id_or_script : String) is
    begin --  Cancel
       Tcl_Eval (Context, "after cancel " & id_or_script);
    end Cancel;
 
-   procedure Cancel (Interp : in Tcl_Interp; id_or_script : in String) is
+   procedure Cancel (Interp : Tcl_Interp; id_or_script : String) is
    begin --  Cancel
       Tcl_Eval (Interp, "after cancel " & id_or_script);
    end Cancel;
 
-   function Idle (Script : in String) return String is
+   function Idle (Script : String) return String is
    begin --  Idle
       Tcl_Eval (Context, "after idle " & Script);
       return Tcl.Ada.Tcl_GetResult (Context);
    end Idle;
 
-   procedure Idle (Script : in String) is
+   procedure Idle (Script : String) is
    begin --  Idle
       Tcl_Eval (Context, "after idle " & Script);
    end Idle;
 
-   function Idle (Interp : in Tcl_Interp; Script : in String) return String is
+   function Idle (Interp : Tcl_Interp; Script : String) return String is
    begin --  Idle
       Tcl_Eval (Interp, "after idle " & Script);
       return Tcl.Ada.Tcl_GetResult (Context);
    end Idle;
 
-   procedure Idle (Interp : in Tcl_Interp; Script : in String) is
+   procedure Idle (Interp : Tcl_Interp; Script : String) is
    begin --  Idle
       Tcl_Eval (Interp, "after idle " & Script);
    end Idle;
 
-   function Info (id : in String := "") return String is
+   function Info (id : String := "") return String is
    begin --  Info
       Tcl_Eval (Context, "after info " & id);
       return Tcl.Ada.Tcl_GetResult (Context);
    end Info;
 
    function Info
-     (Interp : in Tcl_Interp;
-      id     : in String := "")
+     (Interp : Tcl_Interp;
+      id     : String := "")
       return   String
    is
    begin --  Info
@@ -675,32 +707,32 @@ package body Tcl.Tk.Ada is
       return Tcl.Ada.Tcl_GetResult (Context);
    end Info;
 
-   procedure Pack (Slave : in Widget'Class; Options : in String) is
+   procedure Pack (Slave : Widget'Class; Options : String) is
    begin --  Pack
       Tcl_Eval
         (Slave.Interp,
          "pack " & Widget_Image (Slave) & " " & Options);
    end Pack;
 
-   procedure Pack_Configure (Slave : in Widget'Class; Options : in String) is
+   procedure Pack_Configure (Slave : Widget'Class; Options : String) is
    begin --  Pack_Configure
       Tcl_Eval
         (Slave.Interp,
          "pack configure " & Widget_Image (Slave) & " " & Options);
    end Pack_Configure;
 
-   procedure Pack_Forget (Slave : in Widget'Class) is
+   procedure Pack_Forget (Slave : Widget'Class) is
    begin --  Pack_Forget
       Tcl_Eval (Slave.Interp, "pack forget " & Widget_Image (Slave));
    end Pack_Forget;
 
-   function Pack_Info (Slave : in Widget'Class) return String is
+   function Pack_Info (Slave : Widget'Class) return String is
    begin --  Pack_Info
       Tcl_Eval (Slave.Interp, "pack info " & Widget_Image (Slave));
       return Tcl.Ada.Tcl_GetResult (Slave.Interp);
    end Pack_Info;
 
-   procedure Pack_Propagate (Master : in Widget'Class; State : in Boolean) is
+   procedure Pack_Propagate (Master : Widget'Class; State : Boolean) is
    begin --  Pack_Propagate
       Tcl_Eval
         (Master.Interp,
@@ -710,22 +742,22 @@ package body Tcl.Tk.Ada is
          Integer'Image (Boolean'Pos (State)));
    end Pack_Propagate;
 
-   function Pack_Propagate (Master : in Widget'Class) return Boolean is
+   function Pack_Propagate (Master : Widget'Class) return Boolean is
    begin --  Pack_Propagate
       Tcl_Eval (Master.Interp, "pack propagate " & Widget_Image (Master));
       return Integer'Value (Tcl.Ada.Tcl_GetResult (Master.Interp)) = 1;
    end Pack_Propagate;
 
-   function Pack_Slaves (Master : in Widget'Class) return String is
+   function Pack_Slaves (Master : Widget'Class) return String is
    begin --  Pack_Slaves
       Tcl_Eval (Master.Interp, "pack slaves " & Widget_Image (Master));
       return Tcl.Ada.Tcl_GetResult (Master.Interp);
    end Pack_Slaves;
 
    procedure Execute_Widget_Command
-     (Widgt   : in Widget'Class;
-      command : in String;
-      options : in String := "")
+     (Widgt   : Widget'Class;
+      command : String;
+      options : String := "")
    is
    begin --  Execute_Widget_Command
       Tcl_Eval
@@ -733,16 +765,16 @@ package body Tcl.Tk.Ada is
          Widget_Image (Widgt) & " " & command & " " & options);
    end Execute_Widget_Command;
 
-   function Tk_PathName (tkwin : in Tk_Window) return String is
+   function Tk_PathName (tkwin : Tk_Window) return String is
    begin --  Tk_PathName
       return CHelper.Value (Tcl.Tk.Tk_PathName (tkwin));
    end Tk_PathName;
 
    procedure Tk_AddOption
-     (tkwin    : in Tk_Window;
-      name     : in String;
-      value    : in String;
-      priority : in C.int)
+     (tkwin    : Tk_Window;
+      name     : String;
+      value    : String;
+      priority : C.int)
    is
       C_name  : aliased C.char_array := C.To_C (name);
       C_value : aliased C.char_array := C.To_C (value);
@@ -755,9 +787,9 @@ package body Tcl.Tk.Ada is
    end Tk_AddOption;
 
    function Tk_CanvasGetCoord
-     (interp    : in Tcl_Interp;
-      canvas    : in Tk_Canvas;
-      str       : in String;
+     (interp    : Tcl_Interp;
+      canvas    : Tk_Canvas;
+      str       : String;
       doublePtr : access C.double)
       return      C.int
    is
@@ -771,12 +803,12 @@ package body Tcl.Tk.Ada is
    end Tk_CanvasGetCoord;
 
    function Tk_CanvasTagsParseProc
-     (data    : in ClientData;
-      interp  : in Tcl_Interp;
-      tkwin   : in Tk_Window;
-      value   : in String;
-      widgRec : in String;
-      offset  : in C.int)
+     (data    : ClientData;
+      interp  : Tcl_Interp;
+      tkwin   : Tk_Window;
+      value   : String;
+      widgRec : String;
+      offset  : C.int)
       return    C.int
    is
       C_value   : aliased C.char_array := C.To_C (value);
@@ -792,11 +824,11 @@ package body Tcl.Tk.Ada is
    end Tk_CanvasTagsParseProc;
 
    function Tk_CanvasTagsPrintProc
-     (data        : in ClientData;
-      tkwin       : in Tk_Window;
-      widgRec     : in String;
-      offset      : in C.int;
-      freeProcPtr : in Tcl_FreeProc)
+     (data        : ClientData;
+      tkwin       : Tk_Window;
+      widgRec     : String;
+      offset      : C.int;
+      freeProcPtr : Tcl_FreeProc)
       return        String
    is
       C_widgRec : aliased C.char_array := C.To_C (widgRec);
@@ -811,12 +843,12 @@ package body Tcl.Tk.Ada is
    end Tk_CanvasTagsPrintProc;
 
    function Tk_ConfigureInfo
-     (interp   : in Tcl_Interp;
-      tkwin    : in Tk_Window;
-      specs    : in Tk_ConfigSpec;
-      widgRec  : in String;
-      argvName : in String;
-      flags    : in C.int)
+     (interp   : Tcl_Interp;
+      tkwin    : Tk_Window;
+      specs    : Tk_ConfigSpec;
+      widgRec  : String;
+      argvName : String;
+      flags    : C.int)
       return     C.int
    is
       C_widgRec  : aliased C.char_array := C.To_C (widgRec);
@@ -832,12 +864,12 @@ package body Tcl.Tk.Ada is
    end Tk_ConfigureInfo;
 
    function Tk_ConfigureValue
-     (interp   : in Tcl_Interp;
-      tkwin    : in Tk_Window;
-      specs    : in Tk_ConfigSpec;
-      widgRec  : in String;
-      argvName : in String;
-      flags    : in C.int)
+     (interp   : Tcl_Interp;
+      tkwin    : Tk_Window;
+      specs    : Tk_ConfigSpec;
+      widgRec  : String;
+      argvName : String;
+      flags    : C.int)
       return     C.int
    is
       C_widgRec  : aliased C.char_array := C.To_C (widgRec);
@@ -853,13 +885,13 @@ package body Tcl.Tk.Ada is
    end Tk_ConfigureValue;
 
    function Tk_ConfigureWidget
-     (interp  : in Tcl_Interp;
-      tkwin   : in Tk_Window;
-      specs   : in Tk_ConfigSpec;
-      argc    : in C.int;
-      argv    : in CArgv.Chars_Ptr_Ptr;
-      widgRec : in String;
-      flags   : in C.int)
+     (interp  : Tcl_Interp;
+      tkwin   : Tk_Window;
+      specs   : Tk_ConfigSpec;
+      argc    : C.int;
+      argv    : CArgv.Chars_Ptr_Ptr;
+      widgRec : String;
+      flags   : C.int)
       return    C.int
    is
       C_widgRec : aliased C.char_array := C.To_C (widgRec);
@@ -875,12 +907,12 @@ package body Tcl.Tk.Ada is
    end Tk_ConfigureWidget;
 
    function Tk_ComputeTextLayout
-     (font       : in Tk_Font;
-      str        : in String;
-      numChars   : in C.int;
-      wrapLength : in C.int;
-      justify    : in Tk_Justify;
-      flags      : in C.int;
+     (font       : Tk_Font;
+      str        : String;
+      numChars   : C.int;
+      wrapLength : C.int;
+      justify    : Tk_Justify;
+      flags      : C.int;
       widthPtr   : access C.int;
       heightPtr  : access C.int)
       return       Tk_TextLayout
@@ -899,12 +931,12 @@ package body Tcl.Tk.Ada is
    end Tk_ComputeTextLayout;
 
    function Tk_CreateBinding
-     (interp       : in Tcl_Interp;
-      bindingTable : in Tk_BindingTable;
-      object       : in ClientData;
-      eventStr     : in String;
-      command      : in String;
-      append       : in C.int)
+     (interp       : Tcl_Interp;
+      bindingTable : Tk_BindingTable;
+      object       : ClientData;
+      eventStr     : String;
+      command      : String;
+      append       : C.int)
       return         C.unsigned_long
    is
       C_eventStr : aliased C.char_array := C.To_C (eventStr);
@@ -920,10 +952,10 @@ package body Tcl.Tk.Ada is
    end Tk_CreateBinding;
 
    function Tk_CreateWindow
-     (interp     : in Tcl_Interp;
-      parent     : in Tk_Window;
-      name       : in String;
-      screenName : in String)
+     (interp     : Tcl_Interp;
+      parent     : Tk_Window;
+      name       : String;
+      screenName : String)
       return       Tk_Window
    is
       C_name       : aliased C.char_array := C.To_C (name);
@@ -937,10 +969,10 @@ package body Tcl.Tk.Ada is
    end Tk_CreateWindow;
 
    function Tk_CreateWindowFromPath
-     (interp     : in Tcl_Interp;
-      tkwin      : in Tk_Window;
-      pathName   : in String;
-      screenName : in String)
+     (interp     : Tcl_Interp;
+      tkwin      : Tk_Window;
+      pathName   : String;
+      screenName : String)
       return       Tk_Window
    is
       C_pathName   : aliased C.char_array := C.To_C (pathName);
@@ -954,11 +986,11 @@ package body Tcl.Tk.Ada is
    end Tk_CreateWindowFromPath;
 
    function Tk_DefineBitmap
-     (interp : in Tcl_Interp;
-      name   : in String;
-      source : in String;
-      width  : in C.int;
-      height : in C.int)
+     (interp : Tcl_Interp;
+      name   : String;
+      source : String;
+      width  : C.int;
+      height : C.int)
       return   C.int
    is
       C_name   : aliased C.char_array := C.To_C (name);
@@ -973,10 +1005,10 @@ package body Tcl.Tk.Ada is
    end Tk_DefineBitmap;
 
    function Tk_DeleteBinding
-     (interp       : in Tcl_Interp;
-      bindingTable : in Tk_BindingTable;
-      object       : in ClientData;
-      eventStr     : in String)
+     (interp       : Tcl_Interp;
+      bindingTable : Tk_BindingTable;
+      object       : ClientData;
+      eventStr     : String)
       return         C.int
    is
       C_eventStr : aliased C.char_array := C.To_C (eventStr);
@@ -988,7 +1020,7 @@ package body Tcl.Tk.Ada is
                 C.Strings.To_Chars_Ptr (C_eventStr'Unchecked_Access));
    end Tk_DeleteBinding;
 
-   procedure Tk_DeleteImage (interp : in Tcl_Interp; name : in String) is
+   procedure Tk_DeleteImage (interp : Tcl_Interp; name : String) is
       C_name : aliased C.char_array := C.To_C (name);
    begin --  Tk_DeleteImage
       Tcl.Tk.Tk_DeleteImage
@@ -996,14 +1028,14 @@ package body Tcl.Tk.Ada is
          C.Strings.To_Chars_Ptr (C_name'Unchecked_Access));
    end Tk_DeleteImage;
 
-   function Tk_DisplayName (tkwin : in Tk_Window) return String is
+   function Tk_DisplayName (tkwin : Tk_Window) return String is
    begin --  Tk_DisplayName
       return CHelper.Value (Tcl.Tk.Tk_DisplayName (tkwin));
    end Tk_DisplayName;
 
    function Tk_FindPhoto
-     (interp    : in Tcl_Interp;
-      imageName : in String)
+     (interp    : Tcl_Interp;
+      imageName : String)
       return      Tk_PhotoHandle
    is
       C_imageName : aliased C.char_array := C.To_C (imageName);
@@ -1014,9 +1046,9 @@ package body Tcl.Tk.Ada is
    end Tk_FindPhoto;
 
    function Tk_GetAnchor
-     (interp    : in Tcl_Interp;
-      str       : in String;
-      anchorPtr : in Tk_Anchor)
+     (interp    : Tcl_Interp;
+      str       : String;
+      anchorPtr : Tk_Anchor)
       return      C.int
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -1028,10 +1060,10 @@ package body Tcl.Tk.Ada is
    end Tk_GetAnchor;
 
    function Tk_GetBinding
-     (interp       : in Tcl_Interp;
-      bindingTable : in Tk_BindingTable;
-      object       : in ClientData;
-      eventStr     : in String)
+     (interp       : Tcl_Interp;
+      bindingTable : Tk_BindingTable;
+      object       : ClientData;
+      eventStr     : String)
       return         String
    is
       C_eventStr : aliased C.char_array := C.To_C (eventStr);
@@ -1045,8 +1077,8 @@ package body Tcl.Tk.Ada is
    end Tk_GetBinding;
 
    function Tk_GetCapStyle
-     (interp : in Tcl_Interp;
-      str    : in String;
+     (interp : Tcl_Interp;
+      str    : String;
       capPtr : access C.int)
       return   C.int
    is
@@ -1059,16 +1091,16 @@ package body Tcl.Tk.Ada is
    end Tk_GetCapStyle;
 
    function Tk_GetCursorFromData
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
-      source : in String;
-      mask   : in String;
-      width  : in C.int;
-      height : in C.int;
-      xHot   : in C.int;
-      yHot   : in C.int;
-      fg     : in Tk_Uid;
-      bg     : in Tk_Uid)
+     (interp : Tcl_Interp;
+      tkwin  : Tk_Window;
+      source : String;
+      mask   : String;
+      width  : C.int;
+      height : C.int;
+      xHot   : C.int;
+      yHot   : C.int;
+      fg     : Tk_Uid;
+      bg     : Tk_Uid)
       return   Tk_Cursor
    is
       C_source : aliased C.char_array := C.To_C (source);
@@ -1088,9 +1120,9 @@ package body Tcl.Tk.Ada is
    end Tk_GetCursorFromData;
 
    function Tk_GetFont
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
-      str    : in String)
+     (interp : Tcl_Interp;
+      tkwin  : Tk_Window;
+      str    : String)
       return   Tk_Font
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -1102,11 +1134,11 @@ package body Tcl.Tk.Ada is
    end Tk_GetFont;
 
    function Tk_GetImage
-     (interp     : in Tcl_Interp;
-      tkwin      : in Tk_Window;
-      name       : in String;
-      changeProc : in Tk_ImageChangedProc;
-      data       : in ClientData)
+     (interp     : Tcl_Interp;
+      tkwin      : Tk_Window;
+      name       : String;
+      changeProc : Tk_ImageChangedProc;
+      data       : ClientData)
       return       Tk_Image
    is
       C_name : aliased C.char_array := C.To_C (name);
@@ -1120,9 +1152,9 @@ package body Tcl.Tk.Ada is
    end Tk_GetImage;
 
    function Tk_GetImageMasterData
-     (interp     : in Tcl_Interp;
-      name       : in String;
-      typePtrPtr : in Tk_ImageType)
+     (interp     : Tcl_Interp;
+      name       : String;
+      typePtrPtr : Tk_ImageType)
       return       ClientData
    is
       C_name : aliased C.char_array := C.To_C (name);
@@ -1134,8 +1166,8 @@ package body Tcl.Tk.Ada is
    end Tk_GetImageMasterData;
 
    function Tk_GetJoinStyle
-     (interp  : in Tcl_Interp;
-      str     : in String;
+     (interp  : Tcl_Interp;
+      str     : String;
       joinPtr : access C.int)
       return    C.int
    is
@@ -1148,9 +1180,9 @@ package body Tcl.Tk.Ada is
    end Tk_GetJoinStyle;
 
    function Tk_GetJustify
-     (interp     : in Tcl_Interp;
-      str        : in String;
-      justifyPtr : in Tk_Justify)
+     (interp     : Tcl_Interp;
+      str        : String;
+      justifyPtr : Tk_Justify)
       return       C.int
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -1162,9 +1194,9 @@ package body Tcl.Tk.Ada is
    end Tk_GetJustify;
 
    function Tk_GetOption
-     (tkwin     : in Tk_Window;
-      name      : in String;
-      className : in String)
+     (tkwin     : Tk_Window;
+      name      : String;
+      className : String)
       return      Tk_Uid
    is
       C_name      : aliased C.char_array := C.To_C (name);
@@ -1177,9 +1209,9 @@ package body Tcl.Tk.Ada is
    end Tk_GetOption;
 
    function Tk_GetPixels
-     (interp : in Tcl_Interp;
-      tkwin  : in Tk_Window;
-      str    : in String;
+     (interp : Tcl_Interp;
+      tkwin  : Tk_Window;
+      str    : String;
       intPtr : access C.int)
       return   C.int
    is
@@ -1193,8 +1225,8 @@ package body Tcl.Tk.Ada is
    end Tk_GetPixels;
 
    function Tk_GetRelief
-     (interp    : in Tcl_Interp;
-      name      : in String;
+     (interp    : Tcl_Interp;
+      name      : String;
       reliefPtr : access C.int)
       return      C.int
    is
@@ -1207,9 +1239,9 @@ package body Tcl.Tk.Ada is
    end Tk_GetRelief;
 
    function Tk_GetScreenMM
-     (interp    : in Tcl_Interp;
-      tkwin     : in Tk_Window;
-      str       : in String;
+     (interp    : Tcl_Interp;
+      tkwin     : Tk_Window;
+      str       : String;
       doublePtr : access C.double)
       return      C.int
    is
@@ -1222,7 +1254,7 @@ package body Tcl.Tk.Ada is
                 doublePtr);
    end Tk_GetScreenMM;
 
-   function Tk_GetUid (str : in String) return Tk_Uid is
+   function Tk_GetUid (str : String) return Tk_Uid is
       C_str : aliased C.char_array := C.To_C (str);
    begin --  Tk_GetUid
       return Tcl.Tk.Tk_GetUid
@@ -1230,11 +1262,11 @@ package body Tcl.Tk.Ada is
    end Tk_GetUid;
 
    function Tk_MeasureChars
-     (tkfont    : in Tk_Font;
-      source    : in String;
-      numBytes  : in C.int;
-      maxPixels : in C.int;
-      flags     : in C.int;
+     (tkfont    : Tk_Font;
+      source    : String;
+      numBytes  : C.int;
+      maxPixels : C.int;
+      flags     : C.int;
       lengthPtr : access C.int)
       return      C.int
    is
@@ -1249,50 +1281,50 @@ package body Tcl.Tk.Ada is
                 lengthPtr);
    end Tk_MeasureChars;
 
-   function Tk_NameOf3DBorder (border : in Tk_3DBorder) return String is
+   function Tk_NameOf3DBorder (border : Tk_3DBorder) return String is
    begin --  Tk_NameOf3DBorder
       return CHelper.Value (Tcl.Tk.Tk_NameOf3DBorder (border));
    end Tk_NameOf3DBorder;
 
-   function Tk_NameOfAnchor (anchor : in Tk_Anchor) return String is
+   function Tk_NameOfAnchor (anchor : Tk_Anchor) return String is
    begin --  Tk_NameOfAnchor
       return CHelper.Value (Tcl.Tk.Tk_NameOfAnchor (anchor));
    end Tk_NameOfAnchor;
 
-   function Tk_NameOfCapStyle (cap : in C.int) return String is
+   function Tk_NameOfCapStyle (cap : C.int) return String is
    begin --  Tk_NameOfCapStyle
       return CHelper.Value (Tcl.Tk.Tk_NameOfCapStyle (cap));
    end Tk_NameOfCapStyle;
 
-   function Tk_NameOfFont (font : in Tk_Font) return String is
+   function Tk_NameOfFont (font : Tk_Font) return String is
    begin --  Tk_NameOfFont
       return CHelper.Value (Tcl.Tk.Tk_NameOfFont (font));
    end Tk_NameOfFont;
 
-   function Tk_NameOfImage (imageMaster : in Tk_ImageMaster) return String is
+   function Tk_NameOfImage (imageMaster : Tk_ImageMaster) return String is
    begin --  Tk_NameOfImage
       return CHelper.Value (Tcl.Tk.Tk_NameOfImage (imageMaster));
    end Tk_NameOfImage;
 
-   function Tk_NameOfJoinStyle (join : in C.int) return String is
+   function Tk_NameOfJoinStyle (join : C.int) return String is
    begin --  Tk_NameOfJoinStyle
       return CHelper.Value (Tcl.Tk.Tk_NameOfJoinStyle (join));
    end Tk_NameOfJoinStyle;
 
-   function Tk_NameOfJustify (justify : in Tk_Justify) return String is
+   function Tk_NameOfJustify (justify : Tk_Justify) return String is
    begin --  Tk_NameOfJustify
       return CHelper.Value (Tcl.Tk.Tk_NameOfJustify (justify));
    end Tk_NameOfJustify;
 
-   function Tk_NameOfRelief (relief : in C.int) return String is
+   function Tk_NameOfRelief (relief : C.int) return String is
    begin --  Tk_NameOfRelief
       return CHelper.Value (Tcl.Tk.Tk_NameOfRelief (relief));
    end Tk_NameOfRelief;
 
    function Tk_NameToWindow
-     (interp   : in Tcl_Interp;
-      pathName : in String;
-      tkwin    : in Tk_Window)
+     (interp   : Tcl_Interp;
+      pathName : String;
+      tkwin    : Tk_Window)
       return     Tk_Window
    is
       C_pathName : aliased C.char_array := C.To_C (pathName);
@@ -1304,8 +1336,8 @@ package body Tcl.Tk.Ada is
    end Tk_NameToWindow;
 
    function Tk_SetAppName
-     (tkwin : in Tk_Window;
-      name  : in String)
+     (tkwin : Tk_Window;
+      name  : String)
       return  String
    is
       C_name : aliased C.char_array := C.To_C (name);
@@ -1316,7 +1348,7 @@ package body Tcl.Tk.Ada is
                     C.Strings.To_Chars_Ptr (C_name'Unchecked_Access)));
    end Tk_SetAppName;
 
-   procedure Tk_SetClass (tkwin : in Tk_Window; className : in String) is
+   procedure Tk_SetClass (tkwin : Tk_Window; className : String) is
       C_className : aliased C.char_array := C.To_C (className);
    begin --  Tk_SetClass
       Tcl.Tk.Tk_SetClass
@@ -1325,9 +1357,9 @@ package body Tcl.Tk.Ada is
    end Tk_SetClass;
 
    function Tk_TextWidth
-     (font     : in Tk_Font;
-      str      : in String;
-      numBytes : in C.int)
+     (font     : Tk_Font;
+      str      : String;
+      numBytes : C.int)
       return     C.int
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -1339,9 +1371,9 @@ package body Tcl.Tk.Ada is
    end Tk_TextWidth;
 
    procedure Tk_FreeConfigOptions
-     (recordPtr   : in String;
-      optionToken : in Tk_OptionTable;
-      tkwin       : in Tk_Window)
+     (recordPtr   : String;
+      optionToken : Tk_OptionTable;
+      tkwin       : Tk_Window)
    is
       C_recordPtr : aliased C.char_array := C.To_C (recordPtr);
    begin --  Tk_FreeConfigOptions
@@ -1352,11 +1384,11 @@ package body Tcl.Tk.Ada is
    end Tk_FreeConfigOptions;
 
    function Tk_GetOptionInfo
-     (interp      : in Tcl_Interp;
-      recordPtr   : in String;
-      optionTable : in Tk_OptionTable;
-      namePtr     : in Tcl_Obj;
-      tkwin       : in Tk_Window)
+     (interp      : Tcl_Interp;
+      recordPtr   : String;
+      optionTable : Tk_OptionTable;
+      namePtr     : Tcl_Obj;
+      tkwin       : Tk_Window)
       return        Tcl_Obj
    is
       C_recordPtr : aliased C.char_array := C.To_C (recordPtr);
@@ -1370,11 +1402,11 @@ package body Tcl.Tk.Ada is
    end Tk_GetOptionInfo;
 
    function Tk_GetOptionValue
-     (interp      : in Tcl_Interp;
-      recordPtr   : in String;
-      optionTable : in Tk_OptionTable;
-      namePtr     : in Tcl_Obj;
-      tkwin       : in Tk_Window)
+     (interp      : Tcl_Interp;
+      recordPtr   : String;
+      optionTable : Tk_OptionTable;
+      namePtr     : Tcl_Obj;
+      tkwin       : Tk_Window)
       return        Tcl_Obj
    is
       C_recordPtr : aliased C.char_array := C.To_C (recordPtr);
@@ -1388,10 +1420,10 @@ package body Tcl.Tk.Ada is
    end Tk_GetOptionValue;
 
    function Tk_InitOptions
-     (interp      : in Tcl_Interp;
-      recordPtr   : in String;
-      optionToken : in Tk_OptionTable;
-      tkwin       : in Tk_Window)
+     (interp      : Tcl_Interp;
+      recordPtr   : String;
+      optionToken : Tk_OptionTable;
+      tkwin       : Tk_Window)
       return        C.int
    is
       C_recordPtr : aliased C.char_array := C.To_C (recordPtr);
@@ -1404,13 +1436,13 @@ package body Tcl.Tk.Ada is
    end Tk_InitOptions;
 
    function Tk_SetOptions
-     (interp      : in Tcl_Interp;
-      recordPtr   : in String;
-      optionTable : in Tk_OptionTable;
-      objc        : in C.int;
-      objv        : in Tcl_Obj_Array;
-      tkwin       : in Tk_Window;
-      savePtr     : in Tk_SavedOptions;
+     (interp      : Tcl_Interp;
+      recordPtr   : String;
+      optionTable : Tk_OptionTable;
+      objc        : C.int;
+      objv        : Tcl_Obj_Array;
+      tkwin       : Tk_Window;
+      savePtr     : Tk_SavedOptions;
       maskPtr     : access C.int)
       return        C.int
    is
@@ -1428,9 +1460,9 @@ package body Tcl.Tk.Ada is
    end Tk_SetOptions;
 
    function Tk_GetDash
-     (interp : in Tcl_Interp;
-      value  : in String;
-      dash   : in Tk_Dash)
+     (interp : Tcl_Interp;
+      value  : String;
+      dash   : Tk_Dash)
       return   C.int
    is
       C_value : aliased C.char_array := C.To_C (value);
