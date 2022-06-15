@@ -78,10 +78,10 @@ package body Tcl is
 
    procedure Tcl_SetHashValue
      (HashEntry : not null Tcl_HashEntry;
-      value     : in ClientData) is
+      value     : ClientData) is
       procedure Tcl_CallSetHashValue
         (HashEntry : not null Tcl_HashEntry;
-         value     : in ClientData);
+         value     : ClientData);
       pragma Import (C, Tcl_CallSetHashValue, "Tcl_CallSetHashValue");
    begin
       Tcl_CallSetHashValue (HashEntry, value);
@@ -102,11 +102,11 @@ package body Tcl is
 
    function Tcl_FindHashEntry
      (HashTable : not null Tcl_HashTable;
-      key       : in C.Strings.chars_ptr)
+      key       : C.Strings.chars_ptr)
      return      Tcl_HashEntry is
       function Tcl_CallFindHashEntry
         (HashTable : not null Tcl_HashTable;
-         key       : in C.Strings.chars_ptr)
+         key       : C.Strings.chars_ptr)
         return      Tcl_HashEntry;
       pragma Import (C, Tcl_CallFindHashEntry, "Tcl_CallFindHashEntry");
    begin
@@ -115,12 +115,12 @@ package body Tcl is
 
    function Tcl_CreateHashEntry
      (HashTable : not null Tcl_HashTable;
-      key       : in C.Strings.chars_ptr;
+      key       : C.Strings.chars_ptr;
       newPtr    : not null access C.int)
      return      Tcl_HashEntry is
       function Tcl_CallCreateHashEntry
         (HashTable : not null Tcl_HashTable;
-         key       : in C.Strings.chars_ptr;
+         key       : C.Strings.chars_ptr;
          newPtr    : not null access C.int)
         return      Tcl_HashEntry;
       pragma Import (C, Tcl_CallCreateHashEntry, "Tcl_CallCreateHashEntry");
@@ -131,30 +131,30 @@ package body Tcl is
    --  End of C macro interfaces.
 
    procedure AppendStringsToObj
-     (objPtr    : in Tcl_Obj;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
+     (objPtr    : Tcl_Obj;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
    pragma Import (C, AppendStringsToObj, "Tcl_AppendStringsToObj");
 
    procedure Tcl_AppendStringsToObj
      (objPtr  : not null Tcl_Obj;
-      String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9 : in C.Strings.chars_ptr := C.Strings.Null_Ptr)
+      String1 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9 : C.Strings.chars_ptr := C.Strings.Null_Ptr)
    is
    begin --  Tcl_AppendStringsToObj
       AppendStringsToObj
@@ -171,30 +171,30 @@ package body Tcl is
    end Tcl_AppendStringsToObj;
 
    procedure AppendResult
-     (interp    : in Tcl_Interp;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
+     (interp    : Tcl_Interp;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
    pragma Import (C, AppendResult, "Tcl_AppendResult");
 
    procedure Tcl_AppendResult
      (interp  : not null Tcl_Interp;
-      String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9 : in C.Strings.chars_ptr := C.Strings.Null_Ptr)
+      String1 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9 : C.Strings.chars_ptr := C.Strings.Null_Ptr)
    is
    begin --  Tcl_AppendResult
       AppendResult
@@ -211,30 +211,30 @@ package body Tcl is
    end Tcl_AppendResult;
 
    procedure SetErrorCode
-     (interp    : in Tcl_Interp;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
+     (interp    : Tcl_Interp;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
    pragma Import (C, SetErrorCode, "Tcl_SetErrorCode");
 
    procedure Tcl_SetErrorCode
      (interp  : not null Tcl_Interp;
-      String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9 : in C.Strings.chars_ptr := C.Strings.Null_Ptr)
+      String1 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9 : C.Strings.chars_ptr := C.Strings.Null_Ptr)
    is
    begin --  Tcl_SetErrorCode
       SetErrorCode
@@ -251,31 +251,31 @@ package body Tcl is
    end Tcl_SetErrorCode;
 
    function VarEval
-     (interp    : in Tcl_Interp;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr)
+     (interp    : Tcl_Interp;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr)
       return      C.int;
    pragma Import (C, VarEval, "Tcl_VarEval");
 
    function Tcl_VarEval
      (interp  : not null Tcl_Interp;
-      String1 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8 : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9 : in C.Strings.chars_ptr := C.Strings.Null_Ptr)
+      String1 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8 : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9 : C.Strings.chars_ptr := C.Strings.Null_Ptr)
       return    C.int
    is
    begin --  Tcl_VarEval
@@ -293,7 +293,7 @@ package body Tcl is
    end Tcl_VarEval;
 
    function Tcl_GetObjTypeName
-     (objPtr : in Tcl_Obj) return C.Strings.chars_ptr is
+     (objPtr : Tcl_Obj) return C.Strings.chars_ptr is
    begin
       if objPtr = null or else objPtr.typePtr = null then
          return C.Strings.Null_Ptr;
@@ -301,7 +301,7 @@ package body Tcl is
       return objPtr.typePtr.name;
    end Tcl_GetObjTypeName;
 
-   function Tcl_GetRefCount (objPtr : in Tcl_Obj) return C.int is
+   function Tcl_GetRefCount (objPtr : Tcl_Obj) return C.int is
    begin
       if objPtr = null then
          return 0;
@@ -309,7 +309,7 @@ package body Tcl is
       return objPtr.refCount;
    end Tcl_GetRefCount;
 
-   procedure Tcl_PrintObj (Ptr : in Tcl_Obj) is
+   procedure Tcl_PrintObj (Ptr : Tcl_Obj) is
    begin
       if Ptr = null then
          Ada.Text_IO.Put ("NULL");

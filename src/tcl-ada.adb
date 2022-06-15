@@ -37,7 +37,7 @@ with CHelper;
 
 package body Tcl.Ada is
 
-   procedure Assert (Interp : not null Tcl_Interp; Return_Code : in C.int) is
+   procedure Assert (Interp : not null Tcl_Interp; Return_Code : C.int) is
    --  Raises Tcl_Error_Exception if Return_Code = TCL_ERROR
    begin --  Assert
       if Return_Code = TCL_ERROR then
@@ -50,8 +50,8 @@ package body Tcl.Ada is
    package body Generic_AssocData is
 
       function Tcl_GetAssocData
-        (interp  : in Tcl_Interp;
-         name    : in String;
+        (interp  : Tcl_Interp;
+         name    : String;
          procPtr : access Tcl_InterpDeleteProc)
          return    ClientData
       is
@@ -64,10 +64,10 @@ package body Tcl.Ada is
       end Tcl_GetAssocData;
 
       procedure Tcl_SetAssocData
-        (interp : in Tcl_Interp;
-         name   : in String;
-         proc   : in Tcl_InterpDeleteProc;
-         data   : in ClientData)
+        (interp : Tcl_Interp;
+         name   : String;
+         proc   : Tcl_InterpDeleteProc;
+         data   : ClientData)
       is
          C_name : aliased C.char_array := C.To_C (name);
       begin --  Tcl_SetAssocData
@@ -84,9 +84,9 @@ package body Tcl.Ada is
 
       function Tcl_CreateChannel
         (typePtr      : not null Tcl_ChannelType;
-         chanName     : in String;
-         instancedata : in ClientData;
-         mask         : in C.int)
+         chanName     : String;
+         instancedata : ClientData;
+         mask         : C.int)
          return         Tcl_Channel
       is
          C_chanName : aliased C.char_array := C.To_C (chanName);
@@ -104,10 +104,10 @@ package body Tcl.Ada is
 
       function Tcl_CreateCommand
         (interp     : not null Tcl_Interp;
-         cmdName    : in String;
+         cmdName    : String;
          proc       : not null Tcl_CmdProc;
-         data       : in ClientData;
-         deleteProc : in Tcl_CmdDeleteProc)
+         data       : ClientData;
+         deleteProc : Tcl_CmdDeleteProc)
          return       Tcl_Command
       is
          C_cmdName : aliased C.char_array := C.To_C (cmdName);
@@ -127,10 +127,10 @@ package body Tcl.Ada is
 
       function Tcl_GetOpenFile
         (interp     : not null Tcl_Interp;
-         str        : in String;
-         forWriting : in C.int;
-         checkUsage : in C.int;
-         fileptr    : in ClientData)
+         str        : String;
+         forWriting : C.int;
+         checkUsage : C.int;
+         fileptr    : ClientData)
          return       C.int
       is
          C_str : aliased C.char_array := C.To_C (str);
@@ -145,10 +145,10 @@ package body Tcl.Ada is
 
       procedure Tcl_GetOpenFile
         (interp     : not null Tcl_Interp;
-         str        : in String;
-         forWriting : in C.int;
-         checkUsage : in C.int;
-         fileptr    : in ClientData)
+         str        : String;
+         forWriting : C.int;
+         checkUsage : C.int;
+         fileptr    : ClientData)
       is
          C_str : aliased C.char_array := C.To_C (str);
       begin --  Tcl_GetOpenFile
@@ -182,7 +182,7 @@ package body Tcl.Ada is
 
       procedure Tcl_SetHashValue
         (HashEntry : not null Tcl_HashEntry;
-         value     : in ClientData) is
+         value     : ClientData) is
       begin
          Tcl.Tcl_SetHashValue (HashEntry, From_ClientData (value));
       end Tcl_SetHashValue;
@@ -193,11 +193,11 @@ package body Tcl.Ada is
 
       procedure Tcl_CreateMathFunc
         (interp   : not null Tcl_Interp;
-         name     : in String;
-         numArgs  : in C.int;
-         argTypes : in Tcl_ValueType;
+         name     : String;
+         numArgs  : C.int;
+         argTypes : Tcl_ValueType;
          proc     : not null Tcl_MathProc;
-         data     : in ClientData)
+         data     : ClientData)
       is
          C_name : aliased C.char_array := C.To_C (name);
       begin --  Tcl_CreateMathFunc
@@ -216,10 +216,10 @@ package body Tcl.Ada is
 
       function Tcl_CreateObjCommand
         (interp     : not null Tcl_Interp;
-         cmdName    : in String;
+         cmdName    : String;
          proc       : not null Tcl_ObjCmdProc;
-         data       : in ClientData;
-         deleteProc : in Tcl_CmdDeleteProc)
+         data       : ClientData;
+         deleteProc : Tcl_CmdDeleteProc)
          return       Tcl_Command
       is
          C_cmdName : aliased C.char_array := C.To_C (cmdName);
@@ -238,9 +238,9 @@ package body Tcl.Ada is
 
       function Tcl_PkgPresentEx
         (interp        : not null Tcl_Interp;
-         name          : in String;
-         version       : in String;
-         exact         : in C.int;
+         name          : String;
+         version       : String;
+         exact         : C.int;
          clientdataptr : access ClientData)
          return          String
       is
@@ -258,9 +258,9 @@ package body Tcl.Ada is
 
       function Tcl_PkgProvideEx
         (interp  : not null Tcl_Interp;
-         name    : in String;
-         version : in String;
-         data    : in ClientData)
+         name    : String;
+         version : String;
+         data    : ClientData)
          return    C.int
       is
          C_name    : aliased C.char_array := C.To_C (name);
@@ -275,9 +275,9 @@ package body Tcl.Ada is
 
       procedure Tcl_PkgProvideEx
         (interp  : not null Tcl_Interp;
-         name    : in String;
-         version : in String;
-         data    : in ClientData)
+         name    : String;
+         version : String;
+         data    : ClientData)
       is
          C_name    : aliased C.char_array := C.To_C (name);
          C_version : aliased C.char_array := C.To_C (version);
@@ -293,9 +293,9 @@ package body Tcl.Ada is
 
       function Tcl_PkgRequireEx
         (interp        : not null Tcl_Interp;
-         name          : in String;
-         version       : in String;
-         exact         : in C.int;
+         name          : String;
+         version       : String;
+         exact         : C.int;
          clientdataptr : access ClientData)
          return          String
       is
@@ -317,10 +317,10 @@ package body Tcl.Ada is
 
       function Tcl_OpenTcpServer
         (interp       : not null Tcl_Interp;
-         port         : in C.int;
-         host         : in String;
+         port         : C.int;
+         host         : String;
          acceptProc   : not null Tcl_TcpAcceptProc;
-         callbackdata : in ClientData)
+         callbackdata : ClientData)
          return         Tcl_Channel
       is
          C_host : aliased C.char_array := C.To_C (host);
@@ -339,10 +339,10 @@ package body Tcl.Ada is
 
       function Tcl_TraceVar
         (interp  : not null Tcl_Interp;
-         varName : in String;
-         flags   : in C.int;
+         varName : String;
+         flags   : C.int;
          proc    : not null Tcl_VarTraceProc;
-         data    : in ClientData)
+         data    : ClientData)
          return    C.int
       is
          C_varName : aliased C.char_array := C.To_C (varName);
@@ -357,10 +357,10 @@ package body Tcl.Ada is
 
       procedure Tcl_TraceVar
         (interp  : not null Tcl_Interp;
-         varName : in String;
-         flags   : in C.int;
+         varName : String;
+         flags   : C.int;
          proc    : not null Tcl_VarTraceProc;
-         data    : in ClientData)
+         data    : ClientData)
       is
          C_varName : aliased C.char_array := C.To_C (varName);
       begin --  Tcl_TraceVar
@@ -376,11 +376,11 @@ package body Tcl.Ada is
 
       function Tcl_TraceVar2
         (interp : not null Tcl_Interp;
-         part1  : in String;
-         part2  : in String;
-         flags  : in C.int;
+         part1  : String;
+         part2  : String;
+         flags  : C.int;
          proc   : not null Tcl_VarTraceProc;
-         data   : in ClientData)
+         data   : ClientData)
          return   C.int
       is
          C_part1 : aliased C.char_array := C.To_C (part1);
@@ -397,11 +397,11 @@ package body Tcl.Ada is
 
       procedure Tcl_TraceVar2
         (interp : not null Tcl_Interp;
-         part1  : in String;
-         part2  : in String;
-         flags  : in C.int;
+         part1  : String;
+         part2  : String;
+         flags  : C.int;
          proc   : not null Tcl_VarTraceProc;
-         data   : in ClientData)
+         data   : ClientData)
       is
          C_part1 : aliased C.char_array := C.To_C (part1);
          C_part2 : aliased C.char_array := C.To_C (part2);
@@ -419,10 +419,10 @@ package body Tcl.Ada is
 
       procedure Tcl_UntraceVar
         (interp  : not null Tcl_Interp;
-         varName : in String;
-         flags   : in C.int;
+         varName : String;
+         flags   : C.int;
          proc    : not null Tcl_VarTraceProc;
-         data    : in ClientData)
+         data    : ClientData)
       is
          C_varName : aliased C.char_array := C.To_C (varName);
       begin --  Tcl_UntraceVar
@@ -436,11 +436,11 @@ package body Tcl.Ada is
 
       procedure Tcl_UntraceVar2
         (interp : not null Tcl_Interp;
-         part1  : in String;
-         part2  : in String;
-         flags  : in C.int;
+         part1  : String;
+         part2  : String;
+         flags  : C.int;
          proc   : not null Tcl_VarTraceProc;
-         data   : in ClientData)
+         data   : ClientData)
       is
          C_part1 : aliased C.char_array := C.To_C (part1);
          C_part2 : aliased C.char_array := C.To_C (part2);
@@ -456,10 +456,10 @@ package body Tcl.Ada is
 
       function Tcl_VarTraceInfo
         (interp         : not null Tcl_Interp;
-         varName        : in String;
-         flags          : in C.int;
+         varName        : String;
+         flags          : C.int;
          procPtr        : not null Tcl_VarTraceProc;
-         prevclientdata : in ClientData)
+         prevclientdata : ClientData)
          return           ClientData
       is
          C_varName : aliased C.char_array := C.To_C (varName);
@@ -474,11 +474,11 @@ package body Tcl.Ada is
 
       function Tcl_VarTraceInfo2
         (interp         : not null Tcl_Interp;
-         part1          : in String;
-         part2          : in String;
-         flags          : in C.int;
+         part1          : String;
+         part2          : String;
+         flags          : C.int;
          procPtr        : not null Tcl_VarTraceProc;
-         prevclientdata : in ClientData)
+         prevclientdata : ClientData)
          return           ClientData
       is
          C_part1 : aliased C.char_array := C.To_C (part1);
@@ -501,9 +501,9 @@ package body Tcl.Ada is
    end Tcl_DStringValue;
 
    function Tcl_DbCkalloc
-     (size : in C.unsigned;
-      file : in String;
-      line : in C.int)
+     (size : C.unsigned;
+      file : String;
+      line : C.int)
       return String
    is
       C_file : aliased C.char_array := C.To_C (file);
@@ -516,9 +516,9 @@ package body Tcl.Ada is
    end Tcl_DbCkalloc;
 
    function Tcl_DbCkfree
-     (ptr  : in String;
-      file : in String;
-      line : in C.int)
+     (ptr  : String;
+      file : String;
+      line : C.int)
       return C.int
    is
       C_ptr  : aliased C.char_array := C.To_C (ptr);
@@ -531,10 +531,10 @@ package body Tcl.Ada is
    end Tcl_DbCkfree;
 
    function Tcl_DbCkrealloc
-     (ptr  : in String;
-      size : in C.unsigned;
-      file : in String;
-      line : in C.int)
+     (ptr  : String;
+      size : C.unsigned;
+      file : String;
+      line : C.int)
       return String
    is
       C_ptr  : aliased C.char_array := C.To_C (ptr);
@@ -549,30 +549,30 @@ package body Tcl.Ada is
    end Tcl_DbCkrealloc;
 
    procedure AppendStringsToObj
-     (objPtr    : in Tcl_Obj;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
+     (objPtr    : Tcl_Obj;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
    pragma Import (C, AppendStringsToObj, "Tcl_AppendStringsToObj");
 
    procedure Tcl_AppendStringsToObj
      (objPtr  : not null Tcl_Obj;
-      String1 : in String := "";
-      String2 : in String := "";
-      String3 : in String := "";
-      String4 : in String := "";
-      String5 : in String := "";
-      String6 : in String := "";
-      String7 : in String := "";
-      String8 : in String := "";
-      String9 : in String := "")
+      String1 : String := "";
+      String2 : String := "";
+      String3 : String := "";
+      String4 : String := "";
+      String5 : String := "";
+      String6 : String := "";
+      String7 : String := "";
+      String8 : String := "";
+      String9 : String := "")
    is
       C_String1 : aliased C.char_array := C.To_C (String1);
       C_String2 : aliased C.char_array := C.To_C (String2);
@@ -600,8 +600,8 @@ package body Tcl.Ada is
 
    procedure Tcl_AppendToObj
      (objPtr : not null Tcl_Obj;
-      bytes  : in String;
-      length : in C.int)
+      bytes  : String;
+      length : C.int)
    is
       C_bytes : aliased C.char_array := C.To_C (bytes);
    begin --  Tcl_AppendToObj
@@ -613,8 +613,8 @@ package body Tcl.Ada is
 
    procedure Tcl_DbDecrRefCount
      (objPtr : not null Tcl_Obj;
-      file   : in String;
-      line   : in C.int)
+      file   : String;
+      line   : C.int)
    is
       C_file : aliased C.char_array := C.To_C (file);
    begin --  Tcl_DbDecrRefCount
@@ -626,8 +626,8 @@ package body Tcl.Ada is
 
    procedure Tcl_DbIncrRefCount
      (objPtr : not null Tcl_Obj;
-      file   : in String;
-      line   : in C.int)
+      file   : String;
+      line   : C.int)
    is
       C_file : aliased C.char_array := C.To_C (file);
    begin --  Tcl_DbIncrRefCount
@@ -639,8 +639,8 @@ package body Tcl.Ada is
 
    function Tcl_DbIsShared
      (objPtr : not null Tcl_Obj;
-      file   : in String;
-      line   : in C.int)
+      file   : String;
+      line   : C.int)
       return   C.int
    is
       C_file : aliased C.char_array := C.To_C (file);
@@ -652,9 +652,9 @@ package body Tcl.Ada is
    end Tcl_DbIsShared;
 
    function Tcl_DbNewBooleanObj
-     (boolValue : in C.int;
-      file      : in String;
-      line      : in C.int)
+     (boolValue : C.int;
+      file      : String;
+      line      : C.int)
       return      Tcl_Obj
    is
       C_file : aliased C.char_array := C.To_C (file);
@@ -666,10 +666,10 @@ package body Tcl.Ada is
    end Tcl_DbNewBooleanObj;
 
    function Tcl_DbNewByteArrayObj
-     (bytes  : in String;
-      length : in C.int;
-      file   : in String;
-      line   : in C.int)
+     (bytes  : String;
+      length : C.int;
+      file   : String;
+      line   : C.int)
       return   Tcl_Obj
    is
       C_bytes : aliased C.char_array := C.To_C (bytes);
@@ -683,9 +683,9 @@ package body Tcl.Ada is
    end Tcl_DbNewByteArrayObj;
 
    function Tcl_DbNewDoubleObj
-     (doubleValue : in C.double;
-      file        : in String;
-      line        : in C.int)
+     (doubleValue : C.double;
+      file        : String;
+      line        : C.int)
       return        Tcl_Obj
    is
       C_file : aliased C.char_array := C.To_C (file);
@@ -697,10 +697,10 @@ package body Tcl.Ada is
    end Tcl_DbNewDoubleObj;
 
    function Tcl_DbNewListObj
-     (objc : in C.int;
-      objv : in Tcl_Obj_Array;
-      file : in String;
-      line : in C.int)
+     (objc : C.int;
+      objv : Tcl_Obj_Array;
+      file : String;
+      line : C.int)
       return Tcl_Obj
    is
       C_file : aliased C.char_array := C.To_C (file);
@@ -713,9 +713,9 @@ package body Tcl.Ada is
    end Tcl_DbNewListObj;
 
    function Tcl_DbNewLongObj
-     (longValue : in C.long;
-      file      : in String;
-      line      : in C.int)
+     (longValue : C.long;
+      file      : String;
+      line      : C.int)
       return      Tcl_Obj
    is
       C_file : aliased C.char_array := C.To_C (file);
@@ -726,7 +726,7 @@ package body Tcl.Ada is
                 line);
    end Tcl_DbNewLongObj;
 
-   function Tcl_DbNewObj (file : in String; line : in C.int) return Tcl_Obj is
+   function Tcl_DbNewObj (file : String; line : C.int) return Tcl_Obj is
       C_file : aliased C.char_array := C.To_C (file);
    begin --  Tcl_DbNewObj
       return Tcl.Tcl_DbNewObj
@@ -735,10 +735,10 @@ package body Tcl.Ada is
    end Tcl_DbNewObj;
 
    function Tcl_DbNewStringObj
-     (bytes  : in String;
-      length : in C.int;
-      file   : in String;
-      line   : in C.int)
+     (bytes  : String;
+      length : C.int;
+      file   : String;
+      line   : C.int)
       return   Tcl_Obj
    is
       C_bytes : aliased C.char_array := C.To_C (bytes);
@@ -753,7 +753,7 @@ package body Tcl.Ada is
 
    function Tcl_GetBoolean
      (interp  : not null Tcl_Interp;
-      str     : in String;
+      str     : String;
       boolPtr : not null access C.int)
       return    C.int
    is
@@ -767,7 +767,7 @@ package body Tcl.Ada is
 
    procedure Tcl_GetBoolean
      (interp  : not null Tcl_Interp;
-      str     : in String;
+      str     : String;
       boolPtr : not null access C.int)
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -791,7 +791,7 @@ package body Tcl.Ada is
 
    function Tcl_GetDouble
      (interp    : not null Tcl_Interp;
-      str       : in String;
+      str       : String;
       doublePtr : not null access C.double)
       return      C.int
    is
@@ -805,7 +805,7 @@ package body Tcl.Ada is
 
    procedure Tcl_GetDouble
      (interp    : not null Tcl_Interp;
-      str       : in String;
+      str       : String;
       doublePtr : not null access C.double)
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -821,9 +821,9 @@ package body Tcl.Ada is
    function Tcl_GetIndexFromObj
      (interp   : not null Tcl_Interp;
       objPtr   : not null Tcl_Obj;
-      tablePtr : in CArgv.Chars_Ptr_Ptr;
-      msg      : in String;
-      flags    : in C.int;
+      tablePtr : CArgv.Chars_Ptr_Ptr;
+      msg      : String;
+      flags    : C.int;
       indexPtr : not null access C.int)
       return     C.int
    is
@@ -841,9 +841,9 @@ package body Tcl.Ada is
    procedure Tcl_GetIndexFromObj
      (interp   : not null Tcl_Interp;
       objPtr   : not null Tcl_Obj;
-      tablePtr : in CArgv.Chars_Ptr_Ptr;
-      msg      : in String;
-      flags    : in C.int;
+      tablePtr : CArgv.Chars_Ptr_Ptr;
+      msg      : String;
+      flags    : C.int;
       indexPtr : not null access C.int)
    is
       C_msg : aliased C.char_array := C.To_C (msg);
@@ -861,7 +861,7 @@ package body Tcl.Ada is
 
    function Tcl_GetInt
      (interp : not null Tcl_Interp;
-      str    : in String;
+      str    : String;
       intPtr : not null access C.int)
       return   C.int
    is
@@ -875,7 +875,7 @@ package body Tcl.Ada is
 
    procedure Tcl_GetInt
      (interp : not null Tcl_Interp;
-      str    : in String;
+      str    : String;
       intPtr : not null access C.int)
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -888,7 +888,7 @@ package body Tcl.Ada is
              intPtr));
    end Tcl_GetInt;
 
-   function Tcl_GetObjType (typeName : in String) return Tcl_ObjType is
+   function Tcl_GetObjType (typeName : String) return Tcl_ObjType is
       C_typeName : aliased C.char_array := C.To_C (typeName);
    begin --  Tcl_GetObjType
       return Tcl.Tcl_GetObjType
@@ -910,8 +910,8 @@ package body Tcl.Ada is
    end Tcl_GetStringFromObj;
 
    function Tcl_NewByteArrayObj
-     (bytes  : in String;
-      length : in C.int)
+     (bytes  : String;
+      length : C.int)
       return   Tcl_Obj
    is
       C_bytes : aliased C.char_array := C.To_C (bytes);
@@ -922,8 +922,8 @@ package body Tcl.Ada is
    end Tcl_NewByteArrayObj;
 
    function Tcl_NewStringObj
-     (bytes  : in String;
-      length : in C.int)
+     (bytes  : String;
+      length : C.int)
       return   Tcl_Obj
    is
       C_bytes : aliased C.char_array := C.To_C (bytes);
@@ -935,7 +935,7 @@ package body Tcl.Ada is
 
    function Tcl_SetByteArrayLength
      (objPtr : not null Tcl_Obj;
-      length : in C.int)
+      length : C.int)
       return   String
    is
    begin --  Tcl_SetByteArrayLength
@@ -944,8 +944,8 @@ package body Tcl.Ada is
 
    procedure Tcl_SetByteArrayObj
      (objPtr : not null Tcl_Obj;
-      bytes  : in String;
-      length : in C.int)
+      bytes  : String;
+      length : C.int)
    is
       C_bytes : aliased C.char_array := C.To_C (bytes);
    begin --  Tcl_SetByteArrayObj
@@ -957,8 +957,8 @@ package body Tcl.Ada is
 
    procedure Tcl_SetStringObj
      (objPtr : not null Tcl_Obj;
-      bytes  : in String;
-      length : in C.int)
+      bytes  : String;
+      length : C.int)
    is
       C_bytes : aliased C.char_array := C.To_C (bytes);
    begin --  Tcl_SetStringObj
@@ -969,7 +969,7 @@ package body Tcl.Ada is
    end Tcl_SetStringObj;
 
    procedure Tcl_AddErrorInfo (interp : not null Tcl_Interp;
-                               message : in String) is
+                               message : String) is
       C_message : aliased C.char_array := C.To_C (message);
    begin --  Tcl_AddErrorInfo
       Tcl.Tcl_AddErrorInfo
@@ -979,8 +979,8 @@ package body Tcl.Ada is
 
    procedure Tcl_AddObjErrorInfo
      (interp  : not null Tcl_Interp;
-      message : in String;
-      length  : in C.int)
+      message : String;
+      length  : C.int)
    is
       C_message : aliased C.char_array := C.To_C (message);
    begin --  Tcl_AddObjErrorInfo
@@ -991,7 +991,7 @@ package body Tcl.Ada is
    end Tcl_AddObjErrorInfo;
 
    procedure Tcl_AppendElement (interp : not null Tcl_Interp;
-                                strng : in String) is
+                                strng : String) is
       C_strng : aliased C.char_array := C.To_C (strng);
    begin --  Tcl_AppendElement
       Tcl.Tcl_AppendElement
@@ -1000,30 +1000,30 @@ package body Tcl.Ada is
    end Tcl_AppendElement;
 
    procedure AppendResult
-     (interp    : in Tcl_Interp;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
+     (interp    : Tcl_Interp;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
    pragma Import (C, AppendResult, "Tcl_AppendResult");
 
    procedure Tcl_AppendResult
      (interp  : not null Tcl_Interp;
-      String1 : in String := "";
-      String2 : in String := "";
-      String3 : in String := "";
-      String4 : in String := "";
-      String5 : in String := "";
-      String6 : in String := "";
-      String7 : in String := "";
-      String8 : in String := "";
-      String9 : in String := "")
+      String1 : String := "";
+      String2 : String := "";
+      String3 : String := "";
+      String4 : String := "";
+      String5 : String := "";
+      String6 : String := "";
+      String7 : String := "";
+      String8 : String := "";
+      String9 : String := "")
    is
       C_String1 : aliased C.char_array := C.To_C (String1);
       C_String2 : aliased C.char_array := C.To_C (String2);
@@ -1050,7 +1050,7 @@ package body Tcl.Ada is
    end Tcl_AppendResult;
 
    function Tcl_Backslash
-     (src     : in String;
+     (src     : String;
       readPtr : access C.int)
       return    C.char
    is
@@ -1061,7 +1061,7 @@ package body Tcl.Ada is
                 readPtr);
    end Tcl_Backslash;
 
-   function Tcl_CommandComplete (cmd : in String) return C.int is
+   function Tcl_CommandComplete (cmd : String) return C.int is
       C_cmd : aliased C.char_array := C.To_C (cmd);
    begin --  Tcl_CommandComplete
       return Tcl.Tcl_CommandComplete
@@ -1069,8 +1069,8 @@ package body Tcl.Ada is
    end Tcl_CommandComplete;
 
    function Tcl_Concat
-     (argc : in C.int;
-      argv : in CArgv.Chars_Ptr_Ptr)
+     (argc : C.int;
+      argv : CArgv.Chars_Ptr_Ptr)
       return String
    is
    begin --  Tcl_Concat
@@ -1078,9 +1078,9 @@ package body Tcl.Ada is
    end Tcl_Concat;
 
    function Tcl_ConvertElement
-     (src   : in String;
-      dst   : in String;
-      flags : in C.int)
+     (src   : String;
+      dst   : String;
+      flags : C.int)
       return  C.int
    is
       C_src : aliased C.char_array := C.To_C (src);
@@ -1093,10 +1093,10 @@ package body Tcl.Ada is
    end Tcl_ConvertElement;
 
    function Tcl_ConvertCountedElement
-     (src    : in String;
-      length : in C.int;
-      dst    : in String;
-      flags  : in C.int)
+     (src    : String;
+      length : C.int;
+      dst    : String;
+      flags  : C.int)
       return   C.int
    is
       C_src : aliased C.char_array := C.To_C (src);
@@ -1111,11 +1111,11 @@ package body Tcl.Ada is
 
    function Tcl_CreateAlias
      (slave     : not null Tcl_Interp;
-      slaveCmd  : in String;
+      slaveCmd  : String;
       target    : not null Tcl_Interp;
-      targetCmd : in String;
-      argc      : in C.int;
-      argv      : in CArgv.Chars_Ptr_Ptr)
+      targetCmd : String;
+      argc      : C.int;
+      argv      : CArgv.Chars_Ptr_Ptr)
       return      C.int
    is
       C_slaveCmd  : aliased C.char_array := C.To_C (slaveCmd);
@@ -1132,11 +1132,11 @@ package body Tcl.Ada is
 
    function Tcl_CreateAliasObj
      (slave     : not null Tcl_Interp;
-      slaveCmd  : in String;
+      slaveCmd  : String;
       target    : not null Tcl_Interp;
-      targetCmd : in String;
-      objc      : in C.int;
-      objv      : in Tcl_Obj_Array)
+      targetCmd : String;
+      objc      : C.int;
+      objv      : Tcl_Obj_Array)
       return      C.int
    is
       C_slaveCmd  : aliased C.char_array := C.To_C (slaveCmd);
@@ -1153,8 +1153,8 @@ package body Tcl.Ada is
 
    function Tcl_CreateSlave
      (interp    : not null Tcl_Interp;
-      slaveName : in String;
-      isSafe    : in C.int)
+      slaveName : String;
+      isSafe    : C.int)
       return      Tcl_Interp
    is
       C_slaveName : aliased C.char_array := C.To_C (slaveName);
@@ -1167,8 +1167,8 @@ package body Tcl.Ada is
 
    function Tcl_DStringAppend
      (dsPtr  : not null Tcl_DString;
-      str    : in String;
-      length : in C.int)
+      str    : String;
+      length : C.int)
       return   String
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -1182,7 +1182,7 @@ package body Tcl.Ada is
 
    function Tcl_DStringAppendElement
      (dsPtr : not null Tcl_DString;
-      strng : in String)
+      strng : String)
       return  String
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -1198,14 +1198,14 @@ package body Tcl.Ada is
       return Tcl.Tcl_ErrnoId;
    end Tcl_ErrnoId;
 
-   function Tcl_ErrnoMsg (err : in C.int) return String is
+   function Tcl_ErrnoMsg (err : C.int) return String is
    begin --  Tcl_ErrnoMsg
       return CHelper.Value (Tcl.Tcl_ErrnoMsg (err));
    end Tcl_ErrnoMsg;
 
    function Tcl_Eval
      (interp : not null Tcl_Interp;
-      strng  : in String)
+      strng  : String)
       return   C.int
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -1215,7 +1215,7 @@ package body Tcl.Ada is
                 C.Strings.To_Chars_Ptr (C_strng'Unchecked_Access));
    end Tcl_Eval;
 
-   procedure Tcl_Eval (interp : not null Tcl_Interp; strng : in String) is
+   procedure Tcl_Eval (interp : not null Tcl_Interp; strng : String) is
       C_strng : aliased C.char_array := C.To_C (strng);
    begin --  Tcl_Eval
       Assert
@@ -1227,7 +1227,7 @@ package body Tcl.Ada is
 
    function Tcl_EvalFile
      (interp   : not null Tcl_Interp;
-      fileName : in String)
+      fileName : String)
       return     C.int
    is
       C_fileName : aliased C.char_array := C.To_C (fileName);
@@ -1238,7 +1238,7 @@ package body Tcl.Ada is
    end Tcl_EvalFile;
 
    procedure Tcl_EvalFile (interp : not null Tcl_Interp;
-                           fileName : in String) is
+                           fileName : String) is
       C_fileName : aliased C.char_array := C.To_C (fileName);
    begin --  Tcl_EvalFile
       Assert
@@ -1250,8 +1250,8 @@ package body Tcl.Ada is
 
    function Tcl_ExposeCommand
      (interp         : not null Tcl_Interp;
-      hiddenCmdToken : in String;
-      cmdName        : in String)
+      hiddenCmdToken : String;
+      cmdName        : String)
       return           C.int
    is
       C_hiddenCmdToken : aliased C.char_array := C.To_C (hiddenCmdToken);
@@ -1265,8 +1265,8 @@ package body Tcl.Ada is
 
    procedure Tcl_ExposeCommand
      (interp         : not null Tcl_Interp;
-      hiddenCmdToken : in String;
-      cmdName        : in String)
+      hiddenCmdToken : String;
+      cmdName        : String)
    is
       C_hiddenCmdToken : aliased C.char_array := C.To_C (hiddenCmdToken);
       C_cmdName        : aliased C.char_array := C.To_C (cmdName);
@@ -1281,7 +1281,7 @@ package body Tcl.Ada is
 
    function Tcl_ExprBoolean
      (interp : not null Tcl_Interp;
-      str    : in String)
+      str    : String)
       return   Boolean
    is
       C_str     : aliased C.char_array := C.To_C (str);
@@ -1298,7 +1298,7 @@ package body Tcl.Ada is
 
    function Tcl_ExprDouble
      (interp : not null Tcl_Interp;
-      str    : in String)
+      str    : String)
       return   C.double
    is
       C_str     : aliased C.char_array := C.To_C (str);
@@ -1315,7 +1315,7 @@ package body Tcl.Ada is
 
    function Tcl_ExprLong
      (interp : not null Tcl_Interp;
-      str    : in String)
+      str    : String)
       return   C.long
    is
       C_str     : aliased C.char_array := C.To_C (str);
@@ -1332,7 +1332,7 @@ package body Tcl.Ada is
 
    function Tcl_ExprString
      (interp : not null Tcl_Interp;
-      strng  : in String)
+      strng  : String)
       return   String
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -1345,7 +1345,7 @@ package body Tcl.Ada is
       return CHelper.Value (Tcl_GetResult (interp));
    end Tcl_ExprString;
 
-   procedure Tcl_FindExecutable (argv0 : in String) is
+   procedure Tcl_FindExecutable (argv0 : String) is
       C_argv0 : aliased C.char_array := C.To_C (argv0);
    begin --  Tcl_FindExecutable
       Tcl.Tcl_FindExecutable
@@ -1354,9 +1354,9 @@ package body Tcl.Ada is
 
    function Tcl_GetAlias
      (interp          : not null Tcl_Interp;
-      slaveCmd        : in String;
+      slaveCmd        : String;
       targetInterpPtr : not null access Tcl_Interp;
-      targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
+      targetCmdPtr    : CArgv.Chars_Ptr_Ptr;
       argcPtr         : not null access C.int;
       argvPtr         : not null access CArgv.Chars_Ptr_Ptr)
       return            C.int
@@ -1374,9 +1374,9 @@ package body Tcl.Ada is
 
    procedure Tcl_GetAlias
      (interp          : not null Tcl_Interp;
-      slaveCmd        : in String;
+      slaveCmd        : String;
       targetInterpPtr : not null access Tcl_Interp;
-      targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
+      targetCmdPtr    : CArgv.Chars_Ptr_Ptr;
       argcPtr         : not null access C.int;
       argvPtr         : not null access CArgv.Chars_Ptr_Ptr)
    is
@@ -1395,11 +1395,11 @@ package body Tcl.Ada is
 
    function Tcl_GetAliasObj
      (interp          : not null Tcl_Interp;
-      slaveCmd        : in String;
+      slaveCmd        : String;
       targetInterpPtr : not null access Tcl_Interp;
-      targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
+      targetCmdPtr    : CArgv.Chars_Ptr_Ptr;
       objcPtr         : not null access C.int;
-      objv            : in Tcl_Obj_Array)
+      objv            : Tcl_Obj_Array)
       return            C.int
    is
       C_slaveCmd : aliased C.char_array := C.To_C (slaveCmd);
@@ -1415,11 +1415,11 @@ package body Tcl.Ada is
 
    procedure Tcl_GetAliasObj
      (interp          : not null Tcl_Interp;
-      slaveCmd        : in String;
+      slaveCmd        : String;
       targetInterpPtr : not null access Tcl_Interp;
-      targetCmdPtr    : in CArgv.Chars_Ptr_Ptr;
+      targetCmdPtr    : CArgv.Chars_Ptr_Ptr;
       objcPtr         : not null access C.int;
-      objv            : in Tcl_Obj_Array)
+      objv            : Tcl_Obj_Array)
    is
       C_slaveCmd : aliased C.char_array := C.To_C (slaveCmd);
    begin --  Tcl_GetAliasObj
@@ -1444,7 +1444,7 @@ package body Tcl.Ada is
       return Tcl.Tcl_GetNameOfExecutable;
    end Tcl_GetNameOfExecutable;
 
-   function Tcl_GetPathType (path : in String) return Tcl_PathType is
+   function Tcl_GetPathType (path : String) return Tcl_PathType is
       C_path : aliased C.char_array := C.To_C (path);
    begin --  Tcl_GetPathType
       return Tcl.Tcl_GetPathType
@@ -1458,7 +1458,7 @@ package body Tcl.Ada is
 
    function Tcl_GetSlave
      (interp    : not null Tcl_Interp;
-      slaveName : in String)
+      slaveName : String)
       return      Tcl_Interp
    is
       C_slaveName : aliased C.char_array := C.To_C (slaveName);
@@ -1475,8 +1475,8 @@ package body Tcl.Ada is
 
    function Tcl_GetVar
      (interp  : not null Tcl_Interp;
-      varName : in String;
-      flags   : in C.int := TCL_GLOBAL_ONLY)
+      varName : String;
+      flags   : C.int := TCL_GLOBAL_ONLY)
       return    String
    is
       C_varName : aliased C.char_array := C.To_C (varName);
@@ -1490,9 +1490,9 @@ package body Tcl.Ada is
 
    function Tcl_GetVar2
      (interp : not null Tcl_Interp;
-      part1  : in String;
-      part2  : in String;
-      flags  : in C.int := TCL_GLOBAL_ONLY)
+      part1  : String;
+      part2  : String;
+      flags  : C.int := TCL_GLOBAL_ONLY)
       return   String
    is
       C_part1 : aliased C.char_array := C.To_C (part1);
@@ -1508,7 +1508,7 @@ package body Tcl.Ada is
 
    function Tcl_GlobalEval
      (interp  : not null Tcl_Interp;
-      command : in String)
+      command : String)
       return    C.int
    is
       C_command : aliased C.char_array := C.To_C (command);
@@ -1519,7 +1519,7 @@ package body Tcl.Ada is
    end Tcl_GlobalEval;
 
    procedure Tcl_GlobalEval (interp : not null Tcl_Interp;
-                             command : in String) is
+                             command : String) is
       C_command : aliased C.char_array := C.To_C (command);
    begin --  Tcl_GlobalEval
       Assert
@@ -1531,8 +1531,8 @@ package body Tcl.Ada is
 
    function Tcl_HideCommand
      (interp         : not null Tcl_Interp;
-      cmdName        : in String;
-      hiddenCmdToken : in String)
+      cmdName        : String;
+      hiddenCmdToken : String)
       return           C.int
    is
       C_cmdName        : aliased C.char_array := C.To_C (cmdName);
@@ -1546,8 +1546,8 @@ package body Tcl.Ada is
 
    procedure Tcl_HideCommand
      (interp         : not null Tcl_Interp;
-      cmdName        : in String;
-      hiddenCmdToken : in String)
+      cmdName        : String;
+      hiddenCmdToken : String)
    is
       C_cmdName        : aliased C.char_array := C.To_C (cmdName);
       C_hiddenCmdToken : aliased C.char_array := C.To_C (hiddenCmdToken);
@@ -1561,8 +1561,8 @@ package body Tcl.Ada is
    end Tcl_HideCommand;
 
    function Tcl_JoinPath
-     (argc      : in C.int;
-      argv      : in CArgv.Chars_Ptr_Ptr;
+     (argc      : C.int;
+      argv      : CArgv.Chars_Ptr_Ptr;
       resultPtr : not null Tcl_DString)
       return      String
    is
@@ -1572,9 +1572,9 @@ package body Tcl.Ada is
 
    function Tcl_LinkVar
      (interp  : not null Tcl_Interp;
-      varName : in String;
-      addr    : in System.Address;
-      typ     : in C.int)
+      varName : String;
+      addr    : System.Address;
+      typ     : C.int)
       return    C.int
    is
       C_varName : aliased C.char_array := C.To_C (varName);
@@ -1588,9 +1588,9 @@ package body Tcl.Ada is
 
    procedure Tcl_LinkVar
      (interp  : not null Tcl_Interp;
-      varName : in String;
-      addr    : in System.Address;
-      typ     : in C.int)
+      varName : String;
+      addr    : System.Address;
+      typ     : C.int)
    is
       C_varName : aliased C.char_array := C.To_C (varName);
    begin --  Tcl_LinkVar
@@ -1604,8 +1604,8 @@ package body Tcl.Ada is
    end Tcl_LinkVar;
 
    function Tcl_Merge
-     (argc : in C.int;
-      argv : in CArgv.Chars_Ptr_Ptr)
+     (argc : C.int;
+      argv : CArgv.Chars_Ptr_Ptr)
       return String
    is
    begin --  Tcl_Merge
@@ -1614,8 +1614,8 @@ package body Tcl.Ada is
 
    procedure Tcl_PrintDouble
      (interp : not null Tcl_Interp;
-      value  : in C.double;
-      dst    : in String)
+      value  : C.double;
+      dst    : String)
    is
       C_dst : aliased C.char_array := C.To_C (dst);
    begin --  Tcl_PrintDouble
@@ -1625,7 +1625,7 @@ package body Tcl.Ada is
          C.Strings.To_Chars_Ptr (C_dst'Unchecked_Access));
    end Tcl_PrintDouble;
 
-   function Tcl_PutEnv (strng : in String) return C.int is
+   function Tcl_PutEnv (strng : String) return C.int is
       C_strng : aliased C.char_array := C.To_C (strng);
    begin --  Tcl_PutEnv
       return Tcl.Tcl_PutEnv
@@ -1639,8 +1639,8 @@ package body Tcl.Ada is
 
    function Tcl_RecordAndEval
      (interp : not null Tcl_Interp;
-      cmd    : in String;
-      flags  : in C.int)
+      cmd    : String;
+      flags  : C.int)
       return   C.int
    is
       C_cmd : aliased C.char_array := C.To_C (cmd);
@@ -1653,8 +1653,8 @@ package body Tcl.Ada is
 
    procedure Tcl_RecordAndEval
      (interp : not null Tcl_Interp;
-      cmd    : in String;
-      flags  : in C.int)
+      cmd    : String;
+      flags  : C.int)
    is
       C_cmd : aliased C.char_array := C.To_C (cmd);
    begin --  Tcl_RecordAndEval
@@ -1668,7 +1668,7 @@ package body Tcl.Ada is
 
    function Tcl_RegExpCompile
      (interp : not null Tcl_Interp;
-      strng  : in String)
+      strng  : String)
       return   Tcl_RegExp
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -1681,8 +1681,8 @@ package body Tcl.Ada is
    function Tcl_RegExpExec
      (interp : not null Tcl_Interp;
       regexp : not null Tcl_RegExp;
-      str    : in String;
-      start  : in String)
+      str    : String;
+      start  : String)
       return   C.int
    is
       C_str   : aliased C.char_array := C.To_C (str);
@@ -1698,8 +1698,8 @@ package body Tcl.Ada is
    procedure Tcl_RegExpExec
      (interp : not null Tcl_Interp;
       regexp : not null Tcl_RegExp;
-      str    : in String;
-      start  : in String)
+      str    : String;
+      start  : String)
    is
       C_str   : aliased C.char_array := C.To_C (str);
       C_start : aliased C.char_array := C.To_C (start);
@@ -1715,8 +1715,8 @@ package body Tcl.Ada is
 
    function Tcl_RegExpMatch
      (interp  : not null Tcl_Interp;
-      str     : in String;
-      pattern : in String)
+      str     : String;
+      pattern : String)
       return    C.int
    is
       C_str     : aliased C.char_array := C.To_C (str);
@@ -1730,8 +1730,8 @@ package body Tcl.Ada is
 
    procedure Tcl_RegExpMatch
      (interp  : not null Tcl_Interp;
-      str     : in String;
-      pattern : in String)
+      str     : String;
+      pattern : String)
    is
       C_str     : aliased C.char_array := C.To_C (str);
       C_pattern : aliased C.char_array := C.To_C (pattern);
@@ -1745,7 +1745,7 @@ package body Tcl.Ada is
    end Tcl_RegExpMatch;
 
    function Tcl_ScanElement
-     (str     : in String;
+     (str     : String;
       flagPtr : access C.int)
       return    C.int
    is
@@ -1757,8 +1757,8 @@ package body Tcl.Ada is
    end Tcl_ScanElement;
 
    function Tcl_ScanCountedElement
-     (str     : in String;
-      length  : in C.int;
+     (str     : String;
+      length  : C.int;
       flagPtr : access C.int)
       return    C.int
    is
@@ -1771,30 +1771,30 @@ package body Tcl.Ada is
    end Tcl_ScanCountedElement;
 
    procedure SetErrorCode
-     (interp    : in Tcl_Interp;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr);
+     (interp    : Tcl_Interp;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
    pragma Import (C, SetErrorCode, "Tcl_SetErrorCode");
 
    procedure Tcl_SetErrorCode
      (interp  : not null Tcl_Interp;
-      String1 : in String := "";
-      String2 : in String := "";
-      String3 : in String := "";
-      String4 : in String := "";
-      String5 : in String := "";
-      String6 : in String := "";
-      String7 : in String := "";
-      String8 : in String := "";
-      String9 : in String := "")
+      String1 : String := "";
+      String2 : String := "";
+      String3 : String := "";
+      String4 : String := "";
+      String5 : String := "";
+      String6 : String := "";
+      String7 : String := "";
+      String8 : String := "";
+      String9 : String := "")
    is
       C_String1 : aliased C.char_array := C.To_C (String1);
       C_String2 : aliased C.char_array := C.To_C (String2);
@@ -1820,7 +1820,7 @@ package body Tcl.Ada is
          C.Strings.Null_Ptr);
    end Tcl_SetErrorCode;
 
-   procedure Tcl_SetResult (interp : not null Tcl_Interp; str : in String) is
+   procedure Tcl_SetResult (interp : not null Tcl_Interp; str : String) is
       C_str : aliased C.char_array := C.To_C (str);
    begin --  Tcl_SetResult
       Tcl.Tcl_SetResult
@@ -1831,9 +1831,9 @@ package body Tcl.Ada is
 
    function Tcl_SetVar
      (interp   : not null Tcl_Interp;
-      varName  : in String;
-      newValue : in String;
-      flags    : in C.int := TCL_GLOBAL_ONLY)
+      varName  : String;
+      newValue : String;
+      flags    : C.int := TCL_GLOBAL_ONLY)
       return     String
    is
       C_varName  : aliased C.char_array := C.To_C (varName);
@@ -1849,9 +1849,9 @@ package body Tcl.Ada is
 
    procedure Tcl_SetVar
      (interp   : not null Tcl_Interp;
-      varName  : in String;
-      newValue : in String;
-      flags    : in C.int := TCL_GLOBAL_ONLY)
+      varName  : String;
+      newValue : String;
+      flags    : C.int := TCL_GLOBAL_ONLY)
    is
       Result     : C.Strings.chars_ptr;
       C_varName  : aliased C.char_array := C.To_C (varName);
@@ -1868,10 +1868,10 @@ package body Tcl.Ada is
 
    function Tcl_SetVar2
      (interp   : not null Tcl_Interp;
-      part1    : in String;
-      part2    : in String;
-      newValue : in String;
-      flags    : in C.int := TCL_GLOBAL_ONLY)
+      part1    : String;
+      part2    : String;
+      newValue : String;
+      flags    : C.int := TCL_GLOBAL_ONLY)
       return     String
    is
       C_part1    : aliased C.char_array := C.To_C (part1);
@@ -1889,10 +1889,10 @@ package body Tcl.Ada is
 
    procedure Tcl_SetVar2
      (interp   : not null Tcl_Interp;
-      part1    : in String;
-      part2    : in String;
-      newValue : in String;
-      flags    : in C.int := TCL_GLOBAL_ONLY)
+      part1    : String;
+      part2    : String;
+      newValue : String;
+      flags    : C.int := TCL_GLOBAL_ONLY)
    is
       Result     : C.Strings.chars_ptr;
       C_part1    : aliased C.char_array := C.To_C (part1);
@@ -1909,19 +1909,19 @@ package body Tcl.Ada is
             flags);
    end Tcl_SetVar2;
 
-   function Tcl_SignalId (sig : in C.int) return String is
+   function Tcl_SignalId (sig : C.int) return String is
    begin --  Tcl_SignalId
       return CHelper.Value (Tcl.Tcl_SignalId (sig));
    end Tcl_SignalId;
 
-   function Tcl_SignalMsg (sig : in C.int) return String is
+   function Tcl_SignalMsg (sig : C.int) return String is
    begin --  Tcl_SignalMsg
       return CHelper.Value (Tcl.Tcl_SignalMsg (sig));
    end Tcl_SignalMsg;
 
    function Tcl_SplitList
      (interp  : not null Tcl_Interp;
-      listStr : in String;
+      listStr : String;
       argcPtr : not null access C.int;
       argvPtr : not null access CArgv.Chars_Ptr_Ptr)
       return    C.int
@@ -1937,7 +1937,7 @@ package body Tcl.Ada is
 
    procedure Tcl_SplitList
      (interp  : not null Tcl_Interp;
-      listStr : in String;
+      listStr : String;
       argcPtr : not null access C.int;
       argvPtr : not null access CArgv.Chars_Ptr_Ptr)
    is
@@ -1953,7 +1953,7 @@ package body Tcl.Ada is
    end Tcl_SplitList;
 
    procedure Tcl_SplitPath
-     (path    : in String;
+     (path    : String;
       argcPtr : not null access C.int;
       argvPtr : not null access CArgv.Chars_Ptr_Ptr)
    is
@@ -1967,9 +1967,9 @@ package body Tcl.Ada is
 
    procedure Tcl_StaticPackage
      (interp       : not null Tcl_Interp;
-      pkgName      : in String;
+      pkgName      : String;
       initProc     : not null Tcl_PackageInitProc;
-      safeInitProc : in Tcl_PackageInitProc)
+      safeInitProc : Tcl_PackageInitProc)
    is
       C_pkgName : aliased C.char_array := C.To_C (pkgName);
    begin --  Tcl_StaticPackage
@@ -1981,8 +1981,8 @@ package body Tcl.Ada is
    end Tcl_StaticPackage;
 
    function Tcl_StringMatch
-     (str     : in String;
-      pattern : in String)
+     (str     : String;
+      pattern : String)
       return    C.int
    is
       C_str     : aliased C.char_array := C.To_C (str);
@@ -1995,9 +1995,9 @@ package body Tcl.Ada is
 
    function Tcl_Ungets
      (chan   : not null Tcl_Channel;
-      str    : in String;
-      len    : in C.int;
-      atHead : in C.int)
+      str    : String;
+      len    : C.int;
+      atHead : C.int)
       return   C.int
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -2010,7 +2010,7 @@ package body Tcl.Ada is
    end Tcl_Ungets;
 
    procedure Tcl_UnlinkVar (interp : not null Tcl_Interp;
-                            varName : in String) is
+                            varName : String) is
       C_varName : aliased C.char_array := C.To_C (varName);
    begin --  Tcl_UnlinkVar
       Tcl.Tcl_UnlinkVar
@@ -2020,8 +2020,8 @@ package body Tcl.Ada is
 
    function Tcl_UnsetVar
      (interp  : not null Tcl_Interp;
-      varName : in String;
-      flags   : in C.int := TCL_GLOBAL_ONLY)
+      varName : String;
+      flags   : C.int := TCL_GLOBAL_ONLY)
       return    C.int
    is
       C_varName : aliased C.char_array := C.To_C (varName);
@@ -2034,8 +2034,8 @@ package body Tcl.Ada is
 
    procedure Tcl_UnsetVar
      (interp  : not null Tcl_Interp;
-      varName : in String;
-      flags   : in C.int := TCL_GLOBAL_ONLY)
+      varName : String;
+      flags   : C.int := TCL_GLOBAL_ONLY)
    is
       C_varName : aliased C.char_array := C.To_C (varName);
    begin --  Tcl_UnsetVar
@@ -2049,9 +2049,9 @@ package body Tcl.Ada is
 
    function Tcl_UnsetVar2
      (interp : not null Tcl_Interp;
-      part1  : in String;
-      part2  : in String;
-      flags  : in C.int := TCL_GLOBAL_ONLY)
+      part1  : String;
+      part2  : String;
+      flags  : C.int := TCL_GLOBAL_ONLY)
       return   C.int
    is
       C_part1 : aliased C.char_array := C.To_C (part1);
@@ -2066,9 +2066,9 @@ package body Tcl.Ada is
 
    procedure Tcl_UnsetVar2
      (interp : not null Tcl_Interp;
-      part1  : in String;
-      part2  : in String;
-      flags  : in C.int := TCL_GLOBAL_ONLY)
+      part1  : String;
+      part2  : String;
+      flags  : C.int := TCL_GLOBAL_ONLY)
    is
       C_part1 : aliased C.char_array := C.To_C (part1);
       C_part2 : aliased C.char_array := C.To_C (part2);
@@ -2084,7 +2084,7 @@ package body Tcl.Ada is
 
    procedure Tcl_UpdateLinkedVar
      (interp  : not null Tcl_Interp;
-      varName : in String)
+      varName : String)
    is
       C_varName : aliased C.char_array := C.To_C (varName);
    begin --  Tcl_UpdateLinkedVar
@@ -2095,10 +2095,10 @@ package body Tcl.Ada is
 
    function Tcl_UpVar
      (interp    : not null Tcl_Interp;
-      frameName : in String;
-      varName   : in String;
-      localName : in String;
-      flags     : in C.int)
+      frameName : String;
+      varName   : String;
+      localName : String;
+      flags     : C.int)
       return      C.int
    is
       C_frameName : aliased C.char_array := C.To_C (frameName);
@@ -2115,10 +2115,10 @@ package body Tcl.Ada is
 
    procedure Tcl_UpVar
      (interp    : not null Tcl_Interp;
-      frameName : in String;
-      varName   : in String;
-      localName : in String;
-      flags     : in C.int)
+      frameName : String;
+      varName   : String;
+      localName : String;
+      flags     : C.int)
    is
       C_frameName : aliased C.char_array := C.To_C (frameName);
       C_varName   : aliased C.char_array := C.To_C (varName);
@@ -2136,11 +2136,11 @@ package body Tcl.Ada is
 
    function Tcl_UpVar2
      (interp    : not null Tcl_Interp;
-      frameName : in String;
-      part1     : in String;
-      part2     : in String;
-      localName : in String;
-      flags     : in C.int)
+      frameName : String;
+      part1     : String;
+      part2     : String;
+      localName : String;
+      flags     : C.int)
       return      C.int
    is
       C_frameName : aliased C.char_array := C.To_C (frameName);
@@ -2159,11 +2159,11 @@ package body Tcl.Ada is
 
    procedure Tcl_UpVar2
      (interp    : not null Tcl_Interp;
-      frameName : in String;
-      part1     : in String;
-      part2     : in String;
-      localName : in String;
-      flags     : in C.int)
+      frameName : String;
+      part1     : String;
+      part2     : String;
+      localName : String;
+      flags     : C.int)
    is
       C_frameName : aliased C.char_array := C.To_C (frameName);
       C_part1     : aliased C.char_array := C.To_C (part1);
@@ -2182,31 +2182,31 @@ package body Tcl.Ada is
    end Tcl_UpVar2;
 
    function VarEval
-     (interp    : in Tcl_Interp;
-      String1   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String2   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String3   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String4   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String5   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String6   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String7   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String8   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : in C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : in C.Strings.chars_ptr := C.Strings.Null_Ptr)
+     (interp    : Tcl_Interp;
+      String1   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String2   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String3   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String4   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String5   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
+      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr)
       return      C.int;
    pragma Import (C, VarEval, "Tcl_VarEval");
 
    function Tcl_VarEval
      (interp  : not null Tcl_Interp;
-      String1 : in String := "";
-      String2 : in String := "";
-      String3 : in String := "";
-      String4 : in String := "";
-      String5 : in String := "";
-      String6 : in String := "";
-      String7 : in String := "";
-      String8 : in String := "";
-      String9 : in String := "")
+      String1 : String := "";
+      String2 : String := "";
+      String3 : String := "";
+      String4 : String := "";
+      String5 : String := "";
+      String6 : String := "";
+      String7 : String := "";
+      String8 : String := "";
+      String9 : String := "")
       return    C.int
    is
       C_String1 : aliased C.char_array := C.To_C (String1);
@@ -2235,15 +2235,15 @@ package body Tcl.Ada is
 
    procedure Tcl_VarEval
      (interp  : not null Tcl_Interp;
-      String1 : in String := "";
-      String2 : in String := "";
-      String3 : in String := "";
-      String4 : in String := "";
-      String5 : in String := "";
-      String6 : in String := "";
-      String7 : in String := "";
-      String8 : in String := "";
-      String9 : in String := "")
+      String1 : String := "";
+      String2 : String := "";
+      String3 : String := "";
+      String4 : String := "";
+      String5 : String := "";
+      String6 : String := "";
+      String7 : String := "";
+      String8 : String := "";
+      String9 : String := "")
    is
       C_String1 : aliased C.char_array := C.To_C (String1);
       C_String2 : aliased C.char_array := C.To_C (String2);
@@ -2273,9 +2273,9 @@ package body Tcl.Ada is
 
    procedure Tcl_WrongNumArgs
      (interp  : not null Tcl_Interp;
-      objc    : in C.int;
-      objv    : in Tcl_Obj_Array;
-      message : in String)
+      objc    : C.int;
+      objv    : Tcl_Obj_Array;
+      message : String)
    is
       C_message : aliased C.char_array := C.To_C (message);
    begin --  Tcl_WrongNumArgs
@@ -2286,14 +2286,14 @@ package body Tcl.Ada is
          C.Strings.To_Chars_Ptr (C_message'Unchecked_Access));
    end Tcl_WrongNumArgs;
 
-   function Tcl_DumpActiveMemory (fileName : in String) return C.int is
+   function Tcl_DumpActiveMemory (fileName : String) return C.int is
       C_fileName : aliased C.char_array := C.To_C (fileName);
    begin --  Tcl_DumpActiveMemory
       return Tcl.Tcl_DumpActiveMemory
                (C.Strings.To_Chars_Ptr (C_fileName'Unchecked_Access));
    end Tcl_DumpActiveMemory;
 
-   procedure Tcl_ValidateAllMemory (file : in String; line : in C.int) is
+   procedure Tcl_ValidateAllMemory (file : String; line : C.int) is
       C_file : aliased C.char_array := C.To_C (file);
    begin --  Tcl_ValidateAllMemory
       Tcl.Tcl_ValidateAllMemory
@@ -2303,8 +2303,8 @@ package body Tcl.Ada is
 
    function Tcl_ParseVar
      (interp  : not null Tcl_Interp;
-      str     : in String;
-      termPtr : in CArgv.Chars_Ptr_Ptr)
+      str     : String;
+      termPtr : CArgv.Chars_Ptr_Ptr)
       return    String
    is
       C_str : aliased C.char_array := C.To_C (str);
@@ -2318,9 +2318,9 @@ package body Tcl.Ada is
 
    function Tcl_EvalEx
      (interp   : not null Tcl_Interp;
-      script   : in String;
-      numBytes : in C.int;
-      flags    : in C.int)
+      script   : String;
+      numBytes : C.int;
+      flags    : C.int)
       return     C.int
    is
       C_script : aliased C.char_array := C.To_C (script);
@@ -2334,9 +2334,9 @@ package body Tcl.Ada is
 
    procedure Tcl_EvalEx
      (interp   : not null Tcl_Interp;
-      script   : in String;
-      numBytes : in C.int;
-      flags    : in C.int)
+      script   : String;
+      numBytes : C.int;
+      flags    : C.int)
    is
       C_script : aliased C.char_array := C.To_C (script);
    begin --  Tcl_EvalEx
@@ -2352,12 +2352,12 @@ package body Tcl.Ada is
    function Tcl_ExternalToUtf
      (interp      : not null Tcl_Interp;
       encoding    : not null Tcl_Encoding;
-      src         : in String;
-      srcLen      : in C.int;
-      flags       : in C.int;
+      src         : String;
+      srcLen      : C.int;
+      flags       : C.int;
       statePtr    : not null Tcl_EncodingState;
-      dst         : in String;
-      dstLen      : in C.int;
+      dst         : String;
+      dstLen      : C.int;
       srcReadPtr  : access C.int;
       dstWrotePtr : access C.int;
       dstCharsPtr : access C.int)
@@ -2383,12 +2383,12 @@ package body Tcl.Ada is
    procedure Tcl_ExternalToUtf
      (interp      : not null Tcl_Interp;
       encoding    : not null Tcl_Encoding;
-      src         : in String;
-      srcLen      : in C.int;
-      flags       : in C.int;
+      src         : String;
+      srcLen      : C.int;
+      flags       : C.int;
       statePtr    : not null Tcl_EncodingState;
-      dst         : in String;
-      dstLen      : in C.int;
+      dst         : String;
+      dstLen      : C.int;
       srcReadPtr  : access C.int;
       dstWrotePtr : access C.int;
       dstCharsPtr : access C.int)
@@ -2414,8 +2414,8 @@ package body Tcl.Ada is
 
    function Tcl_ExternalToUtfDString
      (encoding : not null Tcl_Encoding;
-      src      : in String;
-      srcLen   : in C.int;
+      src      : String;
+      srcLen   : C.int;
       dsPtr    : not null Tcl_DString)
       return     String
    is
@@ -2431,7 +2431,7 @@ package body Tcl.Ada is
 
    function Tcl_GetEncoding
      (interp : not null Tcl_Interp;
-      name   : in String)
+      name   : String)
       return   Tcl_Encoding
    is
       C_name : aliased C.char_array := C.To_C (name);
@@ -2450,10 +2450,10 @@ package body Tcl.Ada is
    function Tcl_GetIndexFromObjStruct
      (interp   : not null Tcl_Interp;
       objPtr   : not null Tcl_Obj;
-      tablePtr : in CArgv.Chars_Ptr_Ptr;
-      offset   : in C.int;
-      msg      : in String;
-      flags    : in C.int;
+      tablePtr : CArgv.Chars_Ptr_Ptr;
+      offset   : C.int;
+      msg      : String;
+      flags    : C.int;
       indexPtr : not null access C.int)
       return     C.int
    is
@@ -2472,10 +2472,10 @@ package body Tcl.Ada is
    procedure Tcl_GetIndexFromObjStruct
      (interp   : not null Tcl_Interp;
       objPtr   : not null Tcl_Obj;
-      tablePtr : in CArgv.Chars_Ptr_Ptr;
-      offset   : in C.int;
-      msg      : in String;
-      flags    : in C.int;
+      tablePtr : CArgv.Chars_Ptr_Ptr;
+      offset   : C.int;
+      msg      : String;
+      flags    : C.int;
       indexPtr : not null access C.int)
    is
       C_msg : aliased C.char_array := C.To_C (msg);
@@ -2494,9 +2494,9 @@ package body Tcl.Ada is
 
    function Tcl_GetVar2Ex
      (interp : not null Tcl_Interp;
-      part1  : in String;
-      part2  : in String;
-      flags  : in C.int := TCL_GLOBAL_ONLY)
+      part1  : String;
+      part2  : String;
+      flags  : C.int := TCL_GLOBAL_ONLY)
       return   Tcl_Obj
    is
       C_part1 : aliased C.char_array := C.To_C (part1);
@@ -2509,7 +2509,7 @@ package body Tcl.Ada is
                 flags);
    end Tcl_GetVar2Ex;
 
-   function Tcl_NumUtfChars (src : in String; len : in C.int) return C.int is
+   function Tcl_NumUtfChars (src : String; len : C.int) return C.int is
       C_src : aliased C.char_array := C.To_C (src);
    begin --  Tcl_NumUtfChars
       return Tcl.Tcl_NumUtfChars
@@ -2519,7 +2519,7 @@ package body Tcl.Ada is
 
    function Tcl_SetSystemEncoding
      (interp : not null Tcl_Interp;
-      name   : in String)
+      name   : String)
       return   C.int
    is
       C_name : aliased C.char_array := C.To_C (name);
@@ -2531,7 +2531,7 @@ package body Tcl.Ada is
 
    procedure Tcl_SetSystemEncoding
      (interp : not null Tcl_Interp;
-      name   : in String)
+      name   : String)
    is
       C_name : aliased C.char_array := C.To_C (name);
    begin --  Tcl_SetSystemEncoding
@@ -2544,10 +2544,10 @@ package body Tcl.Ada is
 
    function Tcl_SetVar2Ex
      (interp      : not null Tcl_Interp;
-      part1       : in String;
-      part2       : in String;
+      part1       : String;
+      part2       : String;
       newValuePtr : not null Tcl_Obj;
-      flags       : in C.int := TCL_GLOBAL_ONLY)
+      flags       : C.int := TCL_GLOBAL_ONLY)
       return        Tcl_Obj
    is
       C_part1 : aliased C.char_array := C.To_C (part1);
@@ -2562,8 +2562,8 @@ package body Tcl.Ada is
    end Tcl_SetVar2Ex;
 
    function Tcl_UniCharAtIndex
-     (src   : in String;
-      index : in C.int)
+     (src   : String;
+      index : C.int)
       return  Tcl_UniChar
    is
       C_src : aliased C.char_array := C.To_C (src);
@@ -2573,7 +2573,7 @@ package body Tcl.Ada is
                 index);
    end Tcl_UniCharAtIndex;
 
-   function Tcl_UniCharToUtf (ch : in C.int; buf : in String) return C.int is
+   function Tcl_UniCharToUtf (ch : C.int; buf : String) return C.int is
       C_buf : aliased C.char_array := C.To_C (buf);
    begin --  Tcl_UniCharToUtf
       return Tcl.Tcl_UniCharToUtf
@@ -2582,8 +2582,8 @@ package body Tcl.Ada is
    end Tcl_UniCharToUtf;
 
    function Tcl_UtfAtIndex
-     (src   : in String;
-      index : in C.int)
+     (src   : String;
+      index : C.int)
       return  String
    is
       C_src : aliased C.char_array := C.To_C (src);
@@ -2595,8 +2595,8 @@ package body Tcl.Ada is
    end Tcl_UtfAtIndex;
 
    function Tcl_UtfCharComplete
-     (src  : in String;
-      len  : in C.int)
+     (src  : String;
+      len  : C.int)
       return C.int
    is
       C_src : aliased C.char_array := C.To_C (src);
@@ -2607,9 +2607,9 @@ package body Tcl.Ada is
    end Tcl_UtfCharComplete;
 
    function Tcl_UtfBackslash
-     (src     : in String;
+     (src     : String;
       readPtr : access C.int;
-      dst     : in String)
+      dst     : String)
       return    C.int
    is
       C_src : aliased C.char_array := C.To_C (src);
@@ -2621,7 +2621,7 @@ package body Tcl.Ada is
                 C.Strings.To_Chars_Ptr (C_dst'Unchecked_Access));
    end Tcl_UtfBackslash;
 
-   function Tcl_UtfFindFirst (src : in String; ch : in C.int) return String is
+   function Tcl_UtfFindFirst (src : String; ch : C.int) return String is
       C_src : aliased C.char_array := C.To_C (src);
    begin --  Tcl_UtfFindFirst
       return CHelper.Value
@@ -2630,7 +2630,7 @@ package body Tcl.Ada is
                     ch));
    end Tcl_UtfFindFirst;
 
-   function Tcl_UtfFindLast (src : in String; ch : in C.int) return String is
+   function Tcl_UtfFindLast (src : String; ch : C.int) return String is
       C_src : aliased C.char_array := C.To_C (src);
    begin --  Tcl_UtfFindLast
       return CHelper.Value
@@ -2639,7 +2639,7 @@ package body Tcl.Ada is
                     ch));
    end Tcl_UtfFindLast;
 
-   function Tcl_UtfNext (src : in String) return String is
+   function Tcl_UtfNext (src : String) return String is
       C_src : aliased C.char_array := C.To_C (src);
    begin --  Tcl_UtfNext
       return CHelper.Value
@@ -2647,7 +2647,7 @@ package body Tcl.Ada is
                    (C.Strings.To_Chars_Ptr (C_src'Unchecked_Access)));
    end Tcl_UtfNext;
 
-   function Tcl_UtfPrev (src : in String; start : in String) return String is
+   function Tcl_UtfPrev (src : String; start : String) return String is
       C_src   : aliased C.char_array := C.To_C (src);
       C_start : aliased C.char_array := C.To_C (start);
    begin --  Tcl_UtfPrev
@@ -2660,12 +2660,12 @@ package body Tcl.Ada is
    function Tcl_UtfToExternal
      (interp      : not null Tcl_Interp;
       encoding    : not null Tcl_Encoding;
-      src         : in String;
-      srcLen      : in C.int;
-      flags       : in C.int;
+      src         : String;
+      srcLen      : C.int;
+      flags       : C.int;
       statePtr    : not null Tcl_EncodingState;
-      dst         : in String;
-      dstLen      : in C.int;
+      dst         : String;
+      dstLen      : C.int;
       srcReadPtr  : access C.int;
       dstWrotePtr : access C.int;
       dstCharsPtr : access C.int)
@@ -2691,12 +2691,12 @@ package body Tcl.Ada is
    procedure Tcl_UtfToExternal
      (interp      : not null Tcl_Interp;
       encoding    : not null Tcl_Encoding;
-      src         : in String;
-      srcLen      : in C.int;
-      flags       : in C.int;
+      src         : String;
+      srcLen      : C.int;
+      flags       : C.int;
       statePtr    : not null Tcl_EncodingState;
-      dst         : in String;
-      dstLen      : in C.int;
+      dst         : String;
+      dstLen      : C.int;
       srcReadPtr  : access C.int;
       dstWrotePtr : access C.int;
       dstCharsPtr : access C.int)
@@ -2722,8 +2722,8 @@ package body Tcl.Ada is
 
    function Tcl_UtfToExternalDString
      (encoding : not null Tcl_Encoding;
-      src      : in String;
-      srcLen   : in C.int;
+      src      : String;
+      srcLen   : C.int;
       dsPtr    : not null Tcl_DString)
       return     String
    is
@@ -2737,14 +2737,14 @@ package body Tcl.Ada is
                     dsPtr));
    end Tcl_UtfToExternalDString;
 
-   function Tcl_UtfToLower (src : in String) return C.int is
+   function Tcl_UtfToLower (src : String) return C.int is
       C_src : aliased C.char_array := C.To_C (src);
    begin --  Tcl_UtfToLower
       return Tcl.Tcl_UtfToLower
                (C.Strings.To_Chars_Ptr (C_src'Unchecked_Access));
    end Tcl_UtfToLower;
 
-   function Tcl_UtfToTitle (src : in String) return C.int is
+   function Tcl_UtfToTitle (src : String) return C.int is
       C_src : aliased C.char_array := C.To_C (src);
    begin --  Tcl_UtfToTitle
       return Tcl.Tcl_UtfToTitle
@@ -2752,7 +2752,7 @@ package body Tcl.Ada is
    end Tcl_UtfToTitle;
 
    function Tcl_UtfToUniChar
-     (src   : in String;
+     (src   : String;
       chPtr : access Tcl_UniChar)
       return  C.int
    is
@@ -2763,7 +2763,7 @@ package body Tcl.Ada is
                 chPtr);
    end Tcl_UtfToUniChar;
 
-   function Tcl_UtfToUpper (src : in String) return C.int is
+   function Tcl_UtfToUpper (src : String) return C.int is
       C_src : aliased C.char_array := C.To_C (src);
    begin --  Tcl_UtfToUpper
       return Tcl.Tcl_UtfToUpper
@@ -2780,7 +2780,7 @@ package body Tcl.Ada is
       return Tcl.Tcl_GetDefaultEncodingDir;
    end Tcl_GetDefaultEncodingDir;
 
-   procedure Tcl_SetDefaultEncodingDir (path : in String) is
+   procedure Tcl_SetDefaultEncodingDir (path : String) is
       C_path : aliased C.char_array := C.To_C (path);
    begin --  Tcl_SetDefaultEncodingDir
       Tcl.Tcl_SetDefaultEncodingDir
@@ -2788,8 +2788,8 @@ package body Tcl.Ada is
    end Tcl_SetDefaultEncodingDir;
 
    function Tcl_UniCharToUtfDString
-     (strng    : in String;
-      numChars : in C.int;
+     (strng    : String;
+      numChars : C.int;
       dsPtr    : not null Tcl_DString)
       return     String
    is
@@ -2803,8 +2803,8 @@ package body Tcl.Ada is
    end Tcl_UniCharToUtfDString;
 
    function Tcl_UtfToUniCharDString
-     (strng  : in String;
-      length : in C.int;
+     (strng  : String;
+      length : C.int;
       dsPtr  : not null Tcl_DString)
       return   String
    is
@@ -2819,9 +2819,9 @@ package body Tcl.Ada is
 
    procedure Tcl_LogCommandInfo
      (interp  : not null Tcl_Interp;
-      script  : in String;
-      command : in String;
-      length  : in C.int)
+      script  : String;
+      command : String;
+      length  : C.int)
    is
       C_script  : aliased C.char_array := C.To_C (script);
       C_command : aliased C.char_array := C.To_C (command);
@@ -2835,11 +2835,11 @@ package body Tcl.Ada is
 
    function Tcl_ParseBraces
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse;
-      append   : in C.int;
-      termPtr  : in CArgv.Chars_Ptr_Ptr)
+      append   : C.int;
+      termPtr  : CArgv.Chars_Ptr_Ptr)
       return     C.int
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -2855,11 +2855,11 @@ package body Tcl.Ada is
 
    procedure Tcl_ParseBraces
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse;
-      append   : in C.int;
-      termPtr  : in CArgv.Chars_Ptr_Ptr)
+      append   : C.int;
+      termPtr  : CArgv.Chars_Ptr_Ptr)
    is
       C_strng : aliased C.char_array := C.To_C (strng);
    begin --  Tcl_ParseBraces
@@ -2876,9 +2876,9 @@ package body Tcl.Ada is
 
    function Tcl_ParseCommand
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
-      nested   : in C.int;
+      strng    : String;
+      numBytes : C.int;
+      nested   : C.int;
       parsePtr : not null Tcl_Parse)
       return     C.int
    is
@@ -2894,9 +2894,9 @@ package body Tcl.Ada is
 
    procedure Tcl_ParseCommand
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
-      nested   : in C.int;
+      strng    : String;
+      numBytes : C.int;
+      nested   : C.int;
       parsePtr : not null Tcl_Parse)
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -2913,8 +2913,8 @@ package body Tcl.Ada is
 
    function Tcl_ParseExpr
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse)
       return     C.int
    is
@@ -2929,8 +2929,8 @@ package body Tcl.Ada is
 
    procedure Tcl_ParseExpr
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse)
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -2946,11 +2946,11 @@ package body Tcl.Ada is
 
    function Tcl_ParseQuotedString
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse;
-      append   : in C.int;
-      termPtr  : in CArgv.Chars_Ptr_Ptr)
+      append   : C.int;
+      termPtr  : CArgv.Chars_Ptr_Ptr)
       return     C.int
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -2966,11 +2966,11 @@ package body Tcl.Ada is
 
    procedure Tcl_ParseQuotedString
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse;
-      append   : in C.int;
-      termPtr  : in CArgv.Chars_Ptr_Ptr)
+      append   : C.int;
+      termPtr  : CArgv.Chars_Ptr_Ptr)
    is
       C_strng : aliased C.char_array := C.To_C (strng);
    begin --  Tcl_ParseQuotedString
@@ -2987,10 +2987,10 @@ package body Tcl.Ada is
 
    function Tcl_ParseVarName
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse;
-      append   : in C.int)
+      append   : C.int)
       return     C.int
    is
       C_strng : aliased C.char_array := C.To_C (strng);
@@ -3005,10 +3005,10 @@ package body Tcl.Ada is
 
    procedure Tcl_ParseVarName
      (interp   : not null Tcl_Interp;
-      strng    : in String;
-      numBytes : in C.int;
+      strng    : String;
+      numBytes : C.int;
       parsePtr : not null Tcl_Parse;
-      append   : in C.int)
+      append   : C.int)
    is
       C_strng : aliased C.char_array := C.To_C (strng);
    begin --  Tcl_ParseVarName
@@ -3022,14 +3022,14 @@ package body Tcl.Ada is
              append));
    end Tcl_ParseVarName;
 
-   function Tcl_Chdir (dirName : in String) return C.int is
+   function Tcl_Chdir (dirName : String) return C.int is
       C_dirName : aliased C.char_array := C.To_C (dirName);
    begin --  Tcl_Chdir
       return Tcl.Tcl_Chdir
                (C.Strings.To_Chars_Ptr (C_dirName'Unchecked_Access));
    end Tcl_Chdir;
 
-   function Tcl_Access (path : in String; mode : in C.int) return C.int is
+   function Tcl_Access (path : String; mode : C.int) return C.int is
       C_path : aliased C.char_array := C.To_C (path);
    begin --  Tcl_Access
       return Tcl.Tcl_Access
@@ -3037,16 +3037,16 @@ package body Tcl.Ada is
                 mode);
    end Tcl_Access;
 
-   function Tcl_Stat (path : in String) return C.int is
+   function Tcl_Stat (path : String) return C.int is
       C_path : aliased C.char_array := C.To_C (path);
    begin --  Tcl_Stat
       return Tcl.Tcl_Stat (C.Strings.To_Chars_Ptr (C_path'Unchecked_Access));
    end Tcl_Stat;
 
    function Tcl_UtfNcmp
-     (s1   : in String;
-      s2   : in String;
-      n    : in C.unsigned_long)
+     (s1   : String;
+      s2   : String;
+      n    : C.unsigned_long)
       return C.int
    is
       C_s1 : aliased C.char_array := C.To_C (s1);
@@ -3059,9 +3059,9 @@ package body Tcl.Ada is
    end Tcl_UtfNcmp;
 
    function Tcl_UtfNcasecmp
-     (s1   : in String;
-      s2   : in String;
-      n    : in C.unsigned_long)
+     (s1   : String;
+      s2   : String;
+      n    : C.unsigned_long)
       return C.int
    is
       C_s1 : aliased C.char_array := C.To_C (s1);
@@ -3074,9 +3074,9 @@ package body Tcl.Ada is
    end Tcl_UtfNcasecmp;
 
    function Tcl_StringCaseMatch
-     (str     : in String;
-      pattern : in String;
-      nocase  : in C.int)
+     (str     : String;
+      pattern : String;
+      nocase  : C.int)
       return    C.int
    is
       C_str     : aliased C.char_array := C.To_C (str);
