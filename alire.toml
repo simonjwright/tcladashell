@@ -23,4 +23,5 @@ macos = { TCLADASHELL_PLATFORM = "macos" }
 
 [[actions]]
 type = "pre-build"
+command = ["setup.tcl", "--nogui"]
 command = ["make", "-C", "src", "tcl_record_sizes.ads"]
