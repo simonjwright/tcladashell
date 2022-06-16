@@ -25,27 +25,7 @@ project Tash_Tests is
       "tashtest"
      );
 
-   Tash_Mains :=
-     (
-      "test_arrays",
-      "test_file",
-      "test_file_io",
-      "test_floats",
-      "test_format",
-      "test_integers",
-      "test_lists",
-      "test_platform",
-      "test_regexp",
-      "test_strings",
-      "test_system"
-     );
-
-   case Tash.Supports_Tash is
-      when "no" =>
-         for Main use Tcl_Mains;
-      when "yes" =>
-         for Main use Tcl_Mains & Tash_Mains;
-   end case;
+   for Main use Tcl_Mains;
 
    for Exec_Dir use ".";
 
@@ -57,24 +37,16 @@ project Tash_Tests is
    for Object_Dir use ".build";
 
    --  GNATMAKE configuration options.
-   package Builder is
-      for Default_Switches ("ada") use ("-m", "-g");
-   end Builder;
+   package Builder renames Tash.Builder;
 
    --  GCC configuration options.
-   package Compiler is
-      for Default_Switches ("ada") use
-        (
-         "-O2",
-         "-gnatqQafoy",
-         "-gnatwaL"
-        );
-
-   end Compiler;
+   package Compiler renames Tash.Compiler;
 
    -- GNATBIND configuration options.
    package Binder is
       for Default_Switches ("ada") use ("-E");
    end Binder;
+
+   package Linker renames Tash.Linker;
 
 end Tash_Tests;

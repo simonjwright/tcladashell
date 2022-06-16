@@ -22,5 +22,5 @@ linux = { TCLADASHELL_PLATFORM = "linux" }
 macos = { TCLADASHELL_PLATFORM = "macos" }
 
 [[actions]]
-type = "pre-build"
+type = "post-fetch"
 command = ["make", "-C", "src", "tcl_record_sizes.ads"]

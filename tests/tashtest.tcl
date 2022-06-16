@@ -67,8 +67,10 @@ test_case {simple_expr} {wrong # args}
 
 #| check if passed or failed
 if $failed {
-   puts stdout "Test FAILED"
+    puts stdout "Test FAILED"
+    exit 1
 } else {
-   puts stdout "Test PASSED"
+    puts stdout "Test PASSED"
+    exit 0
 }
 

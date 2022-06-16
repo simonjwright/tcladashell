@@ -31,9 +31,6 @@ project Hello_World is
   --  directory.
   for Object_Dir use ".build";
 
-  --  GLIDE/GPS configuration.
-  package IDE renames Tash.IDE;
-
   --  GNATMAKE configuration options.
   package Builder renames Tash.Builder;
 
