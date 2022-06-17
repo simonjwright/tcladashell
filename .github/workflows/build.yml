@@ -39,4 +39,4 @@ jobs:
         alr --non-interactive toolchain --select gprbuild
         alr --non-interactive build
         echo "building/running"
-        cd test; alr --non-interactive run tashtest --args=tashtest.tcl
+        cd tests; alr --non-interactive run tashtest --args=tashtest.tcl
