@@ -24,4 +24,4 @@ tcladashell = "*"
 # aunit = "^22.0.0"
 
 [[pins]]
-tcladashell = { path='../../tcladashell' }
+tcladashell = { path='..' }

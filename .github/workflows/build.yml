@@ -1,6 +1,6 @@
 ---
 
-name: Build
+name: Build and test
 
 on:
   push:
@@ -30,6 +30,7 @@ jobs:
     -
       name: Build and run tests
       run: |
+        echo "adding 'local' index"
         alr --non-interactive index --add=git+https://github.com/simonjwright/local-alire-index --name=local
         alr --non-interactive config --global --set toolchain.assistant false
         alr --non-interactive toolchain --install gnat_native
@@ -37,3 +38,5 @@ jobs:
         alr --non-interactive toolchain --select gnat_native
         alr --non-interactive toolchain --select gprbuild
         alr --non-interactive build
+        echo "building/running"
+        cd test; alr --non-interactive run tashtest --args=tashtest.tcl
