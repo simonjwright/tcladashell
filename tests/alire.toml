@@ -8,7 +8,7 @@ maintainers = ["Simon Wright <simon@pushface.org>"]
 maintainers-logins = ["simonjwright"]
 
 project-files = ["tash_tests.gpr"]
-executables = ["compare", "tashtest"]
+executables = ["tashtest"]
 
 [[depends-on]]
 tcladashell = "*"

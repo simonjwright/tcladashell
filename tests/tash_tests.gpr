@@ -21,8 +21,7 @@ project Tash_Tests is
 
    Tcl_Mains :=
      (
-      "compare",
-      "tashtest"
+      "tashtest.adb"
      );
 
    for Main use Tcl_Mains;
