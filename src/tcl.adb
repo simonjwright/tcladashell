@@ -4,7 +4,7 @@
 --
 --  Copyright (c) 1995-2000 Terry J. Westley
 --  Copyright (c) 2008 O Kellogg
---  Copyright (c) 2006, 2008, 2009, 2014, 2019, 2021
+--  Copyright (c) 2006, 2008, 2009, 2014, 2019, 2021, 2022
 --     Simon Wright <simon@pushface.org>
 --
 --  Tash is free software; you can redistribute it and/or modify it under
@@ -140,9 +140,11 @@ package body Tcl is
       String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
-   pragma Import (C, AppendStringsToObj, "Tcl_AppendStringsToObj");
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr)
+   with
+     Import,
+     Convention => C_Variadic_1,
+     External_Name => "Tcl_AppendStringsToObj";
 
    procedure Tcl_AppendStringsToObj
      (objPtr  : not null Tcl_Obj;
@@ -180,9 +182,11 @@ package body Tcl is
       String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
-   pragma Import (C, AppendResult, "Tcl_AppendResult");
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr)
+   with
+     Import,
+     Convention => C_Variadic_1,
+     External_Name => "Tcl_AppendResult";
 
    procedure Tcl_AppendResult
      (interp  : not null Tcl_Interp;
@@ -220,9 +224,11 @@ package body Tcl is
       String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr);
-   pragma Import (C, SetErrorCode, "Tcl_SetErrorCode");
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr)
+   with
+     Import,
+     Convention => C_Variadic_1,
+     External_Name => "Tcl_SetErrorCode";
 
    procedure Tcl_SetErrorCode
      (interp  : not null Tcl_Interp;
@@ -260,10 +266,12 @@ package body Tcl is
       String6   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String7   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
       String8   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr;
-      ForceNull : C.Strings.chars_ptr := C.Strings.Null_Ptr)
-      return      C.int;
-   pragma Import (C, VarEval, "Tcl_VarEval");
+      String9   : C.Strings.chars_ptr := C.Strings.Null_Ptr)
+     return      C.int
+   with
+     Import,
+     Convention => C_Variadic_1,
+     External_Name => "Tcl_VarEval";
 
    function Tcl_VarEval
      (interp  : not null Tcl_Interp;
