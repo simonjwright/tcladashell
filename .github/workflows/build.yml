@@ -38,4 +38,4 @@ jobs:
         alr --non-interactive toolchain --select gnat_native
         alr --non-interactive toolchain --select gprbuild
         echo "building/running"
-        cd tests; alr --non-interactive --vv run tashtest --args tashtest.tcl
+        cd tests; alr --non-interactive --vv run --args tashtest.tcl
