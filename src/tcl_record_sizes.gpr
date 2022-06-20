@@ -1,0 +1,23 @@
+--  This project generates an executable which, when run, will create
+--  the Ada spec tcl_record_sizes.ads, using the sizes determined by
+--  the C program tcl_record_sizes.c when built against the system
+--  Tcl/Tk libraries.
+--  tcl_record_sizes.c is built by the script tcl_record_sizes.tcl.
+
+with "../options.gpr";
+
+project Tcl_Record_Sizes is
+
+   for Languages use ("c");
+
+   for Main use ("tcl_record_sizes.c");
+
+   for Source_Files use ("tcl_record_sizes.c");
+   for Object_Dir use ".build";
+   for Create_Missing_Dirs use "true";
+   for Exec_Dir use ".";
+
+   package Compiler renames Options.Compiler;
+   package Linker renames Options.Linker;
+
+end Tcl_Record_Sizes;

@@ -1,0 +1,41 @@
+---
+
+name: Build and test
+
+on:
+  push:
+  pull_request:
+    # branches: [ master ]
+
+jobs:
+  build:
+    name: CI on ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          # - macos-latest - no way to install Tcl/Tk on Github
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: alire-project/setup-alire
+      uses: alire-project/setup-alire@v1
+    -
+      name: Build and run tests
+      run: |
+        echo "adding 'local' index"
+        alr --non-interactive index --add=git+https://github.com/simonjwright/local-alire-index --name=local
+        alr --non-interactive config --global --set toolchain.assistant false
+        alr --non-interactive toolchain --install gnat_native
+        alr --non-interactive toolchain --install gprbuild
+        alr --non-interactive toolchain --select gnat_native
+        alr --non-interactive toolchain --select gprbuild
+        echo "building/running"
+        cd tests; alr --non-interactive build; ./tashtest tashtest.tcl

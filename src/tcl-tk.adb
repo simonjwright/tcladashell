@@ -46,12 +46,12 @@ package body Tcl.Tk is
    end Tk_PathName;
 
    procedure Tk_Main
-     (argc : in C.int;
-      argv : in CArgv.Chars_Ptr_Ptr;
+     (argc : C.int;
+      argv : CArgv.Chars_Ptr_Ptr;
       proc : not null Tcl_AppInitProc) is
       procedure Tk_CallMain
-        (argc : in C.int;
-         argv : in CArgv.Chars_Ptr_Ptr;
+        (argc : C.int;
+         argv : CArgv.Chars_Ptr_Ptr;
          proc : not null Tcl_AppInitProc);
       pragma Import (C, Tk_CallMain, "Tk_CallMain");
    begin

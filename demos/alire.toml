@@ -1,0 +1,27 @@
+description = "Tcl Ada Shell demos"
+name = "tash_demos"
+licenses = "GPL-3.0-or-later WITH GCC-exception-3.1"
+version = "8"
+
+authors = ["Simon Wright"]
+maintainers = ["Simon Wright <simon@pushface.org>"]
+maintainers-logins = ["simonjwright"]
+
+project-files = ["tash_demos.gpr", "hello_world.gpr"]
+executables = [
+               "freq",
+               "futurevalue",
+               "hello_world",
+               "tashell",
+               "timer",
+               "twashell",
+               "watching",
+               "wordify"
+              ]
+
+[[depends-on]]
+tcladashell = "*"
+# aunit = "^22.0.0"
+
+[[pins]]
+tcladashell = { path='..' }

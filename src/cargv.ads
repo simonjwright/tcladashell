@@ -46,7 +46,7 @@ package CArgv is
    --  Create returns the command line arguments from Ada.Command_Line
    --  and converts them to a C-style, null-terminated argument vector.
 
-   procedure Show (Argc : in CNatural; Argv : in Chars_Ptr_Ptr);
+   procedure Show (Argc : CNatural; Argv : Chars_Ptr_Ptr);
    --  Prints Argc and Argv to standard out.
 
    procedure Free (Argv : in out Chars_Ptr_Ptr);
@@ -87,7 +87,7 @@ package CArgv is
    function "&" (Argv : Chars_Ptr_Ptr; Arg : String) return Chars_Ptr_Ptr;
    --  Construct a Chars_Ptr_Ptr using concat operation.
 
-   function Argc (Argv : in Chars_Ptr_Ptr) return CNatural;
+   function Argc (Argv : Chars_Ptr_Ptr) return CNatural;
    --  Returns the number of arguments in a Chars_Ptr_Ptr.
 
    --  Example of creating a Chars_Ptr_Ptr to pass to a C function requiring

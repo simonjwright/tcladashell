@@ -20,9 +20,9 @@ package body TestApp is
 
    use Tcl.Ada;
 
-   function "+" (Left, Right : in C.int) return C.int renames C. "+";
-   function "-" (Left, Right : in C.int) return C.int renames C. "-";
-   function "=" (Left, Right : in C.int) return Boolean renames C. "=";
+   function "+" (Left, Right : C.int) return C.int renames C. "+";
+   function "-" (Left, Right : C.int) return C.int renames C. "-";
+   function "=" (Left, Right : C.int) return Boolean renames C. "=";
 
    package CreateCommands is new Generic_Command (Integer);
 
@@ -65,18 +65,18 @@ package body TestApp is
    --     end Put_Vector;
 
    function EqCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int;
    pragma Convention (C, EqCmd);
 
    function EqCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int
    is
       pragma Unreferenced (ClientData);
@@ -99,18 +99,18 @@ package body TestApp is
    end EqCmd;
 
    function ConcatCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int;
    pragma Convention (C, ConcatCmd);
 
    function ConcatCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int
    is
       pragma Unreferenced (ClientData);
@@ -134,18 +134,18 @@ package body TestApp is
    end ConcatCmd;
 
    function ListCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int;
    pragma Convention (C, ListCmd);
 
    function ListCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int
    is
       pragma Unreferenced (ClientData);
@@ -161,17 +161,17 @@ package body TestApp is
       return TCL_OK;
    end ListCmd;
 
-   function "&" (Left : in String; Right : in Integer) return String;
-   function "&" (Left : in String; Right : in Integer) return String is
+   function "&" (Left : String; Right : Integer) return String;
+   function "&" (Left : String; Right : Integer) return String is
    begin --  "&"
       return Left &
              Ada.Strings.Fixed.Trim (Integer'Image (Right), Ada.Strings.Left);
    end "&";
 
-   procedure DeleteCounter (Counter : in Counter_Ptr);
+   procedure DeleteCounter (Counter : Counter_Ptr);
    pragma Convention (C, DeleteCounter);
 
-   procedure DeleteCounter (Counter : in Counter_Ptr) is
+   procedure DeleteCounter (Counter : Counter_Ptr) is
       --
       Local_Counter : Counter_Ptr := Counter;
    begin --  DeleteCounter
@@ -179,18 +179,18 @@ package body TestApp is
    end DeleteCounter;
 
    function ObjectCmd
-     (Counter : in Counter_Ptr;
-      Interp  : in Tcl_Interp;
-      Argc    : in C.int;
-      Argv    : in CArgv.Chars_Ptr_Ptr)
+     (Counter : Counter_Ptr;
+      Interp  : Tcl_Interp;
+      Argc    : C.int;
+      Argv    : CArgv.Chars_Ptr_Ptr)
       return    C.int;
    pragma Convention (C, ObjectCmd);
 
    function ObjectCmd
-     (Counter : in Counter_Ptr;
-      Interp  : in Tcl_Interp;
-      Argc    : in C.int;
-      Argv    : in CArgv.Chars_Ptr_Ptr)
+     (Counter : Counter_Ptr;
+      Interp  : Tcl_Interp;
+      Argc    : C.int;
+      Argv    : CArgv.Chars_Ptr_Ptr)
       return    C.int
    is
       --  From Section 30.5 of _Tcl_and_the_Tk_Toolkit_ by John Ousterhout.
@@ -224,18 +224,18 @@ package body TestApp is
    end ObjectCmd;
 
    function CounterCmd
-     (ClientData : in Counter_Ptr;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Counter_Ptr;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int;
    pragma Convention (C, CounterCmd);
 
    function CounterCmd
-     (ClientData : in Counter_Ptr;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Counter_Ptr;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int
    is
       pragma Unreferenced (ClientData, Argv);
@@ -264,18 +264,18 @@ package body TestApp is
    end CounterCmd;
 
    function SumCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int;
    pragma Convention (C, SumCmd);
 
    function SumCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int
    is
       pragma Unreferenced (ClientData);
@@ -314,18 +314,18 @@ package body TestApp is
    end SumCmd;
 
    function ExprCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int;
    pragma Convention (C, ExprCmd);
 
    function ExprCmd
-     (ClientData : in Integer;
-      Interp     : in Tcl_Interp;
-      Argc       : in C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl_Interp;
+      Argc       : C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       C.int
    is
       pragma Unreferenced (ClientData);
@@ -341,7 +341,7 @@ package body TestApp is
       return Tcl_ExprString (Interp, Vec (1));
    end ExprCmd;
 
-   function Init (Interp : in Tcl_Interp) return C.int is
+   function Init (Interp : Tcl_Interp) return C.int is
       Command : Tcl_Command;
       pragma Unreferenced (Command);
    begin --  Init

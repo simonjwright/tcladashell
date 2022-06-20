@@ -25,25 +25,25 @@ package CHelper is
    type Double_Ptr is access all C.double;             --  double *
    type Int_Array is array (C.int range <>) of C.int;
 
-   function To_C (Str : in String) return C.Strings.chars_ptr renames
+   function To_C (Str : String) return C.Strings.chars_ptr renames
      C.Strings.New_String;
 
-   function "&" (Left, Right : in C.Strings.chars_ptr) return String;
+   function "&" (Left, Right : C.Strings.chars_ptr) return String;
 
    function "&"
-     (Left  : in C.Strings.chars_ptr;
+     (Left  : C.Strings.chars_ptr;
       Right : String)
       return  String;
 
    function "&"
      (Left  : String;
-      Right : in C.Strings.chars_ptr)
+      Right : C.Strings.chars_ptr)
       return  String;
 
    function Length (Source : C.Strings.chars_ptr) return Natural;
    function Length (Source : C.Strings.chars_ptr) return C.int;
 
-   function Value (Item : in C.Strings.chars_ptr) return String;
+   function Value (Item : C.Strings.chars_ptr) return String;
    pragma Inline (Value);
 
    --------------------------------------------------------
@@ -52,90 +52,90 @@ package CHelper is
 
    procedure Append
      (Source   : in out C.Strings.chars_ptr;
-      New_Item : in C.Strings.chars_ptr);
+      New_Item : C.Strings.chars_ptr);
 
    procedure Append
      (Source   : in out C.Strings.chars_ptr;
-      New_Item : in String);
+      New_Item : String);
 
    procedure Append
      (Source   : in out C.Strings.chars_ptr;
-      New_Item : in Character);
+      New_Item : Character);
 
    function Element
-     (Source : in C.Strings.chars_ptr;
-      Index  : in Positive)
+     (Source : C.Strings.chars_ptr;
+      Index  : Positive)
       return   Character;
 
    procedure Replace_Element
      (Source : in out C.Strings.chars_ptr;
-      Index  : in Positive;
+      Index  : Positive;
       By     : Character);
 
    function Slice
-     (Source : in C.Strings.chars_ptr;
-      Low    : in Positive;
-      High   : in Natural)
+     (Source : C.Strings.chars_ptr;
+      Low    : Positive;
+      High   : Natural)
       return   String;
 
-   function "=" (Left, Right : in C.Strings.chars_ptr) return Boolean;
+   function "=" (Left, Right : C.Strings.chars_ptr) return Boolean;
 
    function "="
-     (Left  : in C.Strings.chars_ptr;
-      Right : in String)
+     (Left  : C.Strings.chars_ptr;
+      Right : String)
       return  Boolean;
 
    function "="
-     (Left  : in String;
-      Right : in C.Strings.chars_ptr)
+     (Left  : String;
+      Right : C.Strings.chars_ptr)
       return  Boolean;
 
-   function "<" (Left, Right : in C.Strings.chars_ptr) return Boolean;
+   function "<" (Left, Right : C.Strings.chars_ptr) return Boolean;
 
    function "<"
-     (Left  : in C.Strings.chars_ptr;
-      Right : in String)
+     (Left  : C.Strings.chars_ptr;
+      Right : String)
       return  Boolean;
 
    function "<"
-     (Left  : in String;
-      Right : in C.Strings.chars_ptr)
+     (Left  : String;
+      Right : C.Strings.chars_ptr)
       return  Boolean;
 
-   function "<=" (Left, Right : in C.Strings.chars_ptr) return Boolean;
+   function "<=" (Left, Right : C.Strings.chars_ptr) return Boolean;
 
    function "<="
-     (Left  : in C.Strings.chars_ptr;
-      Right : in String)
+     (Left  : C.Strings.chars_ptr;
+      Right : String)
       return  Boolean;
 
    function "<="
-     (Left  : in String;
-      Right : in C.Strings.chars_ptr)
+     (Left  : String;
+      Right : C.Strings.chars_ptr)
       return  Boolean;
 
-   function ">" (Left, Right : in C.Strings.chars_ptr) return Boolean;
+   function ">" (Left, Right : C.Strings.chars_ptr) return Boolean;
 
    function ">"
-     (Left  : in C.Strings.chars_ptr;
-      Right : in String)
+     (Left  : C.Strings.chars_ptr;
+      Right : String)
       return  Boolean;
 
    function ">"
-     (Left  : in String;
-      Right : in C.Strings.chars_ptr)
+     (Left  : String;
+      Right : C.Strings.chars_ptr)
       return  Boolean;
 
-   function ">=" (Left, Right : in C.Strings.chars_ptr) return Boolean;
+   function ">=" (Left, Right : C.Strings.chars_ptr) return Boolean;
 
    function ">="
-     (Left  : in C.Strings.chars_ptr;
-      Right : in String)
+     (Left  : C.Strings.chars_ptr;
+      Right : String)
       return  Boolean;
 
    function ">="
-     (Left  : in String;
-      Right : in C.Strings.chars_ptr)
+     (Left  : String;
+      Right : C.Strings.chars_ptr)
       return  Boolean;
 
    ------------------------
@@ -143,54 +143,54 @@ package CHelper is
    ------------------------
 
    function Index
-     (Source  : in C.Strings.chars_ptr;
-      Pattern : in String;
-      Going   : in Ada.Strings.Direction              := Ada.Strings.Forward;
-      Mapping : in Ada.Strings.Maps.Character_Mapping :=
+     (Source  : C.Strings.chars_ptr;
+      Pattern : String;
+      Going   : Ada.Strings.Direction              := Ada.Strings.Forward;
+      Mapping : Ada.Strings.Maps.Character_Mapping :=
      Ada.Strings.Maps.Identity)
       return    Natural;
 
    function Index
-     (Source  : in C.Strings.chars_ptr;
-      Pattern : in String;
-      Going   : in Ada.Strings.Direction := Ada.Strings.Forward;
-      Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
+     (Source  : C.Strings.chars_ptr;
+      Pattern : String;
+      Going   : Ada.Strings.Direction := Ada.Strings.Forward;
+      Mapping : Ada.Strings.Maps.Character_Mapping_Function)
       return    Natural;
 
    function Index
-     (Source : in C.Strings.chars_ptr;
-      Set    : in Ada.Strings.Maps.Character_Set;
-      Test   : in Ada.Strings.Membership := Ada.Strings.Inside;
-      Going  : in Ada.Strings.Direction  := Ada.Strings.Forward)
+     (Source : C.Strings.chars_ptr;
+      Set    : Ada.Strings.Maps.Character_Set;
+      Test   : Ada.Strings.Membership := Ada.Strings.Inside;
+      Going  : Ada.Strings.Direction  := Ada.Strings.Forward)
       return   Natural;
 
    function Index_Non_Blank
-     (Source : in C.Strings.chars_ptr;
-      Going  : in Ada.Strings.Direction := Ada.Strings.Forward)
+     (Source : C.Strings.chars_ptr;
+      Going  : Ada.Strings.Direction := Ada.Strings.Forward)
       return   Natural;
 
    function Count
-     (Source  : in C.Strings.chars_ptr;
-      Pattern : in String;
-      Mapping : in Ada.Strings.Maps.Character_Mapping :=
+     (Source  : C.Strings.chars_ptr;
+      Pattern : String;
+      Mapping : Ada.Strings.Maps.Character_Mapping :=
      Ada.Strings.Maps.Identity)
       return    Natural;
 
    function Count
-     (Source  : in C.Strings.chars_ptr;
-      Pattern : in String;
-      Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
+     (Source  : C.Strings.chars_ptr;
+      Pattern : String;
+      Mapping : Ada.Strings.Maps.Character_Mapping_Function)
       return    Natural;
 
    function Count
-     (Source : in C.Strings.chars_ptr;
-      Set    : in Ada.Strings.Maps.Character_Set)
+     (Source : C.Strings.chars_ptr;
+      Set    : Ada.Strings.Maps.Character_Set)
       return   Natural;
 
    procedure Find_Token
-     (Source : in C.Strings.chars_ptr;
-      Set    : in Ada.Strings.Maps.Character_Set;
-      Test   : in Ada.Strings.Membership;
+     (Source : C.Strings.chars_ptr;
+      Set    : Ada.Strings.Maps.Character_Set;
+      Test   : Ada.Strings.Membership;
       First  : out Positive;
       Last   : out Natural);
 
@@ -199,8 +199,8 @@ package CHelper is
    ------------------------------------
 
    function Translate
-     (Source  : in C.Strings.chars_ptr;
-      Mapping : in Ada.Strings.Maps.Character_Mapping)
+     (Source  : C.Strings.chars_ptr;
+      Mapping : Ada.Strings.Maps.Character_Mapping)
       return    C.Strings.chars_ptr;
 
    procedure Translate
@@ -208,119 +208,119 @@ package CHelper is
       Mapping : Ada.Strings.Maps.Character_Mapping);
 
    function Translate
-     (Source  : in C.Strings.chars_ptr;
-      Mapping : in Ada.Strings.Maps.Character_Mapping_Function)
+     (Source  : C.Strings.chars_ptr;
+      Mapping : Ada.Strings.Maps.Character_Mapping_Function)
       return    C.Strings.chars_ptr;
 
    procedure Translate
      (Source  : in out C.Strings.chars_ptr;
-      Mapping : in Ada.Strings.Maps.Character_Mapping_Function);
+      Mapping : Ada.Strings.Maps.Character_Mapping_Function);
 
    ---------------------------------------
    -- String Transformation Subprograms --
    ---------------------------------------
 
    function Replace_Slice
-     (Source : in C.Strings.chars_ptr;
-      Low    : in Positive;
-      High   : in Natural;
-      By     : in String)
+     (Source : C.Strings.chars_ptr;
+      Low    : Positive;
+      High   : Natural;
+      By     : String)
       return   C.Strings.chars_ptr;
 
    procedure Replace_Slice
      (Source : in out C.Strings.chars_ptr;
-      Low    : in Positive;
-      High   : in Natural;
-      By     : in String);
+      Low    : Positive;
+      High   : Natural;
+      By     : String);
 
    function Insert
-     (Source   : in C.Strings.chars_ptr;
-      Before   : in Positive;
-      New_Item : in String)
+     (Source   : C.Strings.chars_ptr;
+      Before   : Positive;
+      New_Item : String)
       return     C.Strings.chars_ptr;
 
    procedure Insert
      (Source   : in out C.Strings.chars_ptr;
-      Before   : in Positive;
-      New_Item : in String);
+      Before   : Positive;
+      New_Item : String);
 
    function Overwrite
-     (Source   : in C.Strings.chars_ptr;
-      Position : in Positive;
-      New_Item : in String)
+     (Source   : C.Strings.chars_ptr;
+      Position : Positive;
+      New_Item : String)
       return     C.Strings.chars_ptr;
 
    procedure Overwrite
      (Source   : in out C.Strings.chars_ptr;
-      Position : in Positive;
-      New_Item : in String);
+      Position : Positive;
+      New_Item : String);
 
    function Delete
-     (Source  : in C.Strings.chars_ptr;
-      From    : in Positive;
-      Through : in Natural)
+     (Source  : C.Strings.chars_ptr;
+      From    : Positive;
+      Through : Natural)
       return    C.Strings.chars_ptr;
 
    procedure Delete
      (Source  : in out C.Strings.chars_ptr;
-      From    : in Positive;
-      Through : in Natural);
+      From    : Positive;
+      Through : Natural);
 
    function Trim
-     (Source : in C.Strings.chars_ptr;
-      Side   : in Ada.Strings.Trim_End)
+     (Source : C.Strings.chars_ptr;
+      Side   : Ada.Strings.Trim_End)
       return   C.Strings.chars_ptr;
 
    procedure Trim
      (Source : in out C.Strings.chars_ptr;
-      Side   : in Ada.Strings.Trim_End);
+      Side   : Ada.Strings.Trim_End);
 
    function Trim
-     (Source : in C.Strings.chars_ptr;
-      Left   : in Ada.Strings.Maps.Character_Set;
-      Right  : in Ada.Strings.Maps.Character_Set)
+     (Source : C.Strings.chars_ptr;
+      Left   : Ada.Strings.Maps.Character_Set;
+      Right  : Ada.Strings.Maps.Character_Set)
       return   C.Strings.chars_ptr;
 
    procedure Trim
      (Source : in out C.Strings.chars_ptr;
-      Left   : in Ada.Strings.Maps.Character_Set;
-      Right  : in Ada.Strings.Maps.Character_Set);
+      Left   : Ada.Strings.Maps.Character_Set;
+      Right  : Ada.Strings.Maps.Character_Set);
 
    function Head
-     (Source : in C.Strings.chars_ptr;
-      Count  : in Natural;
-      Pad    : in Character := Ada.Strings.Space)
+     (Source : C.Strings.chars_ptr;
+      Count  : Natural;
+      Pad    : Character := Ada.Strings.Space)
       return   C.Strings.chars_ptr;
 
    procedure Head
      (Source : in out C.Strings.chars_ptr;
-      Count  : in Natural;
-      Pad    : in Character := Ada.Strings.Space);
+      Count  : Natural;
+      Pad    : Character := Ada.Strings.Space);
 
    function Tail
-     (Source : in C.Strings.chars_ptr;
-      Count  : in Natural;
-      Pad    : in Character := Ada.Strings.Space)
+     (Source : C.Strings.chars_ptr;
+      Count  : Natural;
+      Pad    : Character := Ada.Strings.Space)
       return   C.Strings.chars_ptr;
 
    procedure Tail
      (Source : in out C.Strings.chars_ptr;
-      Count  : in Natural;
-      Pad    : in Character := Ada.Strings.Space);
+      Count  : Natural;
+      Pad    : Character := Ada.Strings.Space);
 
    function "*"
-     (Left  : in Natural;
-      Right : in Character)
+     (Left  : Natural;
+      Right : Character)
       return  C.Strings.chars_ptr;
 
    function "*"
-     (Left  : in Natural;
-      Right : in String)
+     (Left  : Natural;
+      Right : String)
       return  C.Strings.chars_ptr;
 
    function "*"
-     (Left  : in Natural;
-      Right : in C.Strings.chars_ptr)
+     (Left  : Natural;
+      Right : C.Strings.chars_ptr)
       return  C.Strings.chars_ptr;
 
 end CHelper;

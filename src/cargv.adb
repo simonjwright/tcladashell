@@ -30,7 +30,6 @@ package body CArgv is
 
    Empty_Vector : Vector := (0 => C.Strings.Null_Ptr);
 
-
    procedure Create (Argc : out CNatural; Argv : out Chars_Ptr_Ptr) is
       Size : constant CNatural
         := CNatural (Ada.Command_Line.Argument_Count + 1);
@@ -46,8 +45,7 @@ package body CArgv is
       Argv       := Vec (Vec'First)'Access;
    end Create;
 
-
-   procedure Show (Argc : in CNatural; Argv : in Chars_Ptr_Ptr) is
+   procedure Show (Argc : CNatural; Argv : Chars_Ptr_Ptr) is
       Ptr : Chars_Ptr_Ptr := Argv;
       use Ada.Text_IO;
    begin --  Show
@@ -63,7 +61,6 @@ package body CArgv is
       end loop;
    end Show;
 
-
    procedure Free (Argv : in out Chars_Ptr_Ptr) is
       pragma Warnings (Off, Argv);  -- logically in out
       Ptr : Chars_Ptr_Ptr := Argv;
@@ -77,7 +74,6 @@ package body CArgv is
       --  Free_Vector (Argv);
    end Free;
 
-
    function Arg (Argv : Chars_Ptr_Ptr; N : CNatural) return String is
       L : constant CNatural := CNatural (Argv_Pointer.Virtual_Length (Argv));
    begin -- Arg
@@ -87,12 +83,10 @@ package body CArgv is
       return C.Strings.Value (Argv_Pointer.Value (Argv) (N));
    end Arg;
 
-
    function Empty return Chars_Ptr_Ptr is
    begin -- Empty
       return Empty_Vector (Empty_Vector'First)'Access;
    end Empty;
-
 
    function "&" (Argv : Chars_Ptr_Ptr; Arg : String) return Chars_Ptr_Ptr is
       Size : constant CNatural :=
@@ -115,11 +109,9 @@ package body CArgv is
 
    end "&";
 
-
-   function Argc (Argv : in Chars_Ptr_Ptr) return CNatural is
+   function Argc (Argv : Chars_Ptr_Ptr) return CNatural is
    begin -- Argc
       return CNatural (Argv_Pointer.Virtual_Length (Argv));
    end Argc;
-
 
 end CArgv;

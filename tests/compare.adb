@@ -25,8 +25,8 @@ procedure Compare is
    Char2          : Character;
    File2_Is_Stdin : Boolean := False;
 
-   function "&" (Left : in String; Right : in Text_IO.Count) return String;
-   function "&" (Left : in String; Right : in Text_IO.Count) return String is
+   function "&" (Left : String; Right : Text_IO.Count) return String;
+   function "&" (Left : String; Right : Text_IO.Count) return String is
    begin --  "&"
       return Left & Text_IO.Count'Image (Right);
    end "&";
