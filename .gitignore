@@ -14,24 +14,7 @@ tash_options.gpr
 include*
 lib-*
 
-demos/freq
-demos/futurevalue
-demos/hello_world
-demos/tashell
-demos/timer
-demos/twashell
-demos/watching
-demos/wordify
-
-demos/freq.unsorted
-demos/freq.*.out
-demos/watching.in
-demos/words
-
 src/tcl_record_sizes*
 
-tests/compare
-tests/tashtest
-tests/test_compare.ada
-
 alire
+config
