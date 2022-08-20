@@ -33,7 +33,7 @@ abstract project Options is
       when "macos" =>
          Platform_Linker_Options :=
            (
-            -- "-L/usr/local/lib",
+            "-L/usr/local/lib",
             "-ltk",
             "-ltcl"
             -- "-F/Library/Frameworks",
@@ -63,8 +63,8 @@ abstract project Options is
          C_Compiler_Switches := C_Compiler_Switches
            & (
               -- "-I/usr/local/include",
-              -- "-I/usr/local/include/tcl",
-              -- "-I/usr/local/include/tk"
+              "-I/usr/local/include/tcl",
+              "-I/usr/local/include/tk"
               -- "-I/Library/Frameworks/Tk.framework/Headers",
               -- "-I/Library/Frameworks/Tcl.framework/Headers"
              );
