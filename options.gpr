@@ -62,9 +62,9 @@ abstract project Options is
       when "macos" =>
          C_Compiler_Switches := C_Compiler_Switches
            & (
-              -- "-I/usr/local/include",
-              "-I/usr/local/include/tcl",
-              "-I/usr/local/include/tk"
+              "-I/usr/local/include"
+              -- "-I/usr/local/include/tcl",
+              -- "-I/usr/local/include/tk"
               -- "-I/Library/Frameworks/Tk.framework/Headers",
               -- "-I/Library/Frameworks/Tcl.framework/Headers"
              );
