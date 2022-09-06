@@ -15,7 +15,7 @@
 --  This file provides the compilation options for building the
 --  tcladashell library libtash.{a,dll,so,dylib}.
 
-with "config/tcladashell_config.gpr";
+with "config/tash_config.gpr";
 
 abstract project Options is
 
