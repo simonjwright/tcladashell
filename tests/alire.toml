@@ -11,8 +11,8 @@ project-files = ["tash_tests.gpr"]
 executables = ["tashtest"]
 
 [[depends-on]]
-tcladashell = "*"
+tash = "*"
 # aunit = "^22.0.0"
 
 [[pins]]
-tcladashell = { path='..' }
+tash = { path='..' }
