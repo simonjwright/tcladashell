@@ -20,7 +20,7 @@ with "config/tash_config.gpr";
 abstract project Options is
 
    type Platform_Type is ("linux", "macos", "windows");
-   Platform : Platform_Type := external ("TCLADASHELL_PLATFORM", "linux");
+   Platform : Platform_Type := external ("TASH_PLATFORM", "linux");
 
    Homebrew := "";
 
@@ -41,7 +41,7 @@ abstract project Options is
    end case;
 
    package Compiler is
-      for Default_Switches ("ada") use Tcladashell_Config.Ada_Compiler_Switches;
+      for Default_Switches ("ada") use Tash_Config.Ada_Compiler_Switches;
       for Default_Switches ("c") use C_Compiler_Switches;
    end Compiler;
 

@@ -20,7 +20,7 @@ with "options.gpr";
 project Tash is
 
    type Platform_Type is ("linux", "macos", "windows");
-   Platform : Platform_Type := external ("TCLADASHELL_PLATFORM", "linux");
+   Platform : Platform_Type := external ("TASH_PLATFORM", "linux");
 
    type Library_T is ("static", "relocatable");
    Library_Type : Library_T := external ("LIBRARY_TYPE", "static");

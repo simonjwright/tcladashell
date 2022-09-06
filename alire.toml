@@ -1,7 +1,7 @@
 name = "tash"
 description = "Binding to Tcl/Tk"
 long-description = """
-Tash (previously known as Tcl Ada Shell) 
+Tash (previously known as Tcl Ada Shell)
 is an Ada binding to Tcl/Tk.
 
 Its purpose is to
@@ -30,9 +30,9 @@ tags = ["scripting", "tcl", "tk"]
   "libtk" = "*"
 
 [gpr-set-externals.'case(os)']
-windows = { TCLADASHELL_PLATFORM = "windows" }
-linux = { TCLADASHELL_PLATFORM = "linux" }
-macos = { TCLADASHELL_PLATFORM = "macos" }
+windows = { TASH_PLATFORM = "windows" }
+linux = { TASH_PLATFORM = "linux" }
+macos = { TASH_PLATFORM = "macos" }
 
 [[actions]]
 type = "post-fetch"
