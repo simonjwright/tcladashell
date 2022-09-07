@@ -28,7 +28,9 @@ abstract project Options is
    case Platform is
       when "linux" =>
          --  sometimes tk.h is found in /usr/include/tcl
-         C_Compiler_Switches := C_Compiler_Switches & ("-I/usr/include/tcl",
+         --  sometimes in /usr/include/tcl8.6
+         C_Compiler_Switches := C_Compiler_Switches & ("-I/usr/include/tcl8.6",
+                                                       "-I/usr/include/tcl",
                                                        "-I/usr/include/tk");
       when "macos" =>
          Homebrew := external ("HOMEBREW_PREFIX", "");
