@@ -23,6 +23,7 @@ tcl_record_sizes.ads: tcl_record_sizes.exe
 	./$< >$@
 
 tcl_record_sizes.exe: tcl_record_sizes.c
+	ls -ld /usr/include/t*
 	gprbuild -P tcl_record_sizes.gpr -o $@
 
 tcl_record_sizes.c: tcl_record_sizes.tcl
