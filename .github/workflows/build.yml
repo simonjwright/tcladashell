@@ -44,10 +44,8 @@ jobs:
       run: |
         brew update
         brew install tcl-tk
-        eval $(brew shellenv)
-        echo "HOMEBREW_PREFIX: $HOMEBREW_PREFIX"
     -
       name: Build and run
       run: |
-        echo "HOMEBREW_PREFIX: $HOMEBREW_PREFIX"
+        eval $(brew shellenv)
         cd tests; alr --non-interactive build; ./tashtest tashtest.tcl
