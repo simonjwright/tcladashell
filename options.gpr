@@ -27,6 +27,7 @@ abstract project Options is
    C_Compiler_Switches := ("-g", "-O2");
    case Platform is
       when "linux" =>
+         --  sometimes tk.h is found in /usr/include/tcl
          C_Compiler_Switches := C_Compiler_Switches & ("-I/usr/include/tcl",
                                                        "-I/usr/include/tk");
       when "macos" =>
