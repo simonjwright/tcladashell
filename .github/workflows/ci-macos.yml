@@ -1,0 +1,43 @@
+---
+
+name: CI macOS
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: CI on macOS
+
+    runs-on: macos-latest
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: alire-project/setup-alire
+      uses: alire-project/setup-alire@v1
+    -
+      name: Add local index
+      run: |
+        alr --non-interactive index --add=git+https://github.com/simonjwright/local-alire-index --name=local
+    -
+      name: Install toolchain
+      run: |
+        alr --non-interactive config --global --set toolchain.assistant false
+        alr --non-interactive toolchain --install gnat_native
+        alr --non-interactive toolchain --install gprbuild
+        alr --non-interactive toolchain --select gnat_native
+        alr --non-interactive toolchain --select gprbuild
+    -
+      name: Set up Homebrew
+      run: |
+        brew update
+        brew install tcl-tk
+    -
+      name: Build and run
+      run: |
+        eval $(brew shellenv)
+        cd tests; alr --non-interactive build; ./tashtest tashtest.tcl

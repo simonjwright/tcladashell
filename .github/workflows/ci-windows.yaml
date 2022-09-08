@@ -1,24 +1,16 @@
 ---
 
-name: Build and test
+name: CI Windows
 
 on:
   push:
   pull_request:
-    # branches: [ master ]
 
 jobs:
   build:
-    name: CI on ${{ matrix.os }}
+    name: CI on windows
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os:
-          # - windows-latest
-          # - ubuntu-latest
-          - macos-latest
+    runs-on: windows-latest
 
     steps:
     -
@@ -32,7 +24,7 @@ jobs:
       run: |
         alr --non-interactive index --add=git+https://github.com/simonjwright/local-alire-index --name=local
     -
-      name: Toolchain setup
+      name: Install toolchain
       run: |
         alr --non-interactive config --global --set toolchain.assistant false
         alr --non-interactive toolchain --install gnat_native
@@ -40,12 +32,6 @@ jobs:
         alr --non-interactive toolchain --select gnat_native
         alr --non-interactive toolchain --select gprbuild
     -
-      name: Homebrew setup
-      run: |
-        brew update
-        brew install tcl-tk
-    -
       name: Build and run
       run: |
-        eval $(brew shellenv)
         cd tests; alr --non-interactive build; ./tashtest tashtest.tcl
