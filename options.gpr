@@ -27,11 +27,10 @@ abstract project Options is
    C_Compiler_Switches := ("-g", "-O2");
    case Platform is
       when "linux" =>
-         --  sometimes tk.h is found in /usr/include/tcl
-         --  sometimes in /usr/include/tcl8.6
-         C_Compiler_Switches := C_Compiler_Switches & ("-I/usr/include/tcl8.6",
-                                                       "-I/usr/include/tcl",
-                                                       "-I/usr/include/tk");
+         --  We have to get CFLAGS from `pkg-config --cflags tk8.6`
+         C_Compiler_Switches := C_Compiler_Switches
+	   & external_as_list ("CFLAGS", " ");
+	 
       when "macos" =>
          Homebrew := external ("HOMEBREW_PREFIX", "");
 
@@ -39,6 +38,7 @@ abstract project Options is
            & (
               "-I" & Homebrew & "/opt/tcl-tk/include"
              );
+	     
       when "windows" =>
          C_Compiler_Switches := C_Compiler_Switches & ();
    end case;
@@ -51,21 +51,21 @@ abstract project Options is
    Platform_Linker_Options := ();
    case Platform is
       when "linux" =>
-         Platform_Linker_Options :=
-           (
-            "-ltk",
-            "-ltcl"
-           );
+         --  We have to get LDFLAGS from `pkg-config --cflagslibs tk8.6`
+         Platform_Linker_Options := Platform_Linker_Options &
+           external_as_list ("LDFLAGS", " ");
+	   
       when "macos" =>
-         Platform_Linker_Options :=
+         Platform_Linker_Options := Platform_Linker_Options &
            (
             "-L" & Homebrew & "/opt/tcl-tk/lib",
             "-L/usr/local/include",  -- Github CI
             "-ltk8.6",
             "-ltcl8.6"
            );
+	   
       when "windows" =>
-         Platform_Linker_Options :=
+         Platform_Linker_Options := Platform_Linker_Options &
            (
             "-ltk",
             "-ltcl"
