@@ -27,10 +27,12 @@ abstract project Options is
    C_Compiler_Switches := ("-g", "-O2");
    case Platform is
       when "linux" =>
-         --  We have to get CFLAGS from `pkg-config --cflags tk8.6`
+         --  I'd prefer to get CFLAGS from `pkg-config --cflags
+         --  tk8.6`, but can't work out how.
          C_Compiler_Switches := C_Compiler_Switches
-	   & external_as_list ("CFLAGS", " ");
-	 
+         & ("-I/usr/include/tcl8.6");
+           -- & external_as_list ("CFLAGS", " ");
+
       when "macos" =>
          Homebrew := external ("HOMEBREW_PREFIX", "");
 
@@ -38,7 +40,7 @@ abstract project Options is
            & (
               "-I" & Homebrew & "/opt/tcl-tk/include"
              );
-	     
+
       when "windows" =>
          C_Compiler_Switches := C_Compiler_Switches & ();
    end case;
@@ -51,10 +53,12 @@ abstract project Options is
    Platform_Linker_Options := ();
    case Platform is
       when "linux" =>
-         --  We have to get LDFLAGS from `pkg-config --cflagslibs tk8.6`
+         --  I'd prefer to get LDFLAGS from `pkg-config --libs
+         --  tk8.6`, but can't work out how.
          Platform_Linker_Options := Platform_Linker_Options &
-           external_as_list ("LDFLAGS", " ");
-	   
+           ("-ltk8.6", "-ltkstub8.6", "-ltcl8.6", "-ltclstub8.6");
+           -- external_as_list ("LDFLAGS", " ");
+
       when "macos" =>
          Platform_Linker_Options := Platform_Linker_Options &
            (
@@ -63,7 +67,7 @@ abstract project Options is
             "-ltk8.6",
             "-ltcl8.6"
            );
-	   
+
       when "windows" =>
          Platform_Linker_Options := Platform_Linker_Options &
            (
