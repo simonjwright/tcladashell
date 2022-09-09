@@ -34,7 +34,4 @@ jobs:
     -
       name: Build and run
       run: |
-        # flags for tk include those for tcl
-        export CFLAGS=$(pkg-config --cflags tk8.6)
-        export LDFLAGS=$(pkg-config --libs tk8.6)
         cd tests; alr --non-interactive build; ./tashtest tashtest.tcl
