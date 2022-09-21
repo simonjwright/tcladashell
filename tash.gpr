@@ -23,7 +23,8 @@ project Tash is
    Platform : Platform_Type := external ("TASH_PLATFORM", "linux");
 
    type Library_T is ("static", "relocatable");
-   Library_Type : Library_T := external ("LIBRARY_TYPE", "static");
+   Library_Type : Library_T :=
+     external ("TASH_LIBRARY_TYPE", external ("LIBRARY_TYPE", "static"));
 
    for Library_Name use "tash";
 

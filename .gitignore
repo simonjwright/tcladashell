@@ -6,10 +6,6 @@
 gpr_query.db*
 gnatinspect.db
 auto.cgpr
-tash-8.[0-9]*
-
-makeconf
-tash_options.gpr
 
 include*
 lib-*

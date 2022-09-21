@@ -42,77 +42,8 @@ An early, experimental medium binding to Tk is provided in the Ada package, `Tcl
 
 An early paper describing how `twashell` is a Platform-Independent toolkit for development of Graphical User Interfaces is available in several different formats in the docs directory.
 
-## Unsupported features ##
-
-The original TASH included a 'new thick binding'. Unfortunately, this is not supportable in Tcl/Tk 8.5 and later, because it relies on what is now the private implementation of commands such as `file`, `list`.
-
-The thick binding will be built if TASH is installed over Tcl/Tk 8.4 or earlier. However, it will be as well not to rely on its continued availability (for example, Mac OS X Leopard had Tcl/Tk 8.4, but Snow Leopard has 8.5).
-
-The GUI developer RAPID does not depend on these unsupported features.
-
 ## Installation ##
 
-### Prerequisites ###
-
-You need an Ada compiler. The instructions here are based on GNAT, though other compilers have been used and there is nothing GNAT-specific about TASH (there are GNAT-isms in the build support files).
-
-You need `gprbuild`; many GNAT packages provide it by default, but it's a separate package under Debian.
-
-You also need Tcl/Tk with working `tclsh` and `wish`. On macOS, you may need to use ActiveState's [Community Edition](https://www.activestate.com/products/tcl/downloads/) (Apple may cease Tcl/Tk support after Catalina).
-
-On Unix systems, this should be all, aside from the usual development environment (`bash`/`sh`, `make` etc).
-
-On Windows systems, you can get the development environment using Cygwin. Cygwin includes a Tcl/Tk implementation, but unfortunately it may not be compatible with GNAT (in the early 2000's, there was a `.dll` clash). We recommend that you use ActiveState's [Community Edition](https://www.activestate.com/products/tcl/downloads/), and these instructions are written assuming that. We also recommend that you install at `C:\Tcl` or `C:\ActiveTcl` rather than at `C:\Program Files\Tcl`, to avoid problems with path names with spaces later on.
-
-### Extract TASH ###
-
-Choose a place to build TASH. If you're not using GNAT GPL or FSF GCC, this should be the place you intend to use it from, perhaps your HOME directory.
-Assuming this is your home directory, go there and extract the downloaded TASH archive by (for the 20200802 release)
-```
-$ unzip $downloads/tcladashell-Rel_20200802.zip
-```
-or
-```
-$ tar zxvf $downloads/tcladashell-Rel_20200802.tar.gz
-```
-and then enter the source directory:
-```
-$ cd tcladashell-Rel_20200802
-```
-
-### Configure ###
-
-#### On Unix ####
-
-If you're running a Unix system, make sure you have the version of GNAT you wish to use at the beginning of your PATH (this is in case you have a clever script like `gnatfe` in `/usr/local/bin`, which will confuse `make install`).
-
-#### On Windows ####
-
-If you're running on Windows, you'll need to set up Cygwin so that GNAT and ActiveState Tcl/Tk are first on your path in Cygwin (which puts `/usr/local/bin` and `/usr/bin` before your Windows path). One way of doing this is to add the following line at the end of `~/.bash_profile`:
-```
-PATH=/cygdrive/c/Tcl/bin:/cygdrive/c/GNAT/2020/bin:$PATH
-```
-(assuming that you've got ActiveState Tcl/Tk installed at C:\Tcl and GNAT at C:\GNAT\2020).
-
-#### Common ####
-
-It's important that the C compiler used to compile glue files is compatible with your Ada compiler; one way of achieving this (if you're using GNAT; note, these instructions assume that's the case) is to make sure that GNAT's gcc is first on your path.
-
-If you're happy to accept default settings, there's nothing more; make creates default `makeconf` and `tash_options.gpr` using `setup.tcl --nogui`. If not, open up a shell window at the extracted TASH and say
-```
-$ ./setup.tcl
-```
-In either case, the script sets values for several makefile macros used to customize your TASH build.
-
-In most cases, the default values will be OK. If not, either edit the generated files or run `setup.tcl` interactively and type in the correct values; press the Save button to create the `tash_options.gpr` and `makeconf` files.
-
-### Build ###
-
-That done, run
-```
-$ make all
-```
-This will compile the necessary C glue files and build the TASH library statically (`libtash.a`) or relocatably (`libtash.so`, `libtash.dll` or `libtash.dylib`) with `.ali` files in `lib-static/` or `lib-relocatable/` respectively, and the corresponding Ada source files in `src/` (still) and `include-relocatable/`.
 
 ### Run tests ###
 
@@ -120,7 +51,7 @@ Run
 ```
 $ make test
 ```
-This runs several test programs in the `test/`, `demos/` and, with Tcl/Tk 8.4, `apps/` directories.
+This runs several test programs in the `test/` and `demos/` directories.
 
 ## Using TASH ##
 

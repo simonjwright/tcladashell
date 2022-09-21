@@ -25,9 +25,12 @@ project-files = ["tash.gpr"]
 
 tags = ["scripting", "tcl", "tk"]
 
+[gpr-externals]
+TASH_LIBRARY_TYPE = ["static", "relocatable"]
+
 [[depends-on]]
-  "libtcl" = "*"
-  "libtk" = "*"
+  "libtcl" = "~8.6.0"
+  "libtk" = "~8.6.0"
 
 [gpr-set-externals.'case(os)']
 windows = { TASH_PLATFORM = "windows" }

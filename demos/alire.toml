@@ -7,7 +7,7 @@ authors = ["Simon Wright"]
 maintainers = ["Simon Wright <simon@pushface.org>"]
 maintainers-logins = ["simonjwright"]
 
-project-files = ["tash_demos.gpr", "hello_world.gpr"]
+project-files = ["tash_demos.gpr"]
 executables = [
                "freq",
                "futurevalue",

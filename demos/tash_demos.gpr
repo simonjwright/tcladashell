@@ -19,16 +19,16 @@ with "../tash";
 
 project Tash_Demos is
 
-  Tcl_Mains :=
+  for Main use
     (
-     "freq",
-     "futurevalue",
-     "hello_world",
-     "tashell",
-     "timer",
-     "twashell",
-     "watching",
-     "wordify"
+     "freq.adb",
+     "futurevalue.adb",
+     "hello_world.adb",
+     "tashell.adb",
+     "timer.adb",
+     "twashell.adb",
+     "watching.adb",
+     "wordify.adb"
     );
 
   for Exec_Dir use ".";
