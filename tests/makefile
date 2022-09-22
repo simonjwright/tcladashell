@@ -25,4 +25,4 @@ test::
 	  true)
 
 test::
-	$(GNATMEM) ./tashtest tashtest.tcl
+	./tashtest tashtest.tcl
