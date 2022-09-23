@@ -6,7 +6,7 @@
 --                and (sorta like Ada identifiers) underscores.
 --
 --  Copyright (c) 1998 Terry J. Westley
---  Copyright (c) 2006, 2020 Simon Wright <simon@pushface.org>
+--  Copyright (c) 2006-2022 Simon Wright <simon@pushface.org>
 --
 --  See the file "license.htm" for information on usage and
 --  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -27,7 +27,7 @@ begin --  Wordify
    while not Ada.Text_IO.End_Of_File loop
       Ada.Text_IO.Get_Line (Line, Length);
       for I in  1 .. Length loop
-         if Is_Alphanumeric (Line (I)) or Line (I) = '_' then
+         if Is_Alphanumeric (Line (I)) or else Line (I) = '_' then
             Ada.Text_IO.Put (Line (I));
             At_End_Of_Line := False;
          elsif not At_End_Of_Line then

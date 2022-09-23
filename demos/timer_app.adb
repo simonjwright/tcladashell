@@ -3,7 +3,7 @@
 --  timer_app.adb -- This program demonstrates how the TASH Ada/Tk interface
 --                    provides Tk features for use in an Ada program.
 --
---  Copyright (c) 2017 Simon Wright <simon@pushface.org>
+--  Copyright (c) 2017-2022 Simon Wright <simon@pushface.org>
 --  Copyright (c) 1997 Terry J. Westley
 --
 --  See the file "license.htm" for information on usage and
@@ -73,10 +73,10 @@ package body Timer_App is
    end Tick;
 
    function Tick_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int;
    pragma Convention (C, Tick_Command);
 
@@ -84,10 +84,10 @@ package body Timer_App is
    --  which will increment the timer.
    -------------------------------------------------------------
    function Tick_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int
    is
       pragma Unreferenced (ClientData, Interp, Argc, Argv);
@@ -97,10 +97,10 @@ package body Timer_App is
    end Tick_Command;
 
    function Start_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int;
    pragma Convention (C, Start_Command);
 
@@ -109,10 +109,10 @@ package body Timer_App is
    --  change the Stop button (currently labeled "Reset") to display "Stop."
    -------------------------------------------------------------------------
    function Start_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int
    is
       pragma Unreferenced (ClientData, Interp, Argc, Argv);
@@ -127,10 +127,10 @@ package body Timer_App is
    end Start_Command;
 
    function Stop_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int;
    pragma Convention (C, Stop_Command);
 
@@ -139,10 +139,10 @@ package body Timer_App is
    --  Stop button to be a Reset button.
    --------------------------------------------------------------
    function Stop_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int
    is
       pragma Unreferenced (ClientData, Interp, Argc, Argv);
@@ -164,10 +164,10 @@ package body Timer_App is
    end Reset;
 
    function Reset_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int;
    pragma Convention (C, Reset_Command);
 
@@ -175,10 +175,10 @@ package body Timer_App is
    --  which will reset the timer to 0.0 and update the display.
    -------------------------------------------------------------
    function Reset_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int
    is
       pragma Unreferenced (ClientData, Interp, Argc, Argv);
