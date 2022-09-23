@@ -8,6 +8,15 @@ Its purpose is to
 
 * support the rapid development of Platform-Independent Graphical User Interfaces via Tk.
 
+## Installation and usage ##
+
+This branch is designed to be used with [Alire](https://alire.ada.dev/docs/#introduction).
+```
+alr init --bin my_project
+cd my_project
+alr with tash
+```
+
 ## Licensing ##
 
 The software is released under the GPL Version 2, with the following additional permission:
@@ -42,42 +51,3 @@ An early, experimental medium binding to Tk is provided in the Ada package, `Tcl
 
 An early paper describing how `twashell` is a Platform-Independent toolkit for development of Graphical User Interfaces is available in several different formats in the docs directory.
 
-## Installation ##
-
-
-### Run tests ###
-
-Run
-```
-$ make test
-```
-This runs several test programs in the `test/` and `demos/` directories.
-
-## Using TASH ##
-
-If you're using a GNAT-based compiler, it's strongly recommended that you use the GNAT Project feature.
-
-### Using in-place ###
-
-After the make all stage, you can use TASH where it was built with any GNAT-based compiler.
-
-Make sure that the TASH distribution directory is on your `ADA_PROJECT_PATH`, by e.g.
-```
-$ export ADA_PROJECT_PATH=~/tcladashell-Rel_20200802:$ADA_PROJECT_PATH
-```
-Your GPR should include TASH:
-```
-with "tash";
-```
-
-### Installing with the compiler ###
-
-If you're using FSF GCC or GNAT GPL, the best way is to install TASH alongside your compiler.
-
-The remaining instructions assume use on a Unix machine, or Cygwin if on Windows.
-
-Having run `make all` as above,
-```
-$ make install
-```
-(you may need to do this as root on Unix systems).
