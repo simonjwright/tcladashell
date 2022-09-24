@@ -5,6 +5,7 @@
 --                  TASH Ada/Tcl interface.
 --
 --  Copyright (c) 1995-1997 Terry J. Westley
+--  Copyright (c) 2006-2022  Simon Wright
 --
 --  See the file "license.htm" for information on usage and
 --  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.

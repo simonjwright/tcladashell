@@ -1,9 +1,0 @@
-array4(Empire State Building) = New York
-array4(Faneuil Hall)          = Boston
-array5(high)    = 500
-array5(integer) = 100
-array5(low)     = 5
-array6(float) = 100.5
-array6(high)  = 500.25
-array6(low)   = 5.0
-Test_Arrays PASSED -- 97 tests completed

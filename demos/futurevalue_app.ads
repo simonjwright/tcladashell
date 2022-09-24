@@ -7,7 +7,7 @@
 --    It implements a simple GUI for computing Future Value
 --    of a series of fixed monthly investments.
 --
---  Copyright (c) 2017 Simon Wright <simon@pushface.org>
+--  Copyright (c) 2017-2022 Simon Wright <simon@pushface.org>
 --
 --  See the file "license.htm" for information on usage and
 --  redistribution of this file, and  a DISCLAIMER OF ALL WARRANTIES.

@@ -58,10 +58,10 @@ procedure Hello_World is --  Hello_World
    pragma Unreferenced (Command);
 
    function Hello_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int;
    pragma Convention (C, Hello_Command);
    --  Declare a procedure, suitable for creating a Tcl command,
@@ -69,10 +69,10 @@ procedure Hello_World is --  Hello_World
    --  button is pressed.
 
    function Hello_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int
    is
       pragma Unreferenced (ClientData, Interp, Argc, Argv);
@@ -82,20 +82,20 @@ procedure Hello_World is --  Hello_World
    end Hello_Command;
 
    function Exit_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int;
    pragma Convention (C, Exit_Command);
    --  Declare a procedure, suitable for creating a Tcl command,
    --  which will terminate the program when pressed.
 
    function Exit_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
       return       Interfaces.C.int
    is
       pragma Unreferenced (ClientData, Argc, Argv);

@@ -7,7 +7,7 @@
 --    It implements a simple GUI for computing Future Value
 --    of a series of fixed monthly investments.
 --
---  Copyright (c) 2017 Simon Wright <simon@pushface.org>
+--  Copyright (c) 2017-2022 Simon Wright <simon@pushface.org>
 --  Copyright (c) 1997 Terry J. Westley
 --
 --  See the file "license.htm" for information on usage and
@@ -34,10 +34,10 @@ package body FutureValue_App is
    Result       : Tcl.Tk.Ada.Label;
 
    function Compute_Future_Value_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
      return       Interfaces.C.int;
    pragma Convention (C, Compute_Future_Value_Command);
 
@@ -45,10 +45,10 @@ package body FutureValue_App is
    --  which will compute the Future Value.
    -------------------------------------------------------------
    function Compute_Future_Value_Command
-     (ClientData : in Integer;
-      Interp     : in Tcl.Tcl_Interp;
-      Argc       : in Interfaces.C.int;
-      Argv       : in CArgv.Chars_Ptr_Ptr)
+     (ClientData : Integer;
+      Interp     : Tcl.Tcl_Interp;
+      Argc       : Interfaces.C.int;
+      Argv       : CArgv.Chars_Ptr_Ptr)
      return       Interfaces.C.int
    is
       pragma Unreferenced (ClientData, Argc, Argv);

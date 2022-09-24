@@ -16,7 +16,7 @@ package body TWashApp is
 
    use type C.int;
 
-   function Init (Interp : in Tcl.Tcl_Interp) return C.int is
+   function Init (Interp : Tcl.Tcl_Interp) return C.int is
    begin --  Init
 
       if Tcl.Tcl_Init (Interp) = Tcl.TCL_ERROR then

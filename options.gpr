@@ -15,32 +15,61 @@
 --  This file provides the compilation options for building the
 --  tcladashell library libtash.{a,dll,so,dylib}.
 
-with "config/tcladashell_config.gpr";
+with "config/tash_config.gpr";
 
 abstract project Options is
 
    type Platform_Type is ("linux", "macos", "windows");
-   Platform : Platform_Type := external ("TCLADASHELL_PLATFORM", "linux");
+   Platform : Platform_Type := external ("TASH_PLATFORM", "linux");
+
+   Homebrew := "";
+
+   C_Compiler_Switches := ("-g", "-O2");
+   case Platform is
+      when "linux" =>
+         --  I'd prefer to get CFLAGS from `pkg-config --cflags
+         --  tk8.6`, but can't work out how.
+         C_Compiler_Switches := C_Compiler_Switches
+         & ("-I/usr/include/tcl8.6");
+           -- & external_as_list ("CFLAGS", " ");
+
+      when "macos" =>
+         Homebrew := external ("HOMEBREW_PREFIX", "");
+
+         C_Compiler_Switches := C_Compiler_Switches
+           & (
+              "-I" & Homebrew & "/opt/tcl-tk/include"
+             );
+
+      when "windows" =>
+         C_Compiler_Switches := C_Compiler_Switches & ();
+   end case;
+
+   package Compiler is
+      for Default_Switches ("ada") use Tash_Config.Ada_Compiler_Switches;
+      for Default_Switches ("c") use C_Compiler_Switches;
+   end Compiler;
 
    Platform_Linker_Options := ();
    case Platform is
       when "linux" =>
-         Platform_Linker_Options :=
-           (
-            "-ltk",
-            "-ltcl"
-           );
+         --  I'd prefer to get LDFLAGS from `pkg-config --libs
+         --  tk8.6`, but can't work out how.
+         Platform_Linker_Options := Platform_Linker_Options &
+           ("-ltk8.6", "-ltkstub8.6", "-ltcl8.6", "-ltclstub8.6");
+           -- external_as_list ("LDFLAGS", " ");
+
       when "macos" =>
-         Platform_Linker_Options :=
+         Platform_Linker_Options := Platform_Linker_Options &
            (
-            "-F/Library/Frameworks",
-            "-framework",
-            "Tk",
-            "-framework",
-            "Tcl"
+            "-L" & Homebrew & "/opt/tcl-tk/lib",
+            "-L/usr/local/include",  -- Github CI
+            "-ltk8.6",
+            "-ltcl8.6"
            );
+
       when "windows" =>
-         Platform_Linker_Options :=
+         Platform_Linker_Options := Platform_Linker_Options &
            (
             "-ltk",
             "-ltcl"
@@ -50,26 +79,6 @@ abstract project Options is
    package Builder is
       for Default_Switches ("ada") use ("-m", "-g");
    end Builder;
-
-   C_Compiler_Switches := ("-g", "-O2");
-   case Platform is
-      when "linux" =>
-         C_Compiler_Switches := C_Compiler_Switches & ("-I/usr/include/tcl",
-                                                       "-I/usr/include/tk");
-      when "macos" =>
-         C_Compiler_Switches := C_Compiler_Switches
-           & (
-              "-I/Library/Frameworks/Tk.framework/Headers",
-              "-I/Library/Frameworks/Tcl.framework/Headers"
-             );
-      when "windows" =>
-         C_Compiler_Switches := C_Compiler_Switches & ();
-   end case;
-
-   package Compiler is
-      for Default_Switches ("ada") use Tcladashell_Config.Ada_Compiler_Switches;
-      for Default_Switches ("c") use C_Compiler_Switches;
-   end Compiler;
 
    package Linker is
       for Linker_Options use Platform_Linker_Options;

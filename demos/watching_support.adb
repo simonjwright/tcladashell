@@ -1,4 +1,4 @@
---  Copyright 2017 Simon Wright <simon@pushface.org>
+--  Copyright 2017-2022 Simon Wright <simon@pushface.org>
 --
 --  This unit is free software; you can redistribute it and/or modify
 --  it as you wish. This unit is distributed in the hope that it will
@@ -18,17 +18,17 @@ package body Watching_Support is
 
    --  Handy wrapper for C.Strings.Free, so it can be used to free
    --  results.
-   procedure Freeproc (BlockPtr : in Interfaces.C.Strings.chars_ptr);
+   procedure Freeproc (BlockPtr : Interfaces.C.Strings.chars_ptr);
    pragma Convention (C, Freeproc);
 
    function Square
-     (Client_Data : in Integer;
-      Interp      : in Tcl.Tcl_Interp;
-      Argc        : in Interfaces.C.int;
-      Argv        : in CArgv.Chars_Ptr_Ptr) return Interfaces.C.int;
+     (Client_Data : Integer;
+      Interp      : Tcl.Tcl_Interp;
+      Argc        : Interfaces.C.int;
+      Argv        : CArgv.Chars_Ptr_Ptr) return Interfaces.C.int;
    pragma Convention (C, Square);
 
-   function Init (Interp : in Tcl.Tcl_Interp) return Interfaces.C.int is
+   function Init (Interp : Tcl.Tcl_Interp) return Interfaces.C.int is
 
       package CreateCommands is new Tcl.Ada.Generic_Command (Integer);
       Command : Tcl.Tcl_Command;
@@ -55,7 +55,7 @@ package body Watching_Support is
 
    end Init;
 
-   procedure Freeproc (BlockPtr : in Interfaces.C.Strings.chars_ptr)
+   procedure Freeproc (BlockPtr : Interfaces.C.Strings.chars_ptr)
    is
       Tmp : Interfaces.C.Strings.chars_ptr := BlockPtr;
    begin
@@ -63,10 +63,10 @@ package body Watching_Support is
    end Freeproc;
 
    function Square
-     (Client_Data : in Integer;
-      Interp      : in Tcl.Tcl_Interp;
-      Argc        : in Interfaces.C.int;
-      Argv        : in CArgv.Chars_Ptr_Ptr) return Interfaces.C.int
+     (Client_Data : Integer;
+      Interp      : Tcl.Tcl_Interp;
+      Argc        : Interfaces.C.int;
+      Argv        : CArgv.Chars_Ptr_Ptr) return Interfaces.C.int
    is
       pragma Unreferenced (Client_Data);
       Input : Integer;

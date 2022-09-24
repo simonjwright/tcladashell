@@ -1,4 +1,4 @@
---  Copyright 2017 Simon Wright <simon@pushface.org>
+--  Copyright 2017-2022 Simon Wright <simon@pushface.org>
 --
 --  This unit is free software; you can redistribute it and/or modify
 --  it as you wish. This unit is distributed in the hope that it will

@@ -17,7 +17,7 @@ package TWashApp is
 
    package C renames Interfaces.C;
 
-   function Init (Interp : in Tcl.Tcl_Interp) return C.int;
+   function Init (Interp : Tcl.Tcl_Interp) return C.int;
    pragma Convention (C, Init);
 
 end TWashApp;

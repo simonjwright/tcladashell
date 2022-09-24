@@ -3,7 +3,7 @@
 --  timer_app.ads -- This program demonstrates how the TASH Ada/Tk interface
 --                    provides Tk features for use in an Ada program.
 --
---  Copyright (c) 2017 Simon Wright <simon@pushface.org>
+--  Copyright (c) 2017-2022 Simon Wright <simon@pushface.org>
 --
 --  See the file "license.htm" for information on usage and
 --  redistribution of this file, and  a DISCLAIMER OF ALL WARRANTIES.
