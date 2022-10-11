@@ -2,7 +2,7 @@
 #ifndef TASH_CONFIG_H
 #define TASH_CONFIG_H
 
-#define CRATE_VERSION "8.7.0-dev"
+#define CRATE_VERSION "8.7.0"
 #define CRATE_NAME "tash"
 
 #define ALIRE_HOST_OS "macos"
@@ -15,6 +15,6 @@
 #define BUILD_PROFILE_VALIDATION 2
 #define BUILD_PROFILE_DEVELOPMENT 3
 
-#define BUILD_PROFILE  3
+#define BUILD_PROFILE  1
 
 #endif

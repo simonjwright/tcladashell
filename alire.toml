@@ -1,8 +1,7 @@
 name = "tash"
 description = "Binding to Tcl/Tk"
 long-description = """
-Tash (previously known as Tcl Ada Shell)
-is an Ada binding to Tcl/Tk.
+Tash (previously known as Tcl Ada Shell) is an Ada binding to Tcl/Tk.
 
 Its purpose is to
 
@@ -14,7 +13,7 @@ Its purpose is to
   Interfaces via Tk.
 """
 website = "https://github.com/simonjwright/tcladashell"
-version = "8.7.0-dev"
+version = "8.7.0"
 licenses = "GPL-2.0-or-later WITH GCC-exception-2.0"
 
 authors = ["Simon Wright"]
