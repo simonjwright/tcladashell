@@ -17,6 +17,8 @@
 # Naming the executable tcl_record_sizes.exe means we don't need to
 # worry whether we're running on Windows.
 
+TCLSH = tclsh8.6
+
 all:: tcl_record_sizes.ads
 
 tcl_record_sizes.ads: tcl_record_sizes.exe
@@ -26,4 +28,4 @@ tcl_record_sizes.exe: tcl_record_sizes.c
 	gprbuild -P tcl_record_sizes.gpr -o $@
 
 tcl_record_sizes.c: tcl_record_sizes.tcl
-	tclsh $< >$@
+	$(TCLSH) $< >$@
