@@ -17,7 +17,10 @@
 # Naming the executable tcl_record_sizes.exe means we don't need to
 # worry whether we're running on Windows.
 
+TCLSH = tclsh
+ifeq (, $(shell command -v $(TCLSH) 2>/dev/null))
 TCLSH = tclsh8.6
+endif
 
 all:: tcl_record_sizes.ads
 
