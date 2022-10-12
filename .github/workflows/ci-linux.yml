@@ -10,7 +10,7 @@ jobs:
   build:
     name: CI on linux
 
-    runs-on: ubuntu-latest
+    runs-on: debian-latest
 
     steps:
     -
