@@ -28,9 +28,4 @@ test::
 	./tashell testfreq.tcl ../src words
 
 test::
-	echo 1023 >watching.in
-	./watching watching.tcl <watching.in
-
-profile:
-	./freq < words > freq.unsorted
-	gprof freq gmon.out > freq.gprof
+	echo 1023 | ./watching watching.tcl

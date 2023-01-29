@@ -19,38 +19,37 @@ with "../tash";
 
 project Tash_Demos is
 
-  for Main use
-    (
-     "freq.adb",
-     "futurevalue.adb",
-     "hello_world.adb",
-     "tashell.adb",
-     "timer.adb",
-     "twashell.adb",
-     "watching.adb",
-     "wordify.adb"
-    );
+   for Main use
+     (
+      "freq.adb",
+      "futurevalue.adb",
+      "hello_world.adb",
+      "tashell.adb",
+      "timer.adb",
+      "twashell.adb",
+      "watching.adb",
+      "wordify.adb"
+     );
 
-  for Exec_Dir use ".";
+   for Exec_Dir use ".";
 
-  --  The source locations for the project.
-  for Source_Dirs use (".");
+   --  The source locations for the project.
+   for Source_Dirs use (".");
 
-  --  Each Project that contains source must have its own build
-  --  directory.
-  for Object_Dir use ".build";
+   --  Each Project that contains source must have its own build
+   --  directory.
+   for Object_Dir use ".build";
 
-  --  GNATMAKE configuration options.
-  package Builder renames Tash.Builder;
+   for Create_Missing_Dirs use "true";
 
-  --  GCC configuration options.
-  package Compiler renames Tash.Compiler;
+   --  GCC configuration options.
+   package Compiler renames Tash.Compiler;
 
-  -- GNATBIND configuration options.
-  package Binder is
-     for Default_Switches ("ada") use ("-E");
-  end Binder;
+   -- GNATBIND configuration options.
+   package Binder is
+      for Default_Switches ("ada") use ("-E");
+   end Binder;
 
-  package Linker renames Tash.Linker;
+   package Linker renames Tash.Linker;
 
 end Tash_Demos;

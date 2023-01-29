@@ -13,7 +13,7 @@ Its purpose is to
   Interfaces via Tk.
 """
 website = "https://github.com/simonjwright/tcladashell"
-version = "8.7.0"
+version = "8.7.1"
 licenses = "GPL-2.0-or-later WITH GCC-exception-2.0"
 
 authors = ["Simon Wright"]

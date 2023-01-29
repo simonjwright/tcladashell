@@ -35,9 +35,6 @@ project Tash_Tests is
    --  directory.
    for Object_Dir use ".build";
 
-   --  GNATMAKE configuration options.
-   package Builder renames Tash.Builder;
-
    --  GCC configuration options.
    package Compiler renames Tash.Compiler;
 
