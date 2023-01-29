@@ -12,15 +12,10 @@
 --  write to the Free Software Foundation, 59 Temple Place - Suite
 --  330, Boston, MA 02111-1307, USA.
 
---  This file provides the compilation options for building the
---  tcladashell library libtash.{a,dll,so,dylib}.
-
+with "tcl_tk_options.gpr";
 with "config/tash_config.gpr";
 
 project Tash is
-
-   type Platform_Type is ("linux", "macos", "windows");
-   Platform : Platform_Type := external ("TASH_PLATFORM", "linux");
 
    type Library_T is ("static", "relocatable");
    Library_Type : Library_T :=
@@ -30,12 +25,12 @@ project Tash is
 
    for Languages use ("ada", "c");
 
-   type Answer is ("no", "yes");
-   Supports_Tash : Answer := "no";
+   --  type Answer is ("no", "yes");
+   --  Supports_Tash : Answer := "no";
 
    for Source_Dirs use ("src");
 
-   Basic_Ada_Source_Files :=
+   Ada_Source_Files :=
      (
       "cargv.adb",
       "cargv.ads",
@@ -54,97 +49,47 @@ project Tash is
       "tcl_record_sizes.ads"
      );
 
-   Basic_Ada_Units :=
+   Source_Units :=
      (
-      "cargv",
-      "chelper",
-      "tcl.ada",
-      "tcl.async",
-      "tcl.tk.ada",
-      "tcl.tk",
-      "tcl",
-      "tcl_record_sizes"
+      "Cargv",
+      "Chelper",
+      "Tcl.Ada",
+      "Tcl.Async",
+      "Tcl.Tk.Ada",
+      "Tcl.Tk",
+      "Tcl",
+      "Tcl_Record_Sizes"
      );
 
-   Basic_C_Source_Files :=
+   C_Source_Files :=
      (
       "tclmacro.c",
       "tkmacro.c"
      );
 
-   Source_Units := Basic_Ada_Units;
-   --  Variable can't be declared for the first time in a case
-   --  alternative.
-
    for Source_Files use
-     Basic_Ada_Source_Files & Basic_C_Source_Files;
+     Ada_Source_Files & C_Source_Files;
 
    for Object_Dir use ".build_lib-" & Library_Type;
    for Library_Kind use Library_Type;
    for Library_Dir use "lib-" & Library_Type;
    for Library_Src_Dir use "include-" & Library_Type;
 
-   Platform_Linker_Options := ();
-   case Platform is
-      when "linux" =>
-         --  I'd prefer to get LDFLAGS from `pkg-config --libs
-         --  tk8.6`, but can't work out how.
-         Platform_Linker_Options := Platform_Linker_Options &
-           ("-ltk8.6", "-ltkstub8.6", "-ltcl8.6", "-ltclstub8.6");
-
-      when "macos" =>
-         Platform_Linker_Options := Platform_Linker_Options &
-           (
-            "-L" & external ("HOMEBREW_PREFIX", "") & "/opt/tcl-tk/lib",
-            "-L/usr/local/include",  -- Github CI
-            "-ltk8.6",
-            "-ltcl8.6"
-           );
-
-      when "windows" =>
-         Platform_Linker_Options := Platform_Linker_Options &
-           (
-            "-ltk",
-            "-ltcl"
-           );
-   end case;
-
    case Library_Type is
       when "relocatable" =>
          for Library_Interface use Source_Units;
-         for Library_Options use Platform_Linker_Options;
+         for Library_Options use Tcl_Tk_Options.Platform_Linker_Options;
       when "static" =>
          null;
    end case;
 
-   C_Compiler_Switches := ("-g", "-O2");
-   case Platform is
-      when "linux" =>
-         --  I'd prefer to get CFLAGS from `pkg-config --cflags
-         --  tk8.6`, but can't work out how.
-         C_Compiler_Switches := C_Compiler_Switches
-         & ("-I/usr/include/tcl8.6");
-           -- & external_as_list ("CFLAGS", " ");
-
-      when "macos" =>
-          C_Compiler_Switches := C_Compiler_Switches
-           & (
-              "-I"
-              & external ("HOMEBREW_PREFIX", "")
-              & "/opt/tcl-tk/include"
-             );
-
-      when "windows" =>
-         C_Compiler_Switches := C_Compiler_Switches & ();
-   end case;
-
    package Compiler is
       for Default_Switches ("ada") use Tash_Config.Ada_Compiler_Switches;
-      for Default_Switches ("c") use C_Compiler_Switches;
+      for Default_Switches ("c") use Tcl_Tk_Options.C_Compiler_Switches;
    end Compiler;
 
    package Linker is
-      for Linker_Options use Platform_Linker_Options;
+      for Linker_Options use Tcl_Tk_Options.Platform_Linker_Options;
    end Linker;
 
    --  Pretty printer (useful with GPS while reformatting the code to

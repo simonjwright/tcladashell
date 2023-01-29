@@ -4,7 +4,7 @@
 --  Tcl/Tk libraries.
 --  tcl_record_sizes.c is built by the script tcl_record_sizes.tcl.
 
-with "../tash.gpr";
+with "../tcl_tk_options.gpr";
 
 project Tcl_Record_Sizes is
 
@@ -17,7 +17,12 @@ project Tcl_Record_Sizes is
    for Create_Missing_Dirs use "true";
    for Exec_Dir use ".";
 
-   package Compiler renames Tash.Compiler;
-   package Linker renames Tash.Linker;
+   package Compiler is
+      for Default_Switches ("c") use Tcl_Tk_Options.C_Compiler_Switches;
+   end Compiler;
+
+   package Linker is
+      for Linker_Options use Tcl_Tk_Options.Platform_Linker_Options;
+   end Linker;
 
 end Tcl_Record_Sizes;
