@@ -11,6 +11,9 @@ Its purpose is to
 
 * support the rapid development of Platform-Independent Graphical User
   Interfaces via Tk.
+
+Please note that, on macOS, tash assumes that Tcl/Tk is provided via
+[Homebrew](https://brew.sh).
 """
 website = "https://github.com/simonjwright/tcladashell"
 version = "8.7.1"
