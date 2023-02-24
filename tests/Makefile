@@ -13,16 +13,20 @@
 # write to the Free Software Foundation, 59 Temple Place - Suite
 # 330, Boston, MA 02111-1307, USA.
 
-all::
+all:: build test
+
+build:
 	alr build
 
-test::
+test:: compare
 	cp compare.adb test_compare.ada
-	./compare compare.adb test_compare.ada
-	@echo "./compare compare.adb tash-arrays-test.adb"
+	@(./compare compare.adb test_compare.ada || \
+	  echo "FAILED: comparison of file and copy failed." \
+	  true)
+	@echo "./compare compare.adb tashtest.adb"
 	@(./compare compare.adb tashtest.adb && \
 	  echo "FAILED: comparison didn't fail!"; \
 	  true)
 
-test::
+test:: tashtest
 	./tashtest tashtest.tcl

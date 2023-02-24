@@ -15,12 +15,14 @@
 --  This file provides the compilation options for building the Tash
 --  tests.
 
-with "../tash";
+with "tash";
+with "config/tash_tests_config";
 
 project Tash_Tests is
 
    Tcl_Mains :=
      (
+      "compare.adb",
       "tashtest.adb"
      );
 

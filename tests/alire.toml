@@ -8,11 +8,10 @@ maintainers = ["Simon Wright <simon@pushface.org>"]
 maintainers-logins = ["simonjwright"]
 
 project-files = ["tash_tests.gpr"]
-executables = ["tashtest"]
+executables = ["compare", "tashtest"]
 
 [[depends-on]]
 tash = "*"
-# aunit = "^22.0.0"
 
 [[pins]]
 tash = { path='..' }
