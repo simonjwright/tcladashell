@@ -16,7 +16,7 @@ Please note that, on macOS, tash assumes that Tcl/Tk is provided via
 [Homebrew](https://brew.sh).
 """
 website = "https://github.com/simonjwright/tcladashell"
-version = "8.7.1"
+version = "8.7.2"
 licenses = "GPL-2.0-or-later WITH GCC-exception-2.0"
 
 authors = ["Simon Wright"]

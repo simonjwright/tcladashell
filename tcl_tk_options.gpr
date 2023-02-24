@@ -23,6 +23,8 @@ abstract project Tcl_Tk_Options is
    Platform : Platform_Type := external ("TASH_PLATFORM", "linux");
 
    C_Compiler_Switches := ();
+   Include_Prefix := "";
+
    case Platform is
       when "linux" =>
          --  I'd prefer to get CFLAGS from `pkg-config --cflags
@@ -32,12 +34,19 @@ abstract project Tcl_Tk_Options is
            -- & external_as_list ("CFLAGS", " ");
 
       when "macos" =>
-          C_Compiler_Switches := C_Compiler_Switches
-           & (
-              "-I"
-              & external ("HOMEBREW_PREFIX", "")
-              & "/opt/tcl-tk/include"
-             );
+         --  Prior to https://github.com/Homebrew/homebrew-core/pull/124056,
+         --  tcl-tk was "keg-only"m which meant it couldn't be found on the
+         --  standard include path ($HOMEBREW_PREFIX/include); however, you
+         --  can always find an installed package in $HOMEBREW_PREFIX/opt.
+         --  The change above moves the tcl-tk includes down a level, so
+         --  here we include both; one of them should work!
+         Include_Prefix := external ("HOMEBREW_PREFIX", "")
+           & "/opt/tcl-tk/include";
+         C_Compiler_Switches := C_Compiler_Switches &
+           (
+            "-I" & Include_Prefix,
+            "-I" & Include_Prefix & "/tcl-tk"
+           );
 
       when "windows" =>
          null;
