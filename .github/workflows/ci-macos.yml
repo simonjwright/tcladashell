@@ -31,6 +31,7 @@ jobs:
       name: Set up Homebrew
       run: |
         brew update
+        brew unlink tcl-tk
         brew upgrade tcl-tk
     -
       name: Build and run
