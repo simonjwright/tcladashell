@@ -35,7 +35,7 @@ abstract project Tcl_Tk_Options is
 
       when "macos" =>
          --  Prior to https://github.com/Homebrew/homebrew-core/pull/124056,
-         --  tcl-tk was "keg-only"m which meant it couldn't be found on the
+         --  tcl-tk was "keg-only" which meant it couldn't be found on the
          --  standard include path ($HOMEBREW_PREFIX/include); however, you
          --  can always find an installed package in $HOMEBREW_PREFIX/opt.
          --  The change above moves the tcl-tk includes down a level, so
